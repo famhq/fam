@@ -1,0 +1,93 @@
+use('./stylus_get_color.js')
+use('./stylus_get_cdn_url.js')
+
+$zIndexAppBar = 99
+$zIndexTabs = 100
+$zIndexShareAnyModal = 200
+
+// TODO: move to vars.json, allow js to use (cardList)
+$breakPointSmall = 340px
+$breakPointMedium = 768px
+$breakPointLarge = 840px
+
+$contentMaxWidth = 1280px
+
+$cdnUrl = getCdnUrl()
+
+clearfix()
+  zoom: 1
+
+  &:before, &:after
+    content: ''
+    display: table
+
+  &:after
+    clear: both
+
+responsive-font-display4()
+  zp-font-display4()
+  font-family: 'Dosis'
+
+responsive-font-display3()
+  zp-font-display3()
+  font-family: 'Dosis'
+  @media (min-width: $breakPointLarge)
+    font-size: 72px
+
+responsive-font-display2()
+  zp-font-display2()
+  font-family: 'Dosis'
+  @media (min-width: $breakPointLarge)
+    font-size: 56px
+
+responsive-font-display1()
+  zp-font-display1()
+  font-family: 'Dosis'
+  font-weight: 700
+  @media (min-width: $breakPointLarge)
+    font-size: 45px
+
+responsive-font-headline()
+  zp-font-headline()
+  font-family: 'Dosis'
+  font-weight: 700
+  @media (min-width: $breakPointLarge)
+    font-size: 34px
+
+responsive-font-title()
+  zp-font-title()
+  font-family: 'Dosis'
+  font-weight: 700
+  @media (min-width: $breakPointLarge)
+    font-size: 24px
+
+responsive-font-subhead()
+  zp-font-subhead()
+  font-family: 'Dosis'
+  font-weight: 700
+  @media (min-width: $breakPointLarge)
+    font-size: 20px
+
+responsive-font-body2()
+  zp-font-body2()
+  font-weight: 700
+  font-family: 'Dosis'
+  @media (min-width: $breakPointLarge)
+    font-size: 16px
+
+responsive-font-body1()
+  zp-font-body1()
+  font-family: 'Dosis'
+  @media (min-width: $breakPointLarge)
+    font-size: 16px
+
+responsive-font-caption()
+  zp-font-caption()
+  font-family: 'Dosis'
+  @media (min-width: $breakPointLarge)
+    font-size: 14px
+
+responsive-font-button()
+  zp-font-button()
+  font-family: 'Dosis'
+  font-weight: 700
