@@ -6,7 +6,15 @@ _forEach = require 'lodash/collection/forEach'
 config = require './config'
 gulpPaths = require '../gulp_paths'
 HomePage = require './pages/home'
+ConversationPage = require './pages/conversation'
+ConversationsPage = require './pages/conversations'
+ThreadPage = require './pages/thread'
+ThreadsPage = require './pages/threads'
+NewThread = require './pages/new_thread'
+ProfilePage = require './pages/profile'
+LearnMorePage = require './pages/learn_more'
 FourOhFourPage = require './pages/404'
+Drawer = require './components/drawer'
 
 module.exports = class App
   constructor: ({requests, serverData, model, router}) ->
@@ -31,12 +39,21 @@ module.exports = class App
         routes.set path, -> $page
 
     route '/', HomePage
+    route '/conversation/:userId', ConversationPage
+    route '/conversations', ConversationsPage
+    route '/thread/:userId/:page', ThreadPage
+    route '/threads', ThreadsPage
+    route '/newThread', NewThreadPage
+    route '/profile', ProfilePage
+    route '/learnMore', LearnMorePage
     route '/*', FourOhFourPage
 
     $backupPage = if serverData?
       routes.get(serverData.req.path).handler()
     else
       null
+
+    @$drawer = new Drawer({model, router})
 
     @state = z.state {
       rand: null
@@ -59,3 +76,5 @@ module.exports = class App
         z '#zorium-root',
           z '.z-root',
             request?.$page or $backupPage
+
+            z @$drawer, {currentPath: request?.req.path}

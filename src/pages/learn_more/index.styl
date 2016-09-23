@@ -1,0 +1,39 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+// .p-learn-more
+//   display: flex
+//   flex-direction: column
+
+.p-learn-more_step-image
+  display: block
+  margin: auto
+  background-size: 100% auto
+
+  &.number-1
+    background-image: url($cdnUrl + '/onboarding_card.svg')
+    height: 132px
+    width: 225px
+
+  &.number-2
+    background-image: url($cdnUrl + '/onboarding_chat.svg')
+    height: 124px
+    width: 190px
+
+  &.number-3
+    background-image: url($cdnUrl + '/onboarding_support.svg')
+    height: 142px
+    width: 144px
+
+  @media (min-width: $breakPointMedium)
+    width: 448px
+    height: 520px
+    display: block
+    margin: auto 0 auto auto
+    background-size: auto 100%
+
+.p-learn-more_step-content
+  width: 100%

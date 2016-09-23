@@ -1,0 +1,32 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-splash
+  flex: 1
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+  display: flex
+  flex-direction: column
+  background: getColor('$tertiary900')
+
+  > .content
+    margin: auto
+
+    > .logo
+      width: 283px
+      height: 30px
+      background: url($cdnUrl + '/rt_logo.svg')
+
+  > .actions
+    padding: 16px
+    width: 100%
+    max-width: 380px
+    box-sizing: border-box
+    margin: 0 auto
+
+    > .button
+      margin-bottom: 8px
+
+      &:last-child
+        margin-bottom: 0

@@ -2,7 +2,10 @@ z = require 'zorium'
 
 config = require '../../config'
 Head = require '../../components/head'
-HelloWorld = require '../../components/hello_world'
+Splash = require '../../components/splash'
+
+if window?
+  require './index.styl'
 
 module.exports = class HomePage
   constructor: ({model, router, serverData}) ->
@@ -12,10 +15,13 @@ module.exports = class HomePage
       meta:
         canonical: "https://#{config.HOST}"
     })
-    @$hello = new HelloWorld({model, router})
+    @$splash = new Splash({model, router})
 
   renderHead: => @$head
 
   render: =>
-    z '.p-home',
-      @$hello
+    z '.p-home', {
+      style:
+        height: "#{window?.innerHeight}px"
+    },
+      @$splash

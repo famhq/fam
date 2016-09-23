@@ -1,0 +1,17 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.z-conversations
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .fab
+    position: fixed
+    bottom: 16px
+    right: 16px
+    z-index: 50

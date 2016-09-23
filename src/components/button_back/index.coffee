@@ -12,7 +12,7 @@ module.exports = class ButtonBack
       z @$backIcon,
         isAlignedLeft: true
         icon: 'back'
-        color: color or colors.$tertiary900
+        color: color or colors.$primary500
         onclick: (e) =>
           e.preventDefault()
           if onclick

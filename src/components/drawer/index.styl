@@ -1,0 +1,119 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+$zIndexDrawer = 300
+$zIndexDrawerUserHeader = 200
+$zIndexDrawerGuestHeader = 200
+$zIndexDrawerHeader = 100
+
+.z-drawer
+  position: fixed
+  z-index: $zIndexDrawer
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  pointer-events: none // not supported in ie9/10 (ie our entire app breaks)
+
+  &.is-open
+    pointer-events: all // not supported in ie9/10
+
+    > .overlay
+      opacity: 0.5
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+
+    > .drawer
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+
+  > .overlay
+    background: getColor('$black')
+    opacity: 0
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+    width: 100%
+    height: 100%
+    -webkit-tap-highlight-color: getColor('$transparent')
+
+  > .drawer
+    // width and transform translate set in js
+    height: 100%
+    top: 0
+    position: fixed
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+    overflow: auto
+    -webkit-overflow-scrolling: touch
+    display: flex
+    flex-direction: column
+    background: getColor('$tertiary500')
+    // prevents flicker glitch http://stackoverflow.com/a/3921870
+    backface-visibility: hidden
+
+    > .header
+      display: flex
+      width: 100%
+      padding: 16px
+      box-sizing: border-box
+      position: relative
+      z-index: $zIndexDrawerHeader
+      background: getColor('$tertiary700')
+      // prevents flicker glitch http://stackoverflow.com/a/3921870
+      backface-visibility: hidden
+
+      &:after
+        content: ''
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+
+      > .user-header
+        width: 100%
+        text-align: center
+
+        > .avatar
+          width: 90px
+          height: 90px
+          margin: 0 auto
+
+        > .name
+          responsive-font-body1()
+          margin-top: 16px
+          color: getColor('$white')
+
+        > .join-date
+          responsive-font-caption()
+          margin-top: 4px
+
+    > .content
+      flex: 1
+      width: 100%
+      box-sizing: border-box
+      background: getColor('$tertiary500')
+      padding: 8px 0
+
+      > .menu
+        list-style-type: none
+        margin: 0
+        padding: 0
+
+        > .divider
+          width: 100%
+          height: 1px
+          background: getColor('$black12')
+          margin: 8px 0
+
+        > .menu-item
+          > .menu-item-link
+            responsive-font-body2()
+            display: block
+            padding: 16px
+
+            > .icon
+              display: inline-block
+              vertical-align: middle
+              margin-right: 36px
+
+          &.is-selected
+            > .menu-item-link
+              background: getColor('$tertiary400')

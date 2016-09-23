@@ -5,7 +5,12 @@ request = require 'clay-request'
 
 Auth = require './auth'
 User = require './user'
-LoginLink = require './login_link'
+UserData = require './user_data'
+Drawer = require './drawer'
+Conversation = require './conversation'
+ChatMessage = require './chat_message'
+Thread = require './thread'
+
 Portal = require './portal'
 config = require '../config'
 
@@ -56,7 +61,11 @@ module.exports = class Model
 
     @auth = new Auth({@exoid, cookieSubject})
     @user = new User({@auth, proxy, @exoid})
-    @loginLink = new LoginLink({@auth})
+    @userData = new UserData({@auth})
+    @chatMessage = new ChatMessage({@auth})
+    @conversation = new Conversation({@auth})
+    @thread = new Thread({@auth})
+    @drawer = new Drawer()
     @portal = new Portal({@user, @game, @modal})
 
   wasCached: => @isFromCache

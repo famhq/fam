@@ -1,0 +1,148 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+$zIndexTextarea = 2
+
+.z-conversation
+  flex: 1
+  display: flex
+  width: 100%
+  position: relative
+
+  > .g-grid
+    display: flex
+    flex: 1
+    flex-direction: column
+
+    > .messages
+      flex: 1
+      overflow-y: auto
+      overflow-x: hidden
+      -webkit-overflow-scrolling: touch
+      padding-bottom: 48px
+      width: 100%
+
+      > .message
+        display: flex
+        padding: 16px 0 0 16px
+        width: 100%
+        box-sizing: border-box
+
+        > .avatar
+          margin-right: 16px
+
+        > .content
+          padding-bottom: 20px
+          border-bottom: 1px solid getColor('$black12')
+          flex: 1
+
+          > .info
+            responsive-font-subhead()
+            color: getColor('$tertiary900')
+            padding-right: 16px
+            margin-bottom: 4px
+            display: flex
+            align-items: center
+
+            > .icon
+              margin-right: 8px
+
+            > .name
+              max-width: 100%
+              text-overflow: ellipsis
+              overflow: hidden
+
+          > .body
+            responsive-font-body1()
+            color: getColor('$black')
+            padding-right: 16px
+            margin-top: 4px
+            margin-bottom: 8px
+            overflow-x: hidden
+
+          > .bottom
+            display: flex
+            align-items: center
+            padding-right: 16px
+
+            > .time
+              margin-left: auto
+              responsive-font-caption()
+              font-weight: 400
+              text-transform: uppercase
+              color: getColor('$blueGrey500')
+
+  > .textarea-container
+    position: absolute
+    z-index: $zIndexTextarea
+    bottom: 0
+    left: 0
+    width: 100%
+
+    > .g-grid
+      box-shadow: 0 1px 4px getColor('$black26')
+      background: getColor('$tertiary700')
+      position: relative
+
+      > .textarea
+        width: 100%
+        height: 48px
+        padding: 16px 92px 0 16px
+        box-sizing: border-box
+        border: none
+        outline: none
+        background: getColor('$tertiary700')
+
+        &:focus
+          height: 84px
+
+      > .icons
+        position: absolute
+        right: 12px
+        top: 50%
+        margin-top: -24px
+        display: flex
+        align-items: center
+
+        > .color-icon-wrapper
+          padding: 12px
+          display: flex
+
+          > .color-icon
+            display: inline-block
+            margin: auto
+            width: 20px
+            height: 20px
+            position: relative
+            box-sizing: border-box
+            border-radius: 50%
+
+            > .color-inner
+              position: absolute
+              left: 2px
+              top: 2px
+              width: 16px
+              height: 16px
+              border-radius: 50%
+              border: 1px solid $white
+              box-sizing: border-box
+
+
+
+  @media (min-width: $breakPointMedium)
+    > .g-grid
+      > .messages
+        padding-bottom: 64px
+
+        .message > .content > .info > .name
+          max-width: none
+
+
+    > .textarea-container
+      background: getColor('$grey200')
+
+      > .g-grid
+        margin-bottom: 16px

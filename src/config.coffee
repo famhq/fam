@@ -4,16 +4,18 @@
 _ = require 'lodash'
 assertNoneMissing = require 'assert-none-missing'
 
+colors = require './colors'
+
 # Don't let server environment variables leak into client code
 serverEnv = process.env
 
 # All keys must have values at run-time (value may be null)
 isomorphic =
-  HOST: process.env.HOST or '127.0.0.1'
+  CDN_URL: 'https://cdn.wtf/d/images/red_tritium'
+  HOST: process.env.RED_TRITIUM_HOST or '127.0.0.1'
   API_URL:
-    serverEnv.PRIVATE_API_URL or # server
-    process.env.API_URL or # client
-    'http://127.0.0.1:3005' # default
+    serverEnv.PRIVATE_RADIOACTIVE_API_URL or # server
+    process.env.RADIOACTIVE_API_URL # client
   AUTH_COOKIE: 'accessToken'
   ENV:
     serverEnv.NODE_ENV or
@@ -23,9 +25,20 @@ isomorphic =
     PROD: 'production'
     TEST: 'test'
 
+  PLAYER_COLORS: [
+    colors.$amber500
+    colors.$secondary500
+    colors.$primary500
+    colors.$green500
+    colors.$red500
+    colors.$blue500
+  ]
+  PLAYER_AVATARS: _.map _.range(1, 40), (i) -> "#{i}00"
+
+
 # Server only
 # All keys must have values at run-time (value may be null)
-PORT = serverEnv.PORT or 3000
+PORT = serverEnv.RED_TRITIUM_PORT or 3000
 WEBPACK_DEV_PORT = serverEnv.WEBPACK_DEV_PORT or parseInt(PORT) + 1
 
 server =

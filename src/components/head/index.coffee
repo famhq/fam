@@ -15,8 +15,8 @@ module.exports = class Head
     {meta, serverData, modelSerialization} = @state.getValue()
 
     meta = _.merge {
-      title: 'Zorium Seed'
-      description: 'Zorium Seed - (╯°□°）╯︵ ┻━┻)'
+      title: 'Red Tritium'
+      description: 'Have what it takes?'
       icon256: '/images/zorium_icon_256.png'
       twitter:
         siteHandle: '@ZoriumJS'
@@ -30,7 +30,7 @@ module.exports = class Head
         title: undefined
         url: undefined
         description: undefined
-        siteName: 'Zorium Seed'
+        siteName: 'Red Tritium'
         # min 200 x 200, min reccomended 600 x 315, reccomended 1200 x 630
         image: '/images/zorium_icon_1024.png'
 
@@ -126,7 +126,7 @@ module.exports = class Head
       z 'link',
         rel: 'stylesheet'
         type: 'text/css'
-        href: 'https://fonts.googleapis.com/css?family=Roboto:400,300,500'
+        href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700'
 
       # styles
       if isInliningSource

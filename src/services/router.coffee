@@ -13,13 +13,13 @@ class RouterService
   constructor: ({@router, @portal}) ->
     @history = []
 
-  go: (route, {reset} = {}) ->
+  go: (route, {reset} = {}) =>
     @history.push(route or window?.location.pathname)
     if route is '/' or reset
       @history = [route]
     @router.go route
 
-  back: ({fromNative} = {}) ->
+  back: ({fromNative} = {}) =>
     if @history.length is 1 and fromNative and (
       @history[0] is '/' or
       @history[0] is '/onboard'
