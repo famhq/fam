@@ -13,6 +13,8 @@ module.exports = class Splash
     @$learnMoreButton = new PrimaryButton()
     @$signInButton = new FlatButton()
 
+    model.portal.call 'barcode.scan'
+
     @state = z.state
       username: model.user.getMe().map ({username}) -> username
 

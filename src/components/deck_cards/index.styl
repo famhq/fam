@@ -1,0 +1,15 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.z-deck-cards
+  > .row
+    margin: -4px 0
+    clearfix()
+
+    > .card
+      float: left
+      padding: 4px
+      box-sizing: border-box

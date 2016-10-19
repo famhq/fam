@@ -42,25 +42,25 @@ module.exports = _defaults {
 
   '$tertiary100': paperColors.$grey100
   '$tertiary200': paperColors.$grey200
-  '$tertiary300': paperColors.$grey300
+  '$tertiary300': '#364452'
   '$tertiary400': '#2D3740'
   '$tertiary500': '#252f39'
   '$tertiary600': paperColors.$grey600
   '$tertiary700': '#1c262f'
   '$tertiary800': paperColors.$grey800
   '$tertiary900': '#171f26'
-  '$tertiary100Text': paperColors.$grey100Text
-  '$tertiary200Text': paperColors.$grey200Text
-  '$tertiary300Text': paperColors.$grey300Text
-  '$tertiary400Text': paperColors.$grey400Text
-  '$tertiary500Text': paperColors.$grey500Text
-  '$tertiary600Text': paperColors.$grey600Text
-  '$tertiary700Text': paperColors.$grey700Text
-  '$tertiary800Text': paperColors.$grey800Text
-  '$tertiary900Text': paperColors.$grey900Text
+  '$tertiary100Text': paperColors.$white
+  '$tertiary200Text': paperColors.$white
+  '$tertiary300Text': paperColors.$white
+  '$tertiary400Text': paperColors.$white
+  '$tertiary500Text': paperColors.$white
+  '$tertiary600Text': paperColors.$white
+  '$tertiary700Text': paperColors.$white
+  '$tertiary800Text': paperColors.$white
+  '$tertiary900Text': paperColors.$white
 
-  '$tabSelected': paperColors.$blueGrey900
-  '$tabUnselected': paperColors.$blueGrey300
+  '$tabSelected': paperColors.$white
+  '$tabUnselected': paperColors.$white
 
   '$tabSelectedAlt': paperColors.$white
   '$tabUnselectedAlt': paperColors.$white30

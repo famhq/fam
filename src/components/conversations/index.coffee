@@ -25,8 +25,8 @@ module.exports = class Conversations
     @state = z.state
       me: @model.user.getMe()
       conversations: @model.conversation.getAll().map (conversations) ->
-        _.map conversations, (group) ->
-          {group, $icon: new Icon()}
+        _.map conversations, (conversation) ->
+          {conversation, $icon: new Icon()}
 
   render: =>
     {me, conversations} = @state.getValue()
@@ -36,24 +36,21 @@ module.exports = class Conversations
         if conversations and _.isEmpty conversations
           'No conversations found'
         else if conversations
-          _.map conversations, ({group, $icon}) =>
+          _.map conversations, ({conversation, $icon}) ->
 
-            z '.group', {
-              className: z.classKebab {isPlayer}
-              onclick: =>
-                @state.set selectedGroup: group
-            },
+            z '.conversation',
               z '.left',
-                z '.name', group.name
-                z '.games', _.map(group.gameKeys, _.startCase).join ' · '
+                z '.name', conversation.name
+                z '.games', _.map(conversation.gameKeys, _.startCase).join ' · '
                 z '.info', 'test'
                   z '.members',
-                    "#{group.playerIds.length} / #{group.maxPlayers} members"
+                    "#{conversation.playerIds.length} /
+                    #{conversation.maxPlayers} members"
               z '.right',
                 z $icon,
-                  icon: group.platform
+                  icon: conversation.platform
                   isTouchTarget: false
-                  color: colors["$#{group.platform}"]
+                  color: colors["$#{conversation.platform}"]
 
         else
           @$spinner

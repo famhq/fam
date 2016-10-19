@@ -1,8 +1,9 @@
 _ = require 'lodash'
 z = require 'zorium'
-colors = require 'zorium-paper/colors.json'
+Environment = require 'clay-environment'
 
 config = require '../../config'
+colors = require '../../colors'
 
 module.exports = class Head
   constructor: ({model, meta, serverData}) ->
@@ -13,6 +14,8 @@ module.exports = class Head
 
   render: =>
     {meta, serverData, modelSerialization} = @state.getValue()
+
+    userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
     meta = _.merge {
       title: 'Red Tritium'
@@ -39,7 +42,7 @@ module.exports = class Head
         icon: undefined
 
       canonical: undefined
-      themeColor: colors.$teal700
+      themeColor: colors.$primary500
       # reccomended 32 x 32 png
       favicon: '/images/zorium_icon_32.png'
       manifestUrl: '/manifest.json'
@@ -84,6 +87,12 @@ module.exports = class Head
         content: 'initial-scale=1.0, width=device-width, minimum-scale=1.0,
                   maximum-scale=1.0, user-scalable=0, minimal-ui'
 
+      z 'meta',
+        'http-equiv': 'Content-Security-Policy'
+        content: "default-src 'self' file://* *; style-src 'self'" +
+          " 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+
+
       # Twitter card
       z 'meta', {name: 'twitter:card', content: 'summary_large_image'}
       z 'meta', {name: 'twitter:site', content: "#{twitter.siteHandle}"}
@@ -120,7 +129,48 @@ module.exports = class Head
         innerHTML: modelSerialization or ''
 
       z 'script',
-        src: 'https://cdn.kik.com/kik/2.3.6/kik.js'
+        innerHTML: "
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||
+          function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();
+          a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;
+          a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script',
+          '//www.google-analytics.com/analytics.js','ga');
+          ga('create', '#{config.GOOGLE_ANALYTICS_ID}', 'auto');
+        "
+
+      if Environment.isGameApp(config.GAME_KEY, {userAgent})
+        z 'script',
+          innerHTML: 'window.kik = {}'
+      else
+        [
+          z 'script',
+            src: 'https://js.stripe.com/v2/'
+          z 'script',
+            innerHTML: "
+              Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
+            "
+          z 'script',
+            src: '//cdn.kik.com/kik/2.3.0/kik.js'
+
+          z 'script',
+            innerHTML: "
+              (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = '//connect.facebook.net/en_US/sdk.js';
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+              window.fbAsyncInit = function() {
+                FB.init({
+                  appId  : '#{config.FB_ID}',
+                  cookie : true,
+                  xfbml  : true,
+                  version: 'v2.2'
+                });
+              }
+            "
+        ]
 
       # fonts
       z 'link',

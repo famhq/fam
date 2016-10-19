@@ -9,8 +9,8 @@ config = require '../../config'
 colors = require '../../colors'
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
-ButtonMenu = require '../../components/button_menu'
-Conversation = require '../../components/conversation'
+ButtonBack = require '../../components/button_back'
+Thread = require '../../components/thread'
 Avatar = require '../../components/avatar'
 Spinner = require '../../components/spinner'
 Icon = require '../../components/icon'
@@ -20,8 +20,11 @@ if window?
 
 module.exports = class ThreadPage
   constructor: ({@model, requests, @router, serverData}) ->
-    toUser = requests.map ({route}) =>
-      @model.user.getById route.params.id
+    thread = requests.flatMapLatest ({route}) =>
+      @model.thread.getById route.params.id
+
+    page = requests.map ({route}) ->
+      route.params.page
 
     isRefreshing = new Rx.BehaviorSubject false
 
@@ -30,31 +33,30 @@ module.exports = class ThreadPage
       requests
       serverData
       meta: {
-        title: 'Chat'
-        description: 'Chat'
+        title: 'Community thread'
+        description: 'Community'
       }
     })
     @$appBar = new AppBar {@model}
-    @$buttonMenu = new ButtonMenu {@model}
-    @$conversation = new Conversation {@model, @router, isRefreshing, toUser}
+    @$buttonBack = new ButtonBack {@router}
+    @$thread = new Thread {@model, @router, thread, isRefreshing}
     @$refreshingSpinner = new Spinner()
 
     @state = z.state
-      toUser: toUser
       isRefreshing: isRefreshing
 
   renderHead: => @$head
 
   render: =>
-    {toUser, isRefreshing} = @state.getValue()
+    {isRefreshing} = @state.getValue()
 
-    z '.p-conversation', {
+    z '.p-thread', {
       style:
         height: "#{window?.innerHeight}px"
     },
       z @$appBar, {
-        title: 'NAME'
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary900}
+        title: ''
+        $topLeftButton: z @$buttonBack
         $topRightButton: if isRefreshing
           z @$refreshingSpinner,
             size: 20
@@ -62,4 +64,4 @@ module.exports = class ThreadPage
         else
           null
       }
-      @$conversation
+      @$thread

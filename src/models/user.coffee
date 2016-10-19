@@ -11,6 +11,9 @@ module.exports = class User
   getById: (id) =>
     @auth.stream 'users.getById', {id}
 
+  setUsername: (username) =>
+    @auth.call 'users.setUsername', {username}, {invalidateAll: true}
+
   setAvatarImage: (file) =>
     formData = new FormData()
     formData.append 'file', file, file.name

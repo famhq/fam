@@ -21,7 +21,8 @@ module.exports = class Portal
 
   call: (args...) =>
     unless window?
-      throw new Error 'Portal called server-side'
+      # throw new Error 'Portal called server-side'
+      return console.log 'Portal called server-side'
 
     @portal.call args...
     .catch ->

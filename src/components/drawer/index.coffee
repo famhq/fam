@@ -1,6 +1,7 @@
 z = require 'zorium'
 Button = require 'zorium-paper/button'
 _ = require 'lodash'
+moment = require 'moment'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
@@ -34,41 +35,41 @@ module.exports = class Drawer
           iconName: 'chat'
         }
         {
-          path: '/conversations'
-          title: 'Private messages'
+          onClick: =>
+            @model.portal.call 'barcode.scan'
+            .then (code) ->
+              alert code
+              console.log code
+          title: 'Scan Code'
           $icon: new Icon()
-          iconName: 'chat'
+          iconName: 'search'
         }
-        {
-          path: '/members'
-          title: 'Members'
-          $icon: new Icon()
-          iconName: 'friends'
-        }
+        # {
+        #   path: '/members'
+        #   title: 'Members'
+        #   $icon: new Icon()
+        #   iconName: 'friends'
+        # }
         {
           path: '/decks'
           title: 'Battle Decks'
           $icon: new Icon()
           iconName: 'decks'
         }
-        {
-          isDivider: true
-        }
-        {
-          path: '/settings'
-          title: 'Settings'
-          $icon: new Icon()
-          iconName: 'settings'
-        }
+        # {
+        #   isDivider: true
+        # }
+        # {
+        #   path: '/settings'
+        #   title: 'Settings'
+        #   $icon: new Icon()
+        #   iconName: 'settings'
+        # }
       ]
 
 
   render: ({currentPath}) =>
     {isOpen, me, menuItems} = @state.getValue()
-
-    setTimeout =>
-      @state.set test: Math.random()
-    , 3000
 
     drawerWidth = Math.min \
       window?.innerWidth - DRAWER_RIGHT_PADDING, DRAWER_MAX_WIDTH
@@ -96,10 +97,12 @@ module.exports = class Drawer
             z '.avatar',
               z @$avatar, {size: '86px', user: me}
             z '.name', @model.user.getDisplayName(me)
-            z '.join-date', 'Join date here' # FIXME FIXME
+            z '.join-date',
+              'Joined: ' + moment(me?.joinTime).format 'MMM D, YYYY'
         z '.content',
           z 'ul.menu',
-            _.map menuItems, ({path, title, $icon, iconName, isDivider}) =>
+            _.map menuItems, (menuItem) =>
+              {path, onClick, title, $icon, iconName, isDivider} = menuItem
               if isDivider
                 return z 'li.divider'
               isSelected = currentPath?.indexOf(path) is 0 or (
@@ -113,7 +116,9 @@ module.exports = class Drawer
                   onclick: (e) =>
                     e.preventDefault()
                     @model.drawer.close()
-                    @router.go path
+                    onClick?()
+                    if path
+                      @router.go path
                 },
                   z '.icon',
                     z $icon,

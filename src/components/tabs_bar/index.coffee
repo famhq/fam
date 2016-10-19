@@ -30,8 +30,9 @@ module.exports = class TabsBar
   render: ({items, bgColor, color, inactiveColor, isFixed, tabWidth}) =>
     {selectedIndex} = @state.getValue()
 
-    bgColor ?= colors.$white
+    bgColor ?= colors.$tertiary700
     color ?= colors.$tabSelected
+    underlineColor = colors.$primary500
     inactiveColor ?= colors.$tabUnselected
     isFullWidth = not tabWidth
 
@@ -51,7 +52,7 @@ module.exports = class TabsBar
             z '.selector',
               key: 'selector'
               style:
-                background: color
+                background: underlineColor
                 width: "#{100 / items.length}%"
             _map items, (item, i) =>
               hasIcon = Boolean item.$menuIcon

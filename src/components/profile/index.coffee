@@ -39,4 +39,4 @@ module.exports = class Profile
         z '.section',
           z '.top',
             z '.left',
-              z '.title', 'Inventory'
+              z '.title', ''

@@ -107,6 +107,7 @@ module.exports = class Conversation
     @autoUpdate.onNext Date.now()
 
     @refreshInterval = setInterval =>
+      console.log 'conversation refresh'
       {filter, isFilterMenuVisible, isRefreshing} = @state.getValue()
       $messages = @$$el?.querySelector('.messages')
       if $messages

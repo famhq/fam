@@ -9,13 +9,22 @@ colors = require './colors'
 # Don't let server environment variables leak into client code
 serverEnv = process.env
 
+HOST = process.env.RED_TRITIUM_HOST or '127.0.0.1'
+HOSTNAME = HOST.split(':')[0]
+
+
 # All keys must have values at run-time (value may be null)
 isomorphic =
   CDN_URL: 'https://cdn.wtf/d/images/red_tritium'
-  HOST: process.env.RED_TRITIUM_HOST or '127.0.0.1'
+  HOST: HOST
+  GAME_KEY: 'redtritium'
+  GOOGLE_ANALYTICS_ID: 'UA-27992080-30'
+  STRIPE_PUBLISHABLE_KEY:
+    serverEnv.STRIPE_PUBLISHABLE_KEY or
+    process.env.STRIPE_PUBLISHABLE_KEY
   API_URL:
     serverEnv.PRIVATE_RADIOACTIVE_API_URL or # server
-    process.env.RADIOACTIVE_API_URL # client
+    process.env.PUBLIC_RADIOACTIVE_API_URL # client
   AUTH_COOKIE: 'accessToken'
   ENV:
     serverEnv.NODE_ENV or
@@ -47,7 +56,7 @@ server =
   # Development
   WEBPACK_DEV_PORT: WEBPACK_DEV_PORT
   WEBPACK_DEV_URL: serverEnv.WEBPACK_DEV_URL or
-    "http://127.0.0.1:#{WEBPACK_DEV_PORT}"
+    "http://#{HOSTNAME}:#{WEBPACK_DEV_PORT}"
   SELENIUM_TARGET_URL: serverEnv.SELENIUM_TARGET_URL or null
   REMOTE_SELENIUM: serverEnv.REMOTE_SELENIUM is '1'
   SELENIUM_BROWSER: serverEnv.SELENIUM_BROWSER or 'chrome'

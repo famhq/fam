@@ -8,8 +8,13 @@ User = require './user'
 UserData = require './user_data'
 Drawer = require './drawer'
 Conversation = require './conversation'
+ClashRoyaleDeck = require './clash_royale_deck'
+ClashRoyaleCard = require './clash_royale_card'
 ChatMessage = require './chat_message'
+Product = require './product'
+PushToken = require './push_token'
 Thread = require './thread'
+ThreadMessage = require './thread_message'
 
 Portal = require './portal'
 config = require '../config'
@@ -59,14 +64,19 @@ module.exports = class Model
       fetch: proxy
       cache: cache.exoid
 
-    @auth = new Auth({@exoid, cookieSubject})
-    @user = new User({@auth, proxy, @exoid})
-    @userData = new UserData({@auth})
-    @chatMessage = new ChatMessage({@auth})
-    @conversation = new Conversation({@auth})
-    @thread = new Thread({@auth})
+    @auth = new Auth {@exoid, cookieSubject}
+    @user = new User {@auth, proxy, @exoid}
+    @userData = new UserData {@auth}
+    @chatMessage = new ChatMessage {@auth}
+    @conversation = new Conversation {@auth}
+    @clashRoyaleDeck = new ClashRoyaleDeck {@auth}
+    @clashRoyaleCard = new ClashRoyaleCard {@auth}
+    @thread = new Thread {@auth}
+    @threadMessage = new ThreadMessage {@auth}
+    @product = new Product {@auth}
+    @pushToken = new PushToken {@auth}
     @drawer = new Drawer()
-    @portal = new Portal({@user, @game, @modal})
+    @portal = new Portal {@user, @game, @modal}
 
   wasCached: => @isFromCache
 

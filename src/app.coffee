@@ -10,8 +10,14 @@ ConversationPage = require './pages/conversation'
 ConversationsPage = require './pages/conversations'
 ThreadPage = require './pages/thread'
 ThreadsPage = require './pages/threads'
-NewThread = require './pages/new_thread'
+ThreadReplyPage = require './pages/thread_reply'
+NewThreadPage = require './pages/new_thread'
+NewDeckPage = require './pages/new_deck'
+DeckPage = require './pages/deck'
+DecksPage = require './pages/decks'
+AcceptInvitePage = require './pages/accept_invite'
 ProfilePage = require './pages/profile'
+EditProfilePage = require './pages/edit_profile'
 LearnMorePage = require './pages/learn_more'
 FourOhFourPage = require './pages/404'
 Drawer = require './components/drawer'
@@ -38,13 +44,20 @@ module.exports = class App
       _forEach paths, (path) ->
         routes.set path, -> $page
 
-    route '/', HomePage
+    # route '/', HomePage
+    route '/', ThreadsPage
     route '/conversation/:userId', ConversationPage
     route '/conversations', ConversationsPage
-    route '/thread/:userId/:page', ThreadPage
+    route '/thread/:id/reply', ThreadReplyPage
+    route '/thread/:id/:page', ThreadPage
     route '/threads', ThreadsPage
     route '/newThread', NewThreadPage
+    route '/newDeck', NewDeckPage
+    route '/decks', DecksPage
+    route '/decks/:id', DeckPage
+    route '/acceptInvite', AcceptInvitePage
     route '/profile', ProfilePage
+    route '/editProfile', EditProfilePage
     route '/learnMore', LearnMorePage
     route '/*', FourOhFourPage
 
@@ -70,10 +83,16 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal} = @state.getValue()
 
+    console.log 'render'
+
+    userAgent = request?.req?.headers?['user-agent'] or
+      navigator?.userAgent or ''
+    isIos = /iPad|iPhone|iPod/.test userAgent
+
     z 'html',
       request?.$page.renderHead() or $backupPage?.renderHead()
       z 'body',
-        z '#zorium-root',
+        z '#zorium-root', {className: z.classKebab {isIos}},
           z '.z-root',
             request?.$page or $backupPage
 

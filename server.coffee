@@ -72,6 +72,12 @@ app.use '/healthcheck', (req, res, next) ->
 app.use '/ping', (req, res) ->
   res.send 'pong'
 
+app.use '/setCookie', (req, res) ->
+  res.statusCode = 302
+  res.cookie 'first_cookie', '1', {maxAge: 3600 * 24 * 365 * 10}
+  res.setHeader 'Location', decodeURIComponent req.query?.redirect_url
+  res.end()
+
 app.get '/manifest.json', (req, res, next) ->
   try
     res.setHeader 'Content-Type', 'application/json'

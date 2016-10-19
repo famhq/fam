@@ -1,0 +1,84 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+$zIndexUploadOverlay = 1
+
+.z-edit-profile
+  > .actions
+    display: flex
+    height: 56px
+    background: getColor('$tertiary700')
+    cursor: pointer
+
+    > .action
+      flex: 1
+      display: flex
+      align-items: center
+      justify-content: center
+
+      &:hover
+        background: getColor('$tertiary900')
+
+      > .icon
+        margin-right: 12px
+
+      > .text
+        responsive-font-button()
+        font-weight: 400
+
+  > .section
+    padding: 0 16px
+
+    > .title
+      responsive-font-subhead()
+      color: getColor('$white')
+      padding: 14px 0
+
+    > .input
+      margin-top: -8px
+
+    > .flex
+      display: flex
+      align-items: center
+
+  //     > .button
+  //       height: 44px
+  //       margin-left: 16px
+  //       position: relative
+  //
+  //       > .upload-overlay
+  //         position: absolute
+  //         top: 0
+  //         left: 0
+  //         width: 100%
+  //         height: 100%
+  //         z-index: $zIndexUploadOverlay
+  //
+  // > .presets
+  //   padding: 0 16px
+  //
+  //   > .title
+  //     responsive-font-body2()
+  //     color: getColor('$tertiary500')
+  //     text-transform: uppercase
+  //     padding: 16px 0
+  //
+  //   > .g-grid
+  //     > .g-cols
+  //       > .g-col
+  //         > .preset
+  //           zp-shadow-1()
+  //           width: 100%
+  //           border-radius: 50%
+  //           border: 2px solid getColor('$white')
+  //           background-color: getColor('$grey200')
+  //
+  //           > .inner
+  //             width: 100%
+  //             padding-bottom: 100%
+  //             background-size: 100%
+  //             border-radius: 50%
+  //
+  //           &.is-selected
+  //             border: 2px solid getColor('$primary500')

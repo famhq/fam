@@ -1,60 +1,9 @@
 @require 'zorium-paper/base'
-@require '../../icons'
 
 @require '../../vars'
 
-.z-profile
+.z-new-thread
   flex: 1
   width: 100%
-  overflow: auto
-  -webkit-overflow-scrolling: touch
-
-  > .header
-    background: getColor('$blue500')
-    padding: 16px
-    text-align: center
-
-    > .avatar
-      width: 72px
-      margin: 0 auto
-
-    > .name
-      margin-top: 8px
-      responsive-font-display1()
-      color: getColor('$white')
-
-  > .g-grid
-    > .section
-      padding: 20px 0
-
-      > .top
-        display: flex
-        align-items: center
-        padding: 0 16px
-
-        > .left
-          > .title
-            responsive-font-subhead()
-            color: getColor('$blueGrey900')
-            text-transform: uppercase
-
-          > .sub
-            responsive-font-body2()
-            color: getColor( '$blueGrey500')
-            margin-top: 4px
-            text-transform: uppercase
-
-        > .right
-          margin-left: auto
-
-          > .more
-            responsive-font-button()
-            cursor: pointer
-            background: getColor('$blue500')
-            color: getColor('$white')
-            text-transform: uppercase
-            padding: 4px 16px
-            border-radius: 2px
-
-      > .content
-        padding: 8px
+  display: flex
+  flex-direction: column

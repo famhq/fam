@@ -107,6 +107,7 @@ module.exports = class Tabs
     unless hideTabBar
       @$$selector = @$$el?.querySelector '.z-tabs-bar .selector'
       updateSelectorPosition = =>
+        console.log 'selector interval'
         # updating state and re-rendering every time is way too slow
         xOffset =
           "#{-100 * @iScrollContainer.pages.length *  @iScrollContainer.x / @iScrollContainer.scrollerWidth}%"

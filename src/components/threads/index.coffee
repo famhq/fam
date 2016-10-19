@@ -1,7 +1,9 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+moment = require 'moment'
 colors = require '../../colors'
 _isEmpty = require 'lodash/lang/isEmpty'
+_ = require 'lodash'
 log = require 'loga'
 Dialog = require 'zorium-paper/dialog'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
@@ -33,23 +35,25 @@ module.exports = class Threads
 
     z '.z-threads', [
       if threads and _.isEmpty threads
-        'No threads found'
+        z '.no-threads',
+          'No threads found'
       else if threads
         _.map threads, ({thread, $icon}) =>
           [
             z '.g-grid',
               z '.thread', {
                 onclick: =>
-                  @state.set selectedGroup: thread
+                  @router.go "/thread/#{thread.id}/1"
               },
                 z '.count', thread.messageCount or 0
                 z '.info',
                   z '.title', thread.title
                   z '.text', thread.firstMessage?.text
                   z '.message-info',
-                    z 'span', 'TODO'
+                    z 'span',
+                      @model.user.getDisplayName thread.firstMessage?.user
                     z 'span', innerHTML: ' &middot; '
-                    z 'span', 'TODO'
+                    z 'span', moment(thread.lastUpdateTime).fromNow()
                 z '.right',
                   z $icon,
                     icon: thread.platform
