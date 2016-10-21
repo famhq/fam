@@ -15,6 +15,10 @@ NewThreadPage = require './pages/new_thread'
 NewDeckPage = require './pages/new_deck'
 DeckPage = require './pages/deck'
 DecksPage = require './pages/decks'
+CardPage = require './pages/card'
+CardsPage = require './pages/cards'
+ReferPage = require './pages/refer'
+PayPage = require './pages/pay'
 AcceptInvitePage = require './pages/accept_invite'
 ProfilePage = require './pages/profile'
 EditProfilePage = require './pages/edit_profile'
@@ -44,8 +48,8 @@ module.exports = class App
       _forEach paths, (path) ->
         routes.set path, -> $page
 
-    # route '/', HomePage
-    route '/', ThreadsPage
+    route '/', HomePage
+    # route '/', ThreadsPage
     route '/conversation/:userId', ConversationPage
     route '/conversations', ConversationsPage
     route '/thread/:id/reply', ThreadReplyPage
@@ -54,7 +58,11 @@ module.exports = class App
     route '/newThread', NewThreadPage
     route '/newDeck', NewDeckPage
     route '/decks', DecksPage
+    route '/cards', CardsPage
     route '/decks/:id', DeckPage
+    route '/cards/:id', CardPage
+    route '/refer', ReferPage
+    route '/pay', PayPage
     route '/acceptInvite', AcceptInvitePage
     route '/profile', ProfilePage
     route '/editProfile', EditProfilePage
@@ -83,8 +91,6 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal} = @state.getValue()
 
-    console.log 'render'
-
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
     isIos = /iPad|iPhone|iPod/.test userAgent
@@ -94,6 +100,6 @@ module.exports = class App
       z 'body',
         z '#zorium-root', {className: z.classKebab {isIos}},
           z '.z-root',
-            request?.$page or $backupPage
-
             z @$drawer, {currentPath: request?.req.path}
+            z '.page',
+              request?.$page or $backupPage

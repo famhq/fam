@@ -79,13 +79,13 @@ module.exports = class NewThread
             onclick: @create
       z '.selected',
         z @$selectedCards,
-          onclick: (card) =>
+          onCardClick: (card) =>
             @selectedCards.onNext _.filter selectedCards, (selectedCard) ->
               card.id isnt selectedCard.id
       z '.cards',
         z '.scroller',
           z @$allCards, {
-            onclick: (card) =>
+            onCardClick: (card) =>
               if selectedCards.length < CARDS_PER_DECK
                 @selectedCards.onNext selectedCards.concat [card]
           }

@@ -11,6 +11,9 @@ class FormatService
       "##{Math.round(rank).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}"
     else '...'
 
+  percentage: (value) ->
+    "#{Math.round(value * 100)}%"
+
   countdown: (s) ->
     seconds = Math.floor(s % 60)
     if seconds < 10

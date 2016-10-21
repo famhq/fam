@@ -9,6 +9,7 @@ FloatingActionButton = require 'zorium-paper/floating_action_button'
 config = require '../../config'
 colors = require '../../colors'
 DeckCards = require '../deck_cards'
+Base = require '../base'
 Icon = require '../icon'
 Spinner = require '../spinner'
 
@@ -18,7 +19,7 @@ if window?
 CARDS_PER_ROW = 4
 PADDING = 16
 
-module.exports = class Decks
+module.exports = class Decks extends Base
   constructor: ({@model, @router, sort, filter}) ->
     @$spinner = new Spinner()
     @$addIcon = new Icon()
@@ -39,10 +40,11 @@ module.exports = class Decks
           hasDeck =  me.data.clashRoyaleDeckIds and
             me.data.clashRoyaleDeckIds.indexOf(deck.id) isnt -1
 
+          $el = @getCached$ deck.id, DeckCards, {@model, @router, deck}
           {
             deck
             hasDeck
-            $deck: new DeckCards {@model, @router, deck}
+            $deck: $el
             $starIcon: new Icon()
             $chevronIcon: new Icon()
           }
@@ -67,10 +69,8 @@ module.exports = class Decks
         else if decks
           _.map decks, ({deck, hasDeck, $deck, $starIcon, $chevronIcon}) =>
             [
-              z '.deck', {
-                onclick: =>
-                  console.log 'go', "/decks/#{deck.id}"
-                  @router.go "/decks/#{deck.id}"
+              @router.link z 'a.deck', {
+                href: "/decks/#{deck.id}"
               },
                 z '.g-grid',
                   z '.info',
@@ -81,7 +81,9 @@ module.exports = class Decks
                         color: if hasDeck \
                                then colors.$primary500
                                else colors.$white12
-                        onclick: =>
+                        onclick: (e) =>
+                          e?.stopPropagation()
+                          e?.preventDefault()
                           if hasDeck
                             @model.clashRoyaleDeck.unfavorite {id: deck.id}
                           else

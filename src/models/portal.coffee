@@ -48,44 +48,8 @@ module.exports = class Portal
 
     @portal.on 'messenger.isInstalled', -> false
 
-    @portal.on 'kik.isEnabled', -> kik.enabled
-
-    @portal.on 'browser.openWindow', ({url, target, options}) =>
-      if kik?.enabled and options?.allowKik
-        @call 'kik.open', url, true
-      else
-        window.open url, target, options
-
-    if kik.enabled
-      @portal.on 'kik.bot.linkUser', (username, data) ->
-        new Promise (resolve, reject) ->
-          kik.bot.linkUser username, data, (err, username) ->
-            if err? then reject err else resolve username
-      @portal.on 'kik.sign', (data) ->
-        new Promise (resolve) ->
-          kik.sign data, (signedData, username, host) ->
-            if signedData?
-              resolve {signedData, username, host}
-            else
-              resolve null
-      @portal.on 'kik.open', -> kik.open.apply null, arguments
-      @portal.on 'kik.openConversation', ->
-        kik.openConversation.apply null, arguments
-      @portal.on 'kik.getMessage', -> kik.message
-      @portal.on 'kik.send', -> kik.send.apply null, arguments
-      @portal.on 'kik.browser.setOrientationLock', ->
-        kik.browser.setOrientationLock.apply null, arguments
-      @portal.on 'kik.metrics.enableGoogleAnalytics', ->
-        kik.metrics.enableGoogleAnalytics.apply null, arguments
-      @portal.on 'kik.getAnonymousUser', ->
-        new Promise (resolve) ->
-          kik.getAnonymousUser resolve
-      @portal.on 'kik.getUser', ->
-        new Promise (resolve) ->
-          kik.getUser resolve
-      @portal.on 'kik.photo.get', ->
-        new Promise (resolve) ->
-          kik.photo.get arguments[0], resolve
+    @portal.on 'browser.openWindow', ({url, target, options}) ->
+      window.open url, target, options
 
 
   ###
@@ -104,39 +68,16 @@ module.exports = class Portal
       accessToken: user.id # Temporary
       userId: user.id
 
-  botOpen: ({platform} = {}) =>
-    currentPlatform = Environment.getPlatform {gameKey: config.GAME_KEY}
-    if platform is 'kik' and currentPlatform is 'kik'
-      @call 'kik.openConversation', config.KIK_USERNAME
-    else if platform is 'kik'
-      @call 'browser.openWindow', {
-        url: "kik://user/#{config.KIK_USERNAME}/profile"
-        target: '_system'
-      }
-    else if platform is 'messenger' and Environment.isAndroid()
-      @call 'browser.openWindow', {
-        url: "intent://user/#{config.FB_PAGE_ID}/" +
-             '#Intent;scheme=fb-messenger;package=com.facebook.orca;end'
-        target: '_system'
-      }
-    else if platform is 'discord'
-      @call 'browser.openWindow', {
-        url: "https://discordapp.com/channels/@me/#{config.DISCORD_ID}"
-        target: '_system'
-      }
+  shareAny: ({title, text, dataUrl, imageUrl, path}) =>
+    ga? 'send', 'event', 'share_service', 'share_any'
 
-  kikLogin: =>
-    userAgent = window.navigator.userAgent
-
-    @call 'kik.getUser'
-    .then (user) =>
-      unless user?
-        return null
-      @call 'kik.sign', user.username
-      .then ({signedData, username, host} = {}) ->
-        unless signedData?
-          return null
-        {signedData, kikUsername: user.username}
+    url = "https://#{config.HOST}#{path}"
+    title ?= ''
+    text = encodeURIComponent title + ': ' + text + ' ' + url
+    @call 'browser.openWindow', {
+      url: "https://twitter.com/intent/tweet?text=#{text}"
+      target: '_system'
+    }
 
   getPlatform: ({gameKey} = {}) =>
     userAgent = navigator.userAgent

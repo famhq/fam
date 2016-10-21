@@ -129,6 +129,13 @@ module.exports = class Head
         innerHTML: modelSerialization or ''
 
       z 'script',
+        src: 'https://js.stripe.com/v2/'
+      z 'script',
+        innerHTML: "
+          Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
+        "
+
+      z 'script',
         innerHTML: "
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||
           function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();

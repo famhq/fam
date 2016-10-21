@@ -40,15 +40,10 @@ module.exports = class SlideSteps
         height: windowHeight
         isBarFixed: false
         tabs: _map steps, (options, i) ->
-          {$step, $stepTitle, $stepContent, $stepImage, colorName} = options
+          {$step} = options
           {
             $menuText: "#{i}"
-            $el:
-              z $step,
-                $title: $stepTitle
-                $content: $stepContent
-                $image: $stepImage
-                colorName
+            $el: $step
           }
 
 

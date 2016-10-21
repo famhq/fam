@@ -14,6 +14,9 @@ module.exports = class User
   setUsername: (username) =>
     @auth.call 'users.setUsername', {username}, {invalidateAll: true}
 
+  requestInvite: ({clanTag, username, email}) =>
+    @auth.call 'users.requestInvite', {clanTag, username, email}
+
   setAvatarImage: (file) =>
     formData = new FormData()
     formData.append 'file', file, file.name

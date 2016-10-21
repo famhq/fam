@@ -8,14 +8,25 @@ Environment = require 'clay-environment'
 config = require '../../config'
 colors = require '../../colors'
 Card = require '../card'
+Base = require '../base'
 
 if window?
   require './index.styl'
 
-CARDS_PER_ROW = 4
 PADDING = 16
+DEFAULT_CARDS_PER_ROW = 4
 
-module.exports = class DeckCards
+getCardSizeInfo = ->
+  if window?
+    # TODO: json file with these vars, stylus uses this
+    if window.matchMedia('(min-width: 840px)').matches
+      {cardsPerRow: 8}#, itemMargin: 12}
+    else
+      {cardsPerRow: 4}#, itemMargin: 2}
+  else
+    {itemsPerRow: DEFAULT_CARDS_PER_ROW}#, itemMargin: 0}
+
+module.exports = class DeckCards extends Base
   constructor: ({@model, @router, deck}) ->
     me = @model.user.getMe()
 
@@ -28,20 +39,24 @@ module.exports = class DeckCards
       (vals...) -> vals
     )
 
+    @cardSizeInfo = getCardSizeInfo()
+    @cachedCards = []
+
     @state = z.state
       me: @model.user.getMe()
-      cardGroups: deckAndMe.map ([deck, me]) ->
-        console.log 'deck', deck
-        cards = _.map deck.cards, (card) ->
-          {card, $el: new Card({card})}
-        _.chunk cards, CARDS_PER_ROW
+      deck: deck
+      cardGroups: deckAndMe.map ([deck, me]) =>
+        cards = _.map deck.cards, (card) =>
+          $el = @getCached$ card.id, Card, {card}
+          {card, $el}
+        _.chunk cards, @cardSizeInfo.cardsPerRow
 
   afterMount: (@$$el) => null
 
-  render: ({onclick} = {}) =>
+  render: ({onCardClick} = {}) =>
     {me, cardGroups} = @state.getValue()
 
-    cardWidth = @$$el?.offsetWidth / CARDS_PER_ROW
+    cardWidth = @$$el?.offsetWidth / @cardSizeInfo.cardsPerRow
 
     z '.z-deck-cards',
       _.map cardGroups, (cards) ->
@@ -51,4 +66,4 @@ module.exports = class DeckCards
             style:
               width: "#{cardWidth}px"
           },
-            z $el, {onclick, width: cardWidth - 8}
+            z $el, {onclick: onCardClick, width: cardWidth - 8}

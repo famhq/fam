@@ -56,9 +56,21 @@ module.exports = class Drawer
           $icon: new Icon()
           iconName: 'decks'
         }
-        # {
-        #   isDivider: true
-        # }
+        {
+          path: '/cards'
+          title: 'Battle Cards'
+          $icon: new Icon()
+          iconName: 'cards'
+        }
+        {
+          isDivider: true
+        }
+        {
+          path: '/refer'
+          title: 'Refer a member'
+          $icon: new Icon()
+          iconName: 'gem'
+        }
         # {
         #   path: '/settings'
         #   title: 'Settings'
