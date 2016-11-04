@@ -51,13 +51,14 @@ module.exports = class NewThread
     {selectedCards, isLoading} = @state.getValue()
     if selectedCards.length is CARDS_PER_DECK and not isLoading
       @state.set isLoading: true
-      @model.clashRoyaleDeck.create {
+      @model.clashRoyaleUserDeck.create {
         cardIds: _.map selectedCards, 'id'
         cardKeys: _.map selectedCards, 'key'
         name: @nameValue.getValue()
       }
       .then =>
         @state.set isLoading: false
+        @router.go '/decks'
 
   render: =>
     {me, selectedCards, isLoading} = @state.getValue()
@@ -81,7 +82,7 @@ module.exports = class NewThread
         z @$selectedCards,
           onCardClick: (card) =>
             @selectedCards.onNext _.filter selectedCards, (selectedCard) ->
-              card.id isnt selectedCard.id
+              card.id isnt selectedCard?.id
       z '.cards',
         z '.scroller',
           z @$allCards, {

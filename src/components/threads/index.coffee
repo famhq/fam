@@ -41,9 +41,8 @@ module.exports = class Threads
         _.map threads, ({thread, $icon}) =>
           [
             z '.g-grid',
-              z '.thread', {
-                onclick: =>
-                  @router.go "/thread/#{thread.id}/1"
+              @router.link z 'a.thread', {
+                href: "/thread/#{thread.id}/1"
               },
                 z '.count', thread.messageCount or 0
                 z '.info',

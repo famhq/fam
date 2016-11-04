@@ -69,9 +69,11 @@ $zIndexDrawerHeader = 100
       box-sizing: border-box
       position: relative
       z-index: $zIndexDrawerHeader
-      background: getColor('$tertiary700')
       // prevents flicker glitch http://stackoverflow.com/a/3921870
       backface-visibility: hidden
+      height: 56px
+      padding: 19px 16px
+      border-bottom: 1px solid $white12
 
       &:after
         content: ''
@@ -81,23 +83,12 @@ $zIndexDrawerHeader = 100
         width: 100%
         height: 100%
 
-      > .user-header
+      > .logo
         width: 100%
-        text-align: center
-
-        > .avatar
-          width: 90px
-          height: 90px
-          margin: 0 auto
-
-        > .name
-          responsive-font-body1()
-          margin-top: 16px
-          color: getColor('$white')
-
-        > .join-date
-          responsive-font-caption()
-          margin-top: 4px
+        height: 100%
+        background: url($cdnUrl + '/rt_logo.svg') no-repeat
+        background-size: auto 100%
+        background-position: 0 center
 
     > .content
       flex: 1
@@ -131,3 +122,47 @@ $zIndexDrawerHeader = 100
           &.is-selected
             > .menu-item-link
               background: getColor('$tertiary400')
+
+    > .no-deck
+      background: getColor('$tertiary700')
+      padding: 16px
+      text-align: center
+
+      > .set-deck-button
+        margin: auto
+
+      > .description
+        responsive-font-caption()
+        margin-top: 16px
+
+    > .deck
+      background: getColor('$tertiary700')
+      padding: 16px
+      display: flex
+
+      > .deck-cards
+        width: 196px
+
+        > .stats
+          responsive-font-caption()
+          text-align: left
+          margin-top: 8px
+          padding-left: 4px
+
+      > .buttons
+        margin-left: auto
+        min-width: 96px
+
+.z-drawer_button
+  display: flex
+  align-items: center
+
+  > .text
+    margin-left: 8px
+
+.z-drawer_set-deck-button
+  display: flex
+  align-items: center
+
+  > .text
+    margin-left: 8px

@@ -10,7 +10,6 @@ module.exports = class Base
     if @cachedComponents[id]
       return @cachedComponents[id]
     else
-      console.log args
       $component = new component args...
       @cachedComponents[id] = $component
       return $component

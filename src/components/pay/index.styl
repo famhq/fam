@@ -4,18 +4,9 @@
 
 .z-pay
   flex: 1
-  overflow: auto
   display: flex
-  flex-direction: column
-  -webkit-overflow-scrolling: touch
-  padding: 32px 16px 16px 16px
 
-  > .title
-    responsive-font-title()
-    text-transform: uppercase
-    text-align: center
-    margin-bottom: 32px
-
+.z-pay_info-content
   > .product, > .due
     display: flex
     margin-bottom: 8px
@@ -28,21 +19,13 @@
     > .right
       margin-left: auto
 
-  > .form
-    margin-top: auto
-    margin-bottom: auto
+  > .payment-errors
+    responsive-font-caption()
+    color: getColor('$red500')
 
-    > .payment-errors
-      responsive-font-caption()
-      color: getColor('$red500')
+.z-pay_input-flex
+  display: flex
+  align-items: baseline
 
-    > .form-row
-      &.flex
-        display: flex
-        align-items: baseline
-
-        > .slash
-          margin: 0 16px
-
-    > .button
-      margin-top: 16px
+  > .slash
+    margin: 0 16px

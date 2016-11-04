@@ -1,11 +1,11 @@
 z = require 'zorium'
-_defaults = require 'lodash/object/defaults'
+_defaultsDeep = require 'lodash/object/defaultsDeep'
 Button = require 'zorium-paper/button'
 colors = require '../../colors'
 
 module.exports = class FlatButton extends Button
   render: (opts) ->
-    super _defaults opts, {
+    super _defaultsDeep opts, {
       isFullWidth: true
       colors:
         cText: colors.$white

@@ -1,0 +1,60 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.z-profile-dialog
+  display: block
+
+  // FIXME
+  > .zp-dialog
+    > .dialog
+      > .info
+        padding: 0
+
+.z-profile-dialog_dialog
+  background: $white
+  border-radius: 2px
+
+  > .header
+    padding: 24px
+    background: getColor('$blue500')
+    border-top-left-radius: 2px
+    border-top-right-radius: 2px
+    display: flex
+    align-items: center
+    position: relative
+
+    > .close
+      position: absolute
+      top: 0
+      right: 0
+
+    > .avatar
+      margin-right: 8px
+
+    > .about
+      > .name
+        responsive-font-subhead()
+        color: getColor('$white')
+        margin-bottom: 4px
+
+  > .content
+    list-style-type: none
+    margin: 0
+    padding: 0
+
+    > .menu-item
+      margin: 0
+      padding: 16px 24px
+      display: flex
+      align-items: center
+
+      > .icon
+        margin-right: 24px
+
+      > .text
+        responsive-font-body2()
+        color: getColor('$blueGrey900')
+        text-transform: uppercase

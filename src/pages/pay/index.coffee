@@ -12,6 +12,9 @@ if window?
   require './index.styl'
 
 module.exports = class PayPage
+  hideDrawer: true
+  isPublic: true
+
   constructor: ({model, requests, @router, serverData}) ->
     @$editButton = new Button()
     @$head = new Head({

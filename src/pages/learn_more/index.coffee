@@ -11,6 +11,9 @@ if window?
   require './index.styl'
 
 module.exports = class LearnMorePage
+  hideDrawer: true
+  isPublic: true
+
   constructor: ({model, portal, @router, serverData}) ->
     @$head = new Head({
       model
@@ -38,14 +41,14 @@ module.exports = class LearnMorePage
           {
             $step:
               z @$step1,
-                $title: 'Superior chat'
+                $title: 'Exclusive community'
                 $image:
                   z '.p-learn-more_step-image.number-1'
                 $content:
                   z '.p-learn-more_step-content',
                     z '.description',
                       z 'p',
-                        'Red Tritium is host to only the most elite players'
+                        'Red Tritium is host to only the best players'
                       z 'p',
                         'Members receive a black anodized stainless steel
                         membership card with their unique member ID'
@@ -53,7 +56,7 @@ module.exports = class LearnMorePage
           {
             $step:
               z @$step2,
-                $title: 'Superior chat'
+                $title: 'Top-tier chat'
                 $image:
                   z '.p-learn-more_step-image.number-2'
                 $content:
@@ -68,17 +71,17 @@ module.exports = class LearnMorePage
           {
             $step:
               z @$step3,
-                $title: 'First class support'
+                $title: 'Data analysis'
                 $image:
                   z '.p-learn-more_step-image.number-3'
                 $content:
                   z '.p-learn-more_step-content',
                     z '.description',
                       z 'p',
-                        'Red Tritium will make your experience better'
+                        'Get access to helpful data about cards and decks'
                       z 'p',
-                        'Fast and reliable support will ensure that nothing
-                        detracts from the game experience'
+                        'Learn how powerful each card is, track your decks
+                        win-rates and compare against others'
           }
           {
             $step:

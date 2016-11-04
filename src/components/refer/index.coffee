@@ -36,16 +36,17 @@ module.exports = class Refer
           'For a limited time, refer new members and get
           $50 for each one that signs up and is accepted'
 
-      z 'input.link', {
-        onfocus: (e) ->
-          e.target.select()
-        value: "https://#{config.HOST}/r/#{me?.id}"
-      }
-
-      z @$shareButton,
-        text: 'Share link'
-        onclick: =>
-          @model.portal.call 'share.any', {
-            text: 'Red Tritium'
-            path: "/r/#{me?.id}"
-          }
+        z 'p', 'Coming soon!'
+      # z 'input.link', {
+      #   onfocus: (e) ->
+      #     e.target.select()
+      #   value: "https://#{config.HOST}/r/#{me?.id}"
+      # }
+      #
+      # z @$shareButton,
+      #   text: 'Share link'
+      #   onclick: =>
+      #     @model.portal.call 'share.any', {
+      #       text: 'Red Tritium'
+      #       path: "/r/#{me?.id}"
+      #     }

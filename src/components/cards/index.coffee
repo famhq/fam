@@ -2,6 +2,7 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
 _isEmpty = require 'lodash/lang/isEmpty'
+_ = require 'lodash'
 log = require 'loga'
 Environment = require 'clay-environment'
 FormatService = require '../../services/format'
@@ -34,7 +35,6 @@ module.exports = class Cards extends Base
     @state = z.state
       me: @model.user.getMe()
       cards: cardsAndMe.map ([cards, me]) =>
-        console.log 'cards', cards
         _.map cards, (card) =>
           $el = @getCached$ card.id, Card, {@model, @router, card}
           {
@@ -46,30 +46,52 @@ module.exports = class Cards extends Base
   render: =>
     {me, cards} = @state.getValue()
 
-
     z '.z-cards',
       z '.cards',
         if cards and _.isEmpty cards
           'No cards found'
         else if cards
           _.map cards, ({card, hasCard, $card, $changeIcon}) =>
-            totalMatches = (card?.wins + card?.losses) or 1
+            rankChange = card.timeRanges.thisWeek.rank -
+                          card.timeRanges.lastWeek.rank
+
+            if rankChange > 0
+              rankColor = '#ff0926'
+              rankChange = "+#{rankChange}"
+              rankIcon = 'expand-more'
+            else
+              rankColor = '#7ed321'
+              rankIcon = 'expand-less'
+
+            verifiedWins = card?.timeRanges.thisWeek.verifiedWins
+            totalMatches = (
+              verifiedWins + card?.timeRanges.thisWeek.verifiedLosses
+            ) or 1
             [
               z '.g-grid',
                 @router.link z 'a.card', {
                   href: "/cards/#{card.id}"
                 },
-                  z '.change' # TODO
+                  z '.change', {style: {color: rankColor}},
+                    if rankChange
+                      z '.icon',
+                        z $changeIcon,
+                          icon: rankIcon
+                          size: '10px'
+                          color: rankColor
+                          isTouchTarget: false
+                      if rankChange then rankChange
                   z '.image', $card
                   z '.info',
                     z '.name', card.name or 'Nameless'
                     z '.row',
                       z '.left', 'Win Percentage'
                       z '.right',
-                        FormatService.percentage card?.wins / totalMatches
+                        FormatService.percentage verifiedWins / totalMatches
                     z '.row',
                       z '.left', 'Popularity'
-                      z '.right', FormatService.rank card.popularity
+                      z '.right',
+                        FormatService.rank card.timeRanges.thisWeek.rank
               z '.divider'
             ]
         else

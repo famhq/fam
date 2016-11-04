@@ -42,6 +42,8 @@ module.exports = class CardPage
   render: =>
     {card} = @state.getValue()
 
+    console.log card
+
     z '.p-card', {
       style:
         height: "#{window?.innerHeight}px"

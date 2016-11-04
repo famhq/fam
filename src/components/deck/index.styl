@@ -11,30 +11,35 @@
     padding: 16px
     background: getColor('$tertiary700')
 
+    > .g-grid
+      > .set-as-deck
+        margin-top: 8px
+
   > .stats
     background: getColor('$tertiary500')
     flex: 1
 
-    > .row
-      display: flex
-      align-items: center
-      padding: 16px
+    > .g-grid
+      > .row
+        display: flex
+        align-items: center
+        padding: 16px
 
-      > .icon
-        margin-right: 34px
-        width: 24px
-        height: 24px
+        > .icon
+          margin-right: 34px
+          width: 24px
+          height: 24px
 
-      > .stat
-        flex: 1
-        responsive-font-body2()
+        > .stat
+          flex: 1
+          responsive-font-body2()
 
-        &.bold
-          font-weight: 500
+          &.bold
+            font-weight: 500
 
-      > .right
-        responsive-font-body2()
+        > .right
+          responsive-font-body2()
 
-        &.button
-          responsive-font-button()
-          color: getColor('$primary500')
+          &.button
+            responsive-font-button()
+            color: getColor('$primary500')

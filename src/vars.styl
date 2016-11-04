@@ -12,6 +12,8 @@ $breakPointLarge = 840px
 
 $contentMaxWidth = 1280px
 
+$inputMaxWidth = 600px
+
 $cdnUrl = getCdnUrl()
 
 clearfix()
@@ -75,12 +77,14 @@ responsive-font-body2()
   zp-font-body2()
   font-weight: 300
   color: getColor('$white')
+  line-height: 20px
   @media (min-width: $breakPointLarge)
     font-size: 16px
 
 responsive-font-body1()
   zp-font-body1()
   color: getColor('$white')
+  line-height: 20px
   @media (min-width: $breakPointLarge)
     font-size: 16px
 

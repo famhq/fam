@@ -9,14 +9,12 @@ if window?
   require './index.styl'
 
 module.exports = class Splash
-  constructor: ({model, @router}) ->
+  constructor: ({@model, @router}) ->
     @$learnMoreButton = new PrimaryButton()
     @$signInButton = new FlatButton()
 
-    model.portal.call 'barcode.scan'
-
     @state = z.state
-      username: model.user.getMe().map ({username}) -> username
+      username: @model.user.getMe().map ({username}) -> username
 
   render: =>
     {username} = @state.getValue()
@@ -25,9 +23,17 @@ module.exports = class Splash
       z '.content',
         z '.logo'
       z '.actions',
+        # @router?.link z 'a.description', {
+        #   href: '/tos'
+        # },
+        #   'By continuing, you agree to our '
+        #   z 'strong', 'T.O.S.'
+
         z '.button',
           z @$signInButton,
             text: 'Sign in'
+            onclick: =>
+              @router.go '/signIn'
         z '.button',
           z @$learnMoreButton,
             text: 'Learn more'

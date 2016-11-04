@@ -12,14 +12,3 @@ module.exports = class ClashRoyaleDeck
 
   getById: (id) =>
     @auth.stream 'clashRoyaleDeck.getById', {id}
-
-  favorite: ({id} = {}) =>
-    @auth.call 'clashRoyaleDeck.favorite', {id}, {invalidateAll: true}
-
-  unfavorite: ({id} = {}) =>
-    @auth.call 'clashRoyaleDeck.unfavorite', {id}, {invalidateAll: true}
-
-  create: ({cardIds, cardKeys, name} = {}) =>
-    @auth.call 'clashRoyaleDeck.create', {
-      cardIds, name, cardKeys
-    }, {invalidateAll: true}

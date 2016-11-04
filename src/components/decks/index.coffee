@@ -2,9 +2,9 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
 _isEmpty = require 'lodash/lang/isEmpty'
+_ = require 'lodash'
 log = require 'loga'
 Environment = require 'clay-environment'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -22,9 +22,6 @@ PADDING = 16
 module.exports = class Decks extends Base
   constructor: ({@model, @router, sort, filter}) ->
     @$spinner = new Spinner()
-    @$addIcon = new Icon()
-
-    @$fab = new FloatingActionButton()
 
     me = @model.user.getMe()
     decksAndMe = Rx.Observable.combineLatest(
@@ -35,6 +32,7 @@ module.exports = class Decks extends Base
 
     @state = z.state
       me: @model.user.getMe()
+      filter: filter
       decks: decksAndMe.map ([decks, me]) =>
         _.map decks, (deck) =>
           hasDeck =  me.data.clashRoyaleDeckIds and
@@ -52,11 +50,10 @@ module.exports = class Decks extends Base
   afterMount: (@$$el) => null
 
   render: =>
-    {me, decks} = @state.getValue()
+    {me, decks, filter} = @state.getValue()
 
     cardWidth = (@$$el?.children?[0]?.offsetWidth - (PADDING * 2)) /
                   CARDS_PER_ROW
-    console.log cardWidth
 
     z '.z-decks',
       z '.decks', {
@@ -65,7 +62,10 @@ module.exports = class Decks extends Base
           minHeight: "#{window?.innerHeight * 1.2}px"
       },
         if decks and _.isEmpty decks
-          'No decks found'
+          z '.no-decks',
+            'No decks found. '
+            if filter is 'mine'
+              'Select a popular deck to add it, or create a new deck.'
         else if decks
           _.map decks, ({deck, hasDeck, $deck, $starIcon, $chevronIcon}) =>
             [
@@ -85,9 +85,13 @@ module.exports = class Decks extends Base
                           e?.stopPropagation()
                           e?.preventDefault()
                           if hasDeck
-                            @model.clashRoyaleDeck.unfavorite {id: deck.id}
+                            @model.clashRoyaleUserDeck.unfavorite {
+                              deckId: deck.id
+                            }
                           else
-                            @model.clashRoyaleDeck.favorite {id: deck.id}
+                            @model.clashRoyaleUserDeck.favorite {
+                              deckId: deck.id
+                            }
                     z '.name', deck.name or 'Nameless'
                     z '.chevron',
                       z $chevronIcon,
@@ -100,15 +104,3 @@ module.exports = class Decks extends Base
             ]
         else
           @$spinner
-
-      z '.fab',
-        z @$fab,
-          colors:
-            c500: colors.$primary500
-          $icon: z @$addIcon, {
-            icon: 'add'
-            isTouchTarget: false
-            color: colors.$white
-          }
-          onclick: =>
-            @router.go '/newDeck'

@@ -6,7 +6,10 @@ Rx = require 'rx-lite'
 colors = require '../../colors'
 config = require '../../config'
 DeckCards = require '../../components/deck_cards'
+DeckStats = require '../../components/deck_stats'
 Icon = require '../../components/icon'
+Tabs = require '../../components/tabs'
+PrimaryButton = require '../../components/primary_button'
 FormatService = require '../../services/format'
 
 if window?
@@ -20,15 +23,19 @@ module.exports = class Deck
     @$crownIcon = new Icon()
     @$statsIcon = new Icon()
     @$notesIcon = new Icon()
+    @$setAsDeckButton = new PrimaryButton()
+    @$deckStats = new DeckStats {@model, @router, deck}
+    @$tabs = new Tabs {@model}
 
     @$deckCards = new DeckCards {@model, @router, deck}
 
     @state = z.state
       me: me
       deck: deck
+      isSetDeckLoading: false
 
   render: =>
-    {me, deck} = @state.getValue()
+    {me, deck, isSetDeckLoading} = @state.getValue()
 
     totalMatches = (deck?.wins + deck?.losses) or 1
 
@@ -38,56 +45,25 @@ module.exports = class Deck
           z @$deckCards,
             onCardClick: (card) =>
               @router.go "/cards/#{card.id}"
-      z '.stats',
-        z '.g-grid',
-          z '.row',
-            z '.icon',
-              z @$elixirIcon,
-                icon: 'drop'
-                color: colors.$tertiary300
-                isTouchTarget: false
-            z '.stat.bold', 'Average elixir cost'
-            z '.right',
-              "#{deck?.averageElixirCost}"
-
-          z '.row',
-            z '.icon',
-              z @$crownIcon,
-                icon: 'crown'
-                color: colors.$tertiary300
-                isTouchTarget: false
-            z '.stat.bold', 'Win percentage'
-            # z '.right',
-            #   'Add stats' # FIXME
-
-          z '.row',
-            z '.icon'
-            z '.stat', 'Personal average'
-            z '.right',
-              '??' # FIXME
-
-          z '.row',
-            z '.icon'
-            z '.stat', 'Community average'
-            z '.right',
-              FormatService.percentage deck?.wins / totalMatches
-
-          z '.row',
-            z '.icon',
-              z @$statsIcon,
-                icon: 'stats'
-                color: colors.$tertiary300
-                isTouchTarget: false
-            z '.stat.bold', 'Popularity'
-            z '.right',
-              FormatService.rank deck?.popularity
-
-          z '.row',
-            z '.icon',
-              z @$notesIcon,
-                icon: 'notes'
-                color: colors.$tertiary300
-                isTouchTarget: false
-            z '.stat.bold', 'Personal notes'
-            z '.right.button',
-              'Edit note'
+          z '.set-as-deck',
+            z @$setAsDeckButton,
+              text: if isSetDeckLoading \
+                    then 'Loading...'
+                    else 'Set as current deck'
+              onclick: =>
+                @state.set isSetDeckLoading: true
+                @model.userData.setClashRoyaleDeckId deck.id
+                .then =>
+                  @state.set isSetDeckLoading: false
+      z @$tabs,
+        isBarFixed: false
+        tabs: [
+          {
+            $menuText: 'Stats'
+            $el: @$deckStats
+          }
+          {
+            $menuText: 'Notes'
+            $el: null
+          }
+        ]

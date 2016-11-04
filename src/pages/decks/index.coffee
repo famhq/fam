@@ -4,6 +4,7 @@ _ = require 'lodash'
 _map = require 'lodash/collection/map'
 _mapValues = require 'lodash/object/mapValues'
 _isEmpty = require 'lodash/lang/isEmpty'
+FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -30,6 +31,8 @@ module.exports = class DecksPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
+    @$fab = new FloatingActionButton()
+    @$addIcon = new Icon()
 
     @$recentDecks = new Decks {@model, @router, sort: 'recent', filter: 'mine'}
     @$popularDecks = new Decks {@model, @router, sort: 'popular'}
@@ -54,7 +57,7 @@ module.exports = class DecksPage
         isBarFixed: false
         tabs: [
           {
-            $menuText: 'Recent'
+            $menuText: 'My Decks'
             $el: @$recentDecks
           }
           {
@@ -62,3 +65,15 @@ module.exports = class DecksPage
             $el: @$popularDecks
           }
         ]
+
+      z '.fab',
+        z @$fab,
+          colors:
+            c500: colors.$primary500
+          $icon: z @$addIcon, {
+            icon: 'add'
+            isTouchTarget: false
+            color: colors.$white
+          }
+          onclick: =>
+            @router.go '/newDeck'

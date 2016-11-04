@@ -11,11 +11,23 @@ module.exports = class User
   getById: (id) =>
     @auth.stream 'users.getById', {id}
 
+  getByCode: (code) =>
+    @auth.stream 'users.getByCode', {code}
+
   setUsername: (username) =>
     @auth.call 'users.setUsername', {username}, {invalidateAll: true}
 
-  requestInvite: ({clanTag, username, email}) =>
-    @auth.call 'users.requestInvite', {clanTag, username, email}
+  makeMember: =>
+    @auth.call 'users.makeMember', {}, {invalidateAll: true}
+
+  setFlags: (flags) =>
+    @auth.call 'users.setFlags', flags, {invalidateAll: true}
+
+  requestInvite: ({clanTag, username, email, referrerId}) =>
+    @auth.call 'users.requestInvite', {clanTag, username, email, referrerId}
+
+  isBlocked: (me, userId) ->
+    me?.data?.blockedUserIds?.indexOf(userId) isnt -1
 
   setAvatarImage: (file) =>
     formData = new FormData()

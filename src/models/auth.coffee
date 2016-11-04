@@ -36,6 +36,21 @@ module.exports = class Auth
         "#{config.AUTH_COOKIE}": accessToken
       }, currentCookies
 
+  login: ({username, password} = {}) =>
+    @exoid.call 'auth.loginUsername', {username, password}
+    .then ({username, accessToken}) =>
+      console.log 'logged in', username, accessToken
+      @setAccessToken accessToken
+      .then =>
+        @exoid.invalidateAll()
+
+  loginByCode: ({code, username, password} = {}) =>
+    @exoid.call 'auth.loginCode', {code, username, password}
+    .then ({accessToken}) =>
+      @setAccessToken accessToken
+      .then =>
+        @exoid.invalidateAll()
+
   stream: (path, body, {ignoreCache, isErrorable} = {}) =>
     if ignoreCache
       body = _.defaults {rand: ignoreCache}, body
@@ -51,17 +66,3 @@ module.exports = class Auth
       if invalidateAll
         @exoid.invalidateAll()
       response
-
-  loginKik: ({kikUsername, signedData}) =>
-    @exoid.call 'auth.loginKik', {kikUsername, signedData}
-    .then ({accessToken}) =>
-      @setAccessToken accessToken
-      .then =>
-        @exoid.invalidateAll()
-
-  loginLink: ({linkId, token}) =>
-    @exoid.call 'auth.loginLink', {linkId, token}
-    .then ({accessToken}) =>
-      @setAccessToken accessToken
-      .then =>
-        @exoid.invalidateAll()

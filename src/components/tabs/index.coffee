@@ -48,7 +48,7 @@ getTransformProperty = ->
   _prefixStyle 'transform'
 
 module.exports = class Tabs
-  constructor: ({@model, portal, @selectedIndex,
+  constructor: ({@model, @selectedIndex,
       @isPageScrolling, hideTabBar}) ->
 
     @selectedIndex ?= new Rx.BehaviorSubject 0

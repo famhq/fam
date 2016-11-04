@@ -16,6 +16,14 @@ module.exports = class UserData
       invalidateAll: true
     }
 
+  setAddress: (address) =>
+    @auth.call 'userData.setAddress', address, {invalidateAll: true}
+
+  setClashRoyaleDeckId: (clashRoyaleDeckId) =>
+    @auth.call 'userData.setClashRoyaleDeckId', {clashRoyaleDeckId}, {
+      invalidateAll: true
+    }
+
   blockByUserId: (userId) =>
     @auth.call 'userData.blockByUserId', {userId}, {invalidateAll: true}
 

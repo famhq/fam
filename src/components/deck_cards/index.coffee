@@ -46,17 +46,18 @@ module.exports = class DeckCards extends Base
       me: @model.user.getMe()
       deck: deck
       cardGroups: deckAndMe.map ([deck, me]) =>
-        cards = _.map deck.cards, (card) =>
-          $el = @getCached$ card.id, Card, {card}
+        cards = _.map deck.cards, (card, i) =>
+          $el = @getCached$ (card?.id or "empty-#{i}"), Card, {card}
           {card, $el}
         _.chunk cards, @cardSizeInfo.cardsPerRow
 
   afterMount: (@$$el) => null
 
-  render: ({onCardClick} = {}) =>
+  render: ({onCardClick, cardsPerRow} = {}) =>
     {me, cardGroups} = @state.getValue()
 
-    cardWidth = @$$el?.offsetWidth / @cardSizeInfo.cardsPerRow
+    cardsPerRow ?= @cardSizeInfo.cardsPerRow
+    cardWidth = Math.floor(@$$el?.offsetWidth / cardsPerRow)
 
     z '.z-deck-cards',
       _.map cardGroups, (cards) ->
@@ -65,5 +66,6 @@ module.exports = class DeckCards extends Base
           z '.card', {
             style:
               width: "#{cardWidth}px"
+              height: "#{(96 / 76) * cardWidth}px"
           },
             z $el, {onclick: onCardClick, width: cardWidth - 8}

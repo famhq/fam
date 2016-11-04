@@ -42,7 +42,15 @@ module.exports = class CardInfo
   render: =>
     {me, card, selectedLevel} = @state.getValue()
 
-    totalMatches = (card?.wins + card?.losses) or 1
+    verifiedWins = card?.timeRanges.thisWeek.verifiedWins
+    totalMatches = (
+      verifiedWins + card?.timeRanges.thisWeek.verifiedLosses
+    ) or 1
+
+    lastWeekVerifiedWins = card?.timeRanges.lastWeek.verifiedWins
+    lastWeekTotalMatches = (
+      verifiedWins + card?.timeRanges.lastWeek.verifiedLosses
+    ) or 1
 
     z '.z-card-info',
       z '.card',
@@ -67,7 +75,15 @@ module.exports = class CardInfo
             z '.icon'
             z '.stat', 'Community average'
             z '.right',
-              FormatService.percentage card?.wins / totalMatches
+              FormatService.percentage verifiedWins / totalMatches
+
+          z '.row',
+            z '.icon'
+            z '.stat', 'Last week average'
+            z '.right',
+              FormatService.percentage(
+                lastWeekVerifiedWins / lastWeekTotalMatches
+              )
 
           z '.row',
             z '.icon',
@@ -77,7 +93,7 @@ module.exports = class CardInfo
                 isTouchTarget: false
             z '.stat.bold', 'Popularity'
             z '.right',
-              FormatService.rank card?.popularity
+              FormatService.rank card?.timeRanges.thisWeek.rank
 
         z '.divider'
 

@@ -15,6 +15,7 @@ gulpPaths = require './gulp_paths'
 App = require './src/app'
 Model = require './src/models'
 CookieService = require './src/services/cookie'
+RouterService = require './src/services/router'
 
 MIN_TIME_REQUIRED_FOR_HSTS_GOOGLE_PRELOAD_MS = 10886400000 # 18 weeks
 HEALTHCHECK_TIMEOUT = 200
@@ -101,6 +102,11 @@ app.use (req, res, next) ->
   cookieSubject = new Rx.BehaviorSubject req.cookies
   cookieSubject.subscribeOnNext setCookies(req.cookies)
 
+  router = new RouterService {
+    portal: null
+    router: null
+  }
+
   model = new Model({cookieSubject, serverHeaders: req.headers})
   requests = new Rx.BehaviorSubject(req)
   serverData = {req, res, styles, bundlePath}
@@ -108,7 +114,7 @@ app.use (req, res, next) ->
   isFacebookCrawler = userAgent?.indexOf('facebookexternalhit') isnt -1 or
       userAgent?.indexOf('Facebot') isnt -1
   isOtherBot = userAgent?.indexOf('bot') isnt -1
-  z.renderToString new App({requests, model, serverData}), {
+  z.renderToString new App({requests, model, serverData, router}), {
     timeout: if isFacebookCrawler or isOtherBot \
              then BOT_RENDER_TO_STRING_TIMEOUT_MS
              else RENDER_TO_STRING_TIMEOUT_MS
@@ -117,7 +123,7 @@ app.use (req, res, next) ->
     hasSent = true
     res.send '<!DOCTYPE html>' + html
   .catch (err) ->
-    console.log 'err', err
+    # console.log 'err', err
     log.error err
     if err.html
       hasSent = true

@@ -12,6 +12,9 @@ module.exports = class ChatMessage
       invalidateAll: Boolean toId # toId adds to user.conversationUserIds
     }
 
+  # flag: (id) =>
+  #   @auth.call 'chatMessages.flag', {id}
+
   getAll: ({ignoreCache} = {}) =>
     @auth.stream 'chatMessages.getAll', {}, {ignoreCache}
 

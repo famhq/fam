@@ -6,6 +6,8 @@ Rx = require 'rx-lite'
 Icon = require '../icon'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
+InfoBlock = require '../info_block'
+Form = require '../form'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -39,6 +41,9 @@ module.exports = class Pay
       cvcValue: @cvcValue
       expireMonthValue: @expireMonthValue
       expireYearValue: @expireYearValue
+
+    @$infoBlock = new InfoBlock()
+    @$form = new Form()
 
   onNewStripe: ({product}) =>
     {isLoading, numberValue, cvcValue,
@@ -82,65 +87,77 @@ module.exports = class Pay
     {me, error, isLoading} = @state.getValue()
 
     hasStripeId = me?.flags.hasStripeId
+    isFeeWaived = me?.flags.isFeeWaived
     product = {productId: 'com.clay.redtritium.lifetime'}
 
     z '.z-pay',
-      z '.title', 'Finish'
-      z '.product',
-        z '.left', 'Lifetime membership'
-        z '.right', '$100'
-      z '.due',
-        z '.left', 'Due today'
-        z '.right', '$0'
-      z 'form.form', {
-        onsubmit: (e) =>
-          e.preventDefault()
-          @onNewStripe {product}
-      },
-        if error
-          z 'span.payment-errors', error
-        z '.form-row',
-          z @$numberInput,
-            hintText: 'Card Number'
-            type: 'number'
-            isFloating: true
+      z @$infoBlock,
+        $title: 'Finish'
+        $content: z '.z-pay_info-content',
+          z '.product',
+            z '.left', 'Lifetime membership'
+            z '.right', '$100'
+          if isFeeWaived
+            z '.product',
+              z '.left', 'Founding discount'
+              z '.right', '-$100'
+          z '.due',
+            z '.left', 'Due today'
+            z '.right', if isFeeWaived then '$0' else '$100'
+          if error
+            z 'span.payment-errors', error
+        $form: z @$form,
+          $buttons: [
+            if isFeeWaived
+              z @$payButton,
+                text: if isLoading then 'Loading...' else 'Continue'
+                onclick: =>
+                  @model.user.makeMember()
+                  .then =>
+                    @router.go '/setAddress'
+            else
+              z @$payButton,
+                text: if isLoading then 'loading...' else 'purchase'
+                type: 'submit'
+                onclick: (e) =>
+                  e.preventDefault()
 
+                  if isLoading
+                    return false
 
-        z '.form-row',
-          z @$cvcInput,
-            hintText: 'CVC'
-            type: 'number'
-            isFloating: true
+                  if hasStripeId
+                    @onPurchase {product}
+                  else
+                    @onNewStripe {product}
+          ]
+          onsubmit: (e) =>
+            e.preventDefault()
+            if isFeeWaived
+              @model.user.makeMember()
+              .then =>
+                @router.go '/setAddress'
+            else
+              @onNewStripe {product}
+          $inputs: unless isFeeWaived
+            [
+              z @$numberInput,
+                hintText: 'Card Number'
+                type: 'number'
+                isFloating: true
 
-        z '.form-row.flex',
-          z @$expireMonthInput,
-            hintText: 'Exp Month'
-            type: 'number'
-            isFloating: true
-          z '.slash', ' / '
-          z @$expireYearInput,
-            hintText: 'Exp Year'
-            type: 'number'
-            isFloating: true
-        z 'input', # for onsubmit to work
-          type: 'submit'
-          style:
-            display: 'none'
+              z @$cvcInput,
+                hintText: 'CVC'
+                type: 'number'
+                isFloating: true
 
-        # z @$cancelButton,
-        #   text: 'cancel'
-
-        z '.button',
-          z @$payButton,
-            text: if isLoading then 'loading...' else 'purchase'
-            onclick: (e) =>
-              e.preventDefault()
-
-              console.log 'go'
-              if isLoading
-                return false
-
-              if hasStripeId
-                @onPurchase {product}
-              else
-                @onNewStripe {product}
+              z '.z-pay_input-flex',
+                z @$expireMonthInput,
+                  hintText: 'Exp Month'
+                  type: 'number'
+                  isFloating: true
+                z '.slash', ' / '
+                z @$expireYearInput,
+                  hintText: 'Exp Year'
+                  type: 'number'
+                  isFloating: true
+            ]

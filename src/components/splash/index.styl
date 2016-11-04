@@ -16,6 +16,7 @@
     > .logo
       width: 283px
       height: 30px
+      margin: 0 auto
       background: url($cdnUrl + '/rt_logo.svg')
 
   > .actions
@@ -24,6 +25,12 @@
     max-width: 380px
     box-sizing: border-box
     margin: 0 auto
+
+    > .description
+      responsive-font-body2()
+      text-align: center
+      display: block
+      margin-bottom: 12px
 
     > .button
       margin-bottom: 8px

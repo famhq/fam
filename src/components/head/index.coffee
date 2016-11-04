@@ -44,7 +44,7 @@ module.exports = class Head
       canonical: undefined
       themeColor: colors.$primary500
       # reccomended 32 x 32 png
-      favicon: '/images/zorium_icon_32.png'
+      favicon: config.CDN_URL + '/favicon.png'
       manifestUrl: '/manifest.json'
     }, meta
 

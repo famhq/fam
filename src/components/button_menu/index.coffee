@@ -3,13 +3,16 @@ colors = require '../../colors'
 
 Icon = require '../icon'
 
-module.exports = class ButtonBack
+if window?
+  require './index.styl'
+
+module.exports = class ButtonMenu
   constructor: ({@model}) ->
-    @$backIcon = new Icon()
+    @$menuIcon = new Icon()
 
   render: ({color, onclick} = {}) =>
-    z '.z-button-back',
-      z @$backIcon,
+    z '.z-button-menu',
+      z @$menuIcon,
         isAlignedLeft: true
         icon: 'menu'
         color: color or colors.$primary500

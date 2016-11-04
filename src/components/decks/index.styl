@@ -13,6 +13,11 @@ json('zorium-paper/colors.json')
   > .decks
     width: 100%
 
+    > .no-decks
+      responsive-font-body2()
+      text-align: center
+      padding: 16px
+
     > .deck
       padding: 0 16px 16px 16px
       display: block
@@ -42,9 +47,3 @@ json('zorium-paper/colors.json')
       height: 1px
       background: getColor('$white12')
       margin: 0
-
-  > .fab
-    position: fixed
-    bottom: 16px
-    right: 16px
-    z-index: 50

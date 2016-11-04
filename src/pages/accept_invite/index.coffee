@@ -12,8 +12,16 @@ if window?
   require './index.styl'
 
 module.exports = class AcceptInvitePage
+  hideDrawer: true
+  isPublic: true
+
   constructor: ({model, requests, @router, serverData}) ->
-    @$editButton = new Button()
+    code = requests.map ({route}) ->
+      route.params.code
+
+    user = code.flatMapLatest (code) ->
+      model.user.getByCode code
+
     @$head = new Head({
       model
       requests
@@ -23,7 +31,7 @@ module.exports = class AcceptInvitePage
         description: 'Accept Invite'
       }
     })
-    @$acceptInvite = new AcceptInvite {model, @router}
+    @$acceptInvite = new AcceptInvite {model, @router, code, user}
 
   renderHead: => @$head
 

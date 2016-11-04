@@ -3,9 +3,12 @@ z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
 
-Avatar = require '../avatar'
+Icon = require '../icon'
 PrimaryButton = require '../primary_button'
-FormatService = require '../../services/format'
+PrimaryInput = require '../primary_input'
+Spinner = require '../spinner'
+InfoBlock = require '../info_block'
+Form = require '../form'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -13,27 +16,82 @@ if window?
   require './index.styl'
 
 module.exports = class AcceptInvite
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, code, user}) ->
     me = @model.user.getMe()
-    @$avatar = new Avatar()
-    @$editButton = new PrimaryButton()
+
+    @$signInButton = new PrimaryButton()
+
+    @usernameValue = new Rx.BehaviorSubject ''
+    @passwordValue = new Rx.BehaviorSubject ''
+    @usernameError = new Rx.BehaviorSubject null
+    @passwordError = new Rx.BehaviorSubject null
+    @$usernameInput = new PrimaryInput
+      value: @usernameValue
+      error: @usernameError
+    @$passwordInput = new PrimaryInput
+      value: @passwordValue
+      error: @passwordError
+
+    @$spinner = new Spinner()
+    @$infoBlock = new InfoBlock()
+    @$form = new Form()
 
     @state = z.state
       me: me
+      code: code
+      user: user
+      isLoading: false
+
+  create: (e) =>
+    e?.preventDefault()
+
+    {code} = @state.getValue()
+
+    @state.set isLoading: true
+    @model.auth.loginByCode {
+      code: code
+      username: @usernameValue.getValue()
+      password: @passwordValue.getValue()
+    }
+    .then =>
+      @state.set isLoading: false
+      @router.go '/pay'
+    .catch (err) =>
+      @state.set isLoading: false
+      @usernameError.onNext err.message
+
   render: =>
-    {me} = @state.getValue()
+    {me, code, user, isLoading} = @state.getValue()
 
     z '.z-accept-invite',
-      z '.title', 'Congratulations'
-      z '.description',
-        z 'p',
-          'You\'ve been selected to join the most exclusive club for the most
-          elite players in the world'
+      if user?.id
+        z @$infoBlock,
+          $title: 'Congratulations'
+          $content: [
+            z 'p',
+              "You've been selected to join the most exclusive club for the
+              best players in the world"
 
-        z 'p', 'Now, let’s get started…'
-
-      z '.g-grid',
-        z '.section',
-          z '.top',
-            z '.left',
-              z '.title', ''
+            z 'p', "Now, let's get you an account..."
+          ]
+          $form: z @$form,
+            onsubmit: @create
+            $inputs: [
+              z '.input',
+                z @$usernameInput,
+                  hintText: 'Username'
+              z '.input',
+                z @$passwordInput,
+                  type: 'password'
+                  hintText: 'Password'
+            ]
+            $buttons: [
+              z @$signInButton,
+                text: if isLoading then 'Loading...' else 'Continue'
+                type: 'submit'
+            ]
+      else if user
+        z @$infoBlock,
+          $title: 'Invalid code'
+      else
+        @$spinner

@@ -5,8 +5,8 @@ moment = require 'moment'
 colors = require '../../colors'
 _isEmpty = require 'lodash/lang/isEmpty'
 log = require 'loga'
-Dialog = require 'zorium-paper/dialog'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
+ProfileDialog = require '../profile_dialog'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -25,8 +25,14 @@ module.exports = class Thread
 
     @$fab = new FloatingActionButton()
 
+    @selectedProfileDialogUser = new Rx.BehaviorSubject false
+    @$profileDialog = new ProfileDialog {
+      @model, @router, @selectedProfileDialogUser
+    }
+
     @state = z.state
       me: @model.user.getMe()
+      selectedProfileDialogUser: @selectedProfileDialogUser
       thread: thread.map (thread) ->
         _.defaults {
           messages: _.map thread.messages, (message) ->
@@ -34,17 +40,20 @@ module.exports = class Thread
         }, thread
 
   render: =>
-    {me, thread} = @state.getValue()
+    {me, thread, selectedProfileDialogUser} = @state.getValue()
 
     z '.z-thread', [
-      if thread
+      if thread and not _.isEmpty thread.messages
         _.map thread.messages, ({message, $avatar}, i) =>
           isOriginalPost = i is 0
           [
             z '.g-grid',
               z '.message', {
                 className: z.classKebab {isOriginalPost}
-                onclick: -> null
+                onclick: =>
+                  @selectedProfileDialogUser.onNext _.defaults {
+                    chatMessageId: message.id
+                  }, message.user
               },
                 z '.avatar',
                   z $avatar, {user: message.user, size: '40px'}
@@ -68,6 +77,8 @@ module.exports = class Thread
             unless isOriginalPost
               z '.divider'
           ]
+      else if thread
+        z '.no-messages', 'No messages found'
       else
         @$spinner
 
@@ -82,4 +93,8 @@ module.exports = class Thread
           }
           onclick: =>
             @router.go "/thread/#{thread.id}/reply"
+
+      if selectedProfileDialogUser
+        console.log 'show'
+        z @$profileDialog
     ]
