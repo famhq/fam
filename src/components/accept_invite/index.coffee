@@ -55,7 +55,7 @@ module.exports = class AcceptInvite
     }
     .then =>
       @state.set isLoading: false
-      @router.go '/pay'
+      @router.go '/policies'
     .catch (err) =>
       @state.set isLoading: false
       @usernameError.onNext err.message
@@ -64,13 +64,12 @@ module.exports = class AcceptInvite
     {me, code, user, isLoading} = @state.getValue()
 
     z '.z-accept-invite',
-      if user?.id
+      if user?.id and not user?.username
         z @$infoBlock,
           $title: 'Congratulations'
           $content: [
             z 'p',
-              "You've been selected to join the most exclusive club for the
-              best players in the world"
+              "You've been selected to be an early member of Red Tritium"
 
             z 'p', "Now, let's get you an account..."
           ]

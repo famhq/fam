@@ -23,12 +23,6 @@ module.exports = class Splash
       z '.content',
         z '.logo'
       z '.actions',
-        # @router?.link z 'a.description', {
-        #   href: '/tos'
-        # },
-        #   'By continuing, you agree to our '
-        #   z 'strong', 'T.O.S.'
-
         z '.button',
           z @$signInButton,
             text: 'Sign in'

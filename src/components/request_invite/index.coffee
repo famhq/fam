@@ -31,7 +31,7 @@ module.exports = class RequestInvite
       z @$infoBlock,
         $title: 'Request an invite'
         $content: [
-          z 'p', 'Only the most elite players are permitted to join'
+          z 'p', 'We\'re starting with elite players (4,000+ trophies)'
           z 'p', 'Your request is subject to review and approval'
         ]
         $form: @$requestInviteForm

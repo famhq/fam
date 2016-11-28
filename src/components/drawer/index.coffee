@@ -75,7 +75,7 @@ module.exports = class Drawer
               iconName: 'profile'
             }
             {
-              path: '/threads'
+              path: '/community'
               title: 'Community'
               $icon: new Icon()
               iconName: 'chat'
@@ -90,12 +90,12 @@ module.exports = class Drawer
             #   $icon: new Icon()
             #   iconName: 'search'
             # }
-            # {
-            #   path: '/members'
-            #   title: 'Members'
-            #   $icon: new Icon()
-            #   iconName: 'friends'
-            # }
+            {
+              path: '/friends'
+              title: 'Friends'
+              $icon: new Icon()
+              iconName: 'friends'
+            }
             {
               path: '/decks'
               title: 'Battle Decks'
@@ -111,12 +111,12 @@ module.exports = class Drawer
             # {
             #   isDivider: true
             # }
-            {
-              path: '/refer'
-              title: 'Refer a member'
-              $icon: new Icon()
-              iconName: 'gem'
-            }
+            # {
+            #   path: '/refer'
+            #   title: 'Refer a member'
+            #   $icon: new Icon()
+            #   iconName: 'gem'
+            # }
             # {
             #   path: '/settings'
             #   title: 'Settings'
@@ -148,10 +148,10 @@ module.exports = class Drawer
       window?.innerWidth - DRAWER_RIGHT_PADDING, DRAWER_MAX_WIDTH
     translateX = if isOpen then '0' else "-#{drawerWidth}px"
     buttonColors =
-      c200: colors.$tertiary700
-      c500: colors.$tertiary500
-      c600: colors.$tertiary900
-      c700: colors.$tertiary700
+      c200: colors.$tertiary500
+      c500: colors.$tertiary700
+      c600: colors.$tertiary700
+      c700: colors.$tertiary500
 
     z '.z-drawer', {
       className: z.classKebab {isOpen}

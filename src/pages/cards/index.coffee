@@ -42,6 +42,6 @@ module.exports = class CardsPage
       z @$appBar, {
         title: 'Battle Cards'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary900}
+        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }
       @$cards

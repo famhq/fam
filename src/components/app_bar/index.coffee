@@ -11,8 +11,9 @@ module.exports = class AppBar
   constructor: ({@model}) -> null
 
   render: ({$topLeftButton, $topRightButton, title, bgColor, color, isFlat}) ->
-    color ?= colors.$tertiary700Text
-    bgColor ?= colors.$tertiary700
+    color ?= colors.$primary500Text
+    bgColor ?= colors.$primary500
+
     z 'header.z-app-bar', {
       className: z.classKebab {isFlat}
     },

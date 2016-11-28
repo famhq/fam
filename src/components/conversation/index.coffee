@@ -12,7 +12,7 @@ config = require '../../config'
 Avatar = require '../avatar'
 Icon = require '../icon'
 Spinner = require '../spinner'
-# ProfileDialog = require '../profile_dialog'
+ProfileDialog = require '../profile_dialog'
 
 if window?
   require './index.styl'
@@ -27,51 +27,52 @@ MAX_LINES = 20
 RENDER_DELAY_MS = 100
 
 module.exports = class Conversation
-  constructor: ({@model, @router, @error, isRefreshing, toUser}) ->
+  constructor: ({@model, @router, @error, isRefreshing, toUser, channel}) ->
+    @selectedProfileDialogUser = new Rx.BehaviorSubject false
+
     @$toAvatar = new Avatar()
+    @$profileDialog = new ProfileDialog {
+      @model, @router, @selectedProfileDialogUser
+    }
 
     # SUPER HACK
     isLoading = new Rx.BehaviorSubject false
 
-    @autoUpdate = new Rx.BehaviorSubject 0
     @isRefreshPaused # we don't refresh when the user is typing
     @isRefreshPausedTimeout = null
     me = @model.user.getMe()
 
-    @toUserAndAutoUpdateAndMe = Rx.Observable.combineLatest(
+    @toUserAndChannelAndMe = Rx.Observable.combineLatest(
       toUser
+      channel or Rx.Observable.just null
       # TODO: maybe replace with subscribe / dispose
-      @autoUpdate
       me
       (vals...) -> vals
     )
 
     # not putting in state because re-render is too slow on type
     @message = new Rx.BehaviorSubject ''
-    @messages = @toUserAndAutoUpdateAndMe.flatMapLatest (resp) =>
-      [toUser, autoUpdate, me] = resp
+    @messages = @toUserAndChannelAndMe.flatMapLatest (resp) =>
+      [toUser, channel, me] = resp
 
       isRefreshing.onNext true
 
-      (if filter?.privateUserId
+      (if toUser
         @model.chatMessage.getPrivateByUserId(
-          filter.privateUserId, {ignoreCache: autoUpdate}
+          toUser.id
         )
-      else if filter?.channel
+      else if channel
         @model.chatMessage.getByChannel {
-          channel: filter.channel
-        }, {
-          ignoreCache: autoUpdate
+          channel: channel
         }
       else
         Rx.Observable.just null)
-      # SUPER HACK to get loading spinner to work while changing filter
-      .map (response) =>
+      .map (response) ->
         isLoading.onNext false
         isRefreshing.onNext false
-        setTimeout =>
-          @scrollToBottom()
-        , RENDER_DELAY_MS
+        # setTimeout =>
+        #   @scrollToBottom()
+        # , RENDER_DELAY_MS
 
         response?.reverse?()
       .catch (err) ->
@@ -104,28 +105,16 @@ module.exports = class Conversation
   afterMount: (@$$el) =>
     clearInterval @refreshInterval
     @scrollToBottom()
-    @autoUpdate.onNext Date.now()
-
-    @refreshInterval = setInterval =>
-      console.log 'conversation refresh'
-      {filter, isFilterMenuVisible, isRefreshing} = @state.getValue()
-      $messages = @$$el?.querySelector('.messages')
-      if $messages
-        pos = Math.ceil $messages.scrollTop
-        bottom = $messages.scrollHeight - $messages.offsetHeight
-        isBottomOfPage = pos >= bottom
-
-        if isBottomOfPage and not isFilterMenuVisible and
-            not isRefreshing and not @isRefreshPaused
-          @autoUpdate.onNext Date.now()
-    , REFRESH_INTERVAL_MS
 
   beforeUnmount: =>
     clearInterval @refreshInterval
 
   scrollToBottom: =>
     $messages = @$$el?.querySelector('.messages')
-    if $messages
+    if $messages and $messages[$messages.length - 1]?.scrollIntoView
+      console.log 'scroll view'
+      $messages[$messages.length - 1].scrollIntoView()
+    else if $messages
       $messages.scrollTop = $messages.scrollHeight - $messages.offsetHeight
 
   setMessage: (e) =>
@@ -139,6 +128,7 @@ module.exports = class Conversation
   render: =>
     {me, isLoading, isPostLoading, message, messages, toUser,
       selectedProfileDialogUser, filter} = @state.getValue()
+
     z '.z-conversation',
       z '.g-grid',
         z '.messages',
@@ -150,8 +140,8 @@ module.exports = class Conversation
 
               z '.message', {
                 key: "message-#{messageInfo.id}" # re-use elements in v-dom
-                # onclick: =>
-                #   @selectedProfileDialogUser.onNext user
+                onclick: =>
+                  @selectedProfileDialogUser.onNext user
               },
                 z '.avatar',
                   z $avatar, {
@@ -229,7 +219,6 @@ module.exports = class Conversation
                   }
                   .then =>
                     # @model.user.emit('chatMessage').catch log.error
-                    @autoUpdate.onNext Date.now()
                     doneTimeout = setTimeout =>
                       @state.set isPostLoading: false
                     , MAX_POST_MESSAGE_LOAD_MS
@@ -253,5 +242,5 @@ module.exports = class Conversation
                        then colors.$grey200
                        else colors.$white30
 
-      # if selectedProfileDialogUser
-      #   z @$profileDialog
+      if selectedProfileDialogUser
+        z @$profileDialog

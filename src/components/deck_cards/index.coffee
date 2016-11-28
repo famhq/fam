@@ -46,7 +46,7 @@ module.exports = class DeckCards extends Base
       me: @model.user.getMe()
       deck: deck
       cardGroups: deckAndMe.map ([deck, me]) =>
-        cards = _.map deck.cards, (card, i) =>
+        cards = _.map deck?.cards, (card, i) =>
           $el = @getCached$ (card?.id or "empty-#{i}"), Card, {card}
           {card, $el}
         _.chunk cards, @cardSizeInfo.cardsPerRow

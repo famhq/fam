@@ -30,9 +30,9 @@ module.exports = class TabsBar
   render: ({items, bgColor, color, inactiveColor, isFixed, tabWidth}) =>
     {selectedIndex} = @state.getValue()
 
-    bgColor ?= colors.$tertiary700
+    bgColor ?= colors.$primary500
     color ?= colors.$tabSelected
-    underlineColor = colors.$primary500
+    underlineColor = colors.$white
     inactiveColor ?= colors.$tabUnselected
     isFullWidth = not tabWidth
 

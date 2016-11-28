@@ -1,0 +1,21 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.z-friends
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .no-friends
+    responsive-font-body1()
+    color: getColor('$tertiary500')
+    line-height: 20px
+    padding-top: 76px
+    text-align: center
+
+  > .users
+    padding: 10px 0 0 16px

@@ -1,0 +1,72 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+$topHeight = 120px
+$zIndexTop = 100
+
+.z-user-picker
+  > .pick-from-kik
+    margin-bottom: 24px
+
+  > .top
+    display: flex
+    align-items: center
+    margin-bottom: 20px
+
+    > .title
+      responsive-font-subhead()
+      color: getColor('$tertiary500')
+      font-weight: 500
+
+    > .select-all
+      zp-font-button()
+      color: getColor('$grey600')
+      text-transform: uppercase
+      cursor: pointer
+      margin-left: auto
+
+  > .divider
+    height: 1px
+    margin: 8px -16px 20px -16px
+    background: getColor('$black12')
+
+  > .user
+    display: flex
+    align-items: center
+    margin-bottom: 16px
+
+    &.is-unavailable
+      > .name, .checkbox
+        opacity: 0.25
+
+    > .avatar
+      margin-right: 16px
+
+    > .name
+      responsive-font-subhead()
+      font-weight: 500
+      color: getColor('$tertiary900')
+
+      > .unavailable-message
+        responsive-font-body1()
+
+    > .checkbox
+      width: 18px
+      height: 18px
+      appearance: none
+      margin-left: auto
+      border-radius: 2px
+      display: flex
+      border: 2px solid getColor('$grey600')
+      box-sizing: border-box
+
+      &.is-checked
+        border: none
+        background: getColor('$secondary500')
+
+.z-users-picker_no-users
+  > .find-friends
+    margin-top: 8px

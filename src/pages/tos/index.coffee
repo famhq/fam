@@ -40,6 +40,6 @@ module.exports = class TosPage
     },
       z @$appBar, {
         title: 'Terms of Service'
-        $topLeftButton: z @$backButton, {color: colors.$primary900}
+        $topLeftButton: z @$backButton, {color: colors.$tertiary900}
       }
       @$tos

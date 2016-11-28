@@ -41,22 +41,22 @@ module.exports = class LearnMorePage
           {
             $step:
               z @$step1,
-                $title: 'Exclusive community'
+                $title: 'Invite-Only'
                 $image:
                   z '.p-learn-more_step-image.number-1'
                 $content:
                   z '.p-learn-more_step-content',
                     z '.description',
                       z 'p',
-                        'Red Tritium is host to only the best players'
+                        'Red Tritium is currently invite-only'
                       z 'p',
-                        'Members receive a black anodized stainless steel
-                        membership card with their unique member ID'
+                        'Invited members receive a black anodized stainless
+                        steel membership card with their unique member ID'
           }
           {
             $step:
               z @$step2,
-                $title: 'Top-tier chat'
+                $title: 'Community-driven'
                 $image:
                   z '.p-learn-more_step-image.number-2'
                 $content:

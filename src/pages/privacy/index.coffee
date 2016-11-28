@@ -40,6 +40,6 @@ module.exports = class PrivacyPage
     },
       z @$appBar, {
         title: 'Privacy'
-        $topLeftButton: z @$backButton, {color: colors.$primary900}
+        $topLeftButton: z @$backButton, {color: colors.$tertiary900}
       }
       @$privacy

@@ -58,7 +58,7 @@ $zIndexDrawerHeader = 100
     -webkit-overflow-scrolling: touch
     display: flex
     flex-direction: column
-    background: getColor('$tertiary500')
+    background: getColor('$tertiary700')
     // prevents flicker glitch http://stackoverflow.com/a/3921870
     backface-visibility: hidden
 
@@ -74,6 +74,11 @@ $zIndexDrawerHeader = 100
       height: 56px
       padding: 19px 16px
       border-bottom: 1px solid $white12
+      border-right: 1px solid getColor('$black')
+      background: getColor('$primary500')
+
+      @media (min-width: $breakPointMedium)
+        height: 64px
 
       &:after
         content: ''
@@ -86,7 +91,7 @@ $zIndexDrawerHeader = 100
       > .logo
         width: 100%
         height: 100%
-        background: url($cdnUrl + '/rt_logo.svg') no-repeat
+        background: url($cdnUrl + '/rt_logo_invert.svg') no-repeat
         background-size: auto 100%
         background-position: 0 center
 
@@ -94,8 +99,9 @@ $zIndexDrawerHeader = 100
       flex: 1
       width: 100%
       box-sizing: border-box
-      background: getColor('$tertiary500')
+      background: getColor('$tertiary700')
       padding: 8px 0
+      border-right: 1px solid getColor('$black')
 
       > .menu
         list-style-type: none
@@ -121,12 +127,13 @@ $zIndexDrawerHeader = 100
 
           &.is-selected
             > .menu-item-link
-              background: getColor('$tertiary400')
+              background: getColor('$tertiary500')
 
     > .no-deck
-      background: getColor('$tertiary700')
+      background: getColor('$tertiary900')
       padding: 16px
       text-align: center
+      border-right: 1px solid getColor('$black')
 
       > .set-deck-button
         margin: auto
@@ -136,9 +143,10 @@ $zIndexDrawerHeader = 100
         margin-top: 16px
 
     > .deck
-      background: getColor('$tertiary700')
+      background: getColor('$tertiary900')
       padding: 16px
       display: flex
+      border-right: 1px solid getColor('$black')
 
       > .deck-cards
         width: 196px

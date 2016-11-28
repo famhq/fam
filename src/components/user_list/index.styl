@@ -1,0 +1,26 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.z-user-list
+  width: 100%
+
+  > .user
+    display: flex
+    padding: 10px 0
+
+    > .avatar
+      margin-right: 16px
+
+    > .right
+      padding: 0 16px 20px 0
+      flex: 1
+      border-bottom: 1px solid getColor('$black12')
+
+      > .name
+        responsive-font-subhead()
+        font-weight: 500
+        color: getColor('$tertiary900')
+        margin-bottom: 8px

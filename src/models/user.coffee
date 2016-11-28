@@ -17,8 +17,8 @@ module.exports = class User
   setUsername: (username) =>
     @auth.call 'users.setUsername', {username}, {invalidateAll: true}
 
-  makeMember: =>
-    @auth.call 'users.makeMember', {}, {invalidateAll: true}
+  # makeMember: =>
+  #   @auth.call 'users.makeMember', {}, {invalidateAll: true}
 
   setFlags: (flags) =>
     @auth.call 'users.setFlags', flags, {invalidateAll: true}

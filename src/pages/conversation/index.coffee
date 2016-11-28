@@ -20,8 +20,8 @@ if window?
 
 module.exports = class ConversationPage
   constructor: ({@model, requests, @router, serverData}) ->
-    toUser = requests.map ({route}) =>
-      @model.user.getById route.params.id
+    toUser = requests.flatMapLatest ({route}) =>
+      @model.user.getById route.params.userId
 
     isRefreshing = new Rx.BehaviorSubject false
 
@@ -54,7 +54,7 @@ module.exports = class ConversationPage
     },
       z @$appBar, {
         title: 'NAME'
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary900}
+        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
         $topRightButton: if isRefreshing
           z @$refreshingSpinner,
             size: 20

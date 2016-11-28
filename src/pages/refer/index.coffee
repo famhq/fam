@@ -38,6 +38,6 @@ module.exports = class ReferPage
     },
       z @$appBar, {
         title: 'Refer a member'
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary900}
+        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }
       @$refer

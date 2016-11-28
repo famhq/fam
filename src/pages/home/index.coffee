@@ -28,7 +28,7 @@ module.exports = class HomePage
   afterMount: =>
     @model.user.getMe().take(1).subscribe (me) =>
       if me?.isMember
-        @router.go '/threads'
+        @router.go '/community'
 
   renderHead: => @$head
 

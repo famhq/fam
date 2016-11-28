@@ -32,7 +32,7 @@ module.exports = class Conversations
     {me, conversations} = @state.getValue()
 
     z '.z-conversations',
-      z '.g-grid', [
+      z '.g-grid',
         if conversations and _.isEmpty conversations
           'No conversations found'
         else if conversations
@@ -54,16 +54,3 @@ module.exports = class Conversations
 
         else
           @$spinner
-
-        z '.fab',
-          z @$fab,
-            colors:
-              c500: colors.$primary500
-            $icon: z @$addIcon, {
-              icon: 'add'
-              isTouchTarget: false
-              color: colors.$white
-            }
-            onclick: =>
-              @router.go '/newMessage'
-      ]

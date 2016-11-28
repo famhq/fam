@@ -44,7 +44,7 @@ module.exports = class SignIn
     }
     .then =>
       @state.set isLoading: false
-      @router.go '/threads'
+      @router.go '/community'
     .catch (err) =>
       @usernameError.onNext err.message
       @state.set isLoading: false

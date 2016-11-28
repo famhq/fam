@@ -30,10 +30,10 @@ module.exports = class PrimaryInput extends Input
         isDark: true
         colors:
           c200: colors.$tertiary200Text
-          c500: colors.$tertiary500Text
+          c500: colors.$tertiary900Text
           c600: colors.$tertiary600Text
-          c700: colors.$tertiary700Text
-          ink: colors.$tertiary700Text
+          c700: colors.$tertiary500Text
+          ink: colors.$tertiary500Text
       }
       if optType is 'password'
         z '.make-visible', {

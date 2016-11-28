@@ -2,6 +2,7 @@ _ = require 'lodash'
 Rx = require 'rx-lite'
 Exoid = require 'exoid'
 request = require 'clay-request'
+socketIO = require 'socket.io-client'
 
 Auth = require './auth'
 User = require './user'
@@ -12,6 +13,7 @@ ClashRoyaleDeck = require './clash_royale_deck'
 ClashRoyaleUserDeck = require './clash_royale_user_deck'
 ClashRoyaleCard = require './clash_royale_card'
 ChatMessage = require './chat_message'
+Group = require './group'
 Product = require './product'
 PushToken = require './push_token'
 Thread = require './thread'
@@ -40,15 +42,14 @@ module.exports = class Model
     accessToken = cookieSubject.map (cookies) ->
       cookies[config.AUTH_COOKIE]
 
+    ioEmit = (event, opts) ->
+      accessToken.take(1).toPromise()
+      .then (accessToken) ->
+        io.emit event, _.defaults {accessToken}, opts
+
     proxy = (url, opts) ->
       accessToken.take(1).toPromise()
       .then (accessToken) ->
-        proxyHeaders =  _.pick serverHeaders, [
-          'cookie'
-          'user-agent'
-          'accept-language'
-          'x-forwarded-for'
-        ]
         request url, _.merge {
           qs: if accessToken? then {accessToken} else {}
           headers: if _.isPlainObject opts?.body
@@ -60,9 +61,11 @@ module.exports = class Model
             proxyHeaders
         }, opts
 
+    io = socketIO config.API_URL
+
     @exoid = new Exoid
-      api: config.API_URL + '/exoid'
-      fetch: proxy
+      ioEmit: ioEmit
+      io: io
       cache: cache.exoid
 
     @auth = new Auth {@exoid, cookieSubject}
@@ -73,6 +76,7 @@ module.exports = class Model
     @clashRoyaleDeck = new ClashRoyaleDeck {@auth}
     @clashRoyaleUserDeck = new ClashRoyaleUserDeck {@auth}
     @clashRoyaleCard = new ClashRoyaleCard {@auth}
+    @group = new Group {@auth}
     @thread = new Thread {@auth}
     @threadMessage = new ThreadMessage {@auth}
     @product = new Product {@auth}

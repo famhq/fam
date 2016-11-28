@@ -1,0 +1,33 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.z-groups
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .no-groups
+    > .g-grid
+      padding: 16px
+      text-align: center
+
+  > .groups
+    > .g-grid
+      > .g-cols
+        > .g-col
+          > .group
+            display: block
+            background: getColor('$tertiary700')
+
+            > .content
+              padding: 16px
+
+              > .name
+                responsive-font-subhead()
+
+              > .count
+                responsive-font-caption()

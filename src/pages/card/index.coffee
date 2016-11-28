@@ -50,7 +50,7 @@ module.exports = class CardPage
     },
       z @$appBar, {
         title: card?.name
-        $topLeftButton: z @$buttonBack, {color: colors.$primary900}
+        $topLeftButton: z @$buttonBack, {color: colors.$tertiary900}
         isFlat: true
       }
       @$cardInfo

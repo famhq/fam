@@ -79,6 +79,7 @@
     "promiz": "^1.0.4",
     "qs": "^5.2.0",
     "rx-lite": "^3.1.2",
+    "socket.io-client": "^1.5.1",
     "stacktrace-js": "^1.0.1",
     "whatwg-fetch": "^0.10.1",
     "zorium": "^1.0.8",

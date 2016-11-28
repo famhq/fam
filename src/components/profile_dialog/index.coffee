@@ -69,7 +69,7 @@ module.exports = class ProfileDialog
                   z '.icon',
                     z @$blockIcon,
                       icon: 'block'
-                      color: colors.$tertiary500
+                      color: colors.$tertiary900
                       isTouchTarget: false
                   z '.text',
                     if isBlocked then 'Unblock user' else 'Block user'
@@ -85,7 +85,7 @@ module.exports = class ProfileDialog
                   z '.icon',
                     z @$flagIcon,
                       icon: 'warning'
-                      color: colors.$tertiary500
+                      color: colors.$tertiary900
                       isTouchTarget: false
                   z '.text',
                     if isFlagLoading \
@@ -106,7 +106,7 @@ module.exports = class ProfileDialog
               #     z '.icon',
               #       z @$banIcon,
               #         icon: 'lock'
-              #         color: colors.$tertiary500
+              #         color: colors.$tertiary900
               #         isTouchTarget: false
               #     z '.text',
               #       if user?.flags?.isChatBanned

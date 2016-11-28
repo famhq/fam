@@ -15,7 +15,7 @@ module.exports = class ButtonMenu
       z @$menuIcon,
         isAlignedLeft: true
         icon: 'menu'
-        color: color or colors.$primary500
+        color: color or colors.$tertiary900
         onclick: (e) =>
           e.preventDefault()
           @model.drawer.open()

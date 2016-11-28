@@ -7,10 +7,12 @@ config = require './config'
 gulpPaths = require '../gulp_paths'
 HomePage = require './pages/home'
 SignInPage = require './pages/sign_in'
+FriendsPage = require './pages/friends'
 ConversationPage = require './pages/conversation'
 ConversationsPage = require './pages/conversations'
+CommunityPage = require './pages/community'
+GroupPage = require './pages/group'
 ThreadPage = require './pages/thread'
-ThreadsPage = require './pages/threads'
 ThreadReplyPage = require './pages/thread_reply'
 NewThreadPage = require './pages/new_thread'
 NewDeckPage = require './pages/new_deck'
@@ -24,6 +26,7 @@ AcceptInvitePage = require './pages/accept_invite'
 ReferredPage = require './pages/referred'
 ProfilePage = require './pages/profile'
 TosPage = require './pages/tos'
+PoliciesPage = require './pages/policies'
 SetAddressPage = require './pages/set_address'
 GetAppPage = require './pages/get_app'
 PrivacyPage = require './pages/privacy'
@@ -31,6 +34,9 @@ EditProfilePage = require './pages/edit_profile'
 LearnMorePage = require './pages/learn_more'
 FourOhFourPage = require './pages/404'
 Drawer = require './components/drawer'
+
+# TODO: is there a way we can not construct every single Page class for every
+# page load?
 
 module.exports = class App
   constructor: ({requests, serverData, model, router}) ->
@@ -55,12 +61,14 @@ module.exports = class App
         routes.set path, -> $page
 
     route '/', HomePage
-    # route '/', ThreadsPage
+    # route '/', CommunityPage
+    route ['/friends/:action', '/friends'], FriendsPage
     route '/conversation/:userId', ConversationPage
     route '/conversations', ConversationsPage
     route '/thread/:id/reply', ThreadReplyPage
     route '/thread/:id/:page', ThreadPage
-    route '/threads', ThreadsPage
+    route '/community', CommunityPage
+    route '/group/:id', GroupPage
     route '/newThread', NewThreadPage
     route '/newDeck', NewDeckPage
     route '/decks', DecksPage
@@ -69,6 +77,7 @@ module.exports = class App
     route '/cards/:id', CardPage
     route '/refer', ReferPage
     route '/pay', PayPage
+    route '/policies', PoliciesPage
     route '/tos', TosPage
     route '/privacy', PrivacyPage
     route '/signIn', SignInPage

@@ -55,7 +55,7 @@ module.exports = class ConversationsPage
     },
       z @$appBar, {
         title: 'Private Messages'
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary900}
+        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
         $topRightButton: if isRefreshing
           z @$refreshingSpinner,
             size: 20
