@@ -9,7 +9,7 @@ config = require '../../config'
 colors = require '../../colors'
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
-ButtonMenu = require '../../components/button_menu'
+ButtonBack = require '../../components/button_back'
 Conversation = require '../../components/conversation'
 Avatar = require '../../components/avatar'
 Spinner = require '../../components/spinner'
@@ -19,9 +19,11 @@ if window?
   require './index.styl'
 
 module.exports = class ConversationPage
+  hideDrawer: true
+
   constructor: ({@model, requests, @router, serverData}) ->
-    toUser = requests.flatMapLatest ({route}) =>
-      @model.user.getById route.params.userId
+    conversation = requests.flatMapLatest ({route}) =>
+      @model.conversation.getById route.params.conversationId
 
     isRefreshing = new Rx.BehaviorSubject false
 
@@ -35,26 +37,34 @@ module.exports = class ConversationPage
       }
     })
     @$appBar = new AppBar {@model}
-    @$buttonMenu = new ButtonMenu {@model}
-    @$conversation = new Conversation {@model, @router, isRefreshing, toUser}
+    @$buttonBack = new ButtonBack {@model, @router}
+    @$conversation = new Conversation {
+      @model, @router, isRefreshing, conversation
+    }
     @$refreshingSpinner = new Spinner()
 
     @state = z.state
-      toUser: toUser
+      me: @model.user.getMe()
+      conversation: conversation
       isRefreshing: isRefreshing
 
   renderHead: => @$head
 
   render: =>
-    {toUser, isRefreshing} = @state.getValue()
+    {conversation, me, isRefreshing} = @state.getValue()
+
+    console.log conversation
+
+    toUser = _.find conversation?.users, (user) ->
+      me?.id isnt user.id
 
     z '.p-conversation', {
       style:
         height: "#{window?.innerHeight}px"
     },
       z @$appBar, {
-        title: 'NAME'
-        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
+        title: @model.user.getDisplayName toUser
+        $topLeftButton: z @$buttonBack, {color: colors.$tertiary900}
         $topRightButton: if isRefreshing
           z @$refreshingSpinner,
             size: 20

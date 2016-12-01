@@ -55,7 +55,6 @@
   },
   "dependencies": {
     "assert-none-missing": "^0.1.2",
-    "bluebird": "^2.10.2",
     "body-parser": "^1.14.1",
     "clay-environment": "^0.3.3",
     "clay-request": "^0.4.4",

@@ -60,12 +60,14 @@ $zIndexResults = 1000
 
   > .form
     > .input
+      background: getColor('$tertiary700')
+      color: getColor('$tertiary700Text')
       margin: 0
       box-shadow: none
 
   > .results
-    background: getColor('$grey200')
-    z-index: $zIndexResults // FIXME: global z-index
+    background: getColor('$tertiary900')
+    z-index: $zIndexResults
     display: flex
     flex: 1
     padding-top: 10px

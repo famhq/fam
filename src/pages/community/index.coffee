@@ -4,6 +4,7 @@ _ = require 'lodash'
 _map = require 'lodash/collection/map'
 _mapValues = require 'lodash/object/mapValues'
 _isEmpty = require 'lodash/lang/isEmpty'
+FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -20,6 +21,8 @@ Spinner = require '../../components/spinner'
 if window?
   require './index.styl'
 
+TABS = ['groups', 'conversations']
+
 module.exports = class CommunityPage
   constructor: ({@model, requests, @router, serverData}) ->
     @$head = new Head({
@@ -31,19 +34,28 @@ module.exports = class CommunityPage
         description: 'Community'
       }
     })
+
+    selectedIndex = new Rx.BehaviorSubject 0
+
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$threads = new Threads {@model, @router}
     @$groups = new Groups {@model, @router}
     @$conversations = new Conversations {@model, @router}
-    @$tabs = new Tabs {@model}
+    @$tabs = new Tabs {@model, selectedIndex}
     @$threadsIcon = new Icon()
     @$groupsIcon = new Icon()
     @$conversationsIcon = new Icon()
+    @$fab = new FloatingActionButton()
+    @$plusIcon = new Icon()
+
+    @state = z.state {selectedIndex}
 
   renderHead: => @$head
 
   render: =>
+    {selectedIndex} = @state.getValue()
+
     z '.p-community', {
       style:
         height: "#{window?.innerHeight}px"
@@ -56,15 +68,15 @@ module.exports = class CommunityPage
       z @$tabs,
         isBarFixed: false
         tabs: [
-          {
-            $menuIcon:
-              z @$threadsIcon,
-                icon: 'chat'
-                isTouchTarget: false
-                color: colors.$white
-            $menuText: 'Threads'
-            $el: @$threads
-          }
+          # {
+          #   $menuIcon:
+          #     z @$threadsIcon,
+          #       icon: 'chat'
+          #       isTouchTarget: false
+          #       color: colors.$white
+          #   $menuText: 'Threads'
+          #   $el: @$threads
+          # }
           {
             $menuIcon:
               z @$groupsIcon,
@@ -84,3 +96,18 @@ module.exports = class CommunityPage
             $el: @$conversations
           }
         ]
+      z '.fab',
+        z @$fab,
+          colors:
+            c500: colors.$primary500
+          $icon: z @$plusIcon, {
+            icon: 'add'
+            isTouchTarget: false
+            color: colors.$white
+          }
+          onclick: =>
+            tab = TABS[selectedIndex]
+            if tab is 'groups'
+              @router.go '/newGroup'
+            else
+              @router.go '/newConversation'

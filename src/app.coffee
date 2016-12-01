@@ -10,8 +10,11 @@ SignInPage = require './pages/sign_in'
 FriendsPage = require './pages/friends'
 ConversationPage = require './pages/conversation'
 ConversationsPage = require './pages/conversations'
+NewConversationPage = require './pages/new_conversation'
 CommunityPage = require './pages/community'
 GroupPage = require './pages/group'
+EditGroupPage = require './pages/edit_group'
+NewGroupPage = require './pages/new_group'
 ThreadPage = require './pages/thread'
 ThreadReplyPage = require './pages/thread_reply'
 NewThreadPage = require './pages/new_thread'
@@ -44,7 +47,7 @@ module.exports = class App
 
     requests = requests.map (req) ->
       route = routes.get req.path
-      {req, route, $page: route.handler()}
+      {req, route, $page: route.handler?()}
 
     route = (paths, Page) ->
       if typeof paths is 'string'
@@ -63,12 +66,15 @@ module.exports = class App
     route '/', HomePage
     # route '/', CommunityPage
     route ['/friends/:action', '/friends'], FriendsPage
-    route '/conversation/:userId', ConversationPage
+    route '/conversation/:conversationId', ConversationPage
     route '/conversations', ConversationsPage
+    route '/newConversation', NewConversationPage
     route '/thread/:id/reply', ThreadReplyPage
     route '/thread/:id/:page', ThreadPage
     route '/community', CommunityPage
     route '/group/:id', GroupPage
+    route '/group/:id/edit', EditGroupPage
+    route '/newGroup', NewGroupPage
     route '/newThread', NewThreadPage
     route '/newDeck', NewDeckPage
     route '/decks', DecksPage

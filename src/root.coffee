@@ -9,6 +9,7 @@ StackTrace = require 'stacktrace-js'
 FastClick = require 'fastclick'
 LocationRouter = require 'location-router'
 Environment = require 'clay-environment'
+socketIO = require 'socket.io-client'
 
 require './root.styl'
 
@@ -83,7 +84,8 @@ init = ->
   onOffline = ->
     isOffline.onNext true
 
-  model = new Model({cookieSubject})
+  io = socketIO config.API_URL
+  model = new Model({cookieSubject, io})
   model.portal.listen()
 
   router = new RouterService {

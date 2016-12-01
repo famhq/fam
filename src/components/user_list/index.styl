@@ -9,18 +9,19 @@ json('zorium-paper/colors.json')
 
   > .user
     display: flex
+    align-items: center
     padding: 10px 0
+    cursor: pointer
 
     > .avatar
       margin-right: 16px
 
     > .right
-      padding: 0 16px 20px 0
-      flex: 1
+      padding: 0 16px 0 0
+      // flex: 1
       border-bottom: 1px solid getColor('$black12')
 
       > .name
         responsive-font-subhead()
         font-weight: 500
-        color: getColor('$tertiary900')
-        margin-bottom: 8px
+        color: getColor('$tertiary900Text')

@@ -2,7 +2,6 @@ _ = require 'lodash'
 Rx = require 'rx-lite'
 Exoid = require 'exoid'
 request = require 'clay-request'
-socketIO = require 'socket.io-client'
 
 Auth = require './auth'
 User = require './user'
@@ -26,7 +25,7 @@ SERIALIZATION_KEY = 'MODEL'
 SERIALIZATION_EXPIRE_TIME_MS = 1000 * 10 # 10 seconds
 
 module.exports = class Model
-  constructor: ({cookieSubject, serverHeaders}) ->
+  constructor: ({cookieSubject, serverHeaders, io}) ->
     serverHeaders ?= {}
 
     serialization = window?[SERIALIZATION_KEY] or {}
@@ -60,8 +59,6 @@ module.exports = class Model
           else
             proxyHeaders
         }, opts
-
-    io = socketIO config.API_URL
 
     @exoid = new Exoid
       ioEmit: ioEmit

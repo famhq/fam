@@ -19,9 +19,6 @@ if window?
 
 module.exports = class ConversationsPage
   constructor: ({@model, requests, @router, serverData}) ->
-    toUser = requests.map ({route}) =>
-      @model.user.getById route.params.id
-
     isRefreshing = new Rx.BehaviorSubject false
 
     @$head = new Head({
@@ -36,18 +33,17 @@ module.exports = class ConversationsPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$conversations = new Conversations {
-      @model, @router, isRefreshing, toUser
+      @model, @router, isRefreshing
     }
     @$refreshingSpinner = new Spinner()
 
     @state = z.state
-      toUser: toUser
       isRefreshing: isRefreshing
 
   renderHead: => @$head
 
   render: =>
-    {toUser, isRefreshing} = @state.getValue()
+    {isRefreshing} = @state.getValue()
 
     z '.p-conversations', {
       style:

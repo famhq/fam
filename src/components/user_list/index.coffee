@@ -21,14 +21,17 @@ module.exports = class UserList
             userInfo: user
           }
 
-  render: =>
+  render: ({onclick} = {}) =>
     {users} = @state.getValue()
 
     z '.z-user-list',
       _map users, (user) =>
         z '.user', {
           onclick: =>
-            @selectedProfileDialogUser.onNext user.userInfo
+            if onclick
+              onclick user.userInfo
+            else
+              @selectedProfileDialogUser.onNext user.userInfo
         },
           z '.avatar',
             z user.$avatar,

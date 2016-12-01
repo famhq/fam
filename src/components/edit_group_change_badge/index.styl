@@ -1,0 +1,39 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+$zIndexUploadOverlay = 1
+
+.z-edit-group-change-badge
+  > .content
+    padding: 16px
+
+    > .g-grid
+      > .title
+        responsive-font-subhead()
+        color: getColor('$primary500')
+        text-transform: uppercase
+        padding: 16px 0
+
+      > .g-cols
+        > .g-col
+          > .background-color
+            width: 100%
+            padding-bottom: 100%
+            border-radius: 50%
+            background-size: auto 100%
+
+            &.is-selected
+              position: relative
+              box-sizing: border-box
+
+              &:after
+                position: absolute
+                top: 6%
+                left: 6%
+                content: ''
+                width: 88%
+                height: 88%
+                border-radius: 50%
+                border: 3px solid getColor('$tertiary900')
+                box-sizing: border-box

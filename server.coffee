@@ -9,6 +9,7 @@ request = require 'clay-request'
 Rx = require 'rx-lite'
 cookieParser = require 'cookie-parser'
 fs = require 'fs'
+socketIO = require 'socket.io-client'
 
 config = require './src/config'
 gulpPaths = require './gulp_paths'
@@ -106,8 +107,8 @@ app.use (req, res, next) ->
     portal: null
     router: null
   }
-
-  model = new Model({cookieSubject, serverHeaders: req.headers})
+  io = socketIO config.API_URL
+  model = new Model({cookieSubject, io, serverHeaders: req.headers})
   requests = new Rx.BehaviorSubject(req)
   serverData = {req, res, styles, bundlePath}
   userAgent = req.headers?['user-agent']
@@ -120,9 +121,11 @@ app.use (req, res, next) ->
              else RENDER_TO_STRING_TIMEOUT_MS
   }
   .then (html) ->
+    io.disconnect()
     hasSent = true
     res.send '<!DOCTYPE html>' + html
   .catch (err) ->
+    io.disconnect()
     # console.log 'err', err
     log.error err
     if err.html

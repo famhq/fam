@@ -12,9 +12,10 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class FindFriends
-  constructor: ({model, portal, @isFindFriendsVisible,
-      selectedProfileDialogUser}) ->
+  constructor: (options) ->
+    {model, @isFindFriendsVisible, selectedProfileDialogUser} = options
 
+    @isFindFriendsVisible ?= new Rx.BehaviorSubject true
     @value = new Rx.BehaviorSubject ''
 
     # TODO: add infinite scroll
@@ -31,7 +32,7 @@ module.exports = class FindFriends
     @$clear = new Icon()
 
     @$userList = new UserList {
-      model, portal, users, selectedProfileDialogUser
+      model, users, selectedProfileDialogUser
     }
 
     @state = z.state
@@ -45,7 +46,7 @@ module.exports = class FindFriends
     @value.onNext ''
     @$$el.querySelector('.input').focus()
 
-  render: =>
+  render: ({onclick} = {}) =>
     {value, users} = @state.getValue()
 
     z '.z-find-friends', {
@@ -67,7 +68,7 @@ module.exports = class FindFriends
               icon: 'close'
               isAlignedTop: true
               isAlignedRight: true
-              color: colors.$primary500Text
+              color: colors.$primary500
               onclick: @clear
       z 'form.form',
         onsubmit: (e) ->
@@ -81,4 +82,4 @@ module.exports = class FindFriends
           oninput: z.ev (e, $$el) =>
             @value.onNext $$el.value
       z '.results',
-        z @$userList
+        z @$userList, {onclick}

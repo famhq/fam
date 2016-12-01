@@ -17,6 +17,9 @@ module.exports = class User
   setUsername: (username) =>
     @auth.call 'users.setUsername', {username}, {invalidateAll: true}
 
+  searchByUsername: (username) =>
+    @auth.call 'users.searchByUsername', {username}
+
   # makeMember: =>
   #   @auth.call 'users.makeMember', {}, {invalidateAll: true}
 

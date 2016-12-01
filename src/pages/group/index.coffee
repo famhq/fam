@@ -22,45 +22,71 @@ if window?
   require './index.styl'
 
 module.exports = class GroupPage
+  hideDrawer: true
+
   constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) =>
-      @model.group.getById route.params.id
+    groupId = requests.map ({route}) ->
+      route.params.id
+
+    group = groupId.flatMapLatest (groupId) =>
+      @model.group.getById groupId
 
     @$head = new Head({
       @model
       requests
       serverData
-      meta: {
-        title: 'Group'
-        description: 'Group'
-      }
+      meta: group.map (group) ->
+        title: group.name
+        description: group.name
     })
     @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@model}
-    @$groupInfo = new GroupInfo {@model, @router}
-    @$groupChat = new GroupChat {@model, @router}
-    @$groupAnnouncements = new GroupAnnouncements {@model, @router}
-    @$groupMembers = new GroupMembers {@model, @router}
+    @$buttonBack = new ButtonBack {@model, @router}
+    @$groupInfo = new GroupInfo {@model, @router, group}
+    @$groupChat = new GroupChat {
+      @model
+      @router
+      conversation: groupId.flatMapLatest (groupId) =>
+        @model.conversation.getByGroupId groupId
+    }
+    @$groupAnnouncements = new GroupAnnouncements {@model, @router, group}
+    @$groupMembers = new GroupMembers {@model, @router, group}
     @$tabs = new Tabs {@model}
+    @$editIcon = new Icon()
+    @$settingsIcon = new Icon()
     @$groupInfoIcon = new Icon()
     @$groupChatIcon = new Icon()
     @$groupAnnouncementsIcon = new Icon()
     @$groupMembersIcon = new Icon()
 
+    @state = z.state {group}
+
   renderHead: => @$head
 
   render: =>
+    {group} = @state.getValue()
+
     z '.p-group', {
       style:
         height: "#{window?.innerHeight}px"
     },
       z @$appBar, {
-        title: 'Group'
+        title: group?.name
+        bgColor: colors.$tertiary700
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$tertiary900}
+        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topRightButton:
+          z '.p-group_top-right',
+            z '.icon',
+              z @$editIcon,
+                icon: 'edit'
+                color: colors.$primary500
+                onclick: =>
+                  @router.go "/group/#{group?.id}/edit"
+
       }
       z @$tabs,
         isBarFixed: false
+        barBgColor: colors.$tertiary700
         tabs: [
           {
             $menuIcon:

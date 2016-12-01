@@ -33,8 +33,6 @@ module.exports = class Groups
   render: =>
     {me, myGroups} = @state.getValue()
 
-    console.log 'groups', myGroups
-
     z '.z-groups',
       z '.g-grid',
         z 'h2.title', 'My groups'
@@ -47,10 +45,11 @@ module.exports = class Groups
           z '.g-grid',
             z '.g-cols',
               _.map myGroups, ({group, $icon}) =>
-                z '.g-col.g-xs-3.g-md-2',
+                z '.g-col.g-xs-6.g-md-3',
                   @router.link z 'a.group', {
-                    href: "/group/#{group.id}/1"
+                    href: "/group/#{group.id}"
                   },
+                    z '.image'
                     z '.content',
-                      z '.name', group.name
+                      z '.name', group.name or 'Nameless'
                       z '.count', "#{group.members?.length} members"

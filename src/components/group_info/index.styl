@@ -4,7 +4,12 @@
 
 .z-group-info
   flex: 1
-  display: flex
-  padding: 16px
   overflow: auto
   -webkit-overflow-scrolling: touch
+
+  > .g-grid
+    padding: 16px
+
+    > .title
+      responsive-font-subhead()
+      color: getColor('$primary500')

@@ -9,6 +9,11 @@ json('zorium-paper/colors.json')
   width: 100%
   overflow: auto
   -webkit-overflow-scrolling: touch
+  padding: 16px
+
+  > .title
+    responsive-font-subhead()
+    color: getColor('$primary500')
 
   > .no-groups
     > .g-grid
@@ -23,11 +28,17 @@ json('zorium-paper/colors.json')
             display: block
             background: getColor('$tertiary700')
 
+            > .image
+              width: 100%
+              padding-bottom: 56%
+              background: black
+
             > .content
               padding: 16px
 
               > .name
-                responsive-font-subhead()
+                responsive-font-body1()
 
               > .count
                 responsive-font-caption()
+                margin-top: 4px

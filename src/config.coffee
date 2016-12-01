@@ -37,15 +37,14 @@ isomorphic =
     PROD: 'production'
     TEST: 'test'
 
-  PLAYER_COLORS: [
-    colors.$amber500
-    colors.$secondary500
-    colors.$primary500
-    colors.$green500
-    colors.$red500
-    colors.$blue500
+  BACKGROUNDS: [
+    'blue'
+    'green'
+    'purple'
+    'red'
+    'yellow'
   ]
-  PLAYER_AVATARS: _.map _.range(1, 40), (i) -> "#{i}00"
+  BADGES: _.map _.range(1, 95), (i) -> "#{i}"
 
 
 # Server only

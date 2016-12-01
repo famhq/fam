@@ -16,4 +16,5 @@ module.exports = class GroupMembers
     {} = @state.getValue()
 
     z '.z-group-members',
-      'test'
+      z '.g-grid',
+        'test'

@@ -4,6 +4,7 @@ colors = require '../../colors'
 _map = require 'lodash/collection/map'
 _mapValues = require 'lodash/object/mapValues'
 _isEmpty = require 'lodash/lang/isEmpty'
+_ = require 'lodash'
 log = require 'loga'
 Environment = require 'clay-environment'
 moment = require 'moment'
@@ -27,7 +28,8 @@ MAX_LINES = 20
 RENDER_DELAY_MS = 100
 
 module.exports = class Conversation
-  constructor: ({@model, @router, @error, isRefreshing, toUser, channel}) ->
+  constructor: (options) ->
+    {@model, @router, @error, isRefreshing, conversation} = options
     @selectedProfileDialogUser = new Rx.BehaviorSubject false
 
     @$toAvatar = new Avatar()
@@ -41,30 +43,26 @@ module.exports = class Conversation
     @isRefreshPaused # we don't refresh when the user is typing
     @isRefreshPausedTimeout = null
     me = @model.user.getMe()
+    conversation ?= new Rx.BehaviorSubject null
+    isRefreshing ?= new Rx.BehaviorSubject null
 
-    @toUserAndChannelAndMe = Rx.Observable.combineLatest(
-      toUser
-      channel or Rx.Observable.just null
-      # TODO: maybe replace with subscribe / dispose
+    @conversationAndMe = Rx.Observable.combineLatest(
+      conversation
       me
       (vals...) -> vals
     )
 
     # not putting in state because re-render is too slow on type
     @message = new Rx.BehaviorSubject ''
-    @messages = @toUserAndChannelAndMe.flatMapLatest (resp) =>
-      [toUser, channel, me] = resp
+    @messages = @conversationAndMe.flatMapLatest (resp) =>
+      [conversation, me] = resp
 
       isRefreshing.onNext true
 
-      (if toUser
-        @model.chatMessage.getPrivateByUserId(
-          toUser.id
+      (if conversation
+        @model.chatMessage.getAllByConversationId(
+          conversation.id
         )
-      else if channel
-        @model.chatMessage.getByChannel {
-          channel: channel
-        }
       else
         Rx.Observable.just null)
       .map (response) ->
@@ -91,7 +89,8 @@ module.exports = class Conversation
       isLoading: isLoading
       isRefreshing: isRefreshing
       error: null
-      toUser: toUser
+      conversation: conversation
+      selectedProfileDialogUser: @selectedProfileDialogUser
 
       messages: @messages.map (messages) ->
         if messages
@@ -126,8 +125,10 @@ module.exports = class Conversation
     , PAUSE_WHILE_TYPING_DELAY_MS
 
   render: =>
-    {me, isLoading, isPostLoading, message, messages, toUser,
-      selectedProfileDialogUser, filter} = @state.getValue()
+    {me, isLoading, isPostLoading, message, messages, conversation,
+      selectedProfileDialogUser} = @state.getValue()
+
+    console.log 'prof', selectedProfileDialogUser, conversation
 
     z '.z-conversation',
       z '.g-grid',
@@ -152,10 +153,7 @@ module.exports = class Conversation
                     bgColor: colors.$grey200
                   }
                 z '.content',
-                  z '.info', {
-                    style:
-                      color: colors.$tertiary900
-                  },
+                  z '.info',
                     if user?.flags?.isModerator or user?.flags?.isDev
                       z '.icon',
                         z $statusIcon,
@@ -210,12 +208,9 @@ module.exports = class Conversation
                 if not isPostLoading and messageBody
                   @state.set isPostLoading: true
 
-                  channel = filter?.channel
-
                   @model.chatMessage.create {
                     body: messageBody
-                    toId: filter?.privateUserId
-                    channel: channel
+                    conversationId: conversation?.id
                   }
                   .then =>
                     # @model.user.emit('chatMessage').catch log.error

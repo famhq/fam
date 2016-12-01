@@ -16,4 +16,5 @@ module.exports = class GroupAnnouncements
     {} = @state.getValue()
 
     z '.z-group-announcements',
-      'test'
+      z '.g-grid',
+        'Announcements coming soon...'
