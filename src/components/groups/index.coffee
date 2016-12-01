@@ -12,6 +12,7 @@ config = require '../../config'
 colors = require '../../colors'
 Icon = require '../icon'
 PrimaryButton = require '../primary_button'
+GroupHeader = require '../group_header'
 Spinner = require '../spinner'
 
 if window?
@@ -28,7 +29,7 @@ module.exports = class Groups
       me: @model.user.getMe()
       myGroups: @model.group.getAll().map (groups) ->
         _.map groups, (group) ->
-          {group, $icon: new Icon()}
+          {group, $header: new GroupHeader({group})}
 
   render: =>
     {me, myGroups} = @state.getValue()
@@ -44,12 +45,14 @@ module.exports = class Groups
         z '.groups',
           z '.g-grid',
             z '.g-cols',
-              _.map myGroups, ({group, $icon}) =>
+              _.map myGroups, ({group, $header}) =>
                 z '.g-col.g-xs-6.g-md-3',
                   @router.link z 'a.group', {
                     href: "/group/#{group.id}"
                   },
-                    z '.image'
+                    z '.header',
+                      z '.inner',
+                        $header
                     z '.content',
                       z '.name', group.name or 'Nameless'
                       z '.count', "#{group.members?.length} members"
