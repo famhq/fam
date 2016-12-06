@@ -36,13 +36,15 @@ module.exports = class User
     formData = new FormData()
     formData.append 'file', file, file.name
 
-    @proxy config.PULSAR_API_URL + '/upload', {
+    console.log config.API_URL + '/upload'
+    @proxy config.API_URL + '/upload', {
       method: 'post'
       qs:
         path: 'users.setAvatarImage'
       body: formData
     }
-    # this doesn't actually work... it'd be nice, but it doesn't update existing
+    # this (exoid.update) doesn't actually work... it'd be nice
+    # but it doesn't update existing
     # streams
     # .then @exoid.update
     .then @exoid.invalidateAll

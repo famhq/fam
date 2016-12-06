@@ -11,6 +11,7 @@ if window?
 
 module.exports = class GroupHeader
   constructor: ({@model, @router, group}) ->
+    console.log 'header'
     @$groupBadge = new GroupBadge {group}
     @state = z.state {group}
 

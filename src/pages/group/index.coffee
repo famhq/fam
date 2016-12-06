@@ -14,6 +14,7 @@ GroupInfo = require '../../components/group_info'
 GroupChat = require '../../components/group_chat'
 GroupAnnouncements = require '../../components/group_announcements'
 GroupMembers = require '../../components/group_members'
+ProfileDialog = require '../../components/profile_dialog'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
 Spinner = require '../../components/spinner'
@@ -25,6 +26,8 @@ module.exports = class GroupPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
+    selectedProfileDialogUser = new Rx.BehaviorSubject null
+
     groupId = requests.map ({route}) ->
       route.params.id
 
@@ -49,7 +52,9 @@ module.exports = class GroupPage
         @model.conversation.getByGroupId groupId
     }
     @$groupAnnouncements = new GroupAnnouncements {@model, @router, group}
-    @$groupMembers = new GroupMembers {@model, @router, group}
+    @$groupMembers = new GroupMembers {
+      @model, @router, group, selectedProfileDialogUser
+    }
     @$tabs = new Tabs {@model}
     @$editIcon = new Icon()
     @$settingsIcon = new Icon()
@@ -57,13 +62,25 @@ module.exports = class GroupPage
     @$groupChatIcon = new Icon()
     @$groupAnnouncementsIcon = new Icon()
     @$groupMembersIcon = new Icon()
+    @$profileDialog = new ProfileDialog {
+      @model
+      @router
+      selectedProfileDialogUser
+    }
 
-    @state = z.state {group}
+    @state = z.state
+      group: group
+      me: @model.user.getMe()
+      selectedProfileDialogUser: selectedProfileDialogUser
 
   renderHead: => @$head
 
   render: =>
-    {group} = @state.getValue()
+    {group, me, selectedProfileDialogUser} = @state.getValue()
+
+    console.log 'spp2', selectedProfileDialogUser
+
+    hasPermission = @model.group.hasPermission group, me
 
     z '.p-group', {
       style:
@@ -87,41 +104,34 @@ module.exports = class GroupPage
       z @$tabs,
         isBarFixed: false
         barBgColor: colors.$tertiary700
-        tabs: [
+        barInactiveColor: colors.$white
+        tabs: _.filter [
           {
-            $menuIcon:
-              z @$groupInfoIcon,
-                icon: 'info'
-                isTouchTarget: false
-                color: colors.$white
+            $menuIcon: @$groupInfoIcon
+            menuIconName: 'info'
             $menuText: 'Info'
             $el: @$groupInfo
           }
+          if hasPermission
+            {
+              $menuIcon: @$groupChatIcon
+              menuIconName: 'chat-bubble'
+              $menuText: 'Chat'
+              $el: @$groupChat
+            }
+          if hasPermission
+            {
+              $menuIcon: @$groupAnnouncementsIcon
+              menuIconName: 'notifications'
+              $menuText: 'Announcements'
+              $el: @$groupAnnouncements
+            }
           {
-            $menuIcon:
-              z @$groupChatIcon,
-                icon: 'chat-bubble'
-                isTouchTarget: false
-                color: colors.$white
-            $menuText: 'Chat'
-            $el: @$groupChat
-          }
-          {
-            $menuIcon:
-              z @$groupAnnouncementsIcon,
-                icon: 'notifications'
-                isTouchTarget: false
-                color: colors.$white
-            $menuText: 'Announcements'
-            $el: @$groupAnnouncements
-          }
-          {
-            $menuIcon:
-              z @$groupMembersIcon,
-                icon: 'friends'
-                isTouchTarget: false
-                color: colors.$white
+            $menuIcon: @$groupMembersIcon
+            menuIconName: 'friends'
             $menuText: 'Members'
             $el: @$groupMembers
           }
         ]
+      if selectedProfileDialogUser
+        z @$profileDialog

@@ -115,6 +115,7 @@ init = ->
 
 
   routeHandler = (data) ->
+    console.log data
     data ?= {}
     {path, query, source, _isPush, _original, _isDeepLink} = data
 
@@ -162,8 +163,6 @@ init = ->
     requests.subscribeOnNext ({path}) ->
       if window?
         ga? 'send', 'pageview', path
-        # model.hyperplane.emit 'pageview', {fields: {path: path}}
-        # .catch log.error
 
     # nextTick prevents white flash
     setTimeout ->

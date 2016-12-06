@@ -49,19 +49,22 @@ module.exports = class App
       route = routes.get req.path
       {req, route, $page: route.handler?()}
 
+    $cachedPages = []
     route = (paths, Page) ->
       if typeof paths is 'string'
         paths = [paths]
 
-      $page = new Page({
-        model
-        router
-        serverData
-        requests: requests.filter ({$page}) ->
-          $page instanceof Page
-      })
       _forEach paths, (path) ->
-        routes.set path, -> $page
+        routes.set path, ->
+          unless $cachedPages[path]
+            $cachedPages[path] = new Page({
+              model
+              router
+              serverData
+              requests: requests.filter ({$page}) ->
+                $page instanceof Page
+            })
+          return $cachedPages[path]
 
     route '/', HomePage
     # route '/', CommunityPage

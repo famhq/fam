@@ -28,6 +28,7 @@ module.exports = class UserList
       _map users, (user) =>
         z '.user', {
           onclick: =>
+            console.log 'onclick', @selectedProfileDialogUser
             if onclick
               onclick user.userInfo
             else

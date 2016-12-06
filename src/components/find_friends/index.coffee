@@ -46,7 +46,7 @@ module.exports = class FindFriends
     @value.onNext ''
     @$$el.querySelector('.input').focus()
 
-  render: ({onclick} = {}) =>
+  render: ({onclick, onBack} = {}) =>
     {value, users} = @state.getValue()
 
     z '.z-find-friends', {
@@ -61,7 +61,7 @@ module.exports = class FindFriends
             isAlignedLeft: true
             color: colors.$primary900
             onclick: =>
-              @isFindFriendsVisible.onNext Rx.Observable.just false
+              onBack?() or @isFindFriendsVisible.onNext Rx.Observable.just false
         z 'span.right-icon',
           unless _isEmpty value
             z @$clear,

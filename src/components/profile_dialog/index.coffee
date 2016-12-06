@@ -30,7 +30,6 @@ module.exports = class ProfileDialog
       user: @selectedProfileDialogUser
       isFlagLoading: false
       isFlagged: false
-      platform: Environment.getPlatform {gameKey: config.GAME_KEY}
 
   render: =>
     {me, user, platform, isFlagLoading, isFlagged} = @state.getValue()

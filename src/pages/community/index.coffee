@@ -69,29 +69,20 @@ module.exports = class CommunityPage
         isBarFixed: false
         tabs: [
           # {
-          #   $menuIcon:
-          #     z @$threadsIcon,
-          #       icon: 'chat'
-          #       isTouchTarget: false
-          #       color: colors.$white
+          #   $menuIcon: @$threadsIcon
+          #   menuIconName: 'chat'
           #   $menuText: 'Threads'
           #   $el: @$threads
           # }
           {
-            $menuIcon:
-              z @$groupsIcon,
-                icon: 'grid'
-                isTouchTarget: false
-                color: colors.$white
+            $menuIcon: @$groupsIcon
+            menuIconName: 'grid'
             $menuText: 'Groups'
             $el: @$groups
           }
           {
-            $menuIcon:
-              z @$conversationsIcon,
-                icon: 'inbox'
-                isTouchTarget: false
-                color: colors.$white
+            $menuIcon: @$conversationsIcon
+            menuIconName: 'inbox'
             $menuText: 'Conversations'
             $el: @$conversations
           }

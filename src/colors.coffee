@@ -62,7 +62,7 @@ module.exports = _defaults {
   '$black': '#0c0c0c'
 
   '$tabSelected': paperColors.$white
-  '$tabUnselected': paperColors.$white
+  '$tabUnselected': '#1a1a1a'
 
   '$tabSelectedAlt': paperColors.$white
   '$tabUnselectedAlt': paperColors.$white30

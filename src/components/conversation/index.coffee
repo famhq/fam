@@ -65,14 +65,14 @@ module.exports = class Conversation
         )
       else
         Rx.Observable.just null)
-      .map (response) ->
+      .map (response) =>
         isLoading.onNext false
         isRefreshing.onNext false
-        # setTimeout =>
-        #   @scrollToBottom()
-        # , RENDER_DELAY_MS
-
-        response?.reverse?()
+        setTimeout =>
+          @scrollToBottom()
+          @state.set isLoaded: true
+        , RENDER_DELAY_MS
+        response
       .catch (err) ->
         console.log err
         Rx.Observable.just []
@@ -90,6 +90,7 @@ module.exports = class Conversation
       isRefreshing: isRefreshing
       error: null
       conversation: conversation
+      isLoaded: false
       selectedProfileDialogUser: @selectedProfileDialogUser
 
       messages: @messages.map (messages) ->
@@ -111,7 +112,6 @@ module.exports = class Conversation
   scrollToBottom: =>
     $messages = @$$el?.querySelector('.messages')
     if $messages and $messages[$messages.length - 1]?.scrollIntoView
-      console.log 'scroll view'
       $messages[$messages.length - 1].scrollIntoView()
     else if $messages
       $messages.scrollTop = $messages.scrollHeight - $messages.offsetHeight
@@ -126,13 +126,12 @@ module.exports = class Conversation
 
   render: =>
     {me, isLoading, isPostLoading, message, messages, conversation,
-      selectedProfileDialogUser} = @state.getValue()
-
-    console.log 'prof', selectedProfileDialogUser, conversation
+      selectedProfileDialogUser, isLoaded} = @state.getValue()
 
     z '.z-conversation',
       z '.g-grid',
-        z '.messages',
+        # hide messages until loaded to prevent showing the scrolling
+        z '.messages', {className: z.classKebab {isLoaded}},
           # hidden when inactive for perf
           if messages and not isLoading
             _map messages, ({messageInfo, $avatar, $statusIcon}) =>
@@ -141,6 +140,7 @@ module.exports = class Conversation
 
               z '.message', {
                 key: "message-#{messageInfo.id}" # re-use elements in v-dom
+                className: z.classKebab {isMe: user.id is me?.id}
                 onclick: =>
                   @selectedProfileDialogUser.onNext user
               },
@@ -152,7 +152,7 @@ module.exports = class Conversation
                           else '40px'
                     bgColor: colors.$grey200
                   }
-                z '.content',
+                z '.bubble',
                   z '.info',
                     if user?.flags?.isModerator or user?.flags?.isDev
                       z '.icon',
@@ -161,15 +161,14 @@ module.exports = class Conversation
                           color: colors.$tertiary900
                           isTouchTarget: false
                           size: '22px'
-                    z '.name', @model.user.getDisplayName user
 
-                  z '.body', {
-                    style:
-                      color: colors.$grey600
-                  },
+                  z '.body',
                     _map textLines, (text) ->
                       z 'div', text
                   z '.bottom',
+                    z '.name', @model.user.getDisplayName user
+                    z '.middot',
+                      innerHTML: '&middot;'
                     z '.time', moment(time).fromNow()
           else
             @$loadingSpinner

@@ -22,8 +22,13 @@ $zIndexTextarea = 2
       overflow-y: auto
       overflow-x: hidden
       -webkit-overflow-scrolling: touch
-      padding-bottom: 48px
+      margin-bottom: 64px
       width: 100%
+      opacity: 0
+      padding: 8px
+
+      &.is-loaded
+        opacity: 1
 
       > .message
         display: flex
@@ -31,13 +36,28 @@ $zIndexTextarea = 2
         width: 100%
         box-sizing: border-box
 
-        > .avatar
-          margin-right: 16px
+        &.is-me
+          margin-right: auto
 
-        > .content
-          padding-bottom: 20px
+          > .avatar
+            display: none
+
+          > .bubble
+            margin-left: auto
+            background: getColor('$tertiary500')
+
+        > .avatar
+          margin-right: 4px
+
+        > .bubble
+          padding: 10px 12px
           border-bottom: 1px solid getColor('$black12')
-          flex: 1
+          width: 50%
+          background: getColor('$tertiary700')
+          border-radius: 2px
+
+          // 478
+          // 234
 
           > .info
             responsive-font-subhead()
@@ -50,14 +70,9 @@ $zIndexTextarea = 2
             > .icon
               margin-right: 8px
 
-            > .name
-              max-width: 100%
-              text-overflow: ellipsis
-              overflow: hidden
-
           > .body
             responsive-font-body1()
-            color: getColor('$black')
+            color: getColor('$tertiary900Text')
             padding-right: 16px
             margin-top: 4px
             margin-bottom: 8px
@@ -67,13 +82,15 @@ $zIndexTextarea = 2
             display: flex
             align-items: center
             padding-right: 16px
+            responsive-font-caption()
+            color: getColor('$primary500')
 
-            > .time
+            > .name
               margin-left: auto
-              responsive-font-caption()
-              font-weight: 400
-              text-transform: uppercase
-              color: getColor('$blueGrey500')
+              margin-right: 4px
+
+            > .middot
+              margin-right: 4px
 
   > .textarea-container
     position: absolute

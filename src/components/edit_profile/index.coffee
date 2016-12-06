@@ -6,7 +6,7 @@ Button = require 'zorium-paper/button'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
-# UploadOverlay = require '../upload_overlay'
+UploadOverlay = require '../upload_overlay'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
 colors = require '../../colors'
@@ -32,7 +32,7 @@ module.exports = class EditProfile
 
     @$avatar = new Avatar()
     @$avatarButton = new PrimaryButton()
-    # @$uploadOverlay = new UploadOverlay {@model}
+    @$uploadOverlay = new UploadOverlay {@model}
 
     @$usernameInput = new PrimaryInput
       value: @usernameValue
@@ -40,9 +40,9 @@ module.exports = class EditProfile
 
     @state = z.state
       me: me
-      # avatarImage: null
-      # avatarDataUrl: null
-      # avatarUploadError: null
+      avatarImage: null
+      avatarDataUrl: null
+      avatarUploadError: null
       isSaving: false
       # selectedPresetAvatar: @selectedPresetAvatarStreams.switch()
 
@@ -65,19 +65,17 @@ module.exports = class EditProfile
         @usernameError.onNext JSON.stringify err
     else
       Promise.resolve null)
-    # .then =>
-    #   avatarChanged = selectedPresetAvatar isnt me?.data.presetAvatarId
-    #   if selectedPresetAvatar and avatarChanged
-    #     @model.userData.updateMe {presetAvatarId: selectedPresetAvatar}
-    #     .catch -> null
-    # .then =>
-    #   if avatarImage
-    #     @upload avatarImage
+    .then =>
+      console.log '123'
+      if avatarImage
+        console.log 'up'
+        @upload avatarImage
     .then =>
       @state.set isSaving: false
       @router.go '/profile'
 
   upload: (file) =>
+    console.log '1234'
     @model.user.setAvatarImage file
     .then (response) =>
       @state.set
@@ -120,22 +118,22 @@ module.exports = class EditProfile
           z @$usernameInput,
             hintText: 'username...'
 
-      # z '.section',
-      #   z '.title', 'Change avatar'
-      #   if avatarUploadError
-      #     avatarUploadError
-      #   z '.flex',
-      #     z '.avatar',
-      #       z @$avatar, {src: avatarDataUrl, user: me, size: '64px'}
-      #     z '.button',
-      #       z @$avatarButton,
-      #         text: 'Upload photo'
-      #         isFullWidth: false
-      #         onclick: null
-      #       z '.upload-overlay',
-      #         z @$uploadOverlay,
-      #           onSelect: ({file, dataUrl}) =>
-      #             @state.set avatarImage: file, avatarDataUrl: dataUrl
+      z '.section',
+        z '.title', 'Change avatar'
+        if avatarUploadError
+          avatarUploadError
+        z '.flex',
+          z '.avatar',
+            z @$avatar, {src: avatarDataUrl, user: me, size: '64px'}
+          z '.button',
+            z @$avatarButton,
+              text: 'Upload photo'
+              isFullWidth: false
+              onclick: null
+            z '.upload-overlay',
+              z @$uploadOverlay,
+                onSelect: ({file, dataUrl}) =>
+                  @state.set avatarImage: file, avatarDataUrl: dataUrl
 
       # z '.presets',
       #   z '.title', 'Or pick a preset'

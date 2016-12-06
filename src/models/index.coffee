@@ -49,6 +49,12 @@ module.exports = class Model
     proxy = (url, opts) ->
       accessToken.take(1).toPromise()
       .then (accessToken) ->
+        proxyHeaders =  _.pick serverHeaders, [
+          'cookie'
+          'user-agent'
+          'accept-language'
+          'x-forwarded-for'
+        ]
         request url, _.merge {
           qs: if accessToken? then {accessToken} else {}
           headers: if _.isPlainObject opts?.body

@@ -45,6 +45,14 @@ isomorphic =
     'yellow'
   ]
   BADGES: _.map _.range(1, 95), (i) -> "#{i}"
+  PLAYER_COLORS: [
+    colors.$amber500
+    colors.$secondary500
+    colors.$primary500
+    colors.$green500
+    colors.$red500
+    colors.$blue500
+  ]
 
 
 # Server only

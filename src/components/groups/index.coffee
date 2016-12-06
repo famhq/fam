@@ -27,32 +27,50 @@ module.exports = class Groups
 
     @state = z.state
       me: @model.user.getMe()
-      myGroups: @model.group.getAll().map (groups) ->
-        _.map groups, (group) ->
-          {group, $header: new GroupHeader({group})}
+      myGroups: @model.group.getAll({filter: 'mine'})
+                .map (groups) ->
+                  _.map groups, (group) ->
+                    {group, $header: new GroupHeader({group})}
+      openGroups: @model.group.getAll({filter: 'open'})
+                  .map (groups) ->
+                    _.map groups, (group) ->
+                      {group, $header: new GroupHeader({group})}
 
   render: =>
-    {me, myGroups} = @state.getValue()
+    {me, myGroups, openGroups} = @state.getValue()
+
+    groupTypes = [
+      {
+        title: 'My groups'
+        groups: myGroups
+      }
+      {
+        title: 'Open groups'
+        groups: openGroups
+      }
+    ]
 
     z '.z-groups',
-      z '.g-grid',
-        z 'h2.title', 'My groups'
-      if myGroups and _.isEmpty myGroups
-        z '.no-groups',
+      _.map groupTypes, ({title, groups}) =>
+        z '.group-list',
           z '.g-grid',
-            'No groups found'
-      else if myGroups
-        z '.groups',
-          z '.g-grid',
-            z '.g-cols',
-              _.map myGroups, ({group, $header}) =>
-                z '.g-col.g-xs-6.g-md-3',
-                  @router.link z 'a.group', {
-                    href: "/group/#{group.id}"
-                  },
-                    z '.header',
-                      z '.inner',
-                        $header
-                    z '.content',
-                      z '.name', group.name or 'Nameless'
-                      z '.count', "#{group.members?.length} members"
+            z 'h2.title', title
+          if groups and _.isEmpty groups
+            z '.no-groups',
+              z '.g-grid',
+                'No groups found'
+          else if groups
+            z '.groups',
+              z '.g-grid',
+                z '.g-cols',
+                  _.map groups, ({group, $header}) =>
+                    z '.g-col.g-xs-6.g-md-3',
+                      @router.link z 'a.group', {
+                        href: "/group/#{group.id}"
+                      },
+                        z '.header',
+                          z '.inner',
+                            $header
+                        z '.content',
+                          z '.name', group.name or 'Nameless'
+                          z '.count', "#{group.userIds?.length} members"
