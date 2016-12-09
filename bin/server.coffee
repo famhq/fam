@@ -1,5 +1,6 @@
 #!/usr/bin/env coffee
-_ = require 'lodash'
+_map = require 'lodash/map'
+_range = require 'lodash/range'
 log = require 'loga'
 cluster = require 'cluster'
 os = require 'os'
@@ -8,7 +9,7 @@ app = require '../server'
 config = require '../src/config'
 
 if cluster.isMaster
-  _.map _.range(os.cpus().length), ->
+  _map _range(os.cpus().length), ->
     cluster.fork()
 
   cluster.on 'exit', (worker) ->

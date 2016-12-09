@@ -1,6 +1,8 @@
 fs = require 'fs'
 del = require 'del'
-_ = require 'lodash'
+_defaults = require 'lodash/defaults'
+_defaultsDeep = require 'lodash/defaultsDeep'
+_mapValues = require 'lodash/mapValues'
 log = require 'loga'
 gulp = require 'gulp'
 webpack = require 'webpack'
@@ -78,7 +80,7 @@ gulp.task 'test:unit', ->
     .pipe mocha()
 
 gulp.task 'test:browser:phantom', ['build:scripts:test'], (cb) ->
-  new KarmaServer _.defaults({
+  new KarmaServer _defaults({
     browsers: ['PhantomJS']
   }, karmaConfig), cb
   .start()
@@ -112,7 +114,7 @@ gulp.task 'dev:webpack-server', ->
     paths.root
   ]
 
-  compiler = webpack _.defaultsDeep {
+  compiler = webpack _defaultsDeep {
     devtool: 'inline-source-map'
     entry: entries
     output:
@@ -127,7 +129,7 @@ gulp.task 'dev:webpack-server', ->
     plugins: [
       new webpack.HotModuleReplacementPlugin()
       new webpack.DefinePlugin
-        'process.env': _.mapValues process.env, (val) -> JSON.stringify val
+        'process.env': _mapValues process.env, (val) -> JSON.stringify val
     ]
   }, webpackBase
 
@@ -149,7 +151,7 @@ gulp.task 'build:static:dev', ->
 
 gulp.task 'build:scripts:test', ->
   gulp.src paths.unitTests
-  .pipe webpackStream _.defaultsDeep {
+  .pipe webpackStream _defaultsDeep {
     devtool: 'inline-source-map'
     module:
       loaders: [
@@ -159,7 +161,7 @@ gulp.task 'build:scripts:test', ->
       ]
     plugins: [
       new webpack.DefinePlugin
-        'process.env': _.mapValues process.env, (val) -> JSON.stringify val
+        'process.env': _mapValues process.env, (val) -> JSON.stringify val
     ]
   }, webpackBase
   .pipe gulp.dest paths.build
@@ -172,7 +174,7 @@ gulp.task 'dist:static', ['dist:clean'], ->
     .pipe gulp.dest paths.dist
 
 gulp.task 'dist:scripts', ['dist:clean'], ->
-  scriptsConfig = _.defaultsDeep {
+  scriptsConfig = _defaultsDeep {
     devtool: 'source-map'
     plugins: [
       new webpack.optimize.UglifyJsPlugin

@@ -1,4 +1,4 @@
-_ = require 'lodash'
+_every = require 'lodash/every'
 b = require 'b-assert'
 request = require 'clay-request'
 Promise = require 'bluebird'
@@ -32,7 +32,7 @@ after ->
   .then (build) =>
     Client
       .sauceJobStatus
-        passed: _.every this.test.parent.tests, {state: 'passed'}
+        passed: _every this.test.parent.tests, {state: 'passed'}
         public: 'public'
         build: build
       .end()
