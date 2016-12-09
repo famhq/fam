@@ -24,9 +24,6 @@ DeckPage = require './pages/deck'
 DecksPage = require './pages/decks'
 CardPage = require './pages/card'
 CardsPage = require './pages/cards'
-ReferPage = require './pages/refer'
-AcceptInvitePage = require './pages/accept_invite'
-ReferredPage = require './pages/referred'
 ProfilePage = require './pages/profile'
 TosPage = require './pages/tos'
 PoliciesPage = require './pages/policies'
@@ -34,7 +31,6 @@ SetAddressPage = require './pages/set_address'
 GetAppPage = require './pages/get_app'
 PrivacyPage = require './pages/privacy'
 EditProfilePage = require './pages/edit_profile'
-LearnMorePage = require './pages/learn_more'
 FourOhFourPage = require './pages/404'
 Drawer = require './components/drawer'
 
@@ -84,7 +80,6 @@ module.exports = class App
     route '/cards', CardsPage
     route '/decks/:id', DeckPage
     route '/cards/:id', CardPage
-    route '/refer', ReferPage
     route '/policies', PoliciesPage
     route '/tos', TosPage
     route '/privacy', PrivacyPage
@@ -92,11 +87,8 @@ module.exports = class App
     route '/join', JoinPage
     route '/setAddress', SetAddressPage
     route '/getApp', GetAppPage
-    route '/acceptInvite/:code', AcceptInvitePage
-    route '/r/:userId', ReferredPage
     route '/profile', ProfilePage
     route '/editProfile', EditProfilePage
-    route '/learnMore', LearnMorePage
     route '/*', FourOhFourPage
 
     $backupPage = if serverData?
@@ -107,10 +99,6 @@ module.exports = class App
     @$drawer = new Drawer({model, router})
 
     me = model.user.getMe()
-
-    me.take(1).subscribe (me) ->
-      if me?.username and not me?.isMember
-        router.go '/pay'
 
     @state = z.state {
       rand: null
