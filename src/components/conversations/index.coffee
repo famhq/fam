@@ -47,7 +47,7 @@ module.exports = class Conversations
               z '.right',
                 z '.info',
                   z '.name', @model.user.getDisplayName op
-                  z '.time', moment(conversation.lastUpdateTime).fromNow()
+                  z '.time', moment(conversation.lastUpdateTime).fromNowModified()
                 z '.last-message', conversation.lastMessage?.body
 
         else

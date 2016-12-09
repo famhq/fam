@@ -9,8 +9,14 @@ $zIndexTextarea = 2
 .z-conversation
   flex: 1
   display: flex
+  flex-direction: column
   width: 100%
-  position: relative
+
+  &.is-textarea-focused
+    > .bottom
+      > .g-grid
+        > .textarea
+          height: 84px
 
   > .g-grid
     display: flex
@@ -22,7 +28,7 @@ $zIndexTextarea = 2
       overflow-y: auto
       overflow-x: hidden
       -webkit-overflow-scrolling: touch
-      margin-bottom: 64px
+      // margin-bottom: 64px
       width: 100%
       opacity: 0
       padding: 8px
@@ -36,6 +42,10 @@ $zIndexTextarea = 2
         width: 100%
         box-sizing: border-box
 
+        &.is-sticker
+          > .bubble
+            background: none !important
+
         &.is-me
           margin-right: auto
 
@@ -46,18 +56,22 @@ $zIndexTextarea = 2
             margin-left: auto
             background: getColor('$tertiary500')
 
+            > .body
+              > div
+                > .sticker
+                  margin-left: auto
+                  margin-right: 0
+
         > .avatar
           margin-right: 4px
 
         > .bubble
           padding: 10px 12px
           border-bottom: 1px solid getColor('$black12')
-          width: 50%
+          width: 234px
           background: getColor('$tertiary700')
           border-radius: 2px
-
-          // 478
-          // 234
+          box-sizing: border-box
 
           > .info
             responsive-font-subhead()
@@ -78,6 +92,14 @@ $zIndexTextarea = 2
             margin-bottom: 8px
             overflow-x: hidden
 
+            > div
+              > .sticker
+                width: 70px
+                height: 70px
+                background-size: 100%
+                background-repeat: no-repeat
+                margin-right: auto
+
           > .bottom
             display: flex
             align-items: center
@@ -92,17 +114,35 @@ $zIndexTextarea = 2
             > .middot
               margin-right: 4px
 
-  > .textarea-container
-    position: absolute
-    z-index: $zIndexTextarea
-    bottom: 0
-    left: 0
-    width: 100%
-
+  > .bottom
     > .g-grid
       box-shadow: 0 1px 4px getColor('$black26')
       background: getColor('$tertiary500')
       position: relative
+
+      > .sticker-panel
+        width: 100%
+        position: relative
+        padding: 8px 16px 16px 16px
+
+        > .close-icon
+          position: absolute
+          top: 8px
+          right: 16px
+
+        > .title
+          responsive-font-subhead()
+          color: getColor('$primary500')
+          margin-bottom: 20px
+
+        > .stickers
+          > .sticker
+            width: 70px
+            height: 70px
+            background-size: 100%
+            background-repeat: no-repeat
+            display: inline-block
+            margin-right: 8px
 
       > .textarea
         width: 100%
@@ -113,49 +153,30 @@ $zIndexTextarea = 2
         outline: none
         background: getColor('$tertiary500')
 
-        &:focus
-          height: 84px
-
       > .icons
         position: absolute
         right: 12px
-        top: 50%
-        margin-top: -24px
+        top: 0%
+        height: 100%
         display: flex
         align-items: center
+        cursor: pointer
 
-        > .color-icon-wrapper
-          padding: 12px
+        > .send-icon
+          height: 100%
           display: flex
-
-          > .color-icon
-            display: inline-block
-            margin: auto
-            width: 20px
-            height: 20px
-            position: relative
-            box-sizing: border-box
-            border-radius: 50%
-
-            > .color-inner
-              position: absolute
-              left: 2px
-              top: 2px
-              width: 16px
-              height: 16px
-              border-radius: 50%
-              border: 1px solid $white
-              box-sizing: border-box
-
-
 
   @media (min-width: $breakPointMedium)
     > .g-grid
       > .messages
         padding-bottom: 64px
 
-        .message > .content > .info > .name
-          max-width: none
+        .message
+          > .bubble
+            width: 478px
+
+          > .content > .info > .name
+            max-width: none
 
 
     > .textarea-container

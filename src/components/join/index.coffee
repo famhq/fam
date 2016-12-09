@@ -12,15 +12,20 @@ Form = require '../form'
 if window?
   require './index.styl'
 
-module.exports = class SignIn
+module.exports = class Join
   constructor: ({@model, @router}) ->
-    @$joinButton = new FlatButton()
-    @$signInButton = new PrimaryButton()
+    @$signInButton = new FlatButton()
+    @$createAccountButton = new PrimaryButton()
 
+    @emailValue = new Rx.BehaviorSubject ''
     @usernameValue = new Rx.BehaviorSubject ''
     @passwordValue = new Rx.BehaviorSubject ''
+    @emailError = new Rx.BehaviorSubject null
     @usernameError = new Rx.BehaviorSubject null
     @passwordError = new Rx.BehaviorSubject null
+    @$emailInput = new PrimaryInput
+      value: @emailValue
+      error: @emailError
     @$usernameInput = new PrimaryInput
       value: @usernameValue
       error: @usernameError
@@ -38,13 +43,14 @@ module.exports = class SignIn
     e?.preventDefault()
 
     @state.set isLoading: true
-    @model.auth.login {
+    @model.auth.join {
+      email: @emailValue.getValue()
       username: @usernameValue.getValue()
       password: @passwordValue.getValue()
     }
     .then =>
       @state.set isLoading: false
-      @router.go '/community'
+      @router.go '/policies'
     .catch (err) =>
       @usernameError.onNext err.message
       @state.set isLoading: false
@@ -58,6 +64,9 @@ module.exports = class SignIn
         $form: z @$form,
           onsubmit: @login
           $inputs: [
+            z @$emailInput,
+              hintText: 'Email'
+
             z @$usernameInput,
               hintText: 'Username'
 
@@ -66,13 +75,13 @@ module.exports = class SignIn
               hintText: 'Password'
           ]
           $buttons: [
-            z @$signInButton,
-              text: if isLoading then 'Loading...' else 'Sign in'
+            z @$createAccountButton,
+              text: if isLoading then 'Loading...' else 'Create account'
               type: 'submit'
 
-            z @$joinButton,
-              text: 'Create account'
+            z @$signInButton,
+              text: 'Sign in'
               onclick: =>
-                @router.go '/join'
+                @router.go '/signIn'
 
           ]

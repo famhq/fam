@@ -52,7 +52,7 @@ module.exports = class Threads
                     z 'span',
                       @model.user.getDisplayName thread.firstMessage?.user
                     z 'span', innerHTML: ' &middot; '
-                    z 'span', moment(thread.lastUpdateTime).fromNow()
+                    z 'span', moment(thread.lastUpdateTime).fromNowModified()
                 z '.right',
                   z $icon,
                     icon: thread.platform

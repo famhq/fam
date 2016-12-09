@@ -13,7 +13,7 @@ config = require '../../config'
 Avatar = require '../avatar'
 Icon = require '../icon'
 Spinner = require '../spinner'
-ProfileDialog = require '../profile_dialog'
+FormatService = require '../../services/format'
 
 if window?
   require './index.styl'
@@ -29,19 +29,14 @@ RENDER_DELAY_MS = 100
 
 module.exports = class Conversation
   constructor: (options) ->
-    {@model, @router, @error, isRefreshing, conversation} = options
-    @selectedProfileDialogUser = new Rx.BehaviorSubject false
+    {@model, @router, @error, isRefreshing, conversation,
+      @selectedProfileDialogUser} = options
 
     @$toAvatar = new Avatar()
-    @$profileDialog = new ProfileDialog {
-      @model, @router, @selectedProfileDialogUser
-    }
 
     # SUPER HACK
     isLoading = new Rx.BehaviorSubject false
 
-    @isRefreshPaused # we don't refresh when the user is typing
-    @isRefreshPausedTimeout = null
     me = @model.user.getMe()
     conversation ?= new Rx.BehaviorSubject null
     isRefreshing ?= new Rx.BehaviorSubject null
@@ -79,6 +74,8 @@ module.exports = class Conversation
     .share()
 
     @$sendIcon = new Icon()
+    @$stickerIcon = new Icon()
+    @$closeIcon = new Icon()
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
 
@@ -88,10 +85,11 @@ module.exports = class Conversation
       isPostLoading: false
       isLoading: isLoading
       isRefreshing: isRefreshing
+      isTextareaFocused: false
       error: null
       conversation: conversation
       isLoaded: false
-      selectedProfileDialogUser: @selectedProfileDialogUser
+      isStickerPanelVisible: false
 
       messages: @messages.map (messages) ->
         if messages
@@ -117,18 +115,63 @@ module.exports = class Conversation
       $messages.scrollTop = $messages.scrollHeight - $messages.offsetHeight
 
   setMessage: (e) =>
-    @message.onNext e.target.value
-    @isRefreshPaused = true
-    clearTimeout @isRefreshPausedTimeout
-    @isRefreshPausedTimeout = setTimeout =>
-      @isRefreshPaused = false
-    , PAUSE_WHILE_TYPING_DELAY_MS
+    e or= window.event
+    if e.keyCode is 13
+      e.preventDefault()
+      @postMessage()
+    else
+      @message.onNext e.target.value
+
+  postMessage: =>
+    {me, conversation, isPostLoading} = @state.getValue()
+
+    messageBody = @message.getValue()
+    lineBreaks =  messageBody.split(/\r\n|\r|\n/).length
+    if messageBody.length > MAX_CHARACTERS or
+        lineBreaks > MAX_LINES
+      @error.onNext 'Message is too long'
+      return
+
+    msPlayed = Date.now() - Date.parse(me?.joinTime)
+    isNative = Environment.isGameApp(config.GAME_KEY)
+
+    if msPlayed < config.NEW_USER_CHAT_TIME_MS and not isNative
+      @error.onNext 'You don\'t have permission to post yet'
+      return
+
+    if not isPostLoading and messageBody
+      @state.set isPostLoading: true
+
+      @model.chatMessage.create {
+        body: messageBody
+        conversationId: conversation?.id
+      }
+      .then =>
+        # @model.user.emit('chatMessage').catch log.error
+        doneTimeout = setTimeout =>
+          @state.set isPostLoading: false
+        , MAX_POST_MESSAGE_LOAD_MS
+        messageSub = @messages.take(1)
+        messageSub.subscribe =>
+          @state.set isPostLoading: false
+          clearTimeout doneTimeout
+        messageSub.catch =>
+          @state.set isPostLoading: false
+          clearTimeout doneTimeout
+      .catch =>
+        @state.set isPostLoading: false
+      # hack: don't want to keep textarea value in state, too slow
+      # to re-render on every letter typed
+      @$$el.querySelector('.textarea').value = ''
+      @message.onNext ''
 
   render: =>
-    {me, isLoading, isPostLoading, message, messages, conversation,
-      selectedProfileDialogUser, isLoaded} = @state.getValue()
+    {me, isLoading, isPostLoading, message, isStickerPanelVisible,
+      messages, conversation, isLoaded, isTextareaFocused} = @state.getValue()
 
-    z '.z-conversation',
+    z '.z-conversation', {
+      className: z.classKebab {isTextareaFocused}
+    },
       z '.g-grid',
         # hide messages until loaded to prevent showing the scrolling
         z '.messages', {className: z.classKebab {isLoaded}},
@@ -136,11 +179,12 @@ module.exports = class Conversation
           if messages and not isLoading
             _map messages, ({messageInfo, $avatar, $statusIcon}) =>
               {user, body, time} = messageInfo
-              textLines = body.split('\n') or []
+
+              isSticker = body.match /^:[a-z_]+:$/
 
               z '.message', {
                 key: "message-#{messageInfo.id}" # re-use elements in v-dom
-                className: z.classKebab {isMe: user.id is me?.id}
+                className: z.classKebab {isSticker, isMe: user.id is me?.id}
                 onclick: =>
                   @selectedProfileDialogUser.onNext user
               },
@@ -163,78 +207,77 @@ module.exports = class Conversation
                           size: '22px'
 
                   z '.body',
-                    _map textLines, (text) ->
-                      z 'div', text
+                      FormatService.message body
                   z '.bottom',
                     z '.name', @model.user.getDisplayName user
                     z '.middot',
                       innerHTML: '&middot;'
-                    z '.time', moment(time).fromNow()
+                    z '.time', moment(time).fromNowModified()
           else
             @$loadingSpinner
 
-      z '.textarea-container',
-        z '.g-grid',
-          z 'textarea.textarea',
-            # for some reason necessary on iOS to get it to focus properly
-            onclick: (e) ->
-              setTimeout ->
-                e?.target?.focus()
-              , 0
-            placeholder: 'Type a message'
-            onkeyup: @setMessage
-            onchange: @setMessage
-            onblur: =>
-              @isRefreshPaused = false
+      z '.bottom',
+        if isStickerPanelVisible
+          z '.g-grid',
+            z '.sticker-panel',
+              z '.close-icon',
+                z @$closeIcon,
+                  icon: 'close'
+                  color: colors.$white
+                  isAlignedTop: true
+                  isAlignedRight: true
+                  onclick: =>
+                    @state.set isStickerPanelVisible: false
+              z '.title', 'Share sticker'
+              z '.stickers',
+                _.map config.STICKERS, (sticker) =>
+                  z '.sticker',
+                    onclick: =>
+                      @model.chatMessage.create {
+                        body: ":#{sticker}:"
+                        conversationId: conversation?.id
+                      }
+                      @state.set isStickerPanelVisible: false
+                    style:
+                      backgroundImage:
+                        "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
 
-          z '.icons',
-            z '.send-icon', {
-              onclick: =>
-                messageBody = @message.getValue()
-                lineBreaks =  messageBody.split(/\r\n|\r|\n/).length
-                if messageBody.length > MAX_CHARACTERS or
-                    lineBreaks > MAX_LINES
-                  @error.onNext 'Message is too long'
-                  return
+        else
+          z '.g-grid',
+            z 'textarea.textarea',
+              # for some reason necessary on iOS to get it to focus properly
+              onclick: (e) ->
+                setTimeout ->
+                  e?.target?.focus()
+                , 0
+              placeholder: 'Type a message'
+              onkeyup: @setMessage
+              onkeydown: (e) ->
+                e or= window.event
+                if e.keyCode is 13
+                  e.preventDefault()
+              onchange: @setMessage
+              onfocus: =>
+                @state.set isTextareaFocused: true
+                setTimeout =>
+                  @scrollToBottom()
+                , RENDER_DELAY_MS
+              onblur: =>
+                @state.set isTextareaFocused: false
 
-                msPlayed = Date.now() - Date.parse(me?.joinTime)
-                isNative = Environment.isGameApp(config.GAME_KEY)
-
-                if msPlayed < config.NEW_USER_CHAT_TIME_MS and not isNative
-                  @error.onNext 'You don\'t have permission to post yet'
-                  return
-
-                if not isPostLoading and messageBody
-                  @state.set isPostLoading: true
-
-                  @model.chatMessage.create {
-                    body: messageBody
-                    conversationId: conversation?.id
-                  }
-                  .then =>
-                    # @model.user.emit('chatMessage').catch log.error
-                    doneTimeout = setTimeout =>
-                      @state.set isPostLoading: false
-                    , MAX_POST_MESSAGE_LOAD_MS
-                    messageSub = @messages.take(1)
-                    messageSub.subscribe =>
-                      @state.set isPostLoading: false
-                      clearTimeout doneTimeout
-                    messageSub.catch =>
-                      @state.set isPostLoading: false
-                      clearTimeout doneTimeout
-                  .catch =>
-                    @state.set isPostLoading: false
-                  # hack: don't want to keep textarea value in state, too slow
-                  # to re-render on every letter typed
-                  @$$el.querySelector('.textarea').value = ''
-                  @message.onNext ''
-            },
-              z @$sendIcon,
-                icon: 'send'
-                color: if isPostLoading \
-                       then colors.$grey200
-                       else colors.$white30
-
-      if selectedProfileDialogUser
-        z @$profileDialog
+            z '.icons',
+              z '.sticker-icon',
+                z @$stickerIcon, {
+                  onclick: =>
+                    @state.set isStickerPanelVisible: true
+                  icon: 'stickers'
+                  color: colors.$white
+                }
+              z '.send-icon', {
+                onclick: @postMessage
+              },
+                z @$sendIcon,
+                  icon: 'send'
+                  color: if isPostLoading \
+                         then colors.$grey200
+                         else colors.$white

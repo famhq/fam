@@ -5,8 +5,15 @@
 $zIndexUploadOverlay = 1
 
 .z-edit-group-change-badge
+  flex: 1
+  display: flex
+  flex-direction: column
+
   > .content
     padding: 16px
+    flex: 1
+    overflow: auto
+    -webkit-overflow-scrolling: touch
 
     > .g-grid
       > .title

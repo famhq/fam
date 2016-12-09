@@ -20,6 +20,7 @@ if window?
 module.exports = class ConversationsPage
   constructor: ({@model, requests, @router, serverData}) ->
     isRefreshing = new Rx.BehaviorSubject false
+    selectedProfileDialogUser = new Rx.BehaviorSubject null
 
     @$head = new Head({
       @model
@@ -33,17 +34,21 @@ module.exports = class ConversationsPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$conversations = new Conversations {
-      @model, @router, isRefreshing
+      @model, @router, isRefreshing, selectedProfileDialogUser
+    }
+    @$profileDialog = new ProfileDialog {
+      @model, @router, selectedProfileDialogUser
     }
     @$refreshingSpinner = new Spinner()
 
     @state = z.state
       isRefreshing: isRefreshing
+      selectedProfileDialogUser: selectedProfileDialogUser
 
   renderHead: => @$head
 
   render: =>
-    {isRefreshing} = @state.getValue()
+    {isRefreshing, selectedProfileDialogUser} = @state.getValue()
 
     z '.p-conversations', {
       style:
@@ -60,3 +65,6 @@ module.exports = class ConversationsPage
           null
       }
       @$conversations
+
+      if selectedProfileDialogUser
+        z @$profileDialog

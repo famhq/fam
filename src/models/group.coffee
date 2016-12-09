@@ -19,7 +19,9 @@ module.exports = class Group
     @auth.stream 'groups.getById', {id}
 
   joinById: (id) =>
-    @auth.call 'groups.joinById', {id}
+    @auth.call 'groups.joinById', {id}, {
+      invalidateAll: true
+    }
 
   updateById: (id, {name, description, badgeId, background}) =>
     @auth.call 'groups.updateById', {

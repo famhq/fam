@@ -4,6 +4,7 @@ Rx = require 'rx-lite'
 colors = require '../../colors'
 
 UserList = require '../user_list'
+TopFriends = require '../top_friends'
 Icon = require '../icon'
 
 if window?
@@ -34,6 +35,7 @@ module.exports = class FindFriends
     @$userList = new UserList {
       model, users, selectedProfileDialogUser
     }
+    @$topFriends = new TopFriends {model, selectedProfileDialogUser}
 
     @state = z.state
       value: @value
@@ -46,7 +48,9 @@ module.exports = class FindFriends
     @value.onNext ''
     @$$el.querySelector('.input').focus()
 
-  render: ({onclick, onBack} = {}) =>
+  render: ({onclick, onBack, showCurrentFriends} = {}) =>
+    showCurrentFriends ?= false
+
     {value, users} = @state.getValue()
 
     z '.z-find-friends', {
@@ -82,4 +86,8 @@ module.exports = class FindFriends
           oninput: z.ev (e, $$el) =>
             @value.onNext $$el.value
       z '.results',
-        z @$userList, {onclick}
+        if _.isEmpty users
+          z 'div',
+            z @$topFriends, {onclick}
+        else
+          z 'div', z @$userList, {onclick}

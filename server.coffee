@@ -107,7 +107,9 @@ app.use (req, res, next) ->
     portal: null
     router: null
   }
-  io = socketIO config.API_URL
+  io = socketIO config.API_HOST, {
+    path: (config.API_PATH or '') + '/socket.io'
+  }
   model = new Model({cookieSubject, io, serverHeaders: req.headers})
   requests = new Rx.BehaviorSubject(req)
   serverData = {req, res, styles, bundlePath}

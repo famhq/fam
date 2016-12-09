@@ -70,7 +70,8 @@ module.exports = class SetAddress
         $title: 'Membership card'
         $content: [
           z 'p',
-            'In order to receive your official membership card,
+            'The first 100 members of Red Tritium get a sweet
+            metal membership card. If you would like one,
             provide your address below.'
           z 'p',
           'We don\'t use this info for anything else, and it is optional

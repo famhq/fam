@@ -7,6 +7,7 @@ config = require './config'
 gulpPaths = require '../gulp_paths'
 HomePage = require './pages/home'
 SignInPage = require './pages/sign_in'
+JoinPage = require './pages/join'
 FriendsPage = require './pages/friends'
 ConversationPage = require './pages/conversation'
 ConversationsPage = require './pages/conversations'
@@ -24,7 +25,6 @@ DecksPage = require './pages/decks'
 CardPage = require './pages/card'
 CardsPage = require './pages/cards'
 ReferPage = require './pages/refer'
-PayPage = require './pages/pay'
 AcceptInvitePage = require './pages/accept_invite'
 ReferredPage = require './pages/referred'
 ProfilePage = require './pages/profile'
@@ -85,11 +85,11 @@ module.exports = class App
     route '/decks/:id', DeckPage
     route '/cards/:id', CardPage
     route '/refer', ReferPage
-    route '/pay', PayPage
     route '/policies', PoliciesPage
     route '/tos', TosPage
     route '/privacy', PrivacyPage
     route '/signIn', SignInPage
+    route '/join', JoinPage
     route '/setAddress', SetAddressPage
     route '/getApp', GetAppPage
     route '/acceptInvite/:code', AcceptInvitePage
@@ -131,6 +131,7 @@ module.exports = class App
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
     isIos = /iPad|iPhone|iPod/.test userAgent
+    isPageAvailable = (me?.isMember or request?.$page?.isPublic)
 
     z 'html',
       request?.$page.renderHead() or $backupPage?.renderHead()
@@ -140,7 +141,8 @@ module.exports = class App
             unless request?.$page?.hideDrawer
               z @$drawer, {currentPath: request?.req.path}
             z '.page',
-              if (me?.isMember or request?.$page?.isPublic) and request?.$page
+              # show page before me has loaded
+              if (not me or isPageAvailable) and request?.$page
                 request.$page
               else
                 $backupPage

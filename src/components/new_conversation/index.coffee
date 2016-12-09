@@ -16,6 +16,7 @@ module.exports = class NewConversation
   render: ({noNewConversationMessage} = {}) =>
     z '.z-new-conversation',
       z @$findFriends, {
+        showCurrentFriends: true
         onBack: =>
           @router.back()
         onclick: (user) =>

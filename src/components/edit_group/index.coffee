@@ -17,15 +17,17 @@ if window?
   require './index.styl'
 
 module.exports = class EditGroup
-  constructor: ({@model, @router, group}) ->
+  constructor: ({@model, @router, @group}) ->
     me = @model.user.getMe()
 
-    @badge = new Rx.BehaviorSubject null
-
-    @nameValue = new Rx.BehaviorSubject ''
+    @nameValueStreams = new Rx.ReplaySubject 1
+    @nameValueStreams.onNext (@group?.map (group) ->
+      group.name) or Rx.Observable.just null
     @nameError = new Rx.BehaviorSubject null
 
-    @descriptionValue = new Rx.BehaviorSubject ''
+    @descriptionValueStreams = new Rx.ReplaySubject 1
+    @descriptionValueStreams.onNext (@group?.map (group) ->
+      group.description) or Rx.Observable.just null
     @descriptionError = new Rx.BehaviorSubject null
 
     @selectedBadgeStreams = new Rx.ReplaySubject 1
@@ -36,20 +38,14 @@ module.exports = class EditGroup
     @selectedBackgroundStreams.onNext (@group?.map (group) ->
       group.background) or Rx.Observable.just null
 
-    # TODO: better way to do this? get zorium-paper to accept stream of streams
-    group?.take(1).subscribe (group) =>
-      @badge.onNext group?.badge
-      @nameValue.onNext group?.name
-      @descriptionValue.onNext group?.description
-
-    @$groupHeader = new GroupHeader {group}
+    @$groupHeader = new GroupHeader {@group}
     @$discardIcon = new Icon()
     @$doneIcon = new Icon()
 
     @$editGroupChangeBadge = new EditGroupChangeBadge {
       @model
       @router
-      group
+      @group
       @selectedBadgeStreams
       @selectedBackgroundStreams
     }
@@ -57,17 +53,19 @@ module.exports = class EditGroup
     @$changeBadgeButton = new PrimaryButton()
 
     @$nameInput = new PrimaryInput
-      value: @nameValue
+      valueStreams: @nameValueStreams
       error: @nameError
 
     @$descriptionTextarea = new PrimaryTextarea
-      value: @descriptionValue
+      valueStreams: @descriptionValueStreams
       error: @descriptionError
 
     @state = z.state
       me: me
       isSaving: false
-      group: group
+      group: @group
+      name: @nameValueStreams.switch()
+      description: @descriptionValueStreams.switch()
       selectedBadge: @selectedBadgeStreams.switch()
       selectedBackground: @selectedBackgroundStreams.switch()
 
@@ -78,17 +76,14 @@ module.exports = class EditGroup
       group.background
 
   save: (isNewGroup) =>
-    {selectedBackground, selectedBadge, me, isSaving, group} = @state.getValue()
+    {selectedBackground, selectedBadge, me, isSaving, group
+      name, description} = @state.getValue()
 
     if isSaving
       return
 
     @state.set isSaving: true
     @nameError.onNext null
-
-    name = @nameValue.getValue()
-    description = @descriptionValue.getValue()
-    badge = @badge.getValue()
 
     fn = (diff) =>
       if isNewGroup
@@ -99,7 +94,6 @@ module.exports = class EditGroup
     fn {
       name
       description
-      badge
       background: selectedBackground
       badgeId: selectedBadge
     }
@@ -110,7 +104,7 @@ module.exports = class EditGroup
       @router.go "/group/#{group.id}"
 
   render: ({isNewGroup} = {}) =>
-    {me, isSaving, isChangingBadge,
+    {me, isSaving, isChangingBadge, group, name, description,
       selectedBadge, selectedBackground} = @state.getValue()
 
     z '.z-edit-group',

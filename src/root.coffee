@@ -79,14 +79,17 @@ init = ->
   isBackendUnavailable = new Rx.BehaviorSubject false
   currentNotification = new Rx.BehaviorSubject false
 
+  io = socketIO config.API_HOST, {
+    path: (config.API_PATH or '') + '/socket.io'
+  }
+  model = new Model({cookieSubject, io})
+  model.portal.listen()
+
   onOnline = ->
     isOffline.onNext false
   onOffline = ->
     isOffline.onNext true
 
-  io = socketIO config.API_URL
-  model = new Model({cookieSubject, io})
-  model.portal.listen()
 
   router = new RouterService {
     portal: model.portal
@@ -115,7 +118,6 @@ init = ->
 
 
   routeHandler = (data) ->
-    console.log data
     data ?= {}
     {path, query, source, _isPush, _original, _isDeepLink} = data
 

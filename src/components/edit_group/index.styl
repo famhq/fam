@@ -5,6 +5,10 @@
 $zIndexUploadOverlay = 1
 
 .z-edit-group
+  flex: 1
+  display: flex
+  flex-direction: column
+
   > .actions
     display: flex
     height: 56px
@@ -45,31 +49,3 @@ $zIndexUploadOverlay = 1
     > .flex
       display: flex
       align-items: center
-
-  // > .presets
-  //   padding: 0 16px
-  //
-  //   > .title
-  //     responsive-font-body2()
-  //     color: getColor('$tertiary900')
-  //     text-transform: uppercase
-  //     padding: 16px 0
-  //
-  //   > .g-grid
-  //     > .g-cols
-  //       > .g-col
-  //         > .preset
-  //           zp-shadow-1()
-  //           width: 100%
-  //           border-radius: 50%
-  //           border: 2px solid getColor('$white')
-  //           background-color: getColor('$grey200')
-  //
-  //           > .inner
-  //             width: 100%
-  //             padding-bottom: 100%
-  //             background-size: 100%
-  //             border-radius: 50%
-  //
-  //           &.is-selected
-  //             border: 2px solid getColor('$primary500')

@@ -4,6 +4,14 @@
 _ = require 'lodash'
 assertNoneMissing = require 'assert-none-missing'
 
+moment = require 'moment'
+# change from 'a few seconds ago'
+moment.fn.fromNowModified = (a) ->
+  if Math.abs(moment().diff(this)) < 30000
+    # 1000 milliseconds
+    return 'just now'
+  @fromNow a
+
 colors = require './colors'
 
 # Don't let server environment variables leak into client code
@@ -12,7 +20,13 @@ serverEnv = process.env
 HOST = process.env.RED_TRITIUM_HOST or '127.0.0.1'
 HOSTNAME = HOST.split(':')[0]
 
+API_URL =
+  serverEnv.PRIVATE_RADIOACTIVE_API_URL or # server
+  process.env.PUBLIC_RADIOACTIVE_API_URL # client
 
+API_HOST_ARRAY = API_URL.split('/')
+API_HOST = API_HOST_ARRAY[0] + '//' + API_HOST_ARRAY[2]
+API_PATH = API_URL.replace API_HOST, ''
 # All keys must have values at run-time (value may be null)
 isomorphic =
   CDN_URL: 'https://cdn.wtf/d/images/red_tritium'
@@ -25,9 +39,9 @@ isomorphic =
   STRIPE_PUBLISHABLE_KEY:
     serverEnv.STRIPE_PUBLISHABLE_KEY or
     process.env.STRIPE_PUBLISHABLE_KEY
-  API_URL:
-    serverEnv.PRIVATE_RADIOACTIVE_API_URL or # server
-    process.env.PUBLIC_RADIOACTIVE_API_URL # client
+  API_URL: API_URL
+  API_HOST: API_HOST
+  API_PATH: API_PATH
   AUTH_COOKIE: 'accessToken'
   ENV:
     serverEnv.NODE_ENV or
@@ -53,6 +67,8 @@ isomorphic =
     colors.$red500
     colors.$blue500
   ]
+  # also in radioactive
+  STICKERS: ['angry', 'crying', 'laughing', 'thumbs_up']
 
 
 # Server only

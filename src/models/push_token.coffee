@@ -4,8 +4,7 @@ Environment = require 'clay-environment'
 config = require '../config'
 
 module.exports = class PushToken
-  constructor: ({@auth}) ->
-    @pushToken = null
+  constructor: ({@auth, @pushToken}) ->
 
   create: ({token} = {}) =>
     unless localStorage['pushTokenStored']
@@ -18,9 +17,10 @@ module.exports = class PushToken
           localStorage['pushTokenStored'] = '1'
 
   claimToken: (token) =>
-    @auth.call 'pushTokens.update', {token}
+    @auth.call 'pushTokens.updateByToken', {token}
 
-  setCurrentPushToken: (@pushToken) => null
+  setCurrentPushToken: (pushToken) =>
+    @pushToken.onNext pushToken
 
   getCurrentPushToken: =>
     @pushToken

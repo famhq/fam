@@ -59,8 +59,8 @@ module.exports = class Drawer
               iconName: 'profile'
             }
             {
-              path: '/'
-              title: 'Request Invite'
+              path: '/join'
+              title: 'Create Account'
               $icon: new Icon()
               iconName: 'friends'
             }
@@ -170,35 +170,36 @@ module.exports = class Drawer
           transform: "translate(#{translateX}, 0)"
           webkitTransform: "translate(#{translateX}, 0)"
       },
-        z '.header',
-          z '.logo'
-        z '.content',
-          z 'ul.menu',
-            _.map menuItems, (menuItem) =>
-              {path, onClick, title, $icon, iconName, isDivider} = menuItem
-              if isDivider
-                return z 'li.divider'
-              isSelected = currentPath?.indexOf(path) is 0 or (
-                path is '/games' and currentPath is '/'
-              )
-              z 'li.menu-item', {
-                className: z.classKebab {isSelected}
-              },
-                z 'a.menu-item-link', {
-                  href: path
-                  onclick: (e) =>
-                    e.preventDefault()
-                    @model.drawer.close()
-                    onClick?()
-                    if path
-                      @router.go path
+        z '.top',
+          z '.header',
+            z '.logo'
+          z '.content',
+            z 'ul.menu',
+              _.map menuItems, (menuItem) =>
+                {path, onClick, title, $icon, iconName, isDivider} = menuItem
+                if isDivider
+                  return z 'li.divider'
+                isSelected = currentPath?.indexOf(path) is 0 or (
+                  path is '/games' and currentPath is '/'
+                )
+                z 'li.menu-item', {
+                  className: z.classKebab {isSelected}
                 },
-                  z '.icon',
-                    z $icon,
-                      isTouchTarget: false
-                      icon: iconName
-                      color: colors.$primary500
-                  title
+                  z 'a.menu-item-link', {
+                    href: path
+                    onclick: (e) =>
+                      e.preventDefault()
+                      @model.drawer.close()
+                      onClick?()
+                      if path
+                        @router.go path
+                  },
+                    z '.icon',
+                      z $icon,
+                        isTouchTarget: false
+                        icon: iconName
+                        color: colors.$primary500
+                    title
         if me?.isMember and not userDeck
           z '.no-deck',
             z '.set-deck-button',

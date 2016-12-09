@@ -1,0 +1,16 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.z-top-friends
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .users
+    > .title
+      responsive-font-subhead()
+      color: getColor('$primary500')

@@ -18,7 +18,7 @@ json('zorium-paper/colors.json')
   border-radius: 2px
 
   > .header
-    padding: 24px
+    padding: 16px
     background: getColor('$primary500')
     border-top-left-radius: 2px
     border-top-right-radius: 2px
@@ -43,18 +43,19 @@ json('zorium-paper/colors.json')
   > .content
     list-style-type: none
     margin: 0
-    padding: 0
+    padding: 8px
 
     > .menu-item
       margin: 0
-      padding: 16px 24px
-      display: flex
-      align-items: center
+      padding: 8px 0
+      display: inline-block
+      box-sizing: border-box
+      width: 50%
+      text-align: center
 
       > .icon
-        margin-right: 24px
+        margin-bottom: 12px
 
       > .text
-        responsive-font-body2()
-        color: getColor('$blueGrey900')
-        text-transform: uppercase
+        responsive-font-caption()
+        color: getColor('$tertiary500')

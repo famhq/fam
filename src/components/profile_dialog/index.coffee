@@ -18,6 +18,9 @@ module.exports = class ProfileDialog
     @$dialog = new Dialog()
     @$avatar = new Avatar()
 
+    @$profileIcon = new Icon()
+    @$friendIcon = new Icon()
+    @$messageIcon = new Icon()
     @$flagIcon = new Icon()
     @$blockIcon = new Icon()
     @$banIcon = new Icon()
@@ -35,6 +38,7 @@ module.exports = class ProfileDialog
     {me, user, platform, isFlagLoading, isFlagged} = @state.getValue()
 
     isBlocked = @model.user.isBlocked me, user?.id
+    isFollowing = @model.user.isFollowing me, user?.id
     isMe = user?.id is me?.id
 
     z '.z-profile-dialog',
@@ -59,6 +63,39 @@ module.exports = class ProfileDialog
               unless isMe
                 z 'li.menu-item', {
                   onclick: =>
+                    if isFollowing
+                      @model.userData.unfollowByUserId user?.id
+                    else
+                      @model.userData.followByUserId user?.id
+                    @selectedProfileDialogUser.onNext null
+                },
+                  z '.icon',
+                    z @$friendIcon,
+                      icon: if isFollowing \
+                            then 'remove-friend'
+                            else 'add-friend'
+                      color: colors.$tertiary500
+                      isTouchTarget: false
+                  z '.text',
+                    if isFollowing then 'Remove Friend' else 'Add Friend'
+
+              unless isMe
+                z 'li.menu-item', {
+                  onclick: =>
+                    @router.go "/chat/user/#{user?.id}"
+                    @selectedProfileDialogUser.onNext null
+                },
+                  z '.icon',
+                    z @$messageIcon,
+                      icon: 'chat-bubble'
+                      color: colors.$tertiary500
+                      isTouchTarget: false
+                  z '.text',
+                    'Send message'
+
+              unless isMe
+                z 'li.menu-item', {
+                  onclick: =>
                     if isBlocked
                       @model.userData.unblockByUserId user?.id
                     else
@@ -73,7 +110,7 @@ module.exports = class ProfileDialog
                   z '.text',
                     if isBlocked then 'Unblock user' else 'Block user'
 
-              if true #not isMe and user?.chatMessageId and not me?.flags.isModerator
+              if not isMe and user?.chatMessageId and not me?.flags.isModerator
                 z 'li.menu-item', {
                   onclick: =>
                     @state.set isFlagLoading: true
@@ -93,22 +130,22 @@ module.exports = class ProfileDialog
                     then 'Reported'
                     else 'Report post'
 
-              # if me?.flags?.isModerator and not isMe
-              #   z 'li.menu-item', {
-              #     onclick: =>
-              #       @model.user.updateById user?.id, {
-              #         flags:
-              #           isChatBanned: not user?.flags?.isChatBanned
-              #       }
-              #       @selectedProfileDialogUser.onNext null
-              #   },
-              #     z '.icon',
-              #       z @$banIcon,
-              #         icon: 'lock'
-              #         color: colors.$tertiary900
-              #         isTouchTarget: false
-              #     z '.text',
-              #       if user?.flags?.isChatBanned
-              #         'User banned'
-              #       else
-              #         'Ban from chat'
+              if me?.flags?.isModerator and not isMe
+                z 'li.menu-item', {
+                  onclick: =>
+                    @model.user.updateById user?.id, {
+                      flags:
+                        isChatBanned: not user?.flags?.isChatBanned
+                    }
+                    @selectedProfileDialogUser.onNext null
+                },
+                  z '.icon',
+                    z @$banIcon,
+                      icon: 'lock'
+                      color: colors.$tertiary900
+                      isTouchTarget: false
+                  z '.text',
+                    if user?.flags?.isChatBanned
+                      'User banned'
+                    else
+                      'Ban from chat'

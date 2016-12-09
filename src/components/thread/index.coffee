@@ -72,7 +72,7 @@ module.exports = class Thread
                             @model.user.getDisplayName message.user
                           z 'span', innerHTML: ' &middot; '
                         ]
-                      z 'span', moment(message.time).fromNow()
+                      z 'span', moment(message.time).fromNowModified()
                     ]
             unless isOriginalPost
               z '.divider'

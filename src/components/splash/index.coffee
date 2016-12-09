@@ -10,7 +10,7 @@ if window?
 
 module.exports = class Splash
   constructor: ({@model, @router}) ->
-    @$learnMoreButton = new PrimaryButton()
+    @$createAccountButton = new PrimaryButton()
     @$signInButton = new FlatButton()
 
     @state = z.state
@@ -29,7 +29,7 @@ module.exports = class Splash
             onclick: =>
               @router.go '/signIn'
         z '.button',
-          z @$learnMoreButton,
-            text: 'Learn more'
+          z @$createAccountButton,
+            text: 'Create account'
             onclick: =>
-              @router.go '/learnMore'
+              @router.go '/join'

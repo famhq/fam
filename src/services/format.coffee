@@ -1,3 +1,8 @@
+z = require 'zorium'
+_ = require 'lodash'
+
+config = require '../config'
+
 class FormatService
   number: (number) ->
     # http://stackoverflow.com/a/2901298
@@ -5,6 +10,21 @@ class FormatService
       Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     else
       '...'
+
+  message: (message) ->
+    textLines = message.split('\n') or []
+    _.map textLines, (text) ->
+      parts = text.split /(:[a-z_]+:)/g
+      z 'div',
+        _.map parts, (part) ->
+          if part.match /:[a-z_]+:/
+            sticker = part.replace /:/g, ''
+            z '.sticker',
+              style:
+                backgroundImage:
+                  "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
+          else
+            part
 
   rank: (rank) ->
     if rank

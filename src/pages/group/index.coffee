@@ -48,6 +48,7 @@ module.exports = class GroupPage
     @$groupChat = new GroupChat {
       @model
       @router
+      selectedProfileDialogUser
       conversation: groupId.flatMapLatest (groupId) =>
         @model.conversation.getByGroupId groupId
     }
@@ -78,8 +79,6 @@ module.exports = class GroupPage
   render: =>
     {group, me, selectedProfileDialogUser} = @state.getValue()
 
-    console.log 'spp2', selectedProfileDialogUser
-
     hasPermission = @model.group.hasPermission group, me
 
     z '.p-group', {
@@ -101,37 +100,39 @@ module.exports = class GroupPage
                   @router.go "/group/#{group?.id}/edit"
 
       }
-      z @$tabs,
-        isBarFixed: false
-        barBgColor: colors.$tertiary700
-        barInactiveColor: colors.$white
-        tabs: _.filter [
-          {
-            $menuIcon: @$groupInfoIcon
-            menuIconName: 'info'
-            $menuText: 'Info'
-            $el: @$groupInfo
-          }
-          if hasPermission
+      # don't load prematurely, or 4 tabs will go to 2 and break vDomKey
+      if group and me
+        z @$tabs,
+          isBarFixed: false
+          barBgColor: colors.$tertiary700
+          barInactiveColor: colors.$white
+          tabs: _.filter [
             {
-              $menuIcon: @$groupChatIcon
-              menuIconName: 'chat-bubble'
-              $menuText: 'Chat'
-              $el: @$groupChat
+              $menuIcon: @$groupInfoIcon
+              menuIconName: 'info'
+              $menuText: 'Info'
+              $el: @$groupInfo
             }
-          if hasPermission
+            if hasPermission
+              {
+                $menuIcon: @$groupChatIcon
+                menuIconName: 'chat-bubble'
+                $menuText: 'Chat'
+                $el: @$groupChat
+              }
+            if hasPermission
+              {
+                $menuIcon: @$groupAnnouncementsIcon
+                menuIconName: 'notifications'
+                $menuText: 'Announcements'
+                $el: @$groupAnnouncements
+              }
             {
-              $menuIcon: @$groupAnnouncementsIcon
-              menuIconName: 'notifications'
-              $menuText: 'Announcements'
-              $el: @$groupAnnouncements
+              $menuIcon: @$groupMembersIcon
+              menuIconName: 'friends'
+              $menuText: 'Members'
+              $el: @$groupMembers
             }
-          {
-            $menuIcon: @$groupMembersIcon
-            menuIconName: 'friends'
-            $menuText: 'Members'
-            $el: @$groupMembers
-          }
-        ]
+          ]
       if selectedProfileDialogUser
         z @$profileDialog

@@ -58,6 +58,8 @@ module.exports = class ConversationPage
     toUser = _.find conversation?.users, (user) ->
       me?.id isnt user.id
 
+    console.log conversation
+
     z '.p-conversation', {
       style:
         height: "#{window?.innerHeight}px"

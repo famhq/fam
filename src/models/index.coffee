@@ -71,7 +71,9 @@ module.exports = class Model
       io: io
       cache: cache.exoid
 
-    @auth = new Auth {@exoid, cookieSubject}
+    pushToken = new Rx.BehaviorSubject null
+
+    @auth = new Auth {@exoid, cookieSubject, pushToken}
     @user = new User {@auth, proxy, @exoid}
     @userData = new UserData {@auth}
     @chatMessage = new ChatMessage {@auth}
@@ -83,7 +85,7 @@ module.exports = class Model
     @thread = new Thread {@auth}
     @threadMessage = new ThreadMessage {@auth}
     @product = new Product {@auth}
-    @pushToken = new PushToken {@auth}
+    @pushToken = new PushToken {@auth, pushToken}
     @drawer = new Drawer()
     @portal = new Portal {@user, @game, @modal}
 

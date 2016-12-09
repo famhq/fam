@@ -10,10 +10,11 @@ if window?
   require './index.styl'
 
 module.exports = class GroupChat
-  constructor: ({@model, @router, conversation}) ->
+  constructor: ({@model, @router, conversation, selectedProfileDialogUser}) ->
     @$conversation = new Conversation {
       @model
       @router
+      selectedProfileDialogUser
       conversation
     }
 

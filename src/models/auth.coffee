@@ -4,7 +4,7 @@ Rx = require 'rx-lite'
 config = require '../config'
 
 module.exports = class Auth
-  constructor: ({@exoid, @cookieSubject}) ->
+  constructor: ({@exoid, @cookieSubject, @pushToken}) ->
     initPromise = null
     @waitValidAuthCookie = Rx.Observable.defer =>
       if initPromise?
@@ -36,6 +36,13 @@ module.exports = class Auth
         "#{config.AUTH_COOKIE}": accessToken
       }, currentCookies
 
+  join: ({email, username, password} = {}) =>
+    @exoid.call 'auth.join', {email, username, password}
+    .then ({username, accessToken}) =>
+      @setAccessToken accessToken
+      .then =>
+        @exoid.invalidateAll()
+
   login: ({username, password} = {}) =>
     @exoid.call 'auth.loginUsername', {username, password}
     .then ({username, accessToken}) =>
@@ -43,6 +50,12 @@ module.exports = class Auth
       @setAccessToken accessToken
       .then =>
         @exoid.invalidateAll()
+        # give time to set accessToken, I don't think it's sync (onNext)
+        setTimeout =>
+          pushToken = @pushToken.getValue()
+          if pushToken
+            @call 'pushTokens.updateByToken', {token: pushToken}
+            .catch -> null
 
   loginByCode: ({code, username, password} = {}) =>
     @exoid.call 'auth.loginCode', {code, username, password}
@@ -50,6 +63,12 @@ module.exports = class Auth
       @setAccessToken accessToken
       .then =>
         @exoid.invalidateAll()
+        # give time to set accessToken, I don't think it's sync (onNext)
+        setTimeout =>
+          pushToken = @pushToken.getValue()
+          if pushToken
+            @call 'pushTokens.updateByToken', {token: pushToken}
+            .catch -> null
 
   stream: (path, body, {ignoreCache, isErrorable} = {}) =>
     if ignoreCache

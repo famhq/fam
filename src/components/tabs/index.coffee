@@ -63,6 +63,7 @@ module.exports = class Tabs
       selectedIndex: @selectedIndex
       x: 0
       hideTabBar: hideTabBar
+      vDomKey: Math.random()
 
   afterMount: (@$$el) =>
     checkIsReady = =>
@@ -74,13 +75,14 @@ module.exports = class Tabs
 
     checkIsReady()
 
-  beforeUnmount: =>
+  beforeUnmount: (keepEl = false) =>
     @mountDisposable?.dispose()
     clearInterval @scrollInterval
     @iScrollContainer?.destroy()
     @$$el?.removeEventListener 'touchstart', @onTouchStart
     @$$el?.removeEventListener 'touchend', @onTouchEnd
-    @$$el = null
+    unless keepEl
+      @$$el = null
 
   onTouchStart: =>
     @isPageScrolling.onNext true
@@ -135,6 +137,7 @@ module.exports = class Tabs
         @selectedIndex.onNext newIndex
 
     @mountDisposable = @selectedIndex.subscribeOnNext (index) =>
+      console.log 'tab change', index
       if @iScrollContainer.pages?[index]
         @iScrollContainer.goToPage index, 0, 500
       unless hideTabBar
@@ -145,9 +148,14 @@ module.exports = class Tabs
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, barTabWidth,
       hasAppBar, vDomKey, height} = options
 
-    vDomKey ?= 'iscroll'
+    if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
+      @beforeUnmount true
+      setTimeout =>
+        @afterMount @$$el
+      , 100
+    @lastTabsLength = tabs?.length
 
-    {selectedIndex, x, hideTabBar} = @state.getValue()
+    {selectedIndex, x, hideTabBar, vDomKey} = @state.getValue()
 
     isBarFixed ?= true
     isLargeScreen = window?.matchMedia('(min-width: 768px)').matches
@@ -162,6 +170,7 @@ module.exports = class Tabs
 
     z '.z-tabs', {
       className: z.classKebab {isBarFixed}
+      vDomKey: vDomKey
       style:
         height: "#{height}px"
         maxWidth: "#{window?.innerWidth}px"
