@@ -1,4 +1,4 @@
-_ = require 'lodash'
+_merge = require 'lodash/merge'
 z = require 'zorium'
 Environment = require 'clay-environment'
 
@@ -17,7 +17,7 @@ module.exports = class Head
 
     userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
-    meta = _.merge {
+    meta = _merge {
       title: 'Red Tritium'
       description: 'Have what it takes?'
       icon256: '/images/zorium_icon_256.png'
@@ -48,7 +48,7 @@ module.exports = class Head
       manifestUrl: '/manifest.json'
     }, meta
 
-    meta = _.merge {
+    meta = _merge {
       twitter:
         title: meta.title
         description: meta.description

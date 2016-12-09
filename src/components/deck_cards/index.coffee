@@ -1,7 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
-_ = require 'lodash'
+_map = require 'lodash/map'
+_chunk = require 'lodash/chunk'
 log = require 'loga'
 Environment = require 'clay-environment'
 
@@ -46,10 +47,10 @@ module.exports = class DeckCards extends Base
       me: @model.user.getMe()
       deck: deck
       cardGroups: deckAndMe.map ([deck, me]) =>
-        cards = _.map deck?.cards, (card, i) =>
+        cards = _map deck?.cards, (card, i) =>
           $el = @getCached$ (card?.id or "empty-#{i}"), Card, {card}
           {card, $el}
-        _.chunk cards, @cardSizeInfo.cardsPerRow
+        _chunk cards, @cardSizeInfo.cardsPerRow
 
   afterMount: (@$$el) => null
 
@@ -60,9 +61,9 @@ module.exports = class DeckCards extends Base
     cardWidth = Math.floor(@$$el?.offsetWidth / cardsPerRow)
 
     z '.z-deck-cards',
-      _.map cardGroups, (cards) ->
+      _map cardGroups, (cards) ->
         z '.row',
-        _.map cards, ({card, $el}) ->
+        _map cards, ({card, $el}) ->
           z '.card', {
             style:
               width: "#{cardWidth}px"

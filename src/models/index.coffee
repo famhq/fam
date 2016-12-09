@@ -1,4 +1,8 @@
-_ = require 'lodash'
+_isEmpty = require 'lodash/isEmpty'
+_isPlainObject = require 'lodash/isPlainObject'
+_defaults = require 'lodash/defaults'
+_merge = require 'lodash/merge'
+_pick = require 'lodash/pick'
 Rx = require 'rx-lite'
 Exoid = require 'exoid'
 request = require 'clay-request'
@@ -36,7 +40,7 @@ module.exports = class Model
     else
       true
     cache = if isExpired then {} else serialization
-    @isFromCache = not _.isEmpty cache
+    @isFromCache = not _isEmpty cache
 
     accessToken = cookieSubject.map (cookies) ->
       cookies[config.AUTH_COOKIE]
@@ -44,21 +48,21 @@ module.exports = class Model
     ioEmit = (event, opts) ->
       accessToken.take(1).toPromise()
       .then (accessToken) ->
-        io.emit event, _.defaults {accessToken}, opts
+        io.emit event, _defaults {accessToken}, opts
 
     proxy = (url, opts) ->
       accessToken.take(1).toPromise()
       .then (accessToken) ->
-        proxyHeaders =  _.pick serverHeaders, [
+        proxyHeaders =  _pick serverHeaders, [
           'cookie'
           'user-agent'
           'accept-language'
           'x-forwarded-for'
         ]
-        request url, _.merge {
+        request url, _merge {
           qs: if accessToken? then {accessToken} else {}
-          headers: if _.isPlainObject opts?.body
-            _.merge {
+          headers: if _isPlainObject opts?.body
+            _merge {
               # Avoid CORS preflight
               'Content-Type': 'text/plain'
             }, proxyHeaders

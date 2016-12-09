@@ -1,6 +1,6 @@
 require './polyfill'
 
-_ = require 'lodash'
+_map = require 'lodash/map'
 z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
@@ -63,7 +63,7 @@ window.onerror = (message, file, line, column, error) ->
 #################
 setCookies = (currentCookies) ->
   (cookies) ->
-    _.map cookies, (value, key) ->
+    _map cookies, (value, key) ->
       unless currentCookies[key] is value
         document.cookie = cookie.serialize \
           key, value, CookieService.getCookieOpts()

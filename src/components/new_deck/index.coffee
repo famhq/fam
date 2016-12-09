@@ -1,4 +1,7 @@
-_ = require 'lodash'
+_map = require 'lodash/map'
+_range = require 'lodash/range'
+_filter = require 'lodash/filter'
+_find = require 'lodash/find'
 z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
@@ -24,7 +27,7 @@ module.exports = class NewThread
 
     @selectedCards = new Rx.BehaviorSubject []
     selectedDeck = @selectedCards.map (cards) ->
-      {cards: _.map _.range(CARDS_PER_DECK), (i) -> cards[i]}
+      {cards: _map _range(CARDS_PER_DECK), (i) -> cards[i]}
 
     allCards = @model.clashRoyaleCard.getAll()
     allCardsAndSelectedCards = Rx.Observable.combineLatest(
@@ -33,8 +36,8 @@ module.exports = class NewThread
       (vals...) -> vals
     )
     allDeck = allCardsAndSelectedCards.map ([allCards, selectedCards]) ->
-      cards = _.filter allCards, (card) ->
-        not _.find selectedCards, {id: card.id}
+      cards = _filter allCards, (card) ->
+        not _find selectedCards, {id: card.id}
       {cards}
     @$selectedCards = new DeckCards {@model, @router, deck: selectedDeck}
     @$allCards = new DeckCards {@model, @router, deck: allDeck}
@@ -52,8 +55,8 @@ module.exports = class NewThread
     if selectedCards.length is CARDS_PER_DECK and not isLoading
       @state.set isLoading: true
       @model.clashRoyaleUserDeck.create {
-        cardIds: _.map selectedCards, 'id'
-        cardKeys: _.map selectedCards, 'key'
+        cardIds: _map selectedCards, 'id'
+        cardKeys: _map selectedCards, 'key'
         name: @nameValue.getValue()
       }
       .then =>
@@ -81,7 +84,7 @@ module.exports = class NewThread
       z '.selected',
         z @$selectedCards,
           onCardClick: (card) =>
-            @selectedCards.onNext _.filter selectedCards, (selectedCard) ->
+            @selectedCards.onNext _filter selectedCards, (selectedCard) ->
               card.id isnt selectedCard?.id
       z '.cards',
         z '.scroller',

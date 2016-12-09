@@ -1,5 +1,5 @@
 z = require 'zorium'
-_defaults = require 'lodash/object/defaults'
+_defaults = require 'lodash/defaults'
 Button = require 'zorium-paper/button'
 colors = require '../../colors'
 

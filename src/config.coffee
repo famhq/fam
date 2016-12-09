@@ -1,7 +1,9 @@
 # process.env.* is replaced at run-time with * environment variable
 # Note that simply env.* is not replaced, and thus suitible for private config
 
-_ = require 'lodash'
+_map = require 'lodash/map'
+_range = require 'lodash/range'
+_merge = require 'lodash/merge'
 assertNoneMissing = require 'assert-none-missing'
 
 moment = require 'moment'
@@ -58,7 +60,7 @@ isomorphic =
     'red'
     'yellow'
   ]
-  BADGES: _.map _.range(1, 95), (i) -> "#{i}"
+  BADGES: _map _range(1, 95), (i) -> "#{i}"
   PLAYER_COLORS: [
     colors.$amber500
     colors.$secondary500
@@ -94,4 +96,4 @@ if window?
   module.exports = isomorphic
 else
   assertNoneMissing server
-  module.exports = _.merge isomorphic, server
+  module.exports = _merge isomorphic, server

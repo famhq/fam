@@ -1,4 +1,4 @@
-_isEmpty = require 'lodash/lang/isEmpty'
+_isEmpty = require 'lodash/isEmpty'
 z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
@@ -86,7 +86,7 @@ module.exports = class FindFriends
           oninput: z.ev (e, $$el) =>
             @value.onNext $$el.value
       z '.results',
-        if _.isEmpty users
+        if _isEmpty users
           z 'div',
             z @$topFriends, {onclick}
         else

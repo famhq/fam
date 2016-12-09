@@ -1,7 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 Button = require 'zorium-paper/button'
-_ = require 'lodash'
 
 config = require '../../config'
 colors = require '../../colors'

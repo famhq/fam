@@ -1,5 +1,8 @@
 express = require 'express'
-_ = require 'lodash'
+_every = require 'lodash/every'
+_values = require 'lodash/values'
+_defaults = require 'lodash/defaults'
+_map = require 'lodash/map'
 compress = require 'compression'
 log = require 'loga'
 helmet = require 'helmet'
@@ -64,11 +67,11 @@ app.use '/healthcheck', (req, res, next) ->
     result =
       api: api.isFulfilled()
 
-    isHealthy = _.every _.values result
+    isHealthy = _every _values result
     if isHealthy
       res.json {healthy: isHealthy}
     else
-      res.status(500).json _.defaults {healthy: isHealthy}, result
+      res.status(500).json _defaults {healthy: isHealthy}, result
   .catch next
 
 app.use '/ping', (req, res) ->
@@ -95,7 +98,7 @@ app.use (req, res, next) ->
   hasSent = false
   setCookies = (currentCookies) ->
     (cookies) ->
-      _.map cookies, (value, key) ->
+      _map cookies, (value, key) ->
         if currentCookies[key] isnt value and not hasSent
           res.cookie(key, value, CookieService.getCookieOpts())
       currentCookies = cookies

@@ -1,9 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-_ = require 'lodash'
-_map = require 'lodash/collection/map'
-_mapValues = require 'lodash/object/mapValues'
-_isEmpty = require 'lodash/lang/isEmpty'
+_filter = require 'lodash/filter'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -106,7 +103,7 @@ module.exports = class GroupPage
           isBarFixed: false
           barBgColor: colors.$tertiary700
           barInactiveColor: colors.$white
-          tabs: _.filter [
+          tabs: _filter [
             {
               $menuIcon: @$groupInfoIcon
               menuIconName: 'info'

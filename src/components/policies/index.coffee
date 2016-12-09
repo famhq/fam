@@ -1,4 +1,5 @@
-_ = require 'lodash'
+_map = require 'lodash/map'
+_defaults = require 'lodash/defaults'
 z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
@@ -59,18 +60,18 @@ module.exports = class Policies
         'By registering, you agree to Red Tritium\'s Privacy Policy, TOS,
         and Supercell\'s Fan Content Policy'
 
-      _.map $dropdowns, ($dropdown, i) =>
+      _map $dropdowns, ($dropdown, i) =>
         {$content, $title, $icon, isVisible} = $dropdown
         [
           z '.divider'
           z '.dropdown',
             z '.block', {
               onclick: =>
-                @state.set $dropdowns: _.map $dropdowns, ($dropdown, j) ->
+                @state.set $dropdowns: _map $dropdowns, ($dropdown, j) ->
                   newIsContentVisible = if i is j \
                                         then not isVisible
                                         else false
-                  _.defaults {isVisible: newIsContentVisible}, $dropdown
+                  _defaults {isVisible: newIsContentVisible}, $dropdown
 
             },
               z '.title', $title

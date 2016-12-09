@@ -1,9 +1,10 @@
-_ = require 'lodash'
 z = require 'zorium'
 Rx = require 'rx-lite'
 moment = require 'moment'
 colors = require '../../colors'
-_isEmpty = require 'lodash/lang/isEmpty'
+_map = require 'lodash/map'
+_defaults = require 'lodash/defaults'
+_isEmpty = require 'lodash/isEmpty'
 log = require 'loga'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
 ProfileDialog = require '../profile_dialog'
@@ -34,8 +35,8 @@ module.exports = class Thread
       me: @model.user.getMe()
       selectedProfileDialogUser: @selectedProfileDialogUser
       thread: thread.map (thread) ->
-        _.defaults {
-          messages: _.map thread.messages, (message) ->
+        _defaults {
+          messages: _map thread.messages, (message) ->
             {message, $avatar: new Avatar()}
         }, thread
 
@@ -43,15 +44,15 @@ module.exports = class Thread
     {me, thread, selectedProfileDialogUser} = @state.getValue()
 
     z '.z-thread', [
-      if thread and not _.isEmpty thread.messages
-        _.map thread.messages, ({message, $avatar}, i) =>
+      if thread and not _isEmpty thread.messages
+        _map thread.messages, ({message, $avatar}, i) =>
           isOriginalPost = i is 0
           [
             z '.g-grid',
               z '.message', {
                 className: z.classKebab {isOriginalPost}
                 onclick: =>
-                  @selectedProfileDialogUser.onNext _.defaults {
+                  @selectedProfileDialogUser.onNext _defaults {
                     chatMessageId: message.id
                   }, message.user
               },

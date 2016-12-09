@@ -1,4 +1,4 @@
-_ = require 'lodash'
+_map = require 'lodash/map'
 z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
@@ -13,7 +13,7 @@ module.exports = class Form
     },
       [
         if $inputs
-          _.map $inputs, ($input, i) ->
+          _map $inputs, ($input, i) ->
             [
               z '.input', $input
               unless i is $inputs.length - 1
@@ -22,6 +22,6 @@ module.exports = class Form
         z '.spacer'
         if $buttons
           z '.buttons',
-            _.map $buttons, ($button) ->
+            _map $buttons, ($button) ->
               z '.button', $button
       ]

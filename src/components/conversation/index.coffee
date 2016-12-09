@@ -1,10 +1,7 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
-_map = require 'lodash/collection/map'
-_mapValues = require 'lodash/object/mapValues'
-_isEmpty = require 'lodash/lang/isEmpty'
-_ = require 'lodash'
+_map = require 'lodash/map'
 log = require 'loga'
 Environment = require 'clay-environment'
 moment = require 'moment'
@@ -230,7 +227,7 @@ module.exports = class Conversation
                     @state.set isStickerPanelVisible: false
               z '.title', 'Share sticker'
               z '.stickers',
-                _.map config.STICKERS, (sticker) =>
+                _map config.STICKERS, (sticker) =>
                   z '.sticker',
                     onclick: =>
                       @model.chatMessage.create {

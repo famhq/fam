@@ -1,4 +1,7 @@
-_ = require 'lodash'
+_max = require 'lodash/max'
+_map = require 'lodash/map'
+_mapValues = require 'lodash/mapValues'
+_startCase = require 'lodash/startCase'
 z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
@@ -35,8 +38,8 @@ module.exports = class CardInfo
       me: me
       card: card
       selectedLevel: card.map (card) ->
-        level = _.max card.data.levels, 'level'
-        _.mapValues level, (stat) ->
+        level = _max card.data.levels, 'level'
+        _mapValues level, (stat) ->
           {stat, $el: new Icon()}
 
   render: =>
@@ -101,7 +104,7 @@ module.exports = class CardInfo
           z '.row',
             z '.title', 'Stats'
             z '.dropdown', "Level #{selectedLevel?.level.stat}"
-          _.map selectedLevel, ({stat, $el}, key) ->
+          _map selectedLevel, ({stat, $el}, key) ->
             if key is 'level'
               return
             z '.row',
@@ -110,6 +113,6 @@ module.exports = class CardInfo
                   icon: STAT_TO_ICON[key]
                   color: colors.$tertiary300
                   isTouchTarget: false
-              z '.stat.bold', _.startCase key
+              z '.stat.bold', _startCase key
               z '.right',
                 FormatService.number stat

@@ -1,5 +1,5 @@
 z = require 'zorium'
-_ = require 'lodash'
+_map = require 'lodash/map'
 
 config = require '../config'
 
@@ -13,10 +13,10 @@ class FormatService
 
   message: (message) ->
     textLines = message.split('\n') or []
-    _.map textLines, (text) ->
+    _map textLines, (text) ->
       parts = text.split /(:[a-z_]+:)/g
       z 'div',
-        _.map parts, (part) ->
+        _map parts, (part) ->
           if part.match /:[a-z_]+:/
             sticker = part.replace /:/g, ''
             z '.sticker',

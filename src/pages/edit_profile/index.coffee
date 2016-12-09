@@ -1,6 +1,5 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-_ = require 'lodash'
 
 config = require '../../config'
 colors = require '../../colors'

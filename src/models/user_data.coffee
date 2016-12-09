@@ -1,4 +1,5 @@
-_some = require 'lodash/collection/some'
+_some = require 'lodash/some'
+_pick = require 'lodash/pick'
 
 config = require '../config'
 
@@ -12,7 +13,7 @@ module.exports = class UserData
     @auth.stream 'userData.getByUserId', {userId, embed}
 
   updateMe: (diff) =>
-    @auth.call 'userData.updateMe', _.pick(diff, ['presetAvatarId']), {
+    @auth.call 'userData.updateMe', _pick(diff, ['presetAvatarId']), {
       invalidateAll: true
     }
 

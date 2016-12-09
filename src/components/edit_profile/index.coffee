@@ -1,4 +1,3 @@
-_ = require 'lodash'
 z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
@@ -139,7 +138,7 @@ module.exports = class EditProfile
       #   z '.title', 'Or pick a preset'
       #   z '.g-grid',
       #     z '.g-cols',
-      #       _.map config.PLAYER_AVATARS, (id) =>
+      #       _map config.PLAYER_AVATARS, (id) =>
       #         isSelected = selectedPresetAvatar is id
       #         z '.g-col.g-xs-3.g-md-2',
       #           z '.preset', {

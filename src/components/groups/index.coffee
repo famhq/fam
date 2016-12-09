@@ -2,8 +2,8 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 moment = require 'moment'
 colors = require '../../colors'
-_isEmpty = require 'lodash/lang/isEmpty'
-_ = require 'lodash'
+_isEmpty = require 'lodash/isEmpty'
+_map = require 'lodash/map'
 log = require 'loga'
 Dialog = require 'zorium-paper/dialog'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
@@ -29,11 +29,11 @@ module.exports = class Groups
       me: @model.user.getMe()
       myGroups: @model.group.getAll({filter: 'mine'})
                 .map (groups) ->
-                  _.map groups, (group) ->
+                  _map groups, (group) ->
                     {group, $header: new GroupHeader({group})}
       openGroups: @model.group.getAll({filter: 'open'})
                   .map (groups) ->
-                    _.map groups, (group) ->
+                    _map groups, (group) ->
                       {group, $header: new GroupHeader({group})}
 
   render: =>
@@ -51,11 +51,11 @@ module.exports = class Groups
     ]
 
     z '.z-groups',
-      _.map groupTypes, ({title, groups}) =>
+      _map groupTypes, ({title, groups}) =>
         z '.group-list',
           z '.g-grid',
             z 'h2.title', title
-          if groups and _.isEmpty groups
+          if groups and _isEmpty groups
             z '.no-groups',
               z '.g-grid',
                 'No groups found'
@@ -63,7 +63,7 @@ module.exports = class Groups
             z '.groups',
               z '.g-grid',
                 z '.g-cols',
-                  _.map groups, ({group, $header}) =>
+                  _map groups, ({group, $header}) =>
                     z '.g-col.g-xs-6.g-md-3',
                       @router.link z 'a.group', {
                         href: "/group/#{group.id}"

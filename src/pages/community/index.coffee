@@ -1,9 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-_ = require 'lodash'
-_map = require 'lodash/collection/map'
-_mapValues = require 'lodash/object/mapValues'
-_isEmpty = require 'lodash/lang/isEmpty'
+_map = require 'lodash/map'
+_mapValues = require 'lodash/mapValues'
+_isEmpty = require 'lodash/isEmpty'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 config = require '../../config'

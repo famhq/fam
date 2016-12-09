@@ -1,8 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
-_isEmpty = require 'lodash/lang/isEmpty'
-_ = require 'lodash'
+_map = require 'lodash/map'
+_isEmpty = require 'lodash/isEmpty'
 log = require 'loga'
 Dialog = require 'zorium-paper/dialog'
 moment = require 'moment'
@@ -25,7 +25,7 @@ module.exports = class Conversations
     @state = z.state
       me: @model.user.getMe()
       conversations: @model.conversation.getAll().map (conversations) ->
-        _.map conversations, (conversation) ->
+        _map conversations, (conversation) ->
           {conversation, $avatar: new Avatar()}
 
   render: =>
@@ -33,11 +33,11 @@ module.exports = class Conversations
 
     z '.z-conversations',
       z '.g-grid',
-        if conversations and _.isEmpty conversations
+        if conversations and _isEmpty conversations
           z '.no-conversations',
             'No conversations found'
         else if conversations
-          _.map conversations, ({conversation, $avatar}) =>
+          _map conversations, ({conversation, $avatar}) =>
             op = conversation.users?[0]
 
             @router.link z 'a.conversation', {

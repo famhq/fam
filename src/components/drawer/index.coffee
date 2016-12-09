@@ -1,7 +1,7 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 Button = require 'zorium-paper/button'
-_ = require 'lodash'
+_map = require 'lodash/map'
 moment = require 'moment'
 
 Icon = require '../icon'
@@ -175,7 +175,7 @@ module.exports = class Drawer
             z '.logo'
           z '.content',
             z 'ul.menu',
-              _.map menuItems, (menuItem) =>
+              _map menuItems, (menuItem) =>
                 {path, onClick, title, $icon, iconName, isDivider} = menuItem
                 if isDivider
                   return z 'li.divider'

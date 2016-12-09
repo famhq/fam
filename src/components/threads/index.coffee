@@ -2,8 +2,8 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 moment = require 'moment'
 colors = require '../../colors'
-_isEmpty = require 'lodash/lang/isEmpty'
-_ = require 'lodash'
+_map = require 'lodash/map'
+_isEmpty = require 'lodash/isEmpty'
 log = require 'loga'
 Dialog = require 'zorium-paper/dialog'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
@@ -27,18 +27,18 @@ module.exports = class Threads
     @state = z.state
       me: @model.user.getMe()
       threads: @model.thread.getAll().map (threads) ->
-        _.map threads, (thread) ->
+        _map threads, (thread) ->
           {thread, $icon: new Icon()}
 
   render: =>
     {me, threads} = @state.getValue()
 
     z '.z-threads', [
-      if threads and _.isEmpty threads
+      if threads and _isEmpty threads
         z '.no-threads',
           'No threads found'
       else if threads
-        _.map threads, ({thread, $icon}) =>
+        _map threads, ({thread, $icon}) =>
           [
             z '.g-grid',
               @router.link z 'a.thread', {

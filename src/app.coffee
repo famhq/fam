@@ -1,7 +1,7 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 HttpHash = require 'http-hash'
-_forEach = require 'lodash/collection/forEach'
+_forEach = require 'lodash/forEach'
 
 config = require './config'
 gulpPaths = require '../gulp_paths'

@@ -1,4 +1,3 @@
-_ = require 'lodash'
 query = require 'vtree-query'
 b = require 'b-assert'
 config = require '../../config'

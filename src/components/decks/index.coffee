@@ -1,8 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
-_isEmpty = require 'lodash/lang/isEmpty'
-_ = require 'lodash'
+_map = require 'lodash/map'
+_isEmpty = require 'lodash/isEmpty'
 log = require 'loga'
 Environment = require 'clay-environment'
 
@@ -34,7 +34,7 @@ module.exports = class Decks extends Base
       me: @model.user.getMe()
       filter: filter
       decks: decksAndMe.map ([decks, me]) =>
-        _.map decks, (deck) =>
+        _map decks, (deck) =>
           hasDeck =  me.data.clashRoyaleDeckIds and
             me.data.clashRoyaleDeckIds.indexOf(deck.id) isnt -1
 
@@ -61,13 +61,13 @@ module.exports = class Decks extends Base
         style:
           minHeight: "#{window?.innerHeight * 1.2}px"
       },
-        if decks and _.isEmpty decks
+        if decks and _isEmpty decks
           z '.no-decks',
             'No decks found. '
             if filter is 'mine'
               'Select a popular deck to add it, or create a new deck.'
         else if decks
-          _.map decks, ({deck, hasDeck, $deck, $starIcon, $chevronIcon}) =>
+          _map decks, ({deck, hasDeck, $deck, $starIcon, $chevronIcon}) =>
             [
               @router.link z 'a.deck', {
                 href: "/decks/#{deck.id}"

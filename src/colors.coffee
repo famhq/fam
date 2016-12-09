@@ -1,5 +1,5 @@
 paperColors = require 'zorium-paper/colors.json'
-_defaults = require 'lodash/object/defaults'
+_defaults = require 'lodash/defaults'
 
 module.exports = _defaults {
   '$primary100': paperColors.$red100

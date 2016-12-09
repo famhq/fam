@@ -1,4 +1,3 @@
-_ = require 'lodash'
 z = require 'zorium'
 log = require 'loga'
 

@@ -1,5 +1,5 @@
 z = require 'zorium'
-_map = require 'lodash/collection/map'
+_map = require 'lodash/map'
 Rx = require 'rx-lite'
 colors = require '../../colors'
 log = require 'loga'

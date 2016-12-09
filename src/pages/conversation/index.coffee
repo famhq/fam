@@ -1,9 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-_ = require 'lodash'
-_map = require 'lodash/collection/map'
-_mapValues = require 'lodash/object/mapValues'
-_isEmpty = require 'lodash/lang/isEmpty'
+_find = require 'lodash/find'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -55,7 +52,7 @@ module.exports = class ConversationPage
 
     console.log conversation
 
-    toUser = _.find conversation?.users, (user) ->
+    toUser = _find conversation?.users, (user) ->
       me?.id isnt user.id
 
     console.log conversation

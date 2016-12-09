@@ -1,4 +1,3 @@
-_ = require 'lodash'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 

@@ -1,8 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 colors = require '../../colors'
-_isEmpty = require 'lodash/lang/isEmpty'
-_ = require 'lodash'
+_isEmpty = require 'lodash/isEmpty'
+_map = require 'lodash/map'
 log = require 'loga'
 Environment = require 'clay-environment'
 FormatService = require '../../services/format'
@@ -35,7 +35,7 @@ module.exports = class Cards extends Base
     @state = z.state
       me: @model.user.getMe()
       cards: cardsAndMe.map ([cards, me]) =>
-        _.map cards, (card) =>
+        _map cards, (card) =>
           $el = @getCached$ card.id, Card, {@model, @router, card}
           {
             card
@@ -48,10 +48,10 @@ module.exports = class Cards extends Base
 
     z '.z-cards',
       z '.cards',
-        if cards and _.isEmpty cards
+        if cards and _isEmpty cards
           'No cards found'
         else if cards
-          _.map cards, ({card, hasCard, $card, $changeIcon}) =>
+          _map cards, ({card, hasCard, $card, $changeIcon}) =>
             rankChange = card.timeRanges.thisWeek.rank -
                           card.timeRanges.lastWeek.rank
 

@@ -1,4 +1,4 @@
-_ = require 'lodash'
+_map = require 'lodash/map'
 z = require 'zorium'
 log = require 'loga'
 Rx = require 'rx-lite'
@@ -25,7 +25,7 @@ module.exports = class EditGroupChangeBadge
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupHeader = new GroupHeader {@group}
 
-    @$groupBadges = _.map config.BADGES, (id) =>
+    @$groupBadges = _map config.BADGES, (id) =>
       new GroupBadge {@group}
 
     @state = z.state
@@ -55,7 +55,7 @@ module.exports = class EditGroupChangeBadge
           z '.title', 'Background Color'
         z '.g-grid',
           z '.g-cols',
-            _.map config.BACKGROUNDS, (background) =>
+            _map config.BACKGROUNDS, (background) =>
               bgUrl = "#{config.CDN_URL}/groups/backgrounds/" +
                       "#{background}_bg.jpg"
               z '.g-col.g-xs-3.g-md-1',
@@ -76,7 +76,7 @@ module.exports = class EditGroupChangeBadge
           z '.title', 'Badge'
         z '.g-grid',
           z '.g-cols',
-            _.map config.BADGES, (id) =>
+            _map config.BADGES, (id) =>
               z '.g-col.g-xs-3.g-md-1',
                 z @$groupBadges[id], {
                   badgeId: id
