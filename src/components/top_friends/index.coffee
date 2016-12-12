@@ -1,13 +1,6 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-colors = require '../../colors'
 _isEmpty = require 'lodash/isEmpty'
-log = require 'loga'
-moment = require 'moment'
 
-config = require '../../config'
-Icon = require '../icon'
-Spinner = require '../spinner'
 UserList = require '../user_list'
 
 if window?
@@ -15,7 +8,6 @@ if window?
 
 module.exports = class TopFriends
   constructor: ({@model, users, selectedProfileDialogUser}) ->
-    @$spinner = new Spinner()
 
     userData = @model.userData.getMe {
       embed: ['following']

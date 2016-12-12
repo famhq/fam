@@ -1,6 +1,5 @@
 _map = require 'lodash/map'
 z = require 'zorium'
-log = require 'loga'
 Rx = require 'rx-lite'
 
 Icon = require '../icon'

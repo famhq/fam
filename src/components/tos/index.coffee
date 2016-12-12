@@ -1,5 +1,4 @@
 z = require 'zorium'
-log = require 'loga'
 
 if window?
   require './index.styl'

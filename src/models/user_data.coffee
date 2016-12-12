@@ -1,7 +1,4 @@
-_some = require 'lodash/some'
 _pick = require 'lodash/pick'
-
-config = require '../config'
 
 module.exports = class UserData
   constructor: ({@auth}) -> null

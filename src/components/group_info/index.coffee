@@ -1,10 +1,7 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 GroupHeader = require '../group_header'
 PrimaryButton = require '../primary_button'
-config = require '../../config'
 colors = require '../../colors'
 
 if window?

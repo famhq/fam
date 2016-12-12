@@ -1,4 +1,3 @@
-z = require 'zorium'
 Rx = require 'rx-lite'
 
 module.exports = class Drawer

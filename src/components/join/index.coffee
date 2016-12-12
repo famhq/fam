@@ -1,5 +1,4 @@
 z = require 'zorium'
-log = require 'loga'
 Rx = require 'rx-lite'
 
 PrimaryInput = require '../primary_input'

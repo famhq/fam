@@ -2,7 +2,6 @@ z = require 'zorium'
 _defaults = require 'lodash/defaults'
 Textarea = require 'zorium-paper/textarea'
 
-Icon = require '../icon'
 colors = require '../../colors'
 
 module.exports = class PrimaryTextarea extends Textarea

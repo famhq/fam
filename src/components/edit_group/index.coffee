@@ -1,7 +1,5 @@
 z = require 'zorium'
-log = require 'loga'
 Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
 Icon = require '../icon'
 EditGroupChangeBadge = require '../edit_group_change_badge'
@@ -10,7 +8,6 @@ PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
 PrimaryTextarea = require '../primary_textarea'
 colors = require '../../colors'
-config = require '../../config'
 
 if window?
   require './index.styl'

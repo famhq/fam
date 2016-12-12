@@ -1,9 +1,4 @@
 Rx = require 'rx-lite'
-
-config = require '../config'
-
-PATH = config.BACKEND_API_URL
-
 module.exports = class Group
   constructor: ({@auth}) -> null
 
@@ -29,5 +24,4 @@ module.exports = class Group
     }, {invalidateAll: true}
 
   hasPermission: (group, user) ->
-    console.log group?.userIds
     group?.userIds?.indexOf(user.id) isnt -1

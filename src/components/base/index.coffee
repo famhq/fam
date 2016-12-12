@@ -1,8 +1,3 @@
-z = require 'zorium'
-colors = require '../../colors'
-
-Icon = require '../icon'
-
 module.exports = class Base
   getCached$: (id, component, args...) =>
     @cachedComponents or= []

@@ -1,18 +1,11 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-_map = require 'lodash/map'
-_mapValues = require 'lodash/mapValues'
-_isEmpty = require 'lodash/isEmpty'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Thread = require '../../components/thread'
-Avatar = require '../../components/avatar'
 Spinner = require '../../components/spinner'
-Icon = require '../../components/icon'
 
 if window?
   require './index.styl'

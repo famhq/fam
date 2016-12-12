@@ -1,12 +1,11 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-colors = require '../../colors'
 _map = require 'lodash/map'
-log = require 'loga'
 Environment = require 'clay-environment'
 moment = require 'moment'
 
 config = require '../../config'
+colors = require '../../colors'
 Avatar = require '../avatar'
 Icon = require '../icon'
 Spinner = require '../spinner'
@@ -18,8 +17,6 @@ if window?
 # we don't give immediate feedback for post (waits for cache invalidation and
 # refetch), don't want users to post twice
 MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
-REFRESH_INTERVAL_MS = 7000 # 7s
-PAUSE_WHILE_TYPING_DELAY_MS = 1000 # 1s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
 RENDER_DELAY_MS = 100

@@ -5,9 +5,11 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
+DEFAULT_SIZE = 50
+
 module.exports = class Spinner
   render: ({size, hasTopMargin} = {})->
-    size ?= 50
+    size ?= DEFAULT_SIZE
     hasTopMargin ?= true
 
     z '.z-spinner', {

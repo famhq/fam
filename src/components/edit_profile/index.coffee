@@ -1,7 +1,5 @@
 z = require 'zorium'
-log = require 'loga'
 Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
@@ -9,7 +7,6 @@ UploadOverlay = require '../upload_overlay'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
 colors = require '../../colors'
-config = require '../../config'
 
 if window?
   require './index.styl'
@@ -17,14 +14,10 @@ if window?
 module.exports = class EditProfile
   constructor: ({@model, @router}) ->
     me = @model.user.getMe()
-    @usernameValue = new Rx.BehaviorSubject ''
+    @usernameValueStreams = new Rx.ReplaySubject 1
+    @usernameValueStreams.onNext me.map (me) ->
+      me.username
     @usernameError = new Rx.BehaviorSubject null
-    # FIXME: there's a better way to do this
-    me.take(1).subscribe (me) => @usernameValue.onNext me?.username
-
-    # @selectedPresetAvatarStreams = new Rx.ReplaySubject 1
-    # @selectedPresetAvatarStreams.onNext me.map (me) ->
-    #   me?.data.presetAvatarId
 
     @$discardIcon = new Icon()
     @$doneIcon = new Icon()
@@ -34,7 +27,7 @@ module.exports = class EditProfile
     @$uploadOverlay = new UploadOverlay {@model}
 
     @$usernameInput = new PrimaryInput
-      value: @usernameValue
+      valueStreams: @usernameValueStreams
       error: @usernameError
 
     @state = z.state
@@ -43,14 +36,9 @@ module.exports = class EditProfile
       avatarDataUrl: null
       avatarUploadError: null
       isSaving: false
-      # selectedPresetAvatar: @selectedPresetAvatarStreams.switch()
-
-  # beforeUnmount: =>
-  #   @selectedPresetAvatarStreams.onNext @model.user.getMe().map (me) ->
-  #     me?.data.presetAvatarId
 
   save: =>
-    {avatarImage, selectedPresetAvatar, me, isSaving} = @state.getValue()
+    {avatarImage, me, isSaving} = @state.getValue()
     if isSaving
       return
 
@@ -65,16 +53,13 @@ module.exports = class EditProfile
     else
       Promise.resolve null)
     .then =>
-      console.log '123'
       if avatarImage
-        console.log 'up'
         @upload avatarImage
     .then =>
       @state.set isSaving: false
       @router.go '/profile'
 
   upload: (file) =>
-    console.log '1234'
     @model.user.setAvatarImage file
     .then (response) =>
       @state.set
@@ -85,8 +70,7 @@ module.exports = class EditProfile
       @state.set avatarUploadError: err?.detail or JSON.stringify err
 
   render: =>
-    {me, avatarUploadError, avatarDataUrl, isSaving,
-      selectedPresetAvatar} = @state.getValue()
+    {me, avatarUploadError, avatarDataUrl, isSaving} = @state.getValue()
 
     z '.z-edit-profile',
       z '.actions',
@@ -133,20 +117,3 @@ module.exports = class EditProfile
               z @$uploadOverlay,
                 onSelect: ({file, dataUrl}) =>
                   @state.set avatarImage: file, avatarDataUrl: dataUrl
-
-      # z '.presets',
-      #   z '.title', 'Or pick a preset'
-      #   z '.g-grid',
-      #     z '.g-cols',
-      #       _map config.PLAYER_AVATARS, (id) =>
-      #         isSelected = selectedPresetAvatar is id
-      #         z '.g-col.g-xs-3.g-md-2',
-      #           z '.preset', {
-      #             className: z.classKebab {isSelected}
-      #           },
-      #             z '.inner',
-      #               style:
-      #                 backgroundImage:
-      #                   "url(#{config.CDN_URL}/avatars/#{id}.png)"
-      #               onclick: =>
-      #                 @selectedPresetAvatarStreams.onNext Rx.Observable.just id

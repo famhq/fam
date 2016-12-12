@@ -1,5 +1,3 @@
-z = require 'zorium'
-
 ev = (fn) ->
   # coffeelint: disable=missing_fat_arrows
   (e) ->

@@ -57,19 +57,6 @@ module.exports = class Auth
             @call 'pushTokens.updateByToken', {token: pushToken}
             .catch -> null
 
-  loginByCode: ({code, username, password} = {}) =>
-    @exoid.call 'auth.loginCode', {code, username, password}
-    .then ({accessToken}) =>
-      @setAccessToken accessToken
-      .then =>
-        @exoid.invalidateAll()
-        # give time to set accessToken, I don't think it's sync (onNext)
-        setTimeout =>
-          pushToken = @pushToken.getValue()
-          if pushToken
-            @call 'pushTokens.updateByToken', {token: pushToken}
-            .catch -> null
-
   stream: (path, body, {ignoreCache, isErrorable} = {}) =>
     if ignoreCache
       body = _defaults {rand: ignoreCache}, body

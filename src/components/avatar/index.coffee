@@ -1,5 +1,4 @@
 z = require 'zorium'
-colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -7,13 +6,12 @@ if window?
 Icon = require '../icon'
 config = require '../../config'
 
-SMALL_WIDTH = 128
-SMALL_HEIGHT = 128
+DEFAULT_SIZE = '40px'
 
 module.exports = class Avatar
   render: ({size, user, src}) ->
-    size ?= '40px'
-    avatarUrl = src or user?.avatarImage?.versions[0].url
+    size ?= DEFAULT_SIZE
+    src or= src or user?.avatarImage?.versions[0].url
 
     playerColors = config.PLAYER_COLORS
     lastChar = user?.id?.substr(user?.id?.length - 1, 1) or 'a'
@@ -27,7 +25,7 @@ module.exports = class Avatar
         height: size
         backgroundColor: avatarColor
     },
-      if avatarUrl
+      if src
         z '.image',
           style:
-            backgroundImage: "url(#{avatarUrl})"
+            backgroundImage: "url(#{src})"

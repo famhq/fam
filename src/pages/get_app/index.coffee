@@ -1,9 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 GetApp = require '../../components/get_app'
 

@@ -1,9 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 Policies = require '../../components/policies'
 
@@ -15,7 +11,6 @@ module.exports = class PoliciesPage
   isPublic: true
 
   constructor: ({model, requests, @router, serverData}) ->
-    @$editButton = new Button()
     @$head = new Head({
       model
       requests

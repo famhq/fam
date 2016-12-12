@@ -1,12 +1,8 @@
 z = require 'zorium'
-_map = require 'lodash/map'
 Rx = require 'rx-lite'
-Environment = require 'clay-environment'
-colors = require '../../colors'
+_map = require 'lodash/map'
 
-Icon = require '../icon'
 TabsBar = require '../../components/tabs_bar'
-config = require '../../config'
 
 if window?
   IScroll = require 'iscroll'
@@ -48,9 +44,7 @@ getTransformProperty = ->
   _prefixStyle 'transform'
 
 module.exports = class Tabs
-  constructor: ({@model, @selectedIndex,
-      @isPageScrolling, hideTabBar}) ->
-
+  constructor: ({@model, @selectedIndex, @isPageScrolling, hideTabBar}) ->
     @selectedIndex ?= new Rx.BehaviorSubject 0
     @isPageScrolling ?= new Rx.BehaviorSubject false
     @mountDisposable = null
@@ -110,8 +104,10 @@ module.exports = class Tabs
       @$$selector = @$$el?.querySelector '.z-tabs-bar .selector'
       updateSelectorPosition = =>
         # updating state and re-rendering every time is way too slow
-        xOffset =
-          "#{-100 * @iScrollContainer.pages.length *  @iScrollContainer.x / @iScrollContainer.scrollerWidth}%"
+        xOffset = -100 * @iScrollContainer.pages.length * (
+          @iScrollContainer.x / @iScrollContainer.scrollerWidth
+        )
+        xOffset = "#{xOffset}%"
         @$$selector?.style.transform = "translate(#{xOffset}, 0)"
         @$$selector?.style.webkitTransform = "translate(#{xOffset}, 0)"
 
@@ -121,8 +117,9 @@ module.exports = class Tabs
       @isPageScrolling.onNext true
       unless hideTabBar
         @$$selector = document.querySelector '.z-tabs-bar .selector'
-        @scrollInterval =
-          setInterval updateSelectorPosition, SELECTOR_POSITION_INTERVAL_MS
+        @scrollInterval = setInterval(
+          updateSelectorPosition, SELECTOR_POSITION_INTERVAL_MS
+        )
         updateSelectorPosition()
 
     @iScrollContainer.on 'scrollEnd', =>
@@ -137,7 +134,6 @@ module.exports = class Tabs
         @selectedIndex.onNext newIndex
 
     @mountDisposable = @selectedIndex.subscribeOnNext (index) =>
-      console.log 'tab change', index
       if @iScrollContainer.pages?[index]
         @iScrollContainer.goToPage index, 0, 500
       unless hideTabBar

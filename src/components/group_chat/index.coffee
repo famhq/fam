@@ -1,9 +1,6 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 Conversation = require '../conversation'
-config = require '../../config'
 
 if window?
   require './index.styl'

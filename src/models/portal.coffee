@@ -1,10 +1,8 @@
-Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
 config = require '../config'
 
 if window?
-  kik = require 'kik'
   PortalGun = require 'portal-gun'
 
 module.exports = class Portal
@@ -13,7 +11,6 @@ module.exports = class Portal
       @portal = new PortalGun() # TODO: check isParentValid
 
   PLATFORMS:
-    KIK: 'kik'
     GAME_APP: 'game_app'
     CLAY_APP: 'clay_app'
     WEB: 'web'
@@ -36,14 +33,11 @@ module.exports = class Portal
 
     @portal.listen()
 
-    @portal.on 'auth.kikLogin', @kikLogin
     @portal.on 'auth.getStatus', @authGetStatus
     @portal.on 'share.any', @shareAny
     @portal.on 'env.getPlatform', @getPlatform
 
     @portal.on 'bot.open', @botOpen
-
-    @portal.on 'top.getData', -> kik.message
 
     @portal.on 'messenger.isInstalled', -> false
 
@@ -80,15 +74,10 @@ module.exports = class Portal
 
   getPlatform: ({gameKey} = {}) =>
     userAgent = navigator.userAgent
-
-    @call 'kik.isEnabled'
-    .then (isKikEnabled) =>
-      switch
-        when isKikEnabled
-          @PLATFORMS.KIK
-        when Environment.isGameApp(gameKey, {userAgent})
-          @PLATFORMS.GAME_APP
-        when Environment.isClayApp({userAgent})
-          @PLATFORMS.CLAY_APP
-        else
-          @PLATFORMS.WEB
+    switch
+      when Environment.isGameApp(gameKey, {userAgent})
+        @PLATFORMS.GAME_APP
+      when Environment.isClayApp({userAgent})
+        @PLATFORMS.CLAY_APP
+      else
+        @PLATFORMS.WEB

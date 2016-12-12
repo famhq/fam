@@ -1,12 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-colors = require '../../colors'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
-log = require 'loga'
-Environment = require 'clay-environment'
 
-config = require '../../config'
 colors = require '../../colors'
 DeckCards = require '../deck_cards'
 Base = require '../base'

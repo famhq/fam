@@ -54,11 +54,11 @@
     "zock": "^0.2.5"
   },
   "dependencies": {
-    "assert-none-missing": "^0.1.2",
+    "assert-none-missing": "git://github.com/claydotio/assert-none-missing.git",
     "bluebird": "^3.4.6",
     "body-parser": "^1.14.1",
-    "clay-environment": "^0.3.3",
-    "clay-request": "^0.4.4",
+    "clay-environment": "^0.4.1",
+    "clay-request": "git://github.com/claydotio/clay-request.git",
     "coffee-script": "^1.10.0",
     "compression": "^1.6.0",
     "cookie": "^0.2.3",
@@ -78,11 +78,11 @@
     "portal-gun": "^0.4.1",
     "promiz": "^1.0.4",
     "qs": "^5.2.0",
-    "rx-lite": "^3.1.2",
+    "rx-lite": "^4.0.8",
     "socket.io-client": "^1.5.1",
     "stacktrace-js": "^1.0.1",
     "whatwg-fetch": "^0.10.1",
-    "zorium": "^1.0.8",
+    "zorium": "git://github.com/claydotio/zorium.git",
     "zorium-paper": "git://github.com/claydotio/zorium-paper.git"
   },
   "directories": {

@@ -1,6 +1,6 @@
-_merge = require 'lodash/merge'
 z = require 'zorium'
 Environment = require 'clay-environment'
+_merge = require 'lodash/merge'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -60,7 +60,7 @@ module.exports = class Head
         icon: meta.icon256
     }, meta
 
-    {twitter, openGraph, ios, kik} = meta
+    {twitter, openGraph, ios} = meta
 
     isInliningSource = config.ENV is config.ENVS.PROD
     webpackDevUrl = config.WEBPACK_DEV_URL
@@ -128,12 +128,6 @@ module.exports = class Head
       z 'script.model',
         innerHTML: modelSerialization or ''
 
-      z 'script',
-        src: 'https://js.stripe.com/v2/'
-      z 'script',
-        innerHTML: "
-          Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
-        "
 
       z 'script',
         innerHTML: "
@@ -145,39 +139,33 @@ module.exports = class Head
           ga('create', '#{config.GOOGLE_ANALYTICS_ID}', 'auto');
         "
 
-      if Environment.isGameApp(config.GAME_KEY, {userAgent})
-        z 'script',
-          innerHTML: 'window.kik = {}'
-      else
-        [
-          z 'script',
-            src: 'https://js.stripe.com/v2/'
-          z 'script',
-            innerHTML: "
-              Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
-            "
-          z 'script',
-            src: '//cdn.kik.com/kik/2.3.0/kik.js'
-
-          z 'script',
-            innerHTML: "
-              (function(d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s); js.id = id;
-                js.src = '//connect.facebook.net/en_US/sdk.js';
-                fjs.parentNode.insertBefore(js, fjs);
-              }(document, 'script', 'facebook-jssdk'));
-              window.fbAsyncInit = function() {
-                FB.init({
-                  appId  : '#{config.FB_ID}',
-                  cookie : true,
-                  xfbml  : true,
-                  version: 'v2.2'
-                });
-              }
-            "
-        ]
+      # unless Environment.isGameApp(config.GAME_KEY, {userAgent})
+      #   [
+      #     z 'script',
+      #       src: 'https://js.stripe.com/v2/'
+      #     z 'script',
+      #       innerHTML: "
+      #         Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
+      #       "
+      #     z 'script',
+      #       innerHTML: "
+      #         (function(d, s, id) {
+      #           var js, fjs = d.getElementsByTagName(s)[0];
+      #           if (d.getElementById(id)) return;
+      #           js = d.createElement(s); js.id = id;
+      #           js.src = '//connect.facebook.net/en_US/sdk.js';
+      #           fjs.parentNode.insertBefore(js, fjs);
+      #         }(document, 'script', 'facebook-jssdk'));
+      #         window.fbAsyncInit = function() {
+      #           FB.init({
+      #             appId  : '#{config.FB_ID}',
+      #             cookie : true,
+      #             xfbml  : true,
+      #             version: 'v2.2'
+      #           });
+      #         }
+      #       "
+      #   ]
 
       # fonts
       z 'link',

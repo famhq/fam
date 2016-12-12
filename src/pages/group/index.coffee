@@ -2,8 +2,6 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 _filter = require 'lodash/filter'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
@@ -14,7 +12,7 @@ GroupMembers = require '../../components/group_members'
 ProfileDialog = require '../../components/profile_dialog'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
-Spinner = require '../../components/spinner'
+colors = require '../../colors'
 
 if window?
   require './index.styl'

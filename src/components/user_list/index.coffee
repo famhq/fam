@@ -1,12 +1,8 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-colors = require '../../colors'
 _map = require 'lodash/map'
-log = require 'loga'
 
-config = require '../../config'
-Icon = require '../icon'
 Avatar = require '../avatar'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -28,7 +24,6 @@ module.exports = class UserList
       _map users, (user) =>
         z '.user', {
           onclick: =>
-            console.log 'onclick', @selectedProfileDialogUser
             if onclick
               onclick user.userInfo
             else

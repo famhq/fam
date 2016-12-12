@@ -1,9 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 NewConversation = require '../../components/new_conversation'
 
@@ -31,7 +27,7 @@ module.exports = class NewConversationPage
   renderHead: => @$head
 
   render: =>
-    z '.p-new-group', {
+    z '.p-new-conversation', {
       style:
         height: "#{window?.innerHeight}px"
     },

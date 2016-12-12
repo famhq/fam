@@ -3,8 +3,6 @@
 @require '../../vars'
 
 $zIndexDrawer = 300
-$zIndexDrawerUserHeader = 200
-$zIndexDrawerGuestHeader = 200
 $zIndexDrawerHeader = 100
 
 .z-drawer
@@ -82,14 +80,6 @@ $zIndexDrawerHeader = 100
 
         @media (min-width: $breakPointMedium)
           height: 64px
-
-        &:after
-          content: ''
-          position: absolute
-          left: 0
-          top: 0
-          width: 100%
-          height: 100%
 
         > .logo
           width: 100%

@@ -1,15 +1,12 @@
+z = require 'zorium'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
-z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 Icon = require '../icon'
 PrimaryButton = require '../primary_button'
 Privacy = require '../privacy'
 Tos = require '../tos'
 colors = require '../../colors'
-config = require '../../config'
 
 if window?
   require './index.styl'

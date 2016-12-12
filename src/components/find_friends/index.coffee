@@ -1,11 +1,11 @@
-_isEmpty = require 'lodash/isEmpty'
 z = require 'zorium'
 Rx = require 'rx-lite'
-colors = require '../../colors'
+_isEmpty = require 'lodash/isEmpty'
 
 UserList = require '../user_list'
 TopFriends = require '../top_friends'
 Icon = require '../icon'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -13,17 +13,14 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class FindFriends
-  constructor: (options) ->
-    {model, @isFindFriendsVisible, selectedProfileDialogUser} = options
-
+  constructor: ({model, @isFindFriendsVisible, selectedProfileDialogUser}) ->
     @isFindFriendsVisible ?= new Rx.BehaviorSubject true
-    @value = new Rx.BehaviorSubject ''
+    @searchValue = new Rx.BehaviorSubject ''
 
     # TODO: add infinite scroll
     # tried comblineLatest w/ debounce stream and onscrollbottom stream,
     # couldn't get it working
-    users = @value.debounce(SEARCH_DEBOUNCE).flatMapLatest (query) ->
-      ga? 'send', 'event', 'search', 'input', query
+    users = @searchValue.debounce(SEARCH_DEBOUNCE).flatMapLatest (query) ->
       if query
         model.user.searchByUsername query
       else
@@ -38,20 +35,20 @@ module.exports = class FindFriends
     @$topFriends = new TopFriends {model, selectedProfileDialogUser}
 
     @state = z.state
-      value: @value
+      searchValue: @searchValue
       users: users
 
   afterMount: (@$$el) =>
     @$$el.querySelector('.input').focus()
 
   clear: =>
-    @value.onNext ''
+    @searchValue.onNext ''
     @$$el.querySelector('.input').focus()
 
   render: ({onclick, onBack, showCurrentFriends} = {}) =>
     showCurrentFriends ?= false
 
-    {value, users} = @state.getValue()
+    {searchValue, users} = @state.getValue()
 
     z '.z-find-friends', {
       style:
@@ -67,7 +64,7 @@ module.exports = class FindFriends
             onclick: =>
               onBack?() or @isFindFriendsVisible.onNext Rx.Observable.just false
         z 'span.right-icon',
-          unless _isEmpty value
+          unless _isEmpty searchValue
             z @$clear,
               icon: 'close'
               isAlignedTop: true
@@ -80,7 +77,7 @@ module.exports = class FindFriends
           document.activeElement.blur() # hide keyboard
         z 'input.input',
           placeholder: 'Search by username'
-          value: value
+          value: searchValue
           onfocus: @open
           focused: 'focused'
           oninput: z.ev (e, $$el) =>

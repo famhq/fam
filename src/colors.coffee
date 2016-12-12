@@ -67,7 +67,6 @@ module.exports = _defaults {
   '$tabSelectedAlt': paperColors.$white
   '$tabUnselectedAlt': paperColors.$white30
 
-  '$kik': '#82bc23'
   '$messenger': '#0084ff'
   '$discord': '#7289da'
 

@@ -1,9 +1,6 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 colors = require '../../colors'
-config = require '../../config'
 Icon = require '../../components/icon'
 FormatService = require '../../services/format'
 

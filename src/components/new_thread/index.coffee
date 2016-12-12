@@ -1,10 +1,7 @@
 z = require 'zorium'
-log = require 'loga'
 Rx = require 'rx-lite'
 
 Compose = require '../compose'
-colors = require '../../colors'
-config = require '../../config'
 
 if window?
   require './index.styl'

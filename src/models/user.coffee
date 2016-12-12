@@ -39,7 +39,6 @@ module.exports = class User
     formData = new FormData()
     formData.append 'file', file, file.name
 
-    console.log config.API_URL + '/upload'
     @proxy config.API_URL + '/upload', {
       method: 'post'
       qs:
@@ -53,4 +52,4 @@ module.exports = class User
     .then @exoid.invalidateAll
 
   getDisplayName: (user) =>
-    user?.username or user?.kikUsername?.toLowerCase() or @DEFAULT_NAME
+    user?.username or @DEFAULT_NAME

@@ -6,9 +6,10 @@ if window?
   require './index.styl'
 
 module.exports = class Icon
-  render: ({icon, size, isAlignedTop, isAlignedLeft, isAlignedRight,
-            isAlignedBottom, isTouchTarget, color, onclick,
-            flipX, viewBox, heightRatio}) ->
+  render: (options) ->
+    {icon, size, isAlignedTop, isAlignedLeft, isAlignedRight,
+              isAlignedBottom, isTouchTarget, color, onclick,
+              flipX, viewBox, heightRatio} = options
     size ?= '24px'
     viewBox ?= 24
     heightRatio ?= 1

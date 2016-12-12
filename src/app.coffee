@@ -3,8 +3,6 @@ Rx = require 'rx-lite'
 HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
 
-config = require './config'
-gulpPaths = require '../gulp_paths'
 HomePage = require './pages/home'
 SignInPage = require './pages/sign_in'
 JoinPage = require './pages/join'

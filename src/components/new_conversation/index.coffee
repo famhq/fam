@@ -1,9 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-colors = require '../../colors'
-log = require 'loga'
 
-config = require '../../config'
 FindFriends = require '../find_friends'
 
 if window?

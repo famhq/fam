@@ -1,13 +1,10 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Privacy = require '../../components/privacy'
+colors = require '../../colors'
 
 if window?
   require './index.styl'

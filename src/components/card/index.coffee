@@ -1,13 +1,13 @@
 z = require 'zorium'
-colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 config = require '../../config'
+colors = require '../../colors'
 
-SMALL_WIDTH = 128
-SMALL_HEIGHT = 128
+DEFAULT_WIDTH = 76
+DEFAULT_HEIGHT = 96
 
 module.exports = class Card
   constructor: ({card}) ->
@@ -16,8 +16,8 @@ module.exports = class Card
   render: ({width, onclick} = {}) =>
     {card} = @state.getValue()
 
-    width ?= 76
-    height = width * (96 / 76)
+    width ?= DEFAULT_WIDTH
+    height = width * (DEFAULT_HEIGHT / DEFAULT_WIDTH)
 
     z '.z-card', {
       onclick: ->

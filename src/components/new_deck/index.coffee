@@ -1,23 +1,21 @@
+z = require 'zorium'
+Rx = require 'rx-lite'
 _map = require 'lodash/map'
 _range = require 'lodash/range'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
-z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
-colors = require '../../colors'
-config = require '../../config'
 PrimaryInput = require '../primary_input'
 Icon = require '../icon'
 DeckCards = require '../deck_cards'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 CARDS_PER_DECK = 8
 
-module.exports = class NewThread
+module.exports = class NewDeck
   constructor: ({@model, @router}) ->
     @nameValue ?= new Rx.BehaviorSubject ''
     @nameError ?= new Rx.BehaviorSubject null

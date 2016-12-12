@@ -1,16 +1,9 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-colors = require '../../colors'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
-log = require 'loga'
-Dialog = require 'zorium-paper/dialog'
 moment = require 'moment'
 
-config = require '../../config'
-colors = require '../../colors'
 Icon = require '../icon'
-PrimaryButton = require '../primary_button'
 Avatar = require '../avatar'
 Spinner = require '../spinner'
 
@@ -47,7 +40,8 @@ module.exports = class Conversations
               z '.right',
                 z '.info',
                   z '.name', @model.user.getDisplayName op
-                  z '.time', moment(conversation.lastUpdateTime).fromNowModified()
+                  z '.time',
+                    moment(conversation.lastUpdateTime).fromNowModified()
                 z '.last-message', conversation.lastMessage?.body
 
         else

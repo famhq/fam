@@ -2,15 +2,12 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 _find = require 'lodash/find'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Conversation = require '../../components/conversation'
-Avatar = require '../../components/avatar'
 Spinner = require '../../components/spinner'
-Icon = require '../../components/icon'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -50,12 +47,8 @@ module.exports = class ConversationPage
   render: =>
     {conversation, me, isRefreshing} = @state.getValue()
 
-    console.log conversation
-
     toUser = _find conversation?.users, (user) ->
       me?.id isnt user.id
-
-    console.log conversation
 
     z '.p-conversation', {
       style:

@@ -1,9 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 EditGroup = require '../../components/edit_group'
 
@@ -28,7 +24,7 @@ module.exports = class NewGroupPage
   renderHead: => @$head
 
   render: =>
-    z '.p-edit-group', {
+    z '.p-new-group', {
       style:
         height: "#{window?.innerHeight}px"
     },

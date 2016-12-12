@@ -1,15 +1,10 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
-colors = require '../../colors'
-config = require '../../config'
 DeckCards = require '../../components/deck_cards'
 DeckStats = require '../../components/deck_stats'
 Icon = require '../../components/icon'
 Tabs = require '../../components/tabs'
 PrimaryButton = require '../../components/primary_button'
-FormatService = require '../../services/format'
 
 if window?
   require './index.styl'

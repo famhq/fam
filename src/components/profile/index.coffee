@@ -1,12 +1,7 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 Avatar = require '../avatar'
 PrimaryButton = require '../primary_button'
-FormatService = require '../../services/format'
-colors = require '../../colors'
-config = require '../../config'
 
 if window?
   require './index.styl'

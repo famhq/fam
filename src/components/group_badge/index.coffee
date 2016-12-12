@@ -1,6 +1,4 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 GroupBadge = require '../group_badge'
 config = require '../../config'
@@ -9,7 +7,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupBadge
-  constructor: ({@model, @router, group}) ->
+  constructor: ({@model, group}) ->
     @state = z.state {group}
 
   render: ({badgeId, onclick} = {}) =>

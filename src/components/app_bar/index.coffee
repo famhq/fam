@@ -1,7 +1,5 @@
 z = require 'zorium'
-log = require 'loga'
 
-config = require '../../config'
 colors = require '../../colors'
 
 if window?

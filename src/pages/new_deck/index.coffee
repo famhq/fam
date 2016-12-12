@@ -1,9 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 NewDeck = require '../../components/new_deck'
 
@@ -26,7 +22,7 @@ module.exports = class NewDeckPage
   renderHead: => @$head
 
   render: =>
-    z '.p-new-thread', {
+    z '.p-new-deck', {
       style:
         height: "#{window?.innerHeight}px"
     },

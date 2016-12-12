@@ -1,10 +1,5 @@
-Rx = require 'rx-lite'
-Environment = require 'clay-environment'
-
-config = require '../config'
-
 module.exports = class PushToken
-  constructor: ({@auth, @pushToken}) ->
+  constructor: ({@auth, @pushToken}) -> null
 
   create: ({token} = {}) =>
     unless localStorage['pushTokenStored']

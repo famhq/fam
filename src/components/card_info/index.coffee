@@ -1,10 +1,8 @@
+z = require 'zorium'
 _max = require 'lodash/max'
 _map = require 'lodash/map'
 _mapValues = require 'lodash/mapValues'
 _startCase = require 'lodash/startCase'
-z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 colors = require '../../colors'
 config = require '../../config'

@@ -1,9 +1,6 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 
 UserList = require '../user_list'
-config = require '../../config'
 
 if window?
   require './index.styl'

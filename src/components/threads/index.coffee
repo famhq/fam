@@ -1,17 +1,11 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
 moment = require 'moment'
-colors = require '../../colors'
+FloatingActionButton = require 'zorium-paper/floating_action_button'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
-log = require 'loga'
-Dialog = require 'zorium-paper/dialog'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
-config = require '../../config'
 colors = require '../../colors'
 Icon = require '../icon'
-PrimaryButton = require '../primary_button'
 Spinner = require '../spinner'
 
 if window?

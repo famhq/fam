@@ -1,9 +1,9 @@
 z = require 'zorium'
 
-config = require '../../config'
 Head = require '../../components/head'
 Splash = require '../../components/splash'
 Spinner = require '../../components/spinner'
+config = require '../../config'
 
 if window?
   require './index.styl'

@@ -1,6 +1,4 @@
 z = require 'zorium'
-log = require 'loga'
-Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
 PrimaryButton = require '../primary_button'

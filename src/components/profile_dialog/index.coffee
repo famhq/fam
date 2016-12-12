@@ -1,14 +1,9 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
-colors = require '../../colors'
-_isEmpty = require 'lodash/isEmpty'
 Dialog = require 'zorium-paper/dialog'
-Environment = require 'clay-environment'
-moment = require 'moment'
 
-config = require '../../config'
 Avatar = require '../avatar'
 Icon = require '../icon'
+colors = require '../../colors'
 
 if window?
   require './index.styl'

@@ -1,20 +1,15 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-colors = require '../../colors'
-Button = require 'zorium-paper/button'
 _map = require 'lodash/map'
 _uniq = require 'lodash/uniq'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
 _isEmpty = require 'lodash/isEmpty'
-log = require 'loga'
-Environment = require 'clay-environment'
 
-config = require '../../config'
 Icon = require '../icon'
-Spinner = require '../spinner'
 Avatar = require '../avatar'
 PrimaryButton = require '../primary_button'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -22,17 +17,12 @@ if window?
 module.exports = class UserPicker
   constructor: ({@model, @router, @pickedStreams, users}) ->
 
-    # @$spinner = new Spinner()
-    @$pickFromKikButton = new Button()
     @$findFriendsButton = new PrimaryButton()
 
     picked = @pickedStreams.switch()
 
     @state = z.state
       me: @model.user.getMe()
-      isKikInstalled: if window?
-      then Rx.Observable.fromPromise @model.portal.call 'kik.isInstalled'
-      else null
       users: users.map (users) =>
         _map users, (user) =>
           {
@@ -52,8 +42,7 @@ module.exports = class UserPicker
   render: ({isUnavailableFn, unavailableMessage, isSelectAllEnabled,
       noUsersMessage, title} = {}) =>
 
-    {me, picked, pickedWithComponents, users,
-      isKikInstalled} = @state.getValue()
+    {me, picked, pickedWithComponents, users} = @state.getValue()
 
     isUsersEmpty = Boolean users
     users ?= []
@@ -61,7 +50,7 @@ module.exports = class UserPicker
     userSuggestions = users.concat pickedWithComponents
     # merge any 'to' users that aren't already in users
     userSuggestions = _uniq userSuggestions, ({userInfo}) ->
-      "#{userInfo.id}:#{userInfo.kikUsername}"
+      userInfo.id
 
     title ?= 'User suggestions'
     noUsersMessage ?= z '.z-user-picker_no-users',
@@ -73,30 +62,6 @@ module.exports = class UserPicker
             @router.go '/friends/find'
 
     z '.z-user-picker',
-      if isKikInstalled
-        z '.pick-from-kik',
-          z @$pickFromKikButton,
-            text: 'Pick friends from Kik'
-            isRaised: true
-            isFullWidth: true
-            isDark: true
-            onclick: =>
-              @model.portal.call 'kik.sendViral'
-              .then (users) =>
-                newUsers = _map users, ({username, pic}) -> {
-                  kikUsername: username
-                  data:
-                    avatar: pic
-                }
-                @pickedStreams.onNext \
-                  Rx.Observable.just picked.concat newUsers
-            colors:
-              cText: '#82bc23'
-              c200: colors.$grey100
-              c500: colors.$white
-              c600: colors.$grey200
-              c700: colors.$grey300
-
       z '.top',
         z '.title', title
         if isSelectAllEnabled and picked?.length < userSuggestions?.length and
@@ -117,9 +82,7 @@ module.exports = class UserPicker
         noUsersMessage
       else
         _map userSuggestions, ({userInfo, $avatar, $checkIcon}) =>
-          isChecked = _find(picked, {id: userInfo.id}) or
-            (userInfo.kikUsername and
-            _find(picked, {kikUsername: userInfo.kikUsername}))
+          isChecked = _find(picked, {id: userInfo.id})
 
           isUnavailable = if isUnavailableFn \
                           then isUnavailableFn(userInfo)
@@ -131,10 +94,8 @@ module.exports = class UserPicker
               if isUnavailable
                 return
               if isChecked
-                newTo = _filter picked, ({id, kikUsername}) ->
-                  (not id or id isnt userInfo.id) and (
-                    not kikUsername or kikUsername isnt userInfo.kikUsername
-                  )
+                newTo = _filter picked, ({id}) ->
+                  not id or id isnt userInfo.id
                 @pickedStreams.onNext Rx.Observable.just newTo
               else
                 @pickedStreams.onNext \

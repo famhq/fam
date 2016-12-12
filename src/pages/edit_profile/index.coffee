@@ -1,8 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 EditProfile = require '../../components/edit_profile'
 

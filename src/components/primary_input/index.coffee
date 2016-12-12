@@ -1,6 +1,6 @@
 z = require 'zorium'
-_defaults = require 'lodash/defaults'
 Input = require 'zorium-paper/input'
+_defaults = require 'lodash/defaults'
 
 Icon = require '../icon'
 colors = require '../../colors'

@@ -1,19 +1,15 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 moment = require 'moment'
-colors = require '../../colors'
+FloatingActionButton = require 'zorium-paper/floating_action_button'
+ProfileDialog = require '../profile_dialog'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
 _isEmpty = require 'lodash/isEmpty'
-log = require 'loga'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
-ProfileDialog = require '../profile_dialog'
 
-config = require '../../config'
 colors = require '../../colors'
 Icon = require '../icon'
 Avatar = require '../avatar'
-PrimaryButton = require '../primary_button'
 Spinner = require '../spinner'
 
 if window?
@@ -96,6 +92,5 @@ module.exports = class Thread
             @router.go "/thread/#{thread.id}/reply"
 
       if selectedProfileDialogUser
-        console.log 'show'
         z @$profileDialog
     ]

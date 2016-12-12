@@ -15,6 +15,7 @@ webpackStream = require 'webpack-stream'
 # istanbul = require 'gulp-coffee-istanbul'
 WebpackDevServer = require 'webpack-dev-server'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
+# Visualizer = require('webpack-visualizer-plugin')
 
 config = require './src/config'
 paths = require './gulp_paths'
@@ -37,8 +38,6 @@ webpackBase =
     exprContextCritical: false
   resolve:
     extensions: ['.coffee', '.js', '.json', '']
-  externals:
-    kik: 'kik'
   output:
     filename: 'bundle.js'
     publicPath: '/'
@@ -177,6 +176,8 @@ gulp.task 'dist:scripts', ['dist:clean'], ->
   scriptsConfig = _defaultsDeep {
     devtool: 'source-map'
     plugins: [
+      # new Visualizer()
+      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       new webpack.optimize.UglifyJsPlugin
         mangle:
           except: ['process']

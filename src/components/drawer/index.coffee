@@ -1,8 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-Button = require 'zorium-paper/button'
 _map = require 'lodash/map'
-moment = require 'moment'
 
 Icon = require '../icon'
 Avatar = require '../avatar'

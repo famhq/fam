@@ -1,12 +1,7 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-_map = require 'lodash/map'
-_mapValues = require 'lodash/mapValues'
-_isEmpty = require 'lodash/isEmpty'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
 
-config = require '../../config'
-colors = require '../../colors'
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -15,7 +10,7 @@ Groups = require '../../components/groups'
 Conversations = require '../../components/conversations'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
-Spinner = require '../../components/spinner'
+colors = require '../../colors'
 
 if window?
   require './index.styl'

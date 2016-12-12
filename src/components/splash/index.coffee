@@ -1,5 +1,4 @@
 z = require 'zorium'
-log = require 'loga'
 
 PrimaryButton = require '../primary_button'
 FlatButton = require '../flat_button'

@@ -1,31 +1,26 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-colors = require '../../colors'
 _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
-log = require 'loga'
-Environment = require 'clay-environment'
 
-config = require '../../config'
-colors = require '../../colors'
 Card = require '../card'
 Base = require '../base'
 
 if window?
   require './index.styl'
 
-PADDING = 16
 DEFAULT_CARDS_PER_ROW = 4
+DESKTOP_CARDS_PER_ROW = 8
 
 getCardSizeInfo = ->
   if window?
     # TODO: json file with these vars, stylus uses this
     if window.matchMedia('(min-width: 840px)').matches
-      {cardsPerRow: 8}#, itemMargin: 12}
+      {cardsPerRow: DESKTOP_CARDS_PER_ROW}
     else
-      {cardsPerRow: 4}#, itemMargin: 2}
+      {cardsPerRow: DEFAULT_CARDS_PER_ROW}
   else
-    {itemsPerRow: DEFAULT_CARDS_PER_ROW}#, itemMargin: 0}
+    {itemsPerRow: DEFAULT_CARDS_PER_ROW}
 
 module.exports = class DeckCards extends Base
   constructor: ({@model, @router, deck}) ->
