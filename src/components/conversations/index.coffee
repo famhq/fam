@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
+_find = require 'lodash/find'
 moment = require 'moment'
 
 Icon = require '../icon'
@@ -31,15 +32,20 @@ module.exports = class Conversations
             'No conversations found'
         else if conversations
           _map conversations, ({conversation, $avatar}) =>
-            op = conversation.users?[0]
+            otherUser = _find conversation.users, (user) ->
+              user.id isnt me?.id
+
+            isUnread = not conversation.userData[me?.id]?.isRead
 
             @router.link z 'a.conversation', {
               href: "/conversation/#{conversation.id}"
+              className: z.classKebab {isUnread}
             },
-              z '.avatar', z $avatar, {user: op}
+              z '.status'
+              z '.avatar', z $avatar, {user: otherUser}
               z '.right',
                 z '.info',
-                  z '.name', @model.user.getDisplayName op
+                  z '.name', @model.user.getDisplayName otherUser
                   z '.time',
                     moment(conversation.lastUpdateTime).fromNowModified()
                 z '.last-message', conversation.lastMessage?.body

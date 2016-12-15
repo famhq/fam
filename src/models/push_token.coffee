@@ -1,3 +1,5 @@
+Environment = require 'clay-environment'
+
 module.exports = class PushToken
   constructor: ({@auth, @pushToken}) -> null
 

@@ -107,8 +107,8 @@ app.use (req, res, next) ->
   cookieSubject.subscribeOnNext setCookies(req.cookies)
 
   router = new RouterService {
-    portal: null
     router: null
+    model: null
   }
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'

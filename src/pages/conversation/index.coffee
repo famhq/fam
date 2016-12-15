@@ -7,6 +7,7 @@ AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Conversation = require '../../components/conversation'
 Spinner = require '../../components/spinner'
+ProfileDialog = require '../../components/profile_dialog'
 colors = require '../../colors'
 
 if window?
@@ -18,6 +19,8 @@ module.exports = class ConversationPage
   constructor: ({@model, requests, @router, serverData}) ->
     conversation = requests.flatMapLatest ({route}) =>
       @model.conversation.getById route.params.conversationId
+
+    selectedProfileDialogUser = new Rx.BehaviorSubject null
 
     isRefreshing = new Rx.BehaviorSubject false
 
@@ -32,8 +35,11 @@ module.exports = class ConversationPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
+    @$profileDialog = new ProfileDialog {
+      @model, @router, selectedProfileDialogUser
+    }
     @$conversation = new Conversation {
-      @model, @router, isRefreshing, conversation
+      @model, @router, isRefreshing, conversation, selectedProfileDialogUser
     }
     @$refreshingSpinner = new Spinner()
 
@@ -41,11 +47,13 @@ module.exports = class ConversationPage
       me: @model.user.getMe()
       conversation: conversation
       isRefreshing: isRefreshing
+      selectedProfileDialogUser: selectedProfileDialogUser
 
   renderHead: => @$head
 
   render: =>
-    {conversation, me, isRefreshing} = @state.getValue()
+    {conversation, me, isRefreshing,
+      selectedProfileDialogUser} = @state.getValue()
 
     toUser = _find conversation?.users, (user) ->
       me?.id isnt user.id
@@ -65,3 +73,6 @@ module.exports = class ConversationPage
           null
       }
       @$conversation
+
+      if selectedProfileDialogUser
+        z @$profileDialog, {user: selectedProfileDialogUser}

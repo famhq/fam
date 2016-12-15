@@ -8,21 +8,25 @@ isSimpleClick = (e) ->
   not (e.which > 1 or e.shiftKey or e.altKey or e.metaKey or e.ctrlKey)
 
 class RouterService
-  constructor: ({@router, @portal}) ->
+  constructor: ({@router, @model}) ->
     @history = []
 
   go: (route, {reset} = {}) =>
     @history.push(route or window?.location.pathname)
-    if route is '/' or reset
+    if route is '/' or route is '/community' or reset
       @history = [route]
     @router.go route
 
   back: ({fromNative} = {}) =>
+    console.log @history[0]
+    if @model.drawer.isOpen().getValue()
+      return @model.drawer.close()
     if @history.length is 1 and fromNative and (
       @history[0] is '/' or
-      @history[0] is '/onboard'
+      @history[0] is '/community'
     )
-      @portal.call 'app.exit'
+      console.log 'exit'
+      # @model.portal.call 'app.exit'
     else if @history.length > 1 and window.history.length > 0
       window.history.back()
       @history.pop()

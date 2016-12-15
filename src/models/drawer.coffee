@@ -2,7 +2,7 @@ Rx = require 'rx-lite'
 
 module.exports = class Drawer
   constructor: ->
-    @_isOpen = new Rx.ReplaySubject false
+    @_isOpen = new Rx.BehaviorSubject false
 
   isOpen: =>
     @_isOpen

@@ -26,6 +26,11 @@ class FormatService
           else
             part
 
+  rank: (rank) ->
+    if rank
+      "##{Math.round(rank).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}"
+    else '...'
+
   percentage: (value) ->
     "#{Math.round(value * 100)}%"
 

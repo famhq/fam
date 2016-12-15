@@ -2,12 +2,12 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
-FormatService = require '../../services/format'
 
 Base = require '../base'
 Icon = require '../icon'
 Card = require '../card'
 Spinner = require '../spinner'
+FormatService = require '../../services/format'
 
 if window?
   require './index.styl'

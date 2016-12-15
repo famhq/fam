@@ -35,17 +35,17 @@ module.exports = class EditProfile
       avatarImage: null
       avatarDataUrl: null
       avatarUploadError: null
+      username: @usernameValueStreams.switch()
       isSaving: false
 
   save: =>
-    {avatarImage, me, isSaving} = @state.getValue()
+    {avatarImage, username, me, isSaving} = @state.getValue()
     if isSaving
       return
 
     @state.set isSaving: true
     @usernameError.onNext null
 
-    username = @usernameValue.getValue()
     (if username and username isnt me?.username
       @model.user.setUsername username
       .catch (err) =>

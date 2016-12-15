@@ -37,9 +37,15 @@ module.exports = class Portal
     @portal.on 'share.any', @shareAny
     @portal.on 'env.getPlatform', @getPlatform
 
-    @portal.on 'bot.open', @botOpen
+    # fallbacks
+    @portal.on 'app.onResume', -> null
+    @portal.on 'top.onData', -> null
+    @portal.on 'push.register', -> null
 
     @portal.on 'messenger.isInstalled', -> false
+
+    @portal.on 'networkInformation.onOffline', @networkInformationOnOffline
+    @portal.on 'networkInformation.onOnline', @networkInformationOnOnline
 
     @portal.on 'browser.openWindow', ({url, target, options}) ->
       window.open url, target, options
@@ -81,3 +87,9 @@ module.exports = class Portal
         @PLATFORMS.CLAY_APP
       else
         @PLATFORMS.WEB
+
+  networkInformationOnOnline: (fn) ->
+    window.addEventListener 'online', fn
+
+  networkInformationOnOffline: (fn) ->
+    window.addEventListener 'offline', fn

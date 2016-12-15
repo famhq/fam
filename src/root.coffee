@@ -86,12 +86,13 @@ init = ->
 
   onOnline = ->
     isOffline.onNext false
+    model.exoid.invalidateAll()
   onOffline = ->
     isOffline.onNext true
 
 
   router = new RouterService {
-    portal: model.portal
+    model: model
     router: new LocationRouter()
   }
 
@@ -108,13 +109,17 @@ init = ->
   $app = z app
   z.bind root, $app
 
-  if Environment.isGameApp(config.GAME_KEY)
-    model.portal.call 'networkInformation.onOffline', onOffline
-    model.portal.call 'networkInformation.onOnline', onOnline
-  else
-    window.addEventListener 'online',  onOnline
-    window.addEventListener 'offline',  onOffline
+  model.portal.call 'networkInformation.onOffline', onOffline
+  model.portal.call 'networkInformation.onOnline', onOnline
 
+  model.portal.call 'app.onResume', ->
+    model.auth.clearNetoxCache()
+    model.user.updateServerTime()
+    if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
+      model.portal.call 'push.setBadgeNumber', {number: 0}
+
+  model.portal.call 'app.onBack', ->
+    router.back({fromNative: true})
 
   routeHandler = (data) ->
     data ?= {}
@@ -187,6 +192,14 @@ init = ->
   .catch (err) ->
     unless err.message is 'Method not found'
       log.error err
+
+  model.portal.call 'push.registerAction', {
+    action: 'reply'
+  }, (reply) ->
+    model.chatMessage.create {
+      body: reply.additionalData.inlineReply
+      conversationId: reply.additionalData.data.conversationId
+    }
 
   model.portal.call 'app.onResume', ->
     model.auth.clearNetoxCache()

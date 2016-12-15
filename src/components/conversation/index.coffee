@@ -23,27 +23,27 @@ RENDER_DELAY_MS = 100
 
 module.exports = class Conversation
   constructor: (options) ->
-    {@model, @router, @error, isRefreshing, conversation,
+    {@model, @router, @error, isRefreshing, @conversation,
       @selectedProfileDialogUser} = options
 
     @$toAvatar = new Avatar()
 
     # SUPER HACK
     isLoading = new Rx.BehaviorSubject false
-
     me = @model.user.getMe()
-    conversation ?= new Rx.BehaviorSubject null
+    @conversation ?= new Rx.BehaviorSubject null
     isRefreshing ?= new Rx.BehaviorSubject null
+    @error = new Rx.BehaviorSubject null
 
-    @conversationAndMe = Rx.Observable.combineLatest(
-      conversation
+    conversationAndMe = Rx.Observable.combineLatest(
+      @conversation
       me
       (vals...) -> vals
     )
 
     # not putting in state because re-render is too slow on type
     @message = new Rx.BehaviorSubject ''
-    @messages = @conversationAndMe.flatMapLatest (resp) =>
+    @messages = conversationAndMe.flatMapLatest (resp) =>
       [conversation, me] = resp
 
       isRefreshing.onNext true
@@ -81,7 +81,7 @@ module.exports = class Conversation
       isRefreshing: isRefreshing
       isTextareaFocused: false
       error: null
-      conversation: conversation
+      conversation: @conversation
       isLoaded: false
       isStickerPanelVisible: false
 
@@ -96,10 +96,22 @@ module.exports = class Conversation
 
   afterMount: (@$$el) =>
     clearInterval @refreshInterval
+    @conversation.take(1).subscribe (conversation) =>
+      @model.portal.call 'push.setContextId', {
+        contextId: conversation.id
+      }
     @scrollToBottom()
 
   beforeUnmount: =>
     clearInterval @refreshInterval
+    # to update conversations page, etc...
+    @model.exoid.invalidateAll()
+
+    @model.portal.call 'push.setContextId', {
+      contextId: null
+    }
+
+    @state.set {isLoaded: false}
 
   scrollToBottom: =>
     $messages = @$$el?.querySelector('.messages')
@@ -110,7 +122,7 @@ module.exports = class Conversation
 
   setMessage: (e) =>
     e or= window.event
-    if e.keyCode is 13
+    if e.keyCode is 13 and not e.shiftKey
       e.preventDefault()
       @postMessage()
     else
@@ -142,16 +154,7 @@ module.exports = class Conversation
       }
       .then =>
         # @model.user.emit('chatMessage').catch log.error
-        doneTimeout = setTimeout =>
-          @state.set isPostLoading: false
-        , MAX_POST_MESSAGE_LOAD_MS
-        messageSub = @messages.take(1)
-        messageSub.subscribe =>
-          @state.set isPostLoading: false
-          clearTimeout doneTimeout
-        messageSub.catch =>
-          @state.set isPostLoading: false
-          clearTimeout doneTimeout
+        @state.set isPostLoading: false
       .catch =>
         @state.set isPostLoading: false
       # hack: don't want to keep textarea value in state, too slow
@@ -248,7 +251,7 @@ module.exports = class Conversation
               onkeyup: @setMessage
               onkeydown: (e) ->
                 e or= window.event
-                if e.keyCode is 13
+                if e.keyCode is 13 and not e.shiftKey
                   e.preventDefault()
               onchange: @setMessage
               onfocus: =>

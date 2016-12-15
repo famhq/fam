@@ -1,11 +1,13 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+Environment = require 'clay-environment'
 
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
 FlatButton = require '../flat_button'
 InfoBlock = require '../info_block'
 Form = require '../form'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -55,7 +57,10 @@ module.exports = class SetAddress
     }
     .then =>
       @state.set isLoading: false
-      @router.go '/getApp'
+      if Environment.isGameApp config.GAME_KEY
+        @router.go '/'
+      else
+        @router.go '/getApp'
     .catch (err) =>
       @addressError.onNext err.message
       @state.set isLoading: false

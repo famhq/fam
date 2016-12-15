@@ -1,3 +1,5 @@
+Rx = require 'rx-lite'
+
 module.exports = class Product
   constructor: ({@auth}) ->
     @allCached = new Rx.ReplaySubject 1

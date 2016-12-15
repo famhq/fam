@@ -81,7 +81,7 @@ module.exports = class FindFriends
           onfocus: @open
           focused: 'focused'
           oninput: z.ev (e, $$el) =>
-            @value.onNext $$el.value
+            @searchValue.onNext $$el.value
       z '.results',
         if _isEmpty users
           z 'div',
