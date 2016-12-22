@@ -3,31 +3,35 @@ config = require '../config'
 module.exports = class User
   DEFAULT_NAME: 'Nameless'
 
+  namespace: 'users'
+
   constructor: ({@auth, @proxy, @exoid}) -> null
 
   getMe: =>
-    @auth.stream 'users.getMe'
+    @auth.stream "#{@namespace}.getMe"
 
   getById: (id) =>
-    @auth.stream 'users.getById', {id}
+    @auth.stream "#{@namespace}.getById", {id}
 
   getByCode: (code) =>
-    @auth.stream 'users.getByCode', {code}
+    @auth.stream "#{@namespace}.getByCode", {code}
 
   setUsername: (username) =>
-    @auth.call 'users.setUsername', {username}, {invalidateAll: true}
+    @auth.call "#{@namespace}.setUsername", {username}, {invalidateAll: true}
 
   searchByUsername: (username) =>
-    @auth.call 'users.searchByUsername', {username}
+    @auth.call "#{@namespace}.searchByUsername", {username}
 
   # makeMember: =>
-  #   @auth.call 'users.makeMember', {}, {invalidateAll: true}
+  #   @auth.call "#{@namespace}.makeMember", {}, {invalidateAll: true}
 
   setFlags: (flags) =>
-    @auth.call 'users.setFlags', flags, {invalidateAll: true}
+    @auth.call "#{@namespace}.setFlags", flags, {invalidateAll: true}
 
   requestInvite: ({clanTag, username, email, referrerId}) =>
-    @auth.call 'users.requestInvite', {clanTag, username, email, referrerId}
+    @auth.call "#{@namespace}.requestInvite", {
+      clanTag, username, email, referrerId
+    }
 
   isBlocked: (me, userId) ->
     me?.data?.blockedUserIds?.indexOf(userId) isnt -1
@@ -42,7 +46,7 @@ module.exports = class User
     @proxy config.API_URL + '/upload', {
       method: 'post'
       qs:
-        path: 'users.setAvatarImage'
+        path: "#{@namespace}.setAvatarImage"
       body: formData
     }
     # this (exoid.update) doesn't actually work... it'd be nice

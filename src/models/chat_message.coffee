@@ -1,15 +1,15 @@
-module.exports = class ChatMessage
-  constructor: ({@auth}) -> null
+Rx = require 'rx-lite'
+uuid = require 'uuid'
+_sortBy = require 'lodash/sortBy'
+Changefeed = require './changefeed'
 
-  create: ({body, conversationId}) =>
-    @auth.call 'chatMessages.create', {
-      body, conversationId
-    }
-
+module.exports = class ChatMessage extends Changefeed
+  namespace: 'chatMessages'
   # flag: (id) =>
   #   @auth.call 'chatMessages.flag', {id}
 
-  getAllByConversationId: (conversationId, {ignoreCache} = {}) =>
-    @auth.stream 'chatMessages.getAllByConversationId', {conversationId}, {
-      ignoreCache
-    }
+  getAllByConversationId: (conversationId) =>
+    @stream(
+      @auth.stream("#{@namespace}.getAllByConversationId", {conversationId})
+      {initialSortFn: ((items) -> _sortBy items, 'time')}
+    )

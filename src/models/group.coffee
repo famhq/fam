@@ -1,27 +1,46 @@
-Rx = require 'rx-lite'
 module.exports = class Group
+  namespace: 'groups'
+
   constructor: ({@auth}) -> null
 
-  create: ({name, description, badgeId, background}) =>
-    @auth.call 'groups.create', {name, description, badgeId, background}, {
-      invalidateAll: true
-    }
-
-  getAll: ({filter} = {}) =>
-    @auth.stream 'groups.getAll', {filter}
-
-  getById: (id) =>
-    @auth.stream 'groups.getById', {id}
-
-  joinById: (id) =>
-    @auth.call 'groups.joinById', {id}, {
-      invalidateAll: true
-    }
-
-  updateById: (id, {name, description, badgeId, background}) =>
-    @auth.call 'groups.updateById', {
-      id, name, description, badgeId, background
+  create: ({name, description, badgeId, background, mode}) =>
+    @auth.call "#{@namespace}.create", {
+      name, description, badgeId, background, mode
     }, {invalidateAll: true}
 
-  hasPermission: (group, user) ->
-    group?.userIds?.indexOf(user.id) isnt -1
+  getAll: ({filter} = {}) =>
+    @auth.stream "#{@namespace}.getAll", {filter}
+
+  getById: (id) =>
+    @auth.stream "#{@namespace}.getById", {id}
+
+  joinById: (id) =>
+    @auth.call "#{@namespace}.joinById", {id}, {
+      invalidateAll: true
+    }
+
+  leaveById: (id) =>
+    @auth.call "#{@namespace}.leaveById", {id}, {
+      invalidateAll: true
+    }
+
+  inviteById: (id, {userIds}) =>
+    @auth.call "#{@namespace}.inviteById", {id, userIds}, {invalidateAll: true}
+
+  updateById: (id, {name, description, badgeId, background, mode}) =>
+    @auth.call "#{@namespace}.updateById", {
+      id, name, description, badgeId, background, mode
+    }, {invalidateAll: true}
+
+  hasPermission: (group, user, {level} = {}) ->
+    userId = user?.id
+    level ?= 'member'
+
+    unless userId and group
+      return false
+
+    return switch level
+      when 'admin'
+      then group.creatorId is userId
+      # member
+      else group.userIds?.indexOf(userId) isnt -1

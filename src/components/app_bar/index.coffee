@@ -6,7 +6,7 @@ if window?
   require './index.styl'
 
 module.exports = class AppBar
-  constructor: ({@model}) -> null
+  constructor: -> null
 
   render: ({$topLeftButton, $topRightButton, title, bgColor, color, isFlat}) ->
     color ?= colors.$primary500Text

@@ -1,24 +1,26 @@
 module.exports = class ClashRoyaleUserDeck
+  namespace: 'clashRoyaleUserDeck'
+
   constructor: ({@auth}) -> null
 
   getAll: ({sort, filter} = {}) =>
-    @auth.stream 'clashRoyaleUserDeck.getAll', {sort, filter}
+    @auth.stream "#{@namespace}.getAll", {sort, filter}
 
   getByDeckId: (deckId) =>
-    @auth.stream 'clashRoyaleUserDeck.getByDeckId', {deckId}
+    @auth.stream "#{@namespace}.getByDeckId", {deckId}
 
   incrementByDeckId: (deckId, {state} = {}) =>
-    @auth.call 'clashRoyaleUserDeck.incrementByDeckId', {deckId, state}, {
+    @auth.call "#{@namespace}.incrementByDeckId", {deckId, state}, {
       invalidateAll: true
     }
 
   favorite: ({deckId} = {}) =>
-    @auth.call 'clashRoyaleUserDeck.favorite', {deckId}, {invalidateAll: true}
+    @auth.call "#{@namespace}.favorite", {deckId}, {invalidateAll: true}
 
   unfavorite: ({deckId} = {}) =>
-    @auth.call 'clashRoyaleUserDeck.unfavorite', {deckId}, {invalidateAll: true}
+    @auth.call "#{@namespace}.unfavorite", {deckId}, {invalidateAll: true}
 
   create: ({cardIds, cardKeys, name} = {}) =>
-    @auth.call 'clashRoyaleUserDeck.create', {
+    @auth.call "#{@namespace}.create", {
       cardIds, name, cardKeys
     }, {invalidateAll: true}

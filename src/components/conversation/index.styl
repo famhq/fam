@@ -10,11 +10,11 @@ $zIndexTextarea = 2
   flex-direction: column
   width: 100%
 
-  &.is-textarea-focused
-    > .bottom
-      > .g-grid
-        > .textarea
-          height: 84px
+  // &.is-textarea-focused
+  //   > .bottom
+  //     > .g-grid
+  //       > .textarea
+  //         height: 84px
 
   > .g-grid
     display: flex
@@ -147,11 +147,13 @@ $zIndexTextarea = 2
 
       > .textarea
         width: 100%
-        height: 48px
-        padding: 16px 92px 0 16px
-        box-sizing: border-box
+        height: 54px
+        padding: 16px 92px 16px 16px
+        max-height: 150px
         border: none
         outline: none
+        resize: none
+        display: block
         background: getColor('$tertiary500')
 
       > .icons
@@ -170,9 +172,7 @@ $zIndexTextarea = 2
   @media (min-width: $breakPointMedium)
     > .g-grid
       > .messages
-        padding-bottom: 64px
-
-        .message
+        > .message
           > .bubble
             width: 478px
 

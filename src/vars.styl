@@ -4,6 +4,7 @@ use('./stylus_get_cdn_url.js')
 $zIndexAppBar = 99
 $zIndexTabs = 100
 $zIndexShareAnyModal = 200
+$zIndexHeadsUp = 10000
 
 // TODO: move to vars.json, allow js to use (cardList)
 $breakPointSmall = 340px
@@ -73,6 +74,15 @@ responsive-font-subhead()
 
   @media (min-width: $breakPointLarge)
     font-size: 16px
+
+responsive-font-label()
+  zp-font-body2()
+  font-weight: 300
+  color: getColor('$white')
+  line-height: 20px
+  font-size: 16px
+  @media (min-width: $breakPointLarge)
+    font-size: 20px
 
 responsive-font-body2()
   zp-font-body2()

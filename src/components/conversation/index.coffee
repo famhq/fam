@@ -1,6 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _map = require 'lodash/map'
+_last = require 'lodash/last'
+_isEmpty = require 'lodash/isEmpty'
 Environment = require 'clay-environment'
 moment = require 'moment'
 
@@ -20,19 +22,19 @@ MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
 RENDER_DELAY_MS = 100
+DEFAULT_TEXTAREA_HEIGHT = 54
 
 module.exports = class Conversation
   constructor: (options) ->
-    {@model, @router, @error, isRefreshing, @conversation,
-      @selectedProfileDialogUser} = options
+    {@model, @router, @error, @conversation, isActive,
+      @selectedProfileDialogUser, @scrollYOnly} = options
 
     @$toAvatar = new Avatar()
 
-    # SUPER HACK
     isLoading = new Rx.BehaviorSubject false
+    isActive ?= new Rx.BehaviorSubject false
     me = @model.user.getMe()
     @conversation ?= new Rx.BehaviorSubject null
-    isRefreshing ?= new Rx.BehaviorSubject null
     @error = new Rx.BehaviorSubject null
 
     conversationAndMe = Rx.Observable.combineLatest(
@@ -43,29 +45,30 @@ module.exports = class Conversation
 
     # not putting in state because re-render is too slow on type
     @message = new Rx.BehaviorSubject ''
-    @messages = conversationAndMe.flatMapLatest (resp) =>
+    @messages = new Rx.BehaviorSubject null
+
+    loadedMessages = conversationAndMe.flatMapLatest (resp) =>
       [conversation, me] = resp
 
-      isRefreshing.onNext true
-
       (if conversation
-        @model.chatMessage.getAllByConversationId(
-          conversation.id
-        )
+        @model.chatMessage.getAllByConversationId(conversation.id)
       else
         Rx.Observable.just null)
-      .map (response) =>
+      .map (messages) =>
         isLoading.onNext false
-        isRefreshing.onNext false
+        isLoaded = not _isEmpty @state.getValue().messages
         setTimeout =>
-          @scrollToBottom()
-          @state.set isLoaded: true
-        , RENDER_DELAY_MS
-        response
+          @scrollToBottom {
+            isSmooth: isLoaded
+          }
+        , 0
+        messages
       .catch (err) ->
         console.log err
         Rx.Observable.just []
     .share()
+
+    messages = Rx.Observable.merge @messages, loadedMessages
 
     @$sendIcon = new Icon()
     @$stickerIcon = new Icon()
@@ -73,19 +76,17 @@ module.exports = class Conversation
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
 
-
     @state = z.state
       me: me
       isPostLoading: false
       isLoading: isLoading
-      isRefreshing: isRefreshing
+      isActive: isActive
       isTextareaFocused: false
       error: null
       conversation: @conversation
-      isLoaded: false
       isStickerPanelVisible: false
 
-      messages: @messages.map (messages) ->
+      messages: messages.map (messages) ->
         if messages
           _map messages, (message) ->
             {
@@ -106,17 +107,25 @@ module.exports = class Conversation
     clearInterval @refreshInterval
     # to update conversations page, etc...
     @model.exoid.invalidateAll()
+    @messages.onNext []
 
     @model.portal.call 'push.setContextId', {
       contextId: null
     }
 
-    @state.set {isLoaded: false}
+  resizeTextarea: (e) ->
+    $$textarea = e.target
+    $$textarea.style.height = "#{DEFAULT_TEXTAREA_HEIGHT}px"
+    $$textarea.style.height = $$textarea.scrollHeight + 'px'
+    $$textarea.scrollTop = $$textarea.scrollHeight
 
-  scrollToBottom: =>
+  scrollToBottom: ({isSmooth} = {}) =>
     $messages = @$$el?.querySelector('.messages')
-    if $messages and $messages[$messages.length - 1]?.scrollIntoView
-      $messages[$messages.length - 1].scrollIntoView()
+    $messageArr = @$$el?.querySelectorAll('.message')
+    if not @scrollYOnly and $messageArr and _last($messageArr)?.scrollIntoView
+      $messageArr[$messageArr.length - 1].scrollIntoView {
+        behavior: if isSmooth then 'smooth' else 'instant'
+      }
     else if $messages
       $messages.scrollTop = $messages.scrollHeight - $messages.offsetHeight
 
@@ -128,7 +137,11 @@ module.exports = class Conversation
     else
       @message.onNext e.target.value
 
-  postMessage: =>
+  postMessage: (e) =>
+    $$textarea = @$$el.querySelector('#textarea')
+    $$textarea?.focus()
+    $$textarea.style.height = 'auto'
+
     {me, conversation, isPostLoading} = @state.getValue()
 
     messageBody = @message.getValue()
@@ -151,7 +164,7 @@ module.exports = class Conversation
       @model.chatMessage.create {
         body: messageBody
         conversationId: conversation?.id
-      }
+      }, {user: me}
       .then =>
         # @model.user.emit('chatMessage').catch log.error
         @state.set isPostLoading: false
@@ -164,7 +177,9 @@ module.exports = class Conversation
 
   render: =>
     {me, isLoading, isPostLoading, message, isStickerPanelVisible,
-      messages, conversation, isLoaded, isTextareaFocused} = @state.getValue()
+      messages, conversation, isTextareaFocused} = @state.getValue()
+
+    isLoaded = not _isEmpty messages
 
     z '.z-conversation', {
       className: z.classKebab {isTextareaFocused}
@@ -179,13 +194,16 @@ module.exports = class Conversation
 
               isSticker = body.match /^:[a-z_]+:$/
 
-              z '.message', {
-                key: "message-#{messageInfo.id}" # re-use elements in v-dom
-                className: z.classKebab {isSticker, isMe: user.id is me?.id}
-                onclick: =>
+              onclick = =>
+                unless isTextareaFocused
                   @selectedProfileDialogUser.onNext user
+
+              z '.message', {
+                # re-use elements in v-dom
+                key: "message-#{messageInfo.id or messageInfo.clientId}"
+                className: z.classKebab {isSticker, isMe: user.id is me?.id}
               },
-                z '.avatar',
+                z '.avatar', {onclick},
                   z $avatar, {
                     user
                     size: if window?.matchMedia('(min-width: 840px)').matches \
@@ -193,7 +211,7 @@ module.exports = class Conversation
                           else '40px'
                     bgColor: colors.$grey200
                   }
-                z '.bubble',
+                z '.bubble', {onclick},
                   z '.info',
                     if user?.flags?.isModerator or user?.flags?.isDev
                       z '.icon',
@@ -209,7 +227,10 @@ module.exports = class Conversation
                     z '.name', @model.user.getDisplayName user
                     z '.middot',
                       innerHTML: '&middot;'
-                    z '.time', moment(time).fromNowModified()
+                    z '.time',
+                      if time
+                      then moment(time).fromNowModified()
+                      else '...'
           else
             @$loadingSpinner
 
@@ -233,7 +254,7 @@ module.exports = class Conversation
                       @model.chatMessage.create {
                         body: ":#{sticker}:"
                         conversationId: conversation?.id
-                      }
+                      }, {user: me}
                       @state.set isStickerPanelVisible: false
                     style:
                       backgroundImage:
@@ -242,6 +263,7 @@ module.exports = class Conversation
         else
           z '.g-grid',
             z 'textarea.textarea',
+              id: 'textarea'
               # for some reason necessary on iOS to get it to focus properly
               onclick: (e) ->
                 setTimeout ->
@@ -250,17 +272,19 @@ module.exports = class Conversation
               placeholder: 'Type a message'
               onkeyup: @setMessage
               onkeydown: (e) ->
-                e or= window.event
                 if e.keyCode is 13 and not e.shiftKey
-                  e.preventDefault()
-              onchange: @setMessage
+                  e.preventDefault
+              oninput: @resizeTextarea
               onfocus: =>
+                clearTimeout @blurTimeout
                 @state.set isTextareaFocused: true
                 setTimeout =>
-                  @scrollToBottom()
+                  @scrollToBottom {isSmooth: true}
                 , RENDER_DELAY_MS
               onblur: =>
-                @state.set isTextareaFocused: false
+                @blurTimeout = setTimeout =>
+                  @state.set isTextareaFocused: false
+                , 350
 
             z '.icons',
               z '.sticker-icon',

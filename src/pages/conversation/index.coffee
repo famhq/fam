@@ -6,7 +6,6 @@ Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Conversation = require '../../components/conversation'
-Spinner = require '../../components/spinner'
 ProfileDialog = require '../../components/profile_dialog'
 colors = require '../../colors'
 
@@ -21,8 +20,6 @@ module.exports = class ConversationPage
       @model.conversation.getById route.params.conversationId
 
     selectedProfileDialogUser = new Rx.BehaviorSubject null
-
-    isRefreshing = new Rx.BehaviorSubject false
 
     @$head = new Head({
       @model
@@ -39,21 +36,18 @@ module.exports = class ConversationPage
       @model, @router, selectedProfileDialogUser
     }
     @$conversation = new Conversation {
-      @model, @router, isRefreshing, conversation, selectedProfileDialogUser
+      @model, @router, conversation, selectedProfileDialogUser
     }
-    @$refreshingSpinner = new Spinner()
 
     @state = z.state
       me: @model.user.getMe()
       conversation: conversation
-      isRefreshing: isRefreshing
       selectedProfileDialogUser: selectedProfileDialogUser
 
   renderHead: => @$head
 
   render: =>
-    {conversation, me, isRefreshing,
-      selectedProfileDialogUser} = @state.getValue()
+    {conversation, me, selectedProfileDialogUser} = @state.getValue()
 
     toUser = _find conversation?.users, (user) ->
       me?.id isnt user.id
@@ -65,12 +59,6 @@ module.exports = class ConversationPage
       z @$appBar, {
         title: @model.user.getDisplayName toUser
         $topLeftButton: z @$buttonBack, {color: colors.$tertiary900}
-        $topRightButton: if isRefreshing
-          z @$refreshingSpinner,
-            size: 20
-            hasTopMargin: false
-        else
-          null
       }
       @$conversation
 

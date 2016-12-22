@@ -22,6 +22,7 @@ module.exports = class GroupPage
 
   constructor: ({@model, requests, @router, serverData}) ->
     selectedProfileDialogUser = new Rx.BehaviorSubject null
+    selectedIndex = new Rx.BehaviorSubject 0
 
     groupId = requests.map ({route}) ->
       route.params.id
@@ -44,6 +45,8 @@ module.exports = class GroupPage
       @model
       @router
       selectedProfileDialogUser
+      isActive: selectedIndex.map (index) ->
+        index is 1
       conversation: groupId.flatMapLatest (groupId) =>
         @model.conversation.getByGroupId groupId
     }
@@ -51,7 +54,7 @@ module.exports = class GroupPage
     @$groupMembers = new GroupMembers {
       @model, @router, group, selectedProfileDialogUser
     }
-    @$tabs = new Tabs {@model}
+    @$tabs = new Tabs {@model, selectedIndex}
     @$editIcon = new Icon()
     @$settingsIcon = new Icon()
     @$groupInfoIcon = new Icon()
@@ -74,7 +77,8 @@ module.exports = class GroupPage
   render: =>
     {group, me, selectedProfileDialogUser} = @state.getValue()
 
-    hasPermission = @model.group.hasPermission group, me
+    hasMemberPermission = @model.group.hasPermission group, me
+    hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.p-group', {
       style:
@@ -88,11 +92,18 @@ module.exports = class GroupPage
         $topRightButton:
           z '.p-group_top-right',
             z '.icon',
-              z @$editIcon,
-                icon: 'edit'
+              if hasAdminPermission
+                z @$editIcon,
+                  icon: 'edit'
+                  color: colors.$primary500
+                  onclick: =>
+                    @router.go "/group/#{group?.id}/edit"
+            z '.icon',
+              z @$settingsIcon,
+                icon: 'settings'
                 color: colors.$primary500
                 onclick: =>
-                  @router.go "/group/#{group?.id}/edit"
+                  @router.go "/group/#{group?.id}/settings"
 
       }
       # don't load prematurely, or 4 tabs will go to 2 and break vDomKey
@@ -108,14 +119,14 @@ module.exports = class GroupPage
               $menuText: 'Info'
               $el: @$groupInfo
             }
-            if hasPermission
+            if hasMemberPermission
               {
                 $menuIcon: @$groupChatIcon
                 menuIconName: 'chat-bubble'
                 $menuText: 'Chat'
                 $el: @$groupChat
               }
-            if hasPermission
+            if hasMemberPermission
               {
                 $menuIcon: @$groupAnnouncementsIcon
                 menuIconName: 'notifications'

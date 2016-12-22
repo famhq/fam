@@ -9,47 +9,19 @@
   -webkit-overflow-scrolling: touch
   padding: 16px
 
+  > .unread-invites
+    display: flex
+    align-items: center
+    padding: 16px 0
+
+    > .icon
+      margin-right: 32px
+
+    > .chevron
+      margin-left: auto
+
   > .group-list
     > .g-grid
       > .title
         responsive-font-subhead()
         color: getColor('$primary500')
-
-    > .no-groups
-      > .g-grid
-        padding: 16px
-        text-align: center
-
-    > .groups
-      > .g-grid
-        > .g-cols
-          > .g-col
-            > .group
-              display: block
-              position: relative
-              background: getColor('$tertiary700')
-
-              > .header
-                width: 100%
-                padding-bottom: 56%
-                position: relative
-                background: black
-
-                > .inner
-                  position: absolute
-                  left: 0
-                  top: 0
-                  width: 100%
-                  height: 100%
-
-              > .content
-                padding: 16px
-                white-space: nowrap
-                overflow: hidden
-
-                > .name
-                  responsive-font-body1()
-
-                > .count
-                  responsive-font-caption()
-                  margin-top: 4px

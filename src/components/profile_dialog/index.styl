@@ -3,11 +3,16 @@
 @require '../../vars'
 
 .z-profile-dialog
-  display: block
+  display: none
+
+  &.is-visible
+    display: block
 
   // FIXME
   > .zp-dialog
     > .dialog
+      border-radius: 2px
+
       > .info
         padding: 0
 
@@ -28,6 +33,7 @@
       position: absolute
       top: 0
       right: 0
+      cursor: pointer
 
     > .avatar
       margin-right: 8px

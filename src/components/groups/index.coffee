@@ -1,68 +1,65 @@
 z = require 'zorium'
-_isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
+GroupList = require '../group_list'
 Icon = require '../icon'
-GroupHeader = require '../group_header'
-Spinner = require '../spinner'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 module.exports = class Groups
   constructor: ({@model, @router}) ->
-    @$spinner = new Spinner()
-    @$addIcon = new Icon()
+    @$myGroupList = new GroupList {
+      @router
+      groups: @model.group.getAll({filter: 'mine'})
+    }
+    @$openGroupList = new GroupList {
+      @router
+      groups: @model.group.getAll({filter: 'open'})
+    }
 
-    @$fab = new FloatingActionButton()
+    @$unreadInvitesIcon = new Icon()
+    @$unreadInvitesChevronIcon = new Icon()
 
     @state = z.state
       me: @model.user.getMe()
-      myGroups: @model.group.getAll({filter: 'mine'})
-                .map (groups) ->
-                  _map groups, (group) ->
-                    {group, $header: new GroupHeader({group})}
-      openGroups: @model.group.getAll({filter: 'open'})
-                  .map (groups) ->
-                    _map groups, (group) ->
-                      {group, $header: new GroupHeader({group})}
 
   render: =>
-    {me, myGroups, openGroups} = @state.getValue()
+    {me} = @state.getValue()
 
     groupTypes = [
       {
         title: 'My groups'
-        groups: myGroups
+        $groupList: @$myGroupList
       }
       {
         title: 'Open groups'
-        groups: openGroups
+        $groupList: @$openGroupList
       }
     ]
 
+    unreadGroupInvites = me?.data.unreadGroupInvites
+    inviteStr = if unreadGroupInvites is 1 then 'invite' else 'invites'
+
     z '.z-groups',
-      _map groupTypes, ({title, groups}) =>
+      if unreadGroupInvites
+        @router.link z 'a.unread-invites', {
+          href: '/groupInvites'
+        },
+          z '.icon',
+            z @$unreadInvitesIcon,
+              icon: 'notifications'
+              isTouchTarget: false
+              color: colors.$tertiary500
+          z '.text', "You have #{unreadGroupInvites} new group #{inviteStr}"
+          z '.chevron',
+            z @$unreadInvitesChevronIcon,
+              icon: 'chevron-right'
+              isTouchTarget: false
+              color: colors.$primary500
+      _map groupTypes, ({title, $groupList}) ->
         z '.group-list',
           z '.g-grid',
             z 'h2.title', title
-          if groups and _isEmpty groups
-            z '.no-groups',
-              z '.g-grid',
-                'No groups found'
-          else if groups
-            z '.groups',
-              z '.g-grid',
-                z '.g-cols',
-                  _map groups, ({group, $header}) =>
-                    z '.g-col.g-xs-6.g-md-3',
-                      @router.link z 'a.group', {
-                        href: "/group/#{group.id}"
-                      },
-                        z '.header',
-                          z '.inner',
-                            $header
-                        z '.content',
-                          z '.name', group.name or 'Nameless'
-                          z '.count', "#{group.userIds?.length} members"
+          $groupList

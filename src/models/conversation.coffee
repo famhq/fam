@@ -1,17 +1,19 @@
 module.exports = class Conversation
+  namespace: 'conversations'
+
   constructor: ({@auth}) -> null
 
   create: ({userIds, groupId}) =>
-    @auth.call 'conversations.create', {userIds, groupId}, {
+    @auth.call "#{@namespace}.create", {userIds, groupId}, {
       invalidateAll: true
     }
 
   getAll: =>
-    @auth.stream 'conversations.getAll', {}
+    @auth.stream "#{@namespace}.getAll", {}
 
   getById: (id) =>
-    @auth.stream 'conversations.getById', {id}
+    @auth.stream "#{@namespace}.getById", {id}
 
 
   getByGroupId: (groupId) =>
-    @auth.stream 'conversations.getByGroupId', {groupId}
+    @auth.stream "#{@namespace}.getByGroupId", {groupId}

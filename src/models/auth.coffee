@@ -62,7 +62,9 @@ module.exports = class Auth
       body = _defaults {rand: ignoreCache}, body
     @waitValidAuthCookie
     .flatMapLatest =>
-      @exoid.stream path, body, {isErrorable, ignoreCache: Boolean ignoreCache}
+      @exoid.stream path, body, {
+        isErrorable, ignoreCache: Boolean ignoreCache
+      }
 
   call: (path, body, {invalidateAll} = {}) =>
     @waitValidAuthCookie.take(1).toPromise()

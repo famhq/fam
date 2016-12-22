@@ -7,6 +7,7 @@ GroupHeader = require '../group_header'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
 PrimaryTextarea = require '../primary_textarea'
+Toggle = require '../toggle'
 colors = require '../../colors'
 
 if window?
@@ -33,6 +34,12 @@ module.exports = class EditGroup
     @selectedBackgroundStreams = new Rx.ReplaySubject 1
     @selectedBackgroundStreams.onNext (@group?.map (group) ->
       group.background) or Rx.Observable.just null
+
+    @isPrivateStreams = new Rx.ReplaySubject 1
+    @isPrivateStreams.onNext (@group?.map (group) ->
+      group.mode is 'private') or Rx.Observable.just null
+
+    @$isPrivateToggle = new Toggle {isSelectedStreams: @isPrivateStreams}
 
     @$groupHeader = new GroupHeader {@group}
     @$discardIcon = new Icon()
@@ -61,6 +68,7 @@ module.exports = class EditGroup
       isSaving: false
       group: @group
       name: @nameValueStreams.switch()
+      isPrivate: @isPrivateStreams.switch()
       description: @descriptionValueStreams.switch()
       selectedBadge: @selectedBadgeStreams.switch()
       selectedBackground: @selectedBackgroundStreams.switch()
@@ -72,7 +80,7 @@ module.exports = class EditGroup
       group.background
 
   save: (isNewGroup) =>
-    {selectedBackground, selectedBadge, me, isSaving, group
+    {selectedBackground, selectedBadge, me, isSaving, group, isPrivate,
       name, description} = @state.getValue()
 
     if isSaving
@@ -90,6 +98,7 @@ module.exports = class EditGroup
     fn {
       name
       description
+      mode: if isPrivate then 'private' else 'open'
       background: selectedBackground
       badgeId: selectedBadge
     }
@@ -154,4 +163,9 @@ module.exports = class EditGroup
           z '.input',
             z @$descriptionTextarea,
               hintText: 'Description'
+
+          z '.label',
+            'Private (invite-only)'
+            z '.right',
+              @$isPrivateToggle
       ]

@@ -12,6 +12,9 @@ ConversationsPage = require './pages/conversations'
 NewConversationPage = require './pages/new_conversation'
 CommunityPage = require './pages/community'
 GroupPage = require './pages/group'
+GroupSettingsPage = require './pages/group_settings'
+GroupInvitesPage = require './pages/group_invites'
+GroupInvitePage = require './pages/group_invite'
 EditGroupPage = require './pages/edit_group'
 NewGroupPage = require './pages/new_group'
 ThreadPage = require './pages/thread'
@@ -70,7 +73,10 @@ module.exports = class App
     route '/thread/:id/:page', ThreadPage
     route '/community', CommunityPage
     route '/group/:id', GroupPage
+    route '/group/:id/invite', GroupInvitePage
+    route '/group/:id/settings', GroupSettingsPage
     route '/group/:id/edit', EditGroupPage
+    route '/groupInvites', GroupInvitesPage
     route '/newGroup', NewGroupPage
     route '/newThread', NewThreadPage
     route '/newDeck', NewDeckPage

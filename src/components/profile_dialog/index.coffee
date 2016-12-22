@@ -36,7 +36,7 @@ module.exports = class ProfileDialog
     isFollowing = @model.user.isFollowing me, user?.id
     isMe = user?.id is me?.id
 
-    z '.z-profile-dialog',
+    z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
       z @$dialog,
         $content:
           z '.z-profile-dialog_dialog',

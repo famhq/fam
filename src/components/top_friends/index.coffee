@@ -22,11 +22,11 @@ module.exports = class TopFriends
     @state = z.state
       users: following
 
-  render: =>
+  render: ({onclick} = {}) =>
     {users} = @state.getValue()
 
     z '.z-top-friends',
       if users and not _isEmpty users
         z '.users',
           z 'h2.title', 'Friends'
-          @$userList
+          z @$userList, {onclick}

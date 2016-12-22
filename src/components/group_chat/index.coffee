@@ -6,12 +6,17 @@ if window?
   require './index.styl'
 
 module.exports = class GroupChat
-  constructor: ({@model, @router, conversation, selectedProfileDialogUser}) ->
+  constructor: (options) ->
+    {@model, @router, conversation,
+      selectedProfileDialogUser, isActive} = options
+
     @$conversation = new Conversation {
       @model
       @router
       selectedProfileDialogUser
+      isActive
       conversation
+      scrollYOnly: true
     }
 
     @state = z.state {}

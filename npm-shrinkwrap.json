@@ -3445,6 +3445,11 @@
       "from": "slash@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/slash/-/slash-1.0.0.tgz"
     },
+    "smoothscroll-polyfill": {
+      "version": "0.3.4",
+      "from": "smoothscroll-polyfill@>=0.3.4 <0.4.0",
+      "resolved": "https://registry.npmjs.org/smoothscroll-polyfill/-/smoothscroll-polyfill-0.3.4.tgz"
+    },
     "sntp": {
       "version": "1.0.9",
       "from": "sntp@>=1.0.0 <2.0.0",

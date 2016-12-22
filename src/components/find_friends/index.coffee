@@ -83,8 +83,10 @@ module.exports = class FindFriends
           oninput: z.ev (e, $$el) =>
             @searchValue.onNext $$el.value
       z '.results',
-        if _isEmpty users
-          z 'div',
-            z @$topFriends, {onclick}
-        else
-          z 'div', z @$userList, {onclick}
+        z '.g-grid',
+          if _isEmpty users
+            z 'div',
+              z @$topFriends, {onclick}
+          else
+            z 'div',
+              z @$userList, {onclick}

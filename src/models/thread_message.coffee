@@ -1,8 +1,9 @@
 module.exports = class ThreadMessage
+  namespace: 'threadMessages'
   constructor: ({@auth}) -> null
 
   create: ({body, threadId}) =>
-    @auth.call 'threadMessages.create', {body, threadId}, {invalidateAll: true}
+    @auth.call "#{@namespace}.create", {body, threadId}, {invalidateAll: true}
 
   flag: (id) =>
-    @auth.call 'threadMessages.flag', {id}
+    @auth.call "#{@namespace}.flag", {id}
