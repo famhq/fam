@@ -11,6 +11,9 @@ Spinner = require '../spinner'
 if window?
   require './index.styl'
 
+IMAGE_REGEX_STR = '\!\\[(.*?)\\]\\(local://(.*?_([0-9.]+))\\)'
+IMAGE_REGEX = new RegExp IMAGE_REGEX_STR, 'gi'
+
 module.exports = class Conversations
   constructor: ({@model, @router}) ->
     @$spinner = new Spinner()
@@ -36,6 +39,7 @@ module.exports = class Conversations
               user.id isnt me?.id
 
             isUnread = not conversation.userData[me?.id]?.isRead
+            isLastMessageFromMe = conversation.lastMessage?.userId is me?.id
 
             @router.link z 'a.conversation', {
               href: "/conversation/#{conversation.id}"
@@ -48,7 +52,13 @@ module.exports = class Conversations
                   z '.name', @model.user.getDisplayName otherUser
                   z '.time',
                     moment(conversation.lastUpdateTime).fromNowModified()
-                z '.last-message', conversation.lastMessage?.body
+                z '.last-message',
+                  if isLastMessageFromMe
+                    'Me: '
+                  else if conversation.lastMessage
+                    "#{@model.user.getDisplayName otherUser}: "
+
+                  conversation.lastMessage?.body?.replace IMAGE_REGEX, 'image'
 
         else
           @$spinner

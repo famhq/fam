@@ -20,6 +20,7 @@ module.exports = class ConversationPage
       @model.conversation.getById route.params.conversationId
 
     selectedProfileDialogUser = new Rx.BehaviorSubject null
+    overlay$ = new Rx.BehaviorSubject null
 
     @$head = new Head({
       @model
@@ -36,18 +37,19 @@ module.exports = class ConversationPage
       @model, @router, selectedProfileDialogUser
     }
     @$conversation = new Conversation {
-      @model, @router, conversation, selectedProfileDialogUser
+      @model, @router, conversation, selectedProfileDialogUser, overlay$
     }
 
     @state = z.state
       me: @model.user.getMe()
       conversation: conversation
       selectedProfileDialogUser: selectedProfileDialogUser
+      overlay$: overlay$
 
   renderHead: => @$head
 
   render: =>
-    {conversation, me, selectedProfileDialogUser} = @state.getValue()
+    {conversation, me, selectedProfileDialogUser, overlay$} = @state.getValue()
 
     toUser = _find conversation?.users, (user) ->
       me?.id isnt user.id
@@ -61,6 +63,9 @@ module.exports = class ConversationPage
         $topLeftButton: z @$buttonBack, {color: colors.$tertiary900}
       }
       @$conversation
+
+      if overlay$
+        z '.overlay', overlay$
 
       if selectedProfileDialogUser
         z @$profileDialog, {user: selectedProfileDialogUser}

@@ -10,12 +10,6 @@ $zIndexTextarea = 2
   flex-direction: column
   width: 100%
 
-  // &.is-textarea-focused
-  //   > .bottom
-  //     > .g-grid
-  //       > .textarea
-  //         height: 84px
-
   > .g-grid
     display: flex
     flex: 1
@@ -60,6 +54,9 @@ $zIndexTextarea = 2
                   margin-left: auto
                   margin-right: 0
 
+                > img
+                  cursor: pointer
+
             > .bottom
               > .name
                 margin-left: auto
@@ -95,6 +92,9 @@ $zIndexTextarea = 2
             overflow-x: hidden
 
             > div
+              > .link
+                text-decoration: underline
+
               > .sticker
                 width: 70px
                 height: 70px
@@ -115,59 +115,18 @@ $zIndexTextarea = 2
             > .middot
               margin-right: 4px
 
-  > .bottom
-    > .g-grid
-      box-shadow: 0 1px 4px getColor('$black26')
-      background: getColor('$tertiary500')
-      position: relative
+          > .card
+            background: getColor('$tertiary900')
+            padding: 8px
+            margin-top: 8px
+            cursor: pointer
 
-      > .sticker-panel
-        width: 100%
-        position: relative
-        padding: 8px 16px 16px 16px
+            > .title
+              responsive-font-body1()
+              font-weight: 500
 
-        > .close-icon
-          position: absolute
-          top: 8px
-          right: 16px
-
-        > .title
-          responsive-font-subhead()
-          color: getColor('$primary500')
-          margin-bottom: 20px
-
-        > .stickers
-          > .sticker
-            width: 70px
-            height: 70px
-            background-size: 100%
-            background-repeat: no-repeat
-            display: inline-block
-            margin-right: 8px
-
-      > .textarea
-        width: 100%
-        height: 54px
-        padding: 16px 92px 16px 16px
-        max-height: 150px
-        border: none
-        outline: none
-        resize: none
-        display: block
-        background: getColor('$tertiary500')
-
-      > .icons
-        position: absolute
-        right: 12px
-        top: 0%
-        height: 100%
-        display: flex
-        align-items: center
-        cursor: pointer
-
-        > .send-icon
-          height: 100%
-          display: flex
+            > .description
+              responsive-font-caption()
 
   @media (min-width: $breakPointMedium)
     > .g-grid

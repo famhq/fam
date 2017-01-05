@@ -1,4 +1,5 @@
 _defaults = require 'lodash/defaults'
+_pick = require 'lodash/pick'
 Rx = require 'rx-lite'
 
 config = require '../config'
@@ -57,14 +58,13 @@ module.exports = class Auth
             @call 'pushTokens.updateByToken', {token: pushToken}
             .catch -> null
 
-  stream: (path, body, {ignoreCache, isErrorable} = {}) =>
-    if ignoreCache
-      body = _defaults {rand: ignoreCache}, body
+  stream: (path, body, options = {}) =>
+    options = _pick options, [
+      'isErrorable', 'clientChangesStream', 'ignoreCache', 'initialSortFn'
+    ]
     @waitValidAuthCookie
     .flatMapLatest =>
-      @exoid.stream path, body, {
-        isErrorable, ignoreCache: Boolean ignoreCache
-      }
+      @exoid.stream path, body, options
 
   call: (path, body, {invalidateAll} = {}) =>
     @waitValidAuthCookie.take(1).toPromise()

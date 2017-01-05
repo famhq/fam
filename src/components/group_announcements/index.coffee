@@ -4,11 +4,11 @@ if window?
   require './index.styl'
 
 module.exports = class GroupAnnouncements
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, group}) ->
     @state = z.state {}
 
   render: =>
-    {} = @state.getValue()
+    {group} = @state.getValue()
 
     z '.z-group-announcements',
       z '.g-grid',

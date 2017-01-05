@@ -12,8 +12,8 @@ module.exports = class GroupMembers
     @$userList = new UserList {
       @model
       selectedProfileDialogUser: selectedProfileDialogUser
-      users: group.map ({users}) ->
-        users
+      users: group.map (group) ->
+        group?.users
     }
 
     @state = z.state {

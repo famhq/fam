@@ -50,8 +50,7 @@ module.exports = class User
       body: formData
     }
     # this (exoid.update) doesn't actually work... it'd be nice
-    # but it doesn't update existing
-    # streams
+    # but it doesn't update existing streams
     # .then @exoid.update
     .then @exoid.invalidateAll
 

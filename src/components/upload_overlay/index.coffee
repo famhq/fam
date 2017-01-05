@@ -1,19 +1,12 @@
 z = require 'zorium'
-Environment = require 'clay-environment'
-
-config = require '../../config'
 
 if window?
   require './index.styl'
 
 module.exports = class UploadOverlay
-  constructor: ({@model}) ->
-    @state = z.state
-      platform: Environment.getPlatform {gameKey: config.GAME_KEY}
+  constructor: ({@model}) -> null
 
-  render: ({onSelect}) =>
-    {platform} = @state.getValue()
-
+  render: ({onSelect}) ->
     z '.z-upload-overlay',
       z 'input#image.overlay',
         type: 'file'

@@ -77,7 +77,11 @@ module.exports = class ProfileDialog
               unless isMe
                 z 'li.menu-item', {
                   onclick: =>
-                    @router.go "/chat/user/#{user?.id}"
+                    @model.conversation.create {
+                      userIds: [user.id]
+                    }
+                    .then (conversation) =>
+                      @router.go "/conversation/#{conversation.id}"
                     @selectedProfileDialogUser.onNext null
                 },
                   z '.icon',

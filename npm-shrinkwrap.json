@@ -1116,11 +1116,12 @@
     "exoid": {
       "version": "0.1.7",
       "from": "git://github.com/claydotio/exoid.git",
-      "resolved": "git://github.com/claydotio/exoid.git#71d891d502324604a6d25fe77961d8ca245816d6",
+      "resolved": "git://github.com/claydotio/exoid.git#88f1dc5cce916ee525c0439130bc1ca72e8818a2",
       "dependencies": {
         "bluebird": {
           "version": "2.11.0",
-          "from": "bluebird@>=2.10.2 <3.0.0"
+          "from": "bluebird@>=2.10.2 <3.0.0",
+          "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-2.11.0.tgz"
         },
         "clay-request": {
           "version": "0.4.5",
@@ -1136,7 +1137,8 @@
         },
         "qs": {
           "version": "2.4.2",
-          "from": "qs@>=2.4.2 <3.0.0"
+          "from": "qs@>=2.4.2 <3.0.0",
+          "resolved": "https://registry.npmjs.org/qs/-/qs-2.4.2.tgz"
         }
       }
     },
@@ -1918,8 +1920,8 @@
     },
     "iscroll": {
       "version": "5.2.0",
-      "from": "iscroll@>=5.2.0 <6.0.0",
-      "resolved": "https://registry.npmjs.org/iscroll/-/iscroll-5.2.0.tgz"
+      "from": "git://github.com/claydotio/iscroll.git",
+      "resolved": "git://github.com/claydotio/iscroll.git#be4973786cc0ae4402d1b4b74507528d474da681"
     },
     "isemail": {
       "version": "1.2.0",

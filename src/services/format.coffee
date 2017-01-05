@@ -11,21 +11,6 @@ class FormatService
     else
       '...'
 
-  message: (message) ->
-    textLines = message.split('\n') or []
-    _map textLines, (text) ->
-      parts = text.split /(:[a-z_]+:)/g
-      z 'div',
-        _map parts, (part) ->
-          if part.match /:[a-z_]+:/
-            sticker = part.replace /:/g, ''
-            z '.sticker',
-              style:
-                backgroundImage:
-                  "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
-          else
-            part
-
   rank: (rank) ->
     if rank
       "##{Math.round(rank).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}"

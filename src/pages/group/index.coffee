@@ -24,19 +24,33 @@ module.exports = class GroupPage
     selectedProfileDialogUser = new Rx.BehaviorSubject null
     selectedIndex = new Rx.BehaviorSubject 0
 
+    overlay$ = new Rx.BehaviorSubject null
+
     groupId = requests.map ({route}) ->
       route.params.id
 
     group = groupId.flatMapLatest (groupId) =>
       @model.group.getById groupId
 
+
+    me = @model.user.getMe()
+
+    groupAndMe = Rx.Observable.combineLatest(
+      group
+      me
+      (vals...) -> vals
+    )
+
     @$head = new Head({
       @model
       requests
       serverData
-      meta: group.map (group) ->
-        title: group.name
-        description: group.name
+      # FIXME: doesn't currently work
+      # https://github.com/claydotio/zorium/commit/42f5e05f109b9954f056fb2bab3dba48fd43e90c
+      meta: null
+      # group.map (group) ->
+      #   title: group.name
+      #   description: group.name
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
@@ -45,10 +59,15 @@ module.exports = class GroupPage
       @model
       @router
       selectedProfileDialogUser
+      overlay$
       isActive: selectedIndex.map (index) ->
         index is 1
-      conversation: groupId.flatMapLatest (groupId) =>
-        @model.conversation.getByGroupId groupId
+      conversation: groupAndMe.flatMapLatest ([group, me]) =>
+        hasMemberPermission = @model.group.hasPermission group, me
+        if hasMemberPermission
+          @model.conversation.getByGroupId group.id
+        else
+          Rx.Observable.just null
     }
     @$groupAnnouncements = new GroupAnnouncements {@model, @router, group}
     @$groupMembers = new GroupMembers {
@@ -69,15 +88,18 @@ module.exports = class GroupPage
 
     @state = z.state
       group: group
-      me: @model.user.getMe()
+      me: me
+      overlay$: overlay$
       selectedProfileDialogUser: selectedProfileDialogUser
 
   renderHead: => @$head
 
   render: =>
-    {group, me, selectedProfileDialogUser} = @state.getValue()
+    {group, me, overlay$, selectedProfileDialogUser} = @state.getValue()
 
+    console.log group
     hasMemberPermission = @model.group.hasPermission group, me
+    console.log hasMemberPermission
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.p-group', {
@@ -113,12 +135,6 @@ module.exports = class GroupPage
           barBgColor: colors.$tertiary700
           barInactiveColor: colors.$white
           tabs: _filter [
-            {
-              $menuIcon: @$groupInfoIcon
-              menuIconName: 'info'
-              $menuText: 'Info'
-              $el: @$groupInfo
-            }
             if hasMemberPermission
               {
                 $menuIcon: @$groupChatIcon
@@ -126,6 +142,12 @@ module.exports = class GroupPage
                 $menuText: 'Chat'
                 $el: @$groupChat
               }
+            {
+              $menuIcon: @$groupInfoIcon
+              menuIconName: 'info'
+              $menuText: 'Info'
+              $el: @$groupInfo
+            }
             if hasMemberPermission
               {
                 $menuIcon: @$groupAnnouncementsIcon
@@ -140,5 +162,9 @@ module.exports = class GroupPage
               $el: @$groupMembers
             }
           ]
+      if overlay$
+        z '.overlay',
+          overlay$
+
       if selectedProfileDialogUser
         z @$profileDialog

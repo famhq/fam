@@ -1,0 +1,62 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-conversation-textarea
+  > .g-grid
+    box-shadow: 0 1px 4px getColor('$black26')
+    background: getColor('$tertiary500')
+
+    > .sticker-panel
+      width: 100%
+      position: relative
+      padding: 8px 16px 16px 16px
+
+      > .stickers
+        > .sticker
+          width: 70px
+          height: 70px
+          background-size: 100%
+          background-repeat: no-repeat
+          display: inline-block
+          margin-right: 8px
+
+    > .text-panel
+      position: relative
+
+      > .textarea
+        width: 100%
+        height: 54px
+        padding: 16px 92px 16px 16px
+        max-height: 150px
+        border: none
+        outline: none
+        resize: none
+        display: block
+        background: getColor('$tertiary500')
+
+      > .right-icons
+        position: absolute
+        right: 12px
+        top: 0%
+        height: 100%
+        display: flex
+        align-items: center
+        cursor: pointer
+
+        > .send-icon
+          height: 100%
+          display: flex
+
+    > .bottom-icons
+      display: flex
+
+      > .icon
+        position: relative
+
+        > .upload-overlay
+          position: absolute
+          left: 0
+          top: 0
+          width: 100%
+          height: 100%

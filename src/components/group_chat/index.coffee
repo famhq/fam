@@ -7,7 +7,7 @@ if window?
 
 module.exports = class GroupChat
   constructor: (options) ->
-    {@model, @router, conversation,
+    {@model, @router, conversation, overlay$,
       selectedProfileDialogUser, isActive} = options
 
     @$conversation = new Conversation {
@@ -16,13 +16,11 @@ module.exports = class GroupChat
       selectedProfileDialogUser
       isActive
       conversation
+      overlay$
       scrollYOnly: true
+      isGroup: true
     }
 
-    @state = z.state {}
-
   render: =>
-    {} = @state.getValue()
-
     z '.z-group-chat',
       z @$conversation

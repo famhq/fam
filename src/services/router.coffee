@@ -18,15 +18,13 @@ class RouterService
     @router.go route
 
   back: ({fromNative} = {}) =>
-    console.log @history[0]
     if @model.drawer.isOpen().getValue()
       return @model.drawer.close()
     if @history.length is 1 and fromNative and (
       @history[0] is '/' or
       @history[0] is '/community'
     )
-      console.log 'exit'
-      # @model.portal.call 'app.exit'
+      @model.portal.call 'app.exit'
     else if @history.length > 1 and window.history.length > 0
       window.history.back()
       @history.pop()

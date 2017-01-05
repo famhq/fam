@@ -9,11 +9,14 @@ module.exports = class Icon
   render: (options) ->
     {icon, size, isAlignedTop, isAlignedLeft, isAlignedRight,
               isAlignedBottom, isTouchTarget, color, onclick,
-              flipX, viewBox, heightRatio} = options
+              flipX, viewBox, heightRatio,
+              touchHeight, touchWidth} = options
     size ?= '24px'
     viewBox ?= 24
     heightRatio ?= 1
     isTouchTarget ?= true
+    touchWidth ?= '48px'
+    touchHeight ?= '48px'
     isClickable = Boolean onclick
 
     z 'div.z-icon', {
@@ -21,6 +24,8 @@ module.exports = class Icon
                                 isTouchTarget, isClickable}
       onclick: onclick
       style:
+        minWidth: if isTouchTarget then touchWidth else '100%'
+        minHeight: if isTouchTarget then touchHeight else '100%'
         width: size
         height: if size?.indexOf?('%') isnt -1 \
                 then "#{parseInt(size) * heightRatio}%"

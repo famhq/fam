@@ -32,6 +32,7 @@ API_PATH = API_URL.replace API_HOST, ''
 # All keys must have values at run-time (value may be null)
 isomorphic =
   CDN_URL: 'https://cdn.wtf/d/images/red_tritium'
+  USER_CDN_URL: 'https://cdn.wtf/images/red_tritium'
   IOS_APP_URL: 'https://itunes.apple.com/us/app/red-tritium/id1160535565'
   GOOGLE_PLAY_APP_URL:
     'https://play.google.com/store/apps/details?id=com.clay.redtritium'
