@@ -1,9 +1,12 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 Rx = require 'rx-lite'
+supportsWebP = window? and require 'supports-webp'
 
 Icon = require '../icon'
 UploadOverlay = require '../upload_overlay'
+SearchInput = require '../search_input'
+Spinner = require '../spinner'
 ConversationImagePreview = require '../conversation_image_preview'
 colors = require '../../colors'
 config = require '../../config'
@@ -12,6 +15,9 @@ if window?
   require './index.styl'
 
 DEFAULT_TEXTAREA_HEIGHT = 54
+SEARCH_DEBOUNCE = 300
+
+# TODO: move each panel to own component
 
 module.exports = class ConversationTextarea
   constructor: (options) ->
@@ -19,13 +25,17 @@ module.exports = class ConversationTextarea
       @isTextareaFocused, @overlay$} = options
 
     @imageData = new Rx.BehaviorSubject null
+    @searchValue = new Rx.BehaviorSubject null
+    debouncedSearchValue = @searchValue.debounce(SEARCH_DEBOUNCE)
 
+    @$searchInput = new SearchInput {@searchValue}
+    @$spinner = new Spinner()
     @$conversationImagePreview = new ConversationImagePreview {
       @imageData
       @overlay$
       @model
-      onUpload: ({key}) =>
-        @setMessage "![](local://#{key})"
+      onUpload: ({key, width, height}) =>
+        @setMessage "![](local://#{key} =#{width}x#{height})"
         @postMessage()
     }
     @$sendIcon = new Icon()
@@ -47,13 +57,40 @@ module.exports = class ConversationTextarea
         onclick: -> null
         $uploadOverlay: new UploadOverlay {@model}
       }
+      {
+        $icon: new Icon()
+        icon: 'gifs'
+        panel: 'gifs'
+      }
     ]
 
     @isTextareaFocused ?= new Rx.BehaviorSubject false
 
+    @currentPanel = new Rx.BehaviorSubject 'text'
+    currentPanelAndSearchValue = Rx.Observable.combineLatest(
+      @currentPanel
+      debouncedSearchValue
+      (vals...) -> vals
+    )
+    gifs = currentPanelAndSearchValue.flatMapLatest ([currentPanel, query]) =>
+      if currentPanel is 'gifs'
+        query or= 'clash royale'
+        @state.set isLoadingGifs: true
+        search = @model.gif.search query, {
+          limit: 25
+          offset: 0
+        }
+        search.take(1).subscribe =>
+          @state.set isLoadingGifs: false
+        search
+      else
+        Rx.Observable.just null
+
     @state = z.state
-      currentPanel: 'text'
+      currentPanel: @currentPanel
       isTextareaFocused: @isTextareaFocused
+      gifs: gifs
+      isLoadingGifs: false
       imageFile: null
       imageDataUrl: null
       imageWidth: null
@@ -84,9 +121,7 @@ module.exports = class ConversationTextarea
     $$textarea?.focus()
     $$textarea?.style.height = 'auto'
     @onPost?()
-    # hack: don't want to keep textarea value in state, too slow
-    # to re-render on every letter typed
-    @$$el.querySelector('.textarea').value = ''
+    $$textarea.value = ''
     @setMessage ''
 
   resizeTextarea: (e) ->
@@ -96,11 +131,45 @@ module.exports = class ConversationTextarea
     $$textarea.scrollTop = $$textarea.scrollHeight
 
   render: ({color, onclick} = {}) =>
-    {currentPanel, isTextareaFocused, hasText} = @state.getValue()
+    {currentPanel, isTextareaFocused, hasText,
+      gifs, isLoadingGifs} = @state.getValue()
 
-    z '.z-conversation-textarea',
+    z '.z-conversation-textarea', {
+      className: z.classKebab {"is-#{currentPanel}-panel": true}
+    },
       z '.g-grid',
-        if currentPanel is 'stickers'
+        if currentPanel is 'gifs'
+          z '.gif-panel',
+            z @$searchInput, {
+              isSearchIconRight: true
+              height: '36px'
+              bgColor: colors.$tertiary500
+              placeholder: 'Search gifs...'
+            }
+            z '.gifs', {
+              style: width: "#{window?.innerWidth}px"
+              ontouchstart: (e) ->
+                e?.stopPropagation()
+            },
+              if isLoadingGifs
+                z @$spinner, {hasTopMargin: false}
+              else
+                _map gifs?.data, (gif) =>
+                  fixedHeightImg = gif.images.fixed_height
+                  height = 100
+                  width = fixedHeightImg.width / fixedHeightImg.height * height
+                  z 'img.gif', {
+                    width: width
+                    height: height
+                    onclick: =>
+                      @setMessage "![](#{gif.images.fixed_height.url} " +
+                                    "=#{width}x#{height})"
+                      @postMessage()
+                    src: if supportsWebP \
+                         then gif.images.fixed_height.webp
+                         else gif.images.fixed_height.url
+                  }
+        else if currentPanel is 'stickers'
           z '.sticker-panel',
             z '.stickers',
               _map config.STICKERS, (sticker) =>
@@ -108,7 +177,7 @@ module.exports = class ConversationTextarea
                   onclick: (e) =>
                     @setMessage ":#{sticker}:"
                     @postMessage e
-                    @state.set currentPanel: text
+                    @currentPanel.onNext text
                   style:
                     backgroundImage:
                       "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
@@ -146,12 +215,12 @@ module.exports = class ConversationTextarea
                          then colors.$white
                          else colors.$white30
 
-        z '.bottom-icons',
+        z '.bottom-icons', [
           _map @panels, ({$icon, icon, panel, onclick, $uploadOverlay}) =>
             z '.icon',
               z $icon, {
                 onclick: onclick or =>
-                  @state.set currentPanel: panel
+                  @currentPanel.onNext panel
                 icon: icon
                 color: if currentPanel is panel \
                        then colors.$white
@@ -174,3 +243,5 @@ module.exports = class ConversationTextarea
                         }
                         @overlay$.onNext @$conversationImagePreview
                   }
+          z '.powered-by-giphy'
+        ]

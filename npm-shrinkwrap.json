@@ -3702,6 +3702,11 @@
       "from": "supports-color@>=3.1.2 <4.0.0",
       "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-3.1.2.tgz"
     },
+    "supports-webp": {
+      "version": "1.0.3",
+      "from": "supports-webp@latest",
+      "resolved": "https://registry.npmjs.org/supports-webp/-/supports-webp-1.0.3.tgz"
+    },
     "svgo": {
       "version": "0.7.1",
       "from": "svgo@>=0.7.0 <0.8.0",

@@ -4,6 +4,7 @@ _isEmpty = require 'lodash/isEmpty'
 
 UserList = require '../user_list'
 TopFriends = require '../top_friends'
+SearchInput = require '../search_input'
 Icon = require '../icon'
 colors = require '../../colors'
 
@@ -16,6 +17,8 @@ module.exports = class FindFriends
   constructor: ({model, @isFindFriendsVisible, selectedProfileDialogUser}) ->
     @isFindFriendsVisible ?= new Rx.BehaviorSubject true
     @searchValue = new Rx.BehaviorSubject ''
+
+    @$searchInput = new SearchInput({@searchValue})
 
     # TODO: add infinite scroll
     # tried comblineLatest w/ debounce stream and onscrollbottom stream,
@@ -47,6 +50,8 @@ module.exports = class FindFriends
 
   render: ({onclick, onBack, showCurrentFriends} = {}) =>
     showCurrentFriends ?= false
+    onBack ?= =>
+      @isFindFriendsVisible.onNext Rx.Observable.just false
 
     {searchValue, users} = @state.getValue()
 
@@ -54,34 +59,11 @@ module.exports = class FindFriends
       style:
         height: "#{window?.innerHeight}px"
     },
-      z '.overlay',
-        z 'span.left-icon',
-          z @$icon,
-            icon: 'back'
-            isAlignedTop: true
-            isAlignedLeft: true
-            color: colors.$primary900
-            onclick: =>
-              onBack?() or @isFindFriendsVisible.onNext Rx.Observable.just false
-        z 'span.right-icon',
-          unless _isEmpty searchValue
-            z @$clear,
-              icon: 'close'
-              isAlignedTop: true
-              isAlignedRight: true
-              color: colors.$primary500
-              onclick: @clear
-      z 'form.form',
-        onsubmit: (e) ->
-          e.preventDefault()
-          document.activeElement.blur() # hide keyboard
-        z 'input.input',
+      z '.search',
+        z @$searchInput, {
+          onBack: onBack
           placeholder: 'Search by username'
-          value: searchValue
-          onfocus: @open
-          focused: 'focused'
-          oninput: z.ev (e, $$el) =>
-            @searchValue.onNext $$el.value
+        }
       z '.results',
         z '.g-grid',
           if _isEmpty users

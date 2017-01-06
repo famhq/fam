@@ -26,9 +26,14 @@ module.exports = class HomePage
       me: @model.user.getMe()
 
   afterMount: =>
-    @model.user.getMe().take(1).subscribe (me) =>
-      if me?.isMember
-        @router.go '/community'
+    # TODO: replace with cookie so server-side rendering works
+    if localStorage?['isMember']
+      @router.go '/community'
+    else
+      @model.user.getMe().take(1).subscribe (me) =>
+        if me?.isMember
+          localStorage?['isMember'] = '1'
+          @router.go '/community'
 
   renderHead: => @$head
 
@@ -39,7 +44,7 @@ module.exports = class HomePage
       style:
         height: "#{window?.innerHeight}px"
     },
-      if me?.isMember or not me
+      if (me?.isMember or not me) and window? and not localStorage?['isMember']
         @$spinner
-      else if me
+      else if me and window? and not localStorage?['isMember']
         @$splash

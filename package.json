@@ -82,6 +82,7 @@
     "smoothscroll-polyfill": "^0.3.4",
     "socket.io-client": "^1.5.1",
     "stacktrace-js": "^1.0.1",
+    "supports-webp": "^1.0.3",
     "whatwg-fetch": "^0.10.1",
     "zorium": "git://github.com/claydotio/zorium.git",
     "zorium-paper": "git://github.com/claydotio/zorium-paper.git"

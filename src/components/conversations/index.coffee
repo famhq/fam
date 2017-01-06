@@ -11,7 +11,7 @@ Spinner = require '../spinner'
 if window?
   require './index.styl'
 
-IMAGE_REGEX_STR = '\!\\[(.*?)\\]\\(local://(.*?_([0-9.]+))\\)'
+IMAGE_REGEX_STR = '\!\\[(.*?)\\]\\((.*?)\\)'
 IMAGE_REGEX = new RegExp IMAGE_REGEX_STR, 'gi'
 
 module.exports = class Conversations

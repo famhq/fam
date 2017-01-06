@@ -7,6 +7,7 @@ _truncate = require 'lodash/truncate'
 _filter = require 'lodash/filter'
 Environment = require 'clay-environment'
 moment = require 'moment'
+supportsWebP = window? and 'supports-webp'
 
 config = require '../../config'
 colors = require '../../colors'
@@ -31,10 +32,16 @@ STICKER_REGEX_STR = '(:[a-z_]+:)'
 STICKER_REGEX = new RegExp STICKER_REGEX_STR, 'g'
 URL_REGEX_STR = '(\\bhttps?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])'
 URL_REGEX = new RegExp URL_REGEX_STR, 'gi'
-IMAGE_REGEX_STR = '(\\!\\[(.*?)\\]\\(local://(.*?_([0-9.]+))\\))'
-IMAGE_REGEX_BASE_STR = '(\\!\\[(?:.*?)\\]\\(local://(?:.*?_(?:[0-9.]+))\\))'
+LOCAL_IMAGE_REGEX_STR =
+  '(\\!\\[(.*?)\\]\\(local://(.*?) \\=([0-9.]+)x([0-9.]+)\\))'
+IMAGE_REGEX_BASE_STR = '(\\!\\[(?:.*?)\\]\\((?:.*?)\\))'
+IMAGE_REGEX_STR = '(\\!\\[(.*?)\\]\\((.*?)\\=([0-9.]+)x([0-9.]+)\\))'
+IMAGE_REGEX = new RegExp IMAGE_REGEX_STR, 'gi'
 ALL_REGEX_STR = "#{STICKER_REGEX_STR}|#{URL_REGEX_STR}|#{IMAGE_REGEX_BASE_STR}"
 ALL_REGEX = new RegExp ALL_REGEX_STR, 'gi'
+
+# TODO: break bubble out into own component
+# TODO: move regexes to config
 
 module.exports = class Conversation
   constructor: (options) ->
@@ -187,14 +194,24 @@ module.exports = class Conversation
       z 'div',
         _map parts, (part) =>
           # need to create new regex each time (since exec grabs nth match)
-          if matches = new RegExp(IMAGE_REGEX_STR, 'gi').exec(part)
-            imageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}.small.png"
-            largeImageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}.large.png"
-            imageAspectRatio = matches[4]
+          if part.match IMAGE_REGEX
+            if matches = new RegExp(LOCAL_IMAGE_REGEX_STR, 'gi').exec(part)
+              imageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}.small.png"
+              largeImageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}" +
+                                '.large.png'
+              imageAspectRatio = matches[4] / matches[5]
+            else
+              matches = new RegExp(IMAGE_REGEX_STR, 'gi').exec(part)
+              imageUrl = matches[3].trim()
+              if supportsWebP and imageUrl.indexOf('giphy.com') isnt -1
+                imageUrl = imageUrl.replace /\.gif$/, '.webp'
+              largeImageUrl = imageUrl
+              imageAspectRatio = matches[4] / matches[5]
+
             z 'img', {
               src: imageUrl
-              width: 100
-              height: 100 / imageAspectRatio
+              width: 200
+              height: 200 / imageAspectRatio
               onclick: (e) =>
                 e?.stopPropagation()
                 e?.preventDefault()
