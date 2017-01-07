@@ -22,6 +22,13 @@ serverEnv = process.env
 HOST = process.env.RED_TRITIUM_HOST or '127.0.0.1'
 HOSTNAME = HOST.split(':')[0]
 
+URL_REGEX_STR = '(\\bhttps?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])'
+STICKER_REGEX_STR = '(:[a-z_]+:)'
+IMAGE_REGEX_STR = '(\\!\\[(.*?)\\]\\((.*?)\\=([0-9.]+)x([0-9.]+)\\))'
+IMAGE_REGEX_BASE_STR = '(\\!\\[(?:.*?)\\]\\((?:.*?)\\))'
+LOCAL_IMAGE_REGEX_STR =
+  '(\\!\\[(.*?)\\]\\(local://(.*?) \\=([0-9.]+)x([0-9.]+)\\))'
+
 API_URL =
   serverEnv.PRIVATE_RADIOACTIVE_API_URL or # server
   process.env.PUBLIC_RADIOACTIVE_API_URL # client
@@ -74,6 +81,14 @@ isomorphic =
   # also in radioactive
   STICKERS: ['angry', 'crying', 'laughing', 'thumbs_up']
 
+  STICKER_REGEX_STR: STICKER_REGEX_STR
+  STICKER_REGEX: new RegExp STICKER_REGEX_STR, 'g'
+  URL_REGEX_STR: URL_REGEX_STR
+  URL_REGEX: new RegExp URL_REGEX_STR, 'gi'
+  LOCAL_IMAGE_REGEX_STR: LOCAL_IMAGE_REGEX_STR
+  IMAGE_REGEX_BASE_STR: IMAGE_REGEX_BASE_STR
+  IMAGE_REGEX_STR: IMAGE_REGEX_STR
+  IMAGE_REGEX: new RegExp IMAGE_REGEX_STR, 'gi'
 
 # Server only
 # All keys must have values at run-time (value may be null)

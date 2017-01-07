@@ -97,9 +97,7 @@ module.exports = class GroupPage
   render: =>
     {group, me, overlay$, selectedProfileDialogUser} = @state.getValue()
 
-    console.log group
     hasMemberPermission = @model.group.hasPermission group, me
-    console.log hasMemberPermission
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.p-group', {

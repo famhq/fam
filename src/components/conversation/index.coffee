@@ -3,19 +3,11 @@ Rx = require 'rx-lite'
 _map = require 'lodash/map'
 _last = require 'lodash/last'
 _isEmpty = require 'lodash/isEmpty'
-_truncate = require 'lodash/truncate'
-_filter = require 'lodash/filter'
-Environment = require 'clay-environment'
-moment = require 'moment'
-supportsWebP = window? and 'supports-webp'
 
-config = require '../../config'
-colors = require '../../colors'
-Avatar = require '../avatar'
-Icon = require '../icon'
 Spinner = require '../spinner'
-ConversationTextarea = require '../conversation_textarea'
+ConversationInput = require '../conversation_input'
 ConversationImageView = require '../conversation_image_view'
+ConversationMessage = require '../conversation_message'
 
 if window?
   require './index.styl'
@@ -26,29 +18,11 @@ MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
 RENDER_DELAY_MS = 200
-TITLE_LENGTH = 30
-DESCRIPTION_LENGTH = 100
-STICKER_REGEX_STR = '(:[a-z_]+:)'
-STICKER_REGEX = new RegExp STICKER_REGEX_STR, 'g'
-URL_REGEX_STR = '(\\bhttps?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])'
-URL_REGEX = new RegExp URL_REGEX_STR, 'gi'
-LOCAL_IMAGE_REGEX_STR =
-  '(\\!\\[(.*?)\\]\\(local://(.*?) \\=([0-9.]+)x([0-9.]+)\\))'
-IMAGE_REGEX_BASE_STR = '(\\!\\[(?:.*?)\\]\\((?:.*?)\\))'
-IMAGE_REGEX_STR = '(\\!\\[(.*?)\\]\\((.*?)\\=([0-9.]+)x([0-9.]+)\\))'
-IMAGE_REGEX = new RegExp IMAGE_REGEX_STR, 'gi'
-ALL_REGEX_STR = "#{STICKER_REGEX_STR}|#{URL_REGEX_STR}|#{IMAGE_REGEX_BASE_STR}"
-ALL_REGEX = new RegExp ALL_REGEX_STR, 'gi'
-
-# TODO: break bubble out into own component
-# TODO: move regexes to config
 
 module.exports = class Conversation
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$,
       @selectedProfileDialogUser, @scrollYOnly, @isGroup} = options
-
-    @$toAvatar = new Avatar()
 
     isLoading = new Rx.BehaviorSubject false
     isTextareaFocused = new Rx.BehaviorSubject false
@@ -90,16 +64,9 @@ module.exports = class Conversation
 
     messages = Rx.Observable.merge @messages, loadedMessages
 
-    @imageData = new Rx.BehaviorSubject null
-    @$conversationImageView = new ConversationImageView {
-      @imageData
-      @overlay$
-      @router
-    }
-
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
-    @$conversationTextarea = new ConversationTextarea {
+    @$conversationInput = new ConversationInput {
       @model
       @message
       isTextareaFocused
@@ -119,14 +86,10 @@ module.exports = class Conversation
       error: null
       conversation: @conversation
 
-      messages: messages.map (messages) ->
+      messages: messages.map (messages) =>
         if messages
-          _map messages, (message) ->
-            {
-              messageInfo: message
-              $avatar: new Avatar()
-              $statusIcon: new Icon()
-            }
+          _map messages, (message) =>
+            new ConversationMessage {message, @model, @overlay$}
 
   afterMount: (@$$el) =>
     @conversation.take(1).subscribe (conversation) =>
@@ -167,13 +130,6 @@ module.exports = class Conversation
       @error.onNext 'Message is too long'
       return
 
-    msPlayed = Date.now() - Date.parse(me?.joinTime)
-    isNative = Environment.isGameApp(config.GAME_KEY)
-
-    if msPlayed < config.NEW_USER_CHAT_TIME_MS and not isNative
-      @error.onNext 'You don\'t have permission to post yet'
-      return
-
     if not isPostLoading and messageBody
       @state.set isPostLoading: true
 
@@ -187,61 +143,6 @@ module.exports = class Conversation
       .catch =>
         @state.set isPostLoading: false
 
-  formatMessage: (message) =>
-    textLines = message.split('\n') or []
-    _map textLines, (text) =>
-      parts = _filter text.split ALL_REGEX
-      z 'div',
-        _map parts, (part) =>
-          # need to create new regex each time (since exec grabs nth match)
-          if part.match IMAGE_REGEX
-            if matches = new RegExp(LOCAL_IMAGE_REGEX_STR, 'gi').exec(part)
-              imageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}.small.png"
-              largeImageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}" +
-                                '.large.png'
-              imageAspectRatio = matches[4] / matches[5]
-            else
-              matches = new RegExp(IMAGE_REGEX_STR, 'gi').exec(part)
-              imageUrl = matches[3].trim()
-              if supportsWebP and imageUrl.indexOf('giphy.com') isnt -1
-                imageUrl = imageUrl.replace /\.gif$/, '.webp'
-              largeImageUrl = imageUrl
-              imageAspectRatio = matches[4] / matches[5]
-
-            z 'img', {
-              src: imageUrl
-              width: 200
-              height: 200 / imageAspectRatio
-              onclick: (e) =>
-                e?.stopPropagation()
-                e?.preventDefault()
-                @overlay$.onNext @$conversationImageView
-                @imageData.onNext {
-                  url: largeImageUrl
-                  aspectRatio: imageAspectRatio
-                }
-            }
-          else if part.match STICKER_REGEX
-            sticker = part.replace /:/g, ''
-            z '.sticker',
-              style:
-                backgroundImage:
-                  "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
-
-          else if part.match URL_REGEX
-            z 'a.link', {
-              href: part
-              onclick: (e) =>
-                e?.stopPropagation()
-                e?.preventDefault()
-                @model.portal.call 'browser.openWindow', {
-                  url: part
-                  target: '_system'
-                }
-            }, part
-          else
-            part
-
   render: =>
     {me, isLoading, message, isTextareaFocused
       messages, conversation} = @state.getValue()
@@ -254,63 +155,11 @@ module.exports = class Conversation
         z '.messages', {className: z.classKebab {isLoaded}},
           # hidden when inactive for perf
           if messages and not isLoading
-            _map messages, ({messageInfo, $avatar, $statusIcon}) =>
-              {user, body, time, card} = messageInfo
+            _map messages, ($message) ->
+              z $message, {isTextareaFocused}
 
-              isSticker = body.match /^:[a-z_]+:$/
-
-              onclick = =>
-                unless isTextareaFocused
-                  @selectedProfileDialogUser.onNext user
-
-              z '.message', {
-                # re-use elements in v-dom
-                key: "message-#{messageInfo.id or messageInfo.clientId}"
-                className: z.classKebab {isSticker, isMe: user.id is me?.id}
-              },
-                z '.avatar', {onclick},
-                  z $avatar, {
-                    user
-                    size: if window?.matchMedia('(min-width: 840px)').matches \
-                          then '56px'
-                          else '40px'
-                    bgColor: colors.$grey200
-                  }
-                z '.bubble', {onclick},
-                  z '.info',
-                    if user?.flags?.isModerator or user?.flags?.isDev
-                      z '.icon',
-                        z $statusIcon,
-                          icon: if user?.flags?.isDev then 'dev' else 'mod'
-                          color: colors.$tertiary900
-                          isTouchTarget: false
-                          size: '22px'
-
-                  z '.body',
-                      @formatMessage body
-                  z '.bottom',
-                    z '.name', @model.user.getDisplayName user
-                    z '.middot',
-                      innerHTML: '&middot;'
-                    z '.time',
-                      if time
-                      then moment(time).fromNowModified()
-                      else '...'
-                  if card
-                    z '.card', {
-                      onclick: (e) =>
-                        e?.stopPropagation()
-                        @model.portal.call 'browser.openWindow', {
-                          url: card.url
-                          target: '_system'
-                        }
-                    },
-                      z '.title', _truncate card.title, {length: TITLE_LENGTH}
-                      z '.description', _truncate card.description, {
-                        length: DESCRIPTION_LENGTH
-                      }
           else
             @$loadingSpinner
 
       z '.bottom',
-        @$conversationTextarea
+        @$conversationInput

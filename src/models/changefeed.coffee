@@ -7,7 +7,7 @@ module.exports = class Changefeed
   constructor: ({@auth, @proxy, @exoid}) ->
     # buffer 0 so future streams don't try to add the client changes
     # (causes smooth scroll to bottom in conversations)
-    @clientChangesStream = new Rx.ReplaySubject 0
+    @clientChangesStream = new Rx.ReplaySubject(0)
 
   create: (diff, localDiff) =>
     clientId = uuid.v4()
