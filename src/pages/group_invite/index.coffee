@@ -25,7 +25,7 @@ module.exports = class GroupInvitePage
     @$groupInvite = new GroupInvite {model, @router, serverData, group}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

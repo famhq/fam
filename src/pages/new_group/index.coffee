@@ -22,10 +22,7 @@ module.exports = class NewGroupPage
     @$editGroup = new EditGroup {model, @router, serverData}
 
     @state = z.state
-      windowSize: @model.window.getSize()
-
-    @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

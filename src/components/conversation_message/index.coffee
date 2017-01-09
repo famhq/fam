@@ -1,6 +1,6 @@
 z = require 'zorium'
 moment = require 'moment'
-supportsWebP = window? and 'supports-webp'
+supportsWebP = window? and require 'supports-webp'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'

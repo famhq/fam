@@ -20,7 +20,7 @@ module.exports = class NewDeckPage
     @$newDeck = new NewDeck {model, @router}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

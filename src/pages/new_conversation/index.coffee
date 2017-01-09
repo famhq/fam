@@ -10,8 +10,8 @@ module.exports = class NewConversationPage
   hideDrawer: true
 
   constructor: ({model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) =>
-      @model.group.getById route.params.id
+    group = requests.flatMapLatest ({route}) ->
+      model.group.getById route.params.id
 
     @$head = new Head({
       model
@@ -25,7 +25,7 @@ module.exports = class NewConversationPage
     @$newConversation = new NewConversation {model, @router, serverData, group}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

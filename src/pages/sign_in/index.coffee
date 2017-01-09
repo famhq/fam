@@ -23,7 +23,7 @@ module.exports = class SignInPage
     @$signIn = new SignIn {model, @router}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

@@ -23,7 +23,7 @@ module.exports = class SetAddressPage
     @$setAddress = new SetAddress {model, @router}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

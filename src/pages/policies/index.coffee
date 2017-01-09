@@ -23,7 +23,7 @@ module.exports = class PoliciesPage
     @$policies = new Policies {model, @router}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

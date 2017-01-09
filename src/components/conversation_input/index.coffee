@@ -29,7 +29,7 @@ module.exports = class ConversationInput
       @model
       onUpload: ({key, width, height}) =>
         @message.onNext "![](local://#{key} =#{width}x#{height})"
-        @postMessage()
+        @onPost()
     }
 
     @currentPanel = new Rx.BehaviorSubject 'text'

@@ -23,7 +23,7 @@ module.exports = class GetAppPage
     @$getApp = new GetApp {model, @router, serverData}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

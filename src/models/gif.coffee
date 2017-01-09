@@ -7,7 +7,7 @@ PATH = 'https://api.giphy.com/v1/gifs'
 
 module.exports = class Gif
   search: (query, {limit}) ->
-    Rx.Observable.fromPromise request "#{PATH}/search",
+    Rx.Observable.fromPromise request "#{PATH}/search123",
       qs:
         q: query
         limit: limit

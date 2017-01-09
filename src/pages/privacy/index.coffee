@@ -28,7 +28,7 @@ module.exports = class PrivacyPage
     @$privacy = new Privacy {model, @router}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 

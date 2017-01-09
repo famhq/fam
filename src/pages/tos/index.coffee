@@ -27,7 +27,7 @@ module.exports = class TosPage
     @$tos = new Tos {model, @router}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 
