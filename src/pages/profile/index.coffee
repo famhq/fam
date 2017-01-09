@@ -23,12 +23,17 @@ module.exports = class ProfilePage
     @$buttonMenu = new ButtonMenu {model}
     @$profile = new Profile {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-profile', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: null

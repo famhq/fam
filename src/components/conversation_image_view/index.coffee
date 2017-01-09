@@ -10,26 +10,27 @@ if window?
   require './index.styl'
 
 module.exports = class ConversationImageView
-  constructor: ({@imageData, @overlay$, @router}) ->
+  constructor: ({@model, @imageData, @overlay$, @router}) ->
     @$buttonBack = new ButtonBack {@router}
     @$appBar = new AppBar {@model}
 
     @state = z.state
       imageData: @imageData
+      windowSize: @model.window.getSize()
 
   render: =>
-    {imageData} = @state.getValue()
+    {windowSize, imageData} = @state.getValue()
 
     imageData ?= {}
 
     imageAspectRatio = imageData.aspectRatio
-    windowAspectRatio = window?.innerWidth / window?.innerHeight
+    windowAspectRatio = windowSize.width / windowSize.height
     # 3:1, 1:1
     if imageAspectRatio > windowAspectRatio
-      imageWidth = window?.innerWidth
+      imageWidth = windowSize.width
       imageHeight = imageWidth / imageAspectRatio
     else
-      imageHeight = window?.innerHeight
+      imageHeight = windowSize.height
       imageWidth = imageHeight * imageAspectRatio
 
     z '.z-conversation-image-view',

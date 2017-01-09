@@ -22,11 +22,16 @@ module.exports = class ThreadReplyPage
     })
     @$threadReply = new ThreadReply {model, @router, threadId}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-thread-reply', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$threadReply

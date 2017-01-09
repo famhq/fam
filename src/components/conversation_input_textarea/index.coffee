@@ -11,7 +11,10 @@ if window?
 DEFAULT_TEXTAREA_HEIGHT = 54
 
 module.exports = class ConversationInputTextarea
-  constructor: ({@message, @onPost, @onFocus, @isTextareaFocused, @hasText}) ->
+  constructor: (options) ->
+    {@message, @onPost, @onFocus, @isTextareaFocused,
+      @hasText, @model} = options
+
     @$sendIcon = new Icon()
 
     @isTextareaFocused ?= new Rx.BehaviorSubject false
@@ -58,6 +61,7 @@ module.exports = class ConversationInputTextarea
     z '.z-conversation-input-textarea',
         z 'textarea.textarea',
           id: 'textarea'
+          key: 'conversation-input-textarea'
           # for some reason necessary on iOS to get it to focus properly
           onclick: (e) ->
             setTimeout ->
@@ -69,13 +73,19 @@ module.exports = class ConversationInputTextarea
             if e.keyCode is 13 and not e.shiftKey
               e.preventDefault()
           oninput: @resizeTextarea
+          ontouchstart: =>
+            @model.window.pauseResizing()
           onfocus: =>
+            @model.window.pauseResizing()
             clearTimeout @blurTimeout
             @isTextareaFocused.onNext true
             @onFocus?()
-          onblur: =>
+          onblur: (e) =>
             @blurTimeout = setTimeout =>
-              @isTextareaFocused.onNext false
+              isFocused = e.target is document.activeElement
+              unless isFocused
+                @model.window.resumeResizing()
+                @isTextareaFocused.onNext false
             , 350
 
         z '.right-icons',

@@ -27,12 +27,17 @@ module.exports = class PrivacyPage
     @$backButton = new ButtonBack {model, @router}
     @$privacy = new Privacy {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-privacy', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Privacy'

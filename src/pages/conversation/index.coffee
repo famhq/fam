@@ -45,18 +45,20 @@ module.exports = class ConversationPage
       conversation: conversation
       selectedProfileDialogUser: selectedProfileDialogUser
       overlay$: overlay$
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {conversation, me, selectedProfileDialogUser, overlay$} = @state.getValue()
+    {conversation, me, selectedProfileDialogUser,
+      windowSize, overlay$} = @state.getValue()
 
     toUser = _find conversation?.users, (user) ->
       me?.id isnt user.id
 
     z '.p-conversation', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: @model.user.getDisplayName toUser

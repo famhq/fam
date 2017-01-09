@@ -21,11 +21,19 @@ module.exports = class NewGroupPage
     })
     @$editGroup = new EditGroup {model, @router, serverData}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-new-group', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$editGroup, {isNewGroup: true}

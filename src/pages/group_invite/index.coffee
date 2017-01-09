@@ -24,11 +24,16 @@ module.exports = class GroupInvitePage
     })
     @$groupInvite = new GroupInvite {model, @router, serverData, group}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-group-invite', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$groupInvite

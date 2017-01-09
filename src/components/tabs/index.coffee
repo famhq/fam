@@ -58,6 +58,7 @@ module.exports = class Tabs
       x: 0
       hideTabBar: hideTabBar
       vDomKey: Math.random()
+      windowSize: @model.window.getSize()
 
   afterMount: (@$$el) =>
     checkIsReady = =>
@@ -142,7 +143,7 @@ module.exports = class Tabs
 
   render: (options) =>
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, barTabWidth,
-      hasAppBar, vDomKey, height} = options
+      hasAppBar, vDomKey, height, windowSize} = options
 
     if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
       @beforeUnmount true
@@ -151,15 +152,15 @@ module.exports = class Tabs
       , 100
     @lastTabsLength = tabs?.length
 
-    {selectedIndex, x, hideTabBar, vDomKey} = @state.getValue()
+    {selectedIndex, x, hideTabBar, vDomKey, windowSize} = @state.getValue()
 
     isBarFixed ?= true
-    isLargeScreen = window?.matchMedia('(min-width: 768px)').matches
+    isLargeScreen = windowSize.width >= 768
     height ?= if hasAppBar and isLargeScreen \
-              then window?.innerHeight - 64
+              then windowSize.height - 64
               else if hasAppBar
-              then window?.innerHeight - 56
-              else window?.innerHeight
+              then windowSize.height - 56
+              else windowSize.height
     contentHeight = if isLargeScreen \
                     then height - 64
                     else height - 48
@@ -169,7 +170,7 @@ module.exports = class Tabs
       vDomKey: vDomKey
       style:
         height: "#{height}px"
-        maxWidth: "#{window?.innerWidth}px"
+        maxWidth: "#{windowSize.width}px"
     },
       z '.content', {
         style:

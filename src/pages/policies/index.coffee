@@ -22,11 +22,16 @@ module.exports = class PoliciesPage
     })
     @$policies = new Policies {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-policies', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$policies

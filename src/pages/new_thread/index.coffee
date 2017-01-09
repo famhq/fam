@@ -19,11 +19,16 @@ module.exports = class NewThreadPage
     })
     @$newThread = new NewThread {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-new-thread', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$newThread

@@ -27,16 +27,18 @@ module.exports = class CardPage
     @$buttonBack = new ButtonBack {@model, @router}
     @$cardInfo = new CardInfo {@model, @router, card}
 
-    @state = z.state {card}
+    @state = z.state
+      card: card
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {card} = @state.getValue()
+    {card, windowSize} = @state.getValue()
 
     z '.p-card', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: card?.name

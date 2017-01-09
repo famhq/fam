@@ -26,6 +26,7 @@ module.exports = class ConversationMessage
 
     @imageData = new Rx.BehaviorSubject null
     @$conversationImageView = new ConversationImageView {
+      @model
       @imageData
       @overlay$
       @router

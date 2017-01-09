@@ -44,6 +44,7 @@ module.exports = class ConversationInput
           @message
           @isTextareaFocused
           @hasText
+          @model
         }
       }
       stickers: {

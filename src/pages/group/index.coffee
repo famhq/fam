@@ -91,18 +91,20 @@ module.exports = class GroupPage
       me: me
       overlay$: overlay$
       selectedProfileDialogUser: selectedProfileDialogUser
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {group, me, overlay$, selectedProfileDialogUser} = @state.getValue()
+    {group, me, overlay$, selectedProfileDialogUser,
+      windowSize} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.p-group', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: group?.name

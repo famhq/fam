@@ -22,11 +22,16 @@ module.exports = class SignInPage
     })
     @$signIn = new SignIn {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-sign-in', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$signIn

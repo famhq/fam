@@ -6,7 +6,6 @@ _isEmpty = require 'lodash/isEmpty'
 
 Spinner = require '../spinner'
 ConversationInput = require '../conversation_input'
-ConversationImageView = require '../conversation_image_view'
 ConversationMessage = require '../conversation_message'
 
 if window?
@@ -17,7 +16,7 @@ if window?
 MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
-RENDER_DELAY_MS = 200
+RENDER_DELAY_MS = 100
 
 module.exports = class Conversation
   constructor: (options) ->
@@ -107,6 +106,11 @@ module.exports = class Conversation
     @model.portal.call 'push.setContextId', {
       contextId: null
     }
+
+  onResize: =>
+    setTimeout =>
+      @scrollToBottom {isSmooth: true}
+    , RENDER_DELAY_MS
 
   scrollToBottom: ({isSmooth} = {}) =>
     $messages = @$$el?.querySelector('.messages')

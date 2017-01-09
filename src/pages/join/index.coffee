@@ -22,11 +22,16 @@ module.exports = class JoinPage
     })
     @$join = new Join {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
-    z '.p-sign-in', {
+    {windowSize} = @state.getValue()
+
+    z '.p-join', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$join

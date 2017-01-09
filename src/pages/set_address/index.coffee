@@ -22,11 +22,16 @@ module.exports = class SetAddressPage
     })
     @$setAddress = new SetAddress {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-set-address', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$setAddress

@@ -40,6 +40,7 @@ module.exports = class FindFriends
     @state = z.state
       searchValue: @searchValue
       users: users
+      windowSize: @model.window.getSize()
 
   afterMount: (@$$el) =>
     @$$el.querySelector('.input').focus()
@@ -53,11 +54,11 @@ module.exports = class FindFriends
     onBack ?= =>
       @isFindFriendsVisible.onNext Rx.Observable.just false
 
-    {searchValue, users} = @state.getValue()
+    {searchValue, users, windowSize} = @state.getValue()
 
     z '.z-find-friends', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z '.search',
         z @$searchInput, {

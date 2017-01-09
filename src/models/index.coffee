@@ -22,6 +22,7 @@ Product = require './product'
 PushToken = require './push_token'
 Thread = require './thread'
 ThreadMessage = require './thread_message'
+Window = require './window'
 
 Portal = require './portal'
 config = require '../config'
@@ -94,6 +95,7 @@ module.exports = class Model
     @pushToken = new PushToken {@auth, pushToken}
     @drawer = new Drawer()
     @portal = new Portal {@user, @game, @modal}
+    @window = new Window()
 
   wasCached: => @isFromCache
 

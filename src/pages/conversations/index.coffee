@@ -38,15 +38,16 @@ module.exports = class ConversationsPage
     @state = z.state
       isRefreshing: isRefreshing
       selectedProfileDialogUser: selectedProfileDialogUser
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {isRefreshing, selectedProfileDialogUser} = @state.getValue()
+    {isRefreshing, selectedProfileDialogUser, windowSize} = @state.getValue()
 
     z '.p-conversations', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Private Messages'

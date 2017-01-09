@@ -33,12 +33,17 @@ module.exports = class DecksPage
 
     @$tabs = new Tabs {@model}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-decks', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Battle Decks'

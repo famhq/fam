@@ -26,12 +26,17 @@ module.exports = class TosPage
     @$backButton = new ButtonBack {model, @router}
     @$tos = new Tos {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-tos', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Terms of Service'

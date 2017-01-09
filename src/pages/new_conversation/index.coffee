@@ -24,11 +24,16 @@ module.exports = class NewConversationPage
     })
     @$newConversation = new NewConversation {model, @router, serverData, group}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-new-conversation', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$newConversation

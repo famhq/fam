@@ -19,11 +19,16 @@ module.exports = class NewDeckPage
     })
     @$newDeck = new NewDeck {model, @router}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-new-deck', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       @$newDeck

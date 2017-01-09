@@ -18,20 +18,21 @@ module.exports = class ConversationImagePreview
     @state = z.state
       imageData: @imageData
       isUploading: false
+      windowSize: @model.window.getSize()
 
   render: =>
-    {imageData, isUploading} = @state.getValue()
+    {imageData, isUploading, windowSize} = @state.getValue()
 
     imageData ?= {}
 
     imageAspectRatio = imageData.width / imageData.height
-    windowAspectRatio = window?.innerWidth / window?.innerHeight
+    windowAspectRatio = windowSize.widht / windowSize.height
     # 3:1, 1:1
     if imageAspectRatio > windowAspectRatio
-      previewWidth = Math.min window?.innerWidth, imageData.width
+      previewWidth = Math.min windowSize.widht, imageData.width
       previewHeight = previewWidth / imageAspectRatio
     else
-      previewHeight = Math.min window?.innerHeight, imageData.height
+      previewHeight = Math.min windowSize.height, imageData.height
       previewWidth = previewHeight * imageAspectRatio
 
     z '.z-conversation-image-preview',

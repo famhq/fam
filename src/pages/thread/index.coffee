@@ -36,15 +36,16 @@ module.exports = class ThreadPage
 
     @state = z.state
       isRefreshing: isRefreshing
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {isRefreshing} = @state.getValue()
+    {isRefreshing, windowSize} = @state.getValue()
 
     z '.p-thread', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: ''

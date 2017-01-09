@@ -31,15 +31,20 @@ module.exports = class GroupInvitePage
       groups: @model.group.getAll {filter: 'invited'}
     }
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   afterMount: =>
     @model.userData.updateMe {unreadGroupInvites: 0}
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-group-invites', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Group Invites'

@@ -27,16 +27,18 @@ module.exports = class DeckPage
     @$buttonBack = new ButtonBack {@model, @router}
     @$deck = new Deck {@model, @router, deck}
 
-    @state = z.state {deck}
+    @state = z.state
+      deck: deck
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {deck} = @state.getValue()
+    {deck, windowSize} = @state.getValue()
 
     z '.p-deck', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: deck?.name

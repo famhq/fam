@@ -25,12 +25,17 @@ module.exports = class CardsPage
 
     @$cards = new Cards {@model, @router, sort: 'popular'}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-cards', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Battle Cards'

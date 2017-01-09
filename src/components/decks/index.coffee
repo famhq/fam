@@ -29,6 +29,7 @@ module.exports = class Decks extends Base
     @state = z.state
       me: @model.user.getMe()
       filter: filter
+      windowSize: @model.window.getSize()
       decks: decksAndMe.map ([decks, me]) =>
         _map decks, (deck) =>
           hasDeck =  me.data.clashRoyaleDeckIds and
@@ -46,7 +47,7 @@ module.exports = class Decks extends Base
   afterMount: (@$$el) => null
 
   render: =>
-    {me, decks, filter} = @state.getValue()
+    {me, decks, filter, windowSize} = @state.getValue()
 
     cardWidth = (@$$el?.children?[0]?.offsetWidth - (PADDING * 2)) /
                   CARDS_PER_ROW
@@ -55,7 +56,7 @@ module.exports = class Decks extends Base
       z '.decks', {
         # force scrollbar initially
         style:
-          minHeight: "#{window?.innerHeight * 1.2}px"
+          minHeight: "#{windowSize.height * 1.2}px"
       },
         if decks and _isEmpty decks
           z '.no-decks',

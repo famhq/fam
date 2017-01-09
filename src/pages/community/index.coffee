@@ -43,16 +43,18 @@ module.exports = class CommunityPage
     @$fab = new FloatingActionButton()
     @$plusIcon = new Icon()
 
-    @state = z.state {selectedIndex}
+    @state = z.state
+      selectedIndex: selectedIndex
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {selectedIndex} = @state.getValue()
+    {selectedIndex, windowSize} = @state.getValue()
 
     z '.p-community', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Community'

@@ -42,9 +42,10 @@ module.exports = class ConversationInputGifs
     @state = z.state
       gifs: gifs
       isLoadingGifs: false
+      windowSize: @model.window.getSize()
 
   render: =>
-    {gifs, isLoadingGifs} = @state.getValue()
+    {gifs, isLoadingGifs, windowSize} = @state.getValue()
 
     z '.z-conversation-input-gifs',
       z @$searchInput, {
@@ -54,7 +55,7 @@ module.exports = class ConversationInputGifs
         placeholder: 'Search gifs...'
       }
       z '.gifs', {
-        style: width: "#{window?.innerWidth}px"
+        style: width: "#{windowSize.width}px"
         ontouchstart: (e) ->
           e?.stopPropagation()
       },

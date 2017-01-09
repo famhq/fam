@@ -24,6 +24,7 @@ module.exports = class HomePage
 
     @state = z.state
       me: @model.user.getMe()
+      windowSize: @model.window.getSize()
 
   afterMount: =>
     # TODO: replace with cookie so server-side rendering works
@@ -38,11 +39,11 @@ module.exports = class HomePage
   renderHead: => @$head
 
   render: =>
-    {me} = @state.getValue()
+    {me, windowSize} = @state.getValue()
 
     z '.p-home', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       if (me?.isMember or not me) and window? and not localStorage?['isMember']
         @$spinner

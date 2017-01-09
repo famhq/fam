@@ -67,16 +67,18 @@ module.exports = class FriendsPage
     @state = z.state
       isFindFriendsVisible: @isFindFriendsVisible.switch()
       selectedProfileDialogUser: @selectedProfileDialogUser
+      windowSize: @model.window.getSize()
 
   renderHead: (params) =>
     z @$head, params
 
   render: =>
-    {isFindFriendsVisible, selectedProfileDialogUser} = @state.getValue()
+    {isFindFriendsVisible, selectedProfileDialogUser,
+      windowSize} = @state.getValue()
 
     z '.p-friends', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar,
         isFlat: true

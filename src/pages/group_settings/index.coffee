@@ -29,12 +29,17 @@ module.exports = class GroupSettingsPage
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupSettings = new GroupSettings {model, @router, serverData, group}
 
+    @state = z.state
+      windowSize: @model.window.getSize()
+
   renderHead: => @$head
 
   render: =>
+    {windowSize} = @state.getValue()
+
     z '.p-group-settings', {
       style:
-        height: "#{window?.innerHeight}px"
+        height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: 'Group Settings'
