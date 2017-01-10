@@ -3,6 +3,7 @@ Rx = require 'rx-lite'
 _map = require 'lodash/map'
 _last = require 'lodash/last'
 _isEmpty = require 'lodash/isEmpty'
+_debounce = require 'lodash/debounce'
 
 Spinner = require '../spinner'
 ConversationInput = require '../conversation_input'
@@ -16,7 +17,7 @@ if window?
 MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
-RENDER_DELAY_MS = 100
+RESIZE_THROTTLE_MS = 150
 
 module.exports = class Conversation
   constructor: (options) ->
@@ -63,6 +64,9 @@ module.exports = class Conversation
 
     messages = Rx.Observable.merge @messages, loadedMessages
 
+    @isScrolledBottomStreams = new Rx.ReplaySubject 1
+    @isScrolledBottomStreams.onNext Rx.Observable.just false
+
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
     @$conversationInput = new ConversationInput {
@@ -71,11 +75,11 @@ module.exports = class Conversation
       isTextareaFocused
       @overlay$
       onPost: @postMessage
-      onFocus: =>
-        setTimeout =>
-          @scrollToBottom {isSmooth: true}
-        , RENDER_DELAY_MS
+      onResize: @onResize
     }
+
+    @debouncedOnResize = _debounce @onResize
+    , RESIZE_THROTTLE_MS
 
     @state = z.state
       me: me
@@ -84,6 +88,7 @@ module.exports = class Conversation
       isTextareaFocused: isTextareaFocused
       error: null
       conversation: @conversation
+      isScrolledBottom: @isScrolledBottomStreams.switch()
 
       messages: messages.map (messages) =>
         if messages
@@ -96,6 +101,14 @@ module.exports = class Conversation
         contextId: conversation?.id
       }
     @scrollToBottom()
+    window?.addEventListener 'resize', @debouncedOnResize
+
+    @$$messages = @$$el?.querySelector('.messages')
+    # TODO: make sure this is being disposed of correctly
+    isScrolledBottom = Rx.Observable.fromEvent @$$messages, 'scroll'
+    .map (e) ->
+      e.target.scrollHeight - e.target.scrollTop is e.target.offsetHeight
+    @isScrolledBottomStreams.onNext isScrolledBottom
 
   beforeUnmount: =>
     # to update conversations page, etc...
@@ -106,14 +119,9 @@ module.exports = class Conversation
     @model.portal.call 'push.setContextId', {
       contextId: null
     }
-
-  onResize: =>
-    setTimeout =>
-      @scrollToBottom {isSmooth: true}
-    , RENDER_DELAY_MS
+    window?.removeEventListener 'resize', @debouncedOnResize
 
   scrollToBottom: ({isSmooth} = {}) =>
-    $messages = @$$el?.querySelector('.messages')
     $messageArr = @$$el?.querySelectorAll('.message')
     $$lastMessage = _last $messageArr
     if not @scrollYOnly and $$lastMessage?.scrollIntoView
@@ -121,8 +129,16 @@ module.exports = class Conversation
         $$lastMessage.scrollIntoView {
           behavior: if isSmooth then 'smooth' else 'instant'
         }
-    else if $messages
-      $messages.scrollTop = $messages.scrollHeight - $messages.offsetHeight
+    else if @$$messages
+      @$$messages.scrollTop = @$$messages.scrollHeight -
+                                @$$messages.offsetHeight
+
+  onResize: =>
+    {isScrolledBottom} = @state.getValue()
+    if isScrolledBottom
+      setTimeout =>
+        @scrollToBottom {isSmooth: true}
+      , 0
 
   postMessage: =>
     {me, conversation, isPostLoading} = @state.getValue()
@@ -149,14 +165,16 @@ module.exports = class Conversation
 
   render: =>
     {me, isLoading, message, isTextareaFocused
-      messages, conversation} = @state.getValue()
-
+      messages, conversation, isScrolledBottom} = @state.getValue()
     isLoaded = not _isEmpty messages
 
     z '.z-conversation',
       z '.g-grid',
         # hide messages until loaded to prevent showing the scrolling
-        z '.messages', {className: z.classKebab {isLoaded}},
+        z '.messages', {
+          className: z.classKebab {isLoaded}
+          key: 'conversation-messages'
+        },
           # hidden when inactive for perf
           if messages and not isLoading
             _map messages, ($message) ->

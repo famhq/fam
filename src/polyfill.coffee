@@ -32,3 +32,6 @@ require 'whatwg-fetch'
 
 # for smooth scrollIntoView (scroll to bottom)
 require('smoothscroll-polyfill').polyfill()
+
+# transitionend support
+require 'transition-event'

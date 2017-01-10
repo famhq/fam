@@ -34,6 +34,7 @@ module.exports = class ConversationMessage
 
     @state = z.state
       message: message
+      windowSize: @model.window.getSize()
 
   formatMessage: (message) =>
     textLines = message.split('\n') or []
@@ -92,7 +93,7 @@ module.exports = class ConversationMessage
             part
 
   render: ({isTextareaFocused}) =>
-    {message} = @state.getValue()
+    {message, windowSize} = @state.getValue()
 
     {user, body, time, card, id, clientId} = message
 
@@ -110,7 +111,7 @@ module.exports = class ConversationMessage
       z '.avatar', {onclick},
         z @$avatar, {
           user
-          size: if window?.matchMedia('(min-width: 840px)').matches \
+          size: if windowSize.width > 840 \
                 then '56px'
                 else '40px'
           bgColor: colors.$grey200

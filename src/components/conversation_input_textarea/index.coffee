@@ -1,5 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+Environment = require 'clay-environment'
 
 Icon = require '../icon'
 colors = require '../../colors'
@@ -12,7 +13,7 @@ DEFAULT_TEXTAREA_HEIGHT = 54
 
 module.exports = class ConversationInputTextarea
   constructor: (options) ->
-    {@message, @onPost, @onFocus, @isTextareaFocused,
+    {@message, @onPost, @onResize, @isTextareaFocused,
       @hasText, @model} = options
 
     @$sendIcon = new Icon()
@@ -21,6 +22,7 @@ module.exports = class ConversationInputTextarea
 
     @state = z.state
       isTextareaFocused: @isTextareaFocused
+      textareaHeight: DEFAULT_TEXTAREA_HEIGHT
       hasText: @hasText
 
   afterMount: (@$$el) =>
@@ -49,14 +51,23 @@ module.exports = class ConversationInputTextarea
     @onPost?()
     $$textarea?.value = ''
 
-  resizeTextarea: (e) ->
+  resizeTextarea: (e) =>
+    {textareaHeight} = @state.getValue()
     $$textarea = e.target
     $$textarea.style.height = "#{DEFAULT_TEXTAREA_HEIGHT}px"
-    $$textarea.style.height = $$textarea.scrollHeight + 'px'
-    $$textarea.scrollTop = $$textarea.scrollHeight
+    newHeight = $$textarea.scrollHeight
+    $$textarea.style.height = "#{newHeight}px"
+    $$textarea.scrollTop = newHeight
+    unless textareaHeight is newHeight
+      @state.set textareaHeight: newHeight
+      @onResize?()
+
+  getHeightPx: =>
+    {textareaHeight} = @state.getValue()
+    textareaHeight
 
   render: =>
-    {isTextareaFocused, hasText} = @state.getValue()
+    {isTextareaFocused, hasText, textareaHeight} = @state.getValue()
 
     z '.z-conversation-input-textarea',
         z 'textarea.textarea',
@@ -67,6 +78,8 @@ module.exports = class ConversationInputTextarea
             setTimeout ->
               e?.target?.focus()
             , 0
+          style:
+            height: "#{textareaHeight}px"
           placeholder: 'Type a message'
           onkeyup: @setMessageFromEvent
           onkeydown: (e) ->
@@ -74,17 +87,20 @@ module.exports = class ConversationInputTextarea
               e.preventDefault()
           oninput: @resizeTextarea
           ontouchstart: =>
-            @model.window.pauseResizing()
+            unless Environment.isGameApp config.GAME_KEY
+              @model.window.pauseResizing()
           onfocus: =>
-            @model.window.pauseResizing()
+            unless Environment.isGameApp config.GAME_KEY
+              @model.window.pauseResizing()
             clearTimeout @blurTimeout
             @isTextareaFocused.onNext true
-            @onFocus?()
+            @onResize?()
           onblur: (e) =>
             @blurTimeout = setTimeout =>
               isFocused = e.target is document.activeElement
               unless isFocused
-                @model.window.resumeResizing()
+                unless Environment.isGameApp config.GAME_KEY
+                  @model.window.resumeResizing()
                 @isTextareaFocused.onNext false
             , 350
 

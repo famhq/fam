@@ -13,6 +13,9 @@ SEARCH_DEBOUNCE = 300
 module.exports = class ConversationInputStickers
   constructor: ({@onPost, @message}) -> null
 
+  getHeightPx: ->
+    98
+
   render: =>
     z '.z-conversation-input-stickers',
       z '.stickers',

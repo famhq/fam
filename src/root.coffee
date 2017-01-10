@@ -121,6 +121,9 @@ init = ->
   model.portal.call 'app.onBack', ->
     router.back({fromNative: true})
 
+  # iOS scrolls past header
+  model.portal.call 'keyboard.disableScroll'
+
   routeHandler = (data) ->
     data ?= {}
     {path, query, source, _isPush, _original, _isDeepLink} = data

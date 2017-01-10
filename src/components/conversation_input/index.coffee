@@ -17,7 +17,7 @@ if window?
 
 module.exports = class ConversationInput
   constructor: (options) ->
-    {@model, @message, @onPost, @onFocus,
+    {@model, @message, @onPost, @onResize,
       @isTextareaFocused, @overlay$} = options
 
     @imageData = new Rx.BehaviorSubject null
@@ -40,7 +40,7 @@ module.exports = class ConversationInput
         icon: 'text'
         $el: new ConversationInputTextarea {
           onPost: @post
-          @onFocus
+          @onResize
           @message
           @isTextareaFocused
           @hasText
@@ -87,7 +87,13 @@ module.exports = class ConversationInput
       className: z.classKebab {"is-#{currentPanel}-panel": true}
     },
       z '.g-grid',
-        @panels[currentPanel].$el
+        z '.panel', {
+          'ev-transitionend': =>
+            @onResize?()
+          style:
+            height: "#{@panels[currentPanel].$el?.getHeightPx?()}px"
+        },
+          @panels[currentPanel].$el
 
         z '.bottom-icons', [
           _map @panels, ({$icon, icon, onclick, $uploadOverlay}, panel) =>
