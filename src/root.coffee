@@ -123,6 +123,10 @@ init = ->
 
   # iOS scrolls past header
   model.portal.call 'keyboard.disableScroll'
+  model.portal.call 'keyboard.onShow', ({keyboardHeight}) ->
+    model.window.setKeyboardHeight keyboardHeight
+  model.portal.call 'keyboard.onHide', ->
+    model.window.setKeyboardHeight 0
 
   routeHandler = (data) ->
     data ?= {}

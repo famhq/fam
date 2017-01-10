@@ -3,15 +3,12 @@ _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
 
 GroupHeader = require '../group_header'
-Spinner = require '../spinner'
 
 if window?
   require './index.styl'
 
 module.exports = class Groups
   constructor: ({@router, groups}) ->
-    @$spinner = new Spinner()
-
     @state = z.state
       groups: groups.map (groups) ->
         _map groups, (group) ->

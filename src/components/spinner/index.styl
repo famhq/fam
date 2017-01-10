@@ -2,41 +2,45 @@
 
 @require '../../vars'
 
-@keyframes z-spinner_expand
+@keyframes z-spinner_loading
   0%
-    transform: scale(0)
-  90%
+    transform: scale(0.5)
+    background: getColor('$red500')
+  50%
     transform: scale(1)
+    background: transparent
   100%
-    z-index: 1
-
+    transform: scale(0.5)
+    background: getColor('$red500')
 
 .z-spinner
+  list-style: none
   position: relative
-  margin: 0 auto 0 auto
+  // top: 50%
+  // left: 50%
+  margin: auto
+  // transform: translate(-50%, -50%)
+  font-size: 0
 
-  > .circle
-    background-color: getColor('$tertiary900')
-    border-radius: 50%
-    width: 100%
-    height: 100%
-    box-sizing: border-box
-    position: relative
-
-  > .circle:before, .spinner:after
-    content: ''
+  li
     position: absolute
+    top: 50%
     left: 0
-    top: 0
-    display: block
-    border-radius: 50%
-    width: 100%
+    margin: 0
     height: 100%
+    width: 32%
+    border-radius: 100%
+    transform: transformZ(0)
+    animation: z-spinner_loading 2s infinite
 
-  > .circle:before
-    background: getColor('$primary500')
-    animation: z-spinner_expand 1.2s linear infinite both
+    &:nth-child(1n)
+      left: -50%
+      animation-delay: 0s
 
-  > .circle:after
-    background: getColor('$tertiary900')
-    animation: z-spinner_expand 1.2s linear 0.6s infinite both
+    &:nth-child(2n)
+      left: 0
+      animation-delay: 0.2s
+
+    &:nth-child(3n)
+      left: 50%
+      animation-delay: 0.4s

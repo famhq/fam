@@ -47,7 +47,6 @@ module.exports = class Auth
   login: ({username, password} = {}) =>
     @exoid.call 'auth.loginUsername', {username, password}
     .then ({username, accessToken}) =>
-      console.log 'logged in', username, accessToken
       @setAccessToken accessToken
       .then =>
         @exoid.invalidateAll()

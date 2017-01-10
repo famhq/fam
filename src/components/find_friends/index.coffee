@@ -40,7 +40,7 @@ module.exports = class FindFriends
     @state = z.state
       searchValue: @searchValue
       users: users
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   afterMount: (@$$el) =>
     @$$el.querySelector('.input').focus()

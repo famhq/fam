@@ -1,4 +1,5 @@
 z = require 'zorium'
+_filter = require 'lodash/filter'
 
 UserList = require '../user_list'
 PrimaryButton = require '../primary_button'
@@ -9,20 +10,36 @@ if window?
 module.exports = class GroupMembers
   constructor: ({@model, @router, group, selectedProfileDialogUser}) ->
     @$inviteButton = new PrimaryButton()
-    @$userList = new UserList {
+
+    onlineUsers = group.map (group) ->
+      _filter group?.users, ({isOnline}) ->
+        isOnline
+    @$onlineUsersList = new UserList {
       @model
       selectedProfileDialogUser: selectedProfileDialogUser
-      users: group.map (group) ->
-        group?.users
+      users: onlineUsers
+    }
+
+    allUsers = group.map (group) ->
+      group?.users
+    @$allUsersList = new UserList {
+      @model
+      selectedProfileDialogUser: selectedProfileDialogUser
+      users: allUsers
     }
 
     @state = z.state {
       me: @model.user.getMe()
-      group
+      group: group
+      onlineUsersCount: onlineUsers.map (users) -> users.length
+      allUsersCount: allUsers.map (users) -> users.length
     }
 
   render: =>
-    {me, group} = @state.getValue()
+    {me, group, onlineUsersCount, allUsersCount} = @state.getValue()
+
+    onlineUsersCount ?= 0
+    allUsersCount ?= 0
 
     hasPermission = @model.group.hasPermission group, me, {level: 'member'}
 
@@ -34,4 +51,14 @@ module.exports = class GroupMembers
             onclick: =>
               @router.go "/group/#{group?.id}/invite"
           }
-        @$userList
+        z 'h2.title',
+          'Online'
+          z 'span', innerHTML: ' &middot; '
+          onlineUsersCount
+        @$onlineUsersList
+
+        z 'h2.title',
+          'All members'
+          z 'span', innerHTML: ' &middot; '
+          allUsersCount
+        @$allUsersList
