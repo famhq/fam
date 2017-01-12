@@ -22,7 +22,7 @@ RESIZE_THROTTLE_MS = 150
 module.exports = class Conversation
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$,
-      @selectedProfileDialogUser, @scrollYOnly, @isGroup} = options
+      selectedProfileDialogUser, @scrollYOnly, @isGroup} = options
 
     isLoading = new Rx.BehaviorSubject false
     isTextareaFocused = new Rx.BehaviorSubject false
@@ -93,7 +93,9 @@ module.exports = class Conversation
       messages: messages.map (messages) =>
         if messages
           _map messages, (message) =>
-            new ConversationMessage {message, @model, @overlay$}
+            new ConversationMessage {
+              message, @model, @overlay$, selectedProfileDialogUser
+            }
 
   afterMount: (@$$el) =>
     @conversation.take(1).subscribe (conversation) =>

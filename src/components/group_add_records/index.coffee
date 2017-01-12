@@ -1,0 +1,93 @@
+z = require 'zorium'
+Rx = require 'rx-lite'
+_map = require 'lodash/map'
+_find = require 'lodash/find'
+_filter = require 'lodash/filter'
+_flatten = require 'lodash/flatten'
+
+Avatar = require '../avatar'
+ActionBar = require '../action_bar'
+PrimaryInput = require '../primary_input'
+colors = require '../../colors'
+
+if window?
+  require './index.styl'
+
+module.exports = class GroupAddRecords
+  constructor: ({@model, @router, group}) ->
+    groupRecordTypes = group.flatMapLatest (group) =>
+      @model.groupRecordType.getAllByGroupId group.id, {
+        embed: ['userValues']
+      }
+
+    groupAndRecordTypes = Rx.Observable.combineLatest(
+      group
+      groupRecordTypes
+      (vals...) -> vals
+    )
+
+    @$actionBar = new ActionBar()
+
+    @state = z.state
+      group: group
+      groupUsers: groupAndRecordTypes.map ([group, recordTypes]) ->
+        _map group.users, (user) ->
+          {
+            $avatar: new Avatar()
+            recordTypes: _map recordTypes, (recordType) ->
+              userValue = _find(recordType.userValues, {userId: user.id})?.value
+              userValue ?= 0
+
+              value = new Rx.BehaviorSubject userValue
+              {
+                $input: new PrimaryInput({value})
+                value: value
+                initialValue: userValue
+                recordType: recordType
+              }
+            user: user
+          }
+
+  save: =>
+    {groupUsers} = @state.getValue()
+
+    @state.set isSaving: true
+
+    changes = _flatten _map groupUsers, ({user, recordTypes}) ->
+      _filter _map recordTypes, ({recordType, value, initialValue}) ->
+        newValue = value.getValue()
+        if newValue is initialValue
+          return
+        {
+          userId: user.id
+          groupRecordTypeId: recordType.id
+          value: newValue
+        }
+
+    @model.groupRecord.bulkSave changes
+    .then =>
+      @state.set isSaving: false
+      @router.back()
+
+  render: =>
+    {groupUsers, isSaving} = @state.getValue()
+
+    z '.z-group-add-records',
+      z @$actionBar, {
+        isSaving
+        cancel:
+          onclick: => @router.back()
+        save:
+          onclick: @save
+      }
+      z '.content',
+        _map groupUsers, ({$avatar, user, recordTypes}) =>
+          z '.user',
+            z '.avatar',
+              z $avatar, {user}
+            z '.right',
+              z '.name', @model.user.getDisplayName user
+              _map recordTypes, ({$input, recordType}) ->
+                z '.record-type',
+                  recordType.name
+                  z $input, {type: 'number'}

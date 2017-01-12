@@ -57,6 +57,7 @@
     "assert-none-missing": "git://github.com/claydotio/assert-none-missing.git",
     "bluebird": "^3.4.6",
     "body-parser": "^1.14.1",
+    "chartist": "^0.10.1",
     "clay-environment": "^0.4.1",
     "clay-request": "git://github.com/claydotio/clay-request.git",
     "coffee-script": "^1.10.0",

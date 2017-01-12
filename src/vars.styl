@@ -62,6 +62,7 @@ responsive-font-title()
   color: getColor('$white')
   font-weight: 300
   font-size: 20px
+  text-transform: uppercase
   @media (min-width: $breakPointLarge)
     font-size: 24px
 
@@ -94,6 +95,14 @@ responsive-font-body2()
 
 responsive-font-body1()
   zp-font-body1()
+  color: getColor('$white')
+  line-height: 20px
+  @media (min-width: $breakPointLarge)
+    font-size: 16px
+
+responsive-font-body3()
+  zp-font-body1()
+  font-weight: 600
   color: getColor('$white')
   line-height: 20px
   @media (min-width: $breakPointLarge)

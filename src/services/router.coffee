@@ -29,7 +29,7 @@ class RouterService
       window.history.back()
       @history.pop()
     else
-      @go '/'
+      @go '/community'
 
   getStream: =>
     @router.getStream()

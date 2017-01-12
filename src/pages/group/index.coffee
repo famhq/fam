@@ -1,6 +1,7 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _filter = require 'lodash/filter'
+FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -16,6 +17,8 @@ colors = require '../../colors'
 
 if window?
   require './index.styl'
+
+TABS = ['chat', 'info', 'announcements', 'members']
 
 module.exports = class GroupPage
   hideDrawer: true
@@ -80,10 +83,13 @@ module.exports = class GroupPage
     @$groupChatIcon = new Icon()
     @$groupAnnouncementsIcon = new Icon()
     @$groupMembersIcon = new Icon()
+    @$fab = new FloatingActionButton()
+    @$plusIcon = new Icon()
     @$profileDialog = new ProfileDialog {
       @model
       @router
       selectedProfileDialogUser
+      group
     }
 
     @state = z.state
@@ -92,11 +98,12 @@ module.exports = class GroupPage
       overlay$: overlay$
       selectedProfileDialogUser: selectedProfileDialogUser
       windowSize: @model.window.getSize()
+      selectedIndex: selectedIndex
 
   renderHead: => @$head
 
   render: =>
-    {group, me, overlay$, selectedProfileDialogUser,
+    {group, me, overlay$, selectedProfileDialogUser, selectedIndex,
       windowSize} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
@@ -162,6 +169,20 @@ module.exports = class GroupPage
               $el: @$groupMembers
             }
           ]
+      if TABS[selectedIndex] is 'members' and hasAdminPermission
+        z '.fab',
+          z @$fab,
+            colors:
+              c500: colors.$primary500
+            $icon: z @$plusIcon, {
+              icon: 'add'
+              isTouchTarget: false
+              color: colors.$white
+            }
+            onclick: =>
+              tab = TABS[selectedIndex]
+              if tab is 'members' and hasAdminPermission
+                @router.go "/group/#{group?.id}/invite"
       if overlay$
         z '.overlay',
           overlay$

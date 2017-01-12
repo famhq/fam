@@ -30,7 +30,7 @@ module.exports = class GroupSettingsPage
     @$groupSettings = new GroupSettings {model, @router, serverData, group}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 
@@ -43,7 +43,8 @@ module.exports = class GroupSettingsPage
     },
       z @$appBar, {
         title: 'Group Settings'
+        bgColor: colors.$tertiary700
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$tertiary900}
+        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }
       @$groupSettings

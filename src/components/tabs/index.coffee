@@ -143,7 +143,7 @@ module.exports = class Tabs
 
   render: (options) =>
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, barTabWidth,
-      hasAppBar, vDomKey, height, windowSize} = options
+      hasAppBar, vDomKey, windowSize} = options
 
     if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
       @beforeUnmount true
@@ -155,27 +155,14 @@ module.exports = class Tabs
     {selectedIndex, x, hideTabBar, vDomKey, windowSize} = @state.getValue()
 
     isBarFixed ?= true
-    isLargeScreen = windowSize.width >= 768
-    height ?= if hasAppBar and isLargeScreen \
-              then windowSize.height - 64
-              else if hasAppBar
-              then windowSize.height - 56
-              else windowSize.height
-    contentHeight = if isLargeScreen \
-                    then height - 64
-                    else height - 48
 
     z '.z-tabs', {
       className: z.classKebab {isBarFixed}
       vDomKey: vDomKey
       style:
-        height: "#{height}px"
         maxWidth: "#{windowSize.width}px"
     },
-      z '.content', {
-        style:
-          height: "#{height}px"
-      },
+      z '.content',
         unless hideTabBar
           z '.tabs-bar',
             z @$tabsBar, {
@@ -188,10 +175,6 @@ module.exports = class Tabs
             }
         z '.tabs-scroller', {
           key: vDomKey
-          # style:
-            # normally we could get away with a flex: 1 here, but for some
-            # reason it doesn't work on the chat page in chrome 4
-            # height: if isBarFixed then "#{contentHeight}px" else 'auto'
         },
           z '.tabs', {
             style:

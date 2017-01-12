@@ -15,6 +15,9 @@ GroupPage = require './pages/group'
 GroupSettingsPage = require './pages/group_settings'
 GroupInvitesPage = require './pages/group_invites'
 GroupInvitePage = require './pages/group_invite'
+GroupAddRecordsPage = require './pages/group_add_records'
+GroupManageRecordsPage = require './pages/group_manage_records'
+GroupManageMemberPage = require './pages/group_manage_member'
 EditGroupPage = require './pages/edit_group'
 NewGroupPage = require './pages/new_group'
 ThreadPage = require './pages/thread'
@@ -74,7 +77,10 @@ module.exports = class App
     route '/community', CommunityPage
     route '/group/:id', GroupPage
     route '/group/:id/invite', GroupInvitePage
+    route '/group/:id/manage/:userId', GroupManageMemberPage
     route '/group/:id/settings', GroupSettingsPage
+    route '/group/:id/addRecords', GroupAddRecordsPage
+    route '/group/:id/manageRecords', GroupManageRecordsPage
     route '/group/:id/edit', EditGroupPage
     route '/groupInvites', GroupInvitesPage
     route '/newGroup', NewGroupPage
@@ -96,7 +102,7 @@ module.exports = class App
     route '/*', FourOhFourPage
 
     $backupPage = if serverData?
-      routes.get(serverData.req.path).handler()
+      routes.get(serverData.req.path).handler?()
     else
       null
 

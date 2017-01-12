@@ -1,0 +1,101 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.zp-dropdown
+  zp-font-subhead()
+  color: getColor('$white')
+  min-height: 48px
+  display: block
+  outline: none
+  text-align: inherit
+  position: relative
+
+  // arrow
+  &:not(.is-disabled)&:after
+    content: ''
+    position: absolute
+    bottom: (48 / 2)px
+    right: 4px
+    width: 0
+    height: 0
+    border-left: 5px solid transparent
+    border-right: 5px solid transparent
+    border-top: 5px solid getColor('$primary500')
+
+  > .hint
+    pointer-events: none
+    position: absolute
+    background: transparent
+    top: 16px
+    color: $grey600
+
+    transform-origin: 0% 0%
+    transition: top 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                font-size 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+
+  > .select
+    padding: 16px 0 8px 0
+    width: 100%
+    height: 48px
+    box-sizing: border-box
+    -webkit-appearance: none
+    font: inherit
+    color: inherit
+    background-color: transparent
+    border: none
+    outline: none
+    -webkit-tap-highlight-color: transparent
+
+    &:active, &:hover
+      outline-color: getColor('$tertiary500')
+
+    > .option
+      background: getColor('$tertiary700')
+
+  > .underline
+    position: absolute
+    height: 1px
+    width: 100%
+    background: $grey600
+
+  > .error
+    zp-font-caption()
+    color: $red500
+    margin-top: 8px
+    position: absolute
+    pointer-events: none
+    background: transparent
+
+  &.is-floating
+    min-height: 72px
+
+    > .hint
+      top: 32px
+
+    > .select
+      padding: 32px 0 8px 0
+      height: 64px
+
+  &.is-floating&.is-focused, &.is-floating&.has-value
+    > .hint
+      font-size: 12px
+      top: 12px
+      display: block
+
+  &:not(.is-floating)&.has-value
+    > .hint
+      display: none
+
+  &.is-focused
+    > .underline
+      height: 2px
+
+  &.is-error
+    > .underline
+      background: $red500
+
+  &.is-disabled
+    > .underline
+      background: none
+      border-bottom: 1px dashed $grey600

@@ -8,59 +8,57 @@
   &.is-visible
     display: block
 
-  // FIXME
-  > .zp-dialog
-    > .dialog
-      border-radius: 2px
-
-      > .info
-        padding: 0
-
 .z-profile-dialog_dialog
-  background: $white
+  background: getColor('$tertiary700')
   border-radius: 2px
 
   > .header
-    padding: 16px
-    background: getColor('$primary500')
+    padding: 8px 0 8px 16px
+    background: getColor('$tertiary900')
     border-top-left-radius: 2px
     border-top-right-radius: 2px
     display: flex
     align-items: center
     position: relative
+    // cursor: pointer
 
-    > .close
-      position: absolute
-      top: 0
-      right: 0
-      cursor: pointer
+    > .chevron
+      margin-left: auto
 
     > .avatar
-      margin-right: 8px
+      margin-right: 16px
 
     > .about
       > .name
-        responsive-font-subhead()
+        responsive-font-body3()
         color: getColor('$white')
         margin-bottom: 4px
+
+      > .roles
+        responsive-font-caption()
+        color: getColor('$grey700')
 
   > .content
     list-style-type: none
     margin: 0
-    padding: 8px
+    padding: 8px 0
+
+    > .divider
+      background: getColor('$white12')
+      height: 1px
+      width: 100%
+      margin: 8px 0
 
     > .menu-item
       margin: 0
-      padding: 8px 0
-      display: inline-block
-      box-sizing: border-box
-      width: 50%
-      text-align: center
+      padding: 16px
+      display: flex
+      align-items: center
       cursor: pointer
 
       > .icon
-        margin-bottom: 12px
+        margin-right: 32px
 
       > .text
-        responsive-font-caption()
-        color: getColor('$tertiary500')
+        responsive-font-body2()
+        color: getColor('$white')

@@ -3,6 +3,7 @@ Rx = require 'rx-lite'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
+ActionBar = require '../action_bar'
 UploadOverlay = require '../upload_overlay'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
@@ -19,8 +20,7 @@ module.exports = class EditProfile
       me.username
     @usernameError = new Rx.BehaviorSubject null
 
-    @$discardIcon = new Icon()
-    @$doneIcon = new Icon()
+    @$actionBar = new ActionBar()
 
     @$avatar = new Avatar()
     @$avatarButton = new PrimaryButton()
@@ -73,27 +73,14 @@ module.exports = class EditProfile
     {me, avatarUploadError, avatarDataUrl, isSaving} = @state.getValue()
 
     z '.z-edit-profile',
-      z '.actions',
-        z '.action', {
+      z @$actionBar, {
+        isSaving
+        cancel:
           onclick: =>
             @router.back()
-        },
-          z '.icon',
-            z @$discardIcon,
-              icon: 'close'
-              color: colors.$primary500
-              isTouchTarget: false
-          z '.text', 'Cancel'
-        z '.action', {
+        save:
           onclick: @save
-        },
-          z '.icon',
-            z @$doneIcon,
-              icon: 'check'
-              color: colors.$primary500
-              isTouchTarget: false
-          z '.text',
-            if isSaving then 'Loading...' else 'Save'
+      }
 
       z '.section',
         z '.title', 'Change username'

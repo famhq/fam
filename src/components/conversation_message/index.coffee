@@ -21,7 +21,7 @@ TITLE_LENGTH = 30
 DESCRIPTION_LENGTH = 100
 
 module.exports = class ConversationMessage
-  constructor: ({message, @model, @overlay$}) ->
+  constructor: ({message, @model, @overlay$, @selectedProfileDialogUser}) ->
     @$avatar = new Avatar()
 
     @imageData = new Rx.BehaviorSubject null

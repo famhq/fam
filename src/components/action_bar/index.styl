@@ -1,0 +1,26 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-action-bar
+  display: flex
+  height: 56px
+  background: getColor('$tertiary700')
+  cursor: pointer
+  flex-shrink: 0
+
+  > .action
+    flex: 1
+    display: flex
+    align-items: center
+    justify-content: center
+
+    &:hover
+      background: getColor('$tertiary900')
+
+    > .icon
+      margin-right: 12px
+
+    > .text
+      responsive-font-button()
+      font-weight: 400

@@ -1,6 +1,7 @@
 z = require 'zorium'
 
 Icon = require '../icon'
+ActionBar = require '../action_bar'
 colors = require '../../colors'
 
 if window?
@@ -10,8 +11,7 @@ module.exports = class Compose
   constructor: ({@model, @router, @titleValue, @bodyValue}) ->
     me = @model.user.getMe()
 
-    @$discardIcon = new Icon()
-    @$doneIcon = new Icon()
+    @$actionBar = new ActionBar()
 
     @state = z.state
       me: me
@@ -27,31 +27,20 @@ module.exports = class Compose
     {me, isLoading} = @state.getValue()
 
     z '.z-compose',
-      z '.actions',
-        z '.action', {
+      z @$actionBar, {
+        isSaving: isLoading
+        cancel:
+          text: 'Discard'
           onclick: =>
             @router.back()
-        },
-          z '.icon',
-            z @$discardIcon,
-              icon: 'close'
-              color: colors.$primary500
-              isTouchTarget: false
-          z '.text', 'Discard'
-        z '.action', {
+        save:
+          text: 'Done'
           onclick: (e) =>
             @state.set isLoading: true
             onDone e
             .then =>
               @state.set isLoading: false
-        },
-          z '.icon',
-            z @$doneIcon,
-              icon: 'check'
-              color: colors.$primary500
-              isTouchTarget: false
-          z '.text',
-            if isLoading then 'Loading...' else 'Done'
+      }
       z '.g-grid',
         [
           unless isReply

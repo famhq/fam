@@ -9,8 +9,6 @@ if window?
 
 module.exports = class GroupMembers
   constructor: ({@model, @router, group, selectedProfileDialogUser}) ->
-    @$inviteButton = new PrimaryButton()
-
     onlineUsers = group.map (group) ->
       _filter group?.users, ({isOnline}) ->
         isOnline
@@ -28,6 +26,8 @@ module.exports = class GroupMembers
       users: allUsers
     }
 
+    @$addRecordsButton = new PrimaryButton()
+
     @state = z.state {
       me: @model.user.getMe()
       group: group
@@ -40,16 +40,15 @@ module.exports = class GroupMembers
 
     onlineUsersCount ?= 0
     allUsersCount ?= 0
-
-    hasPermission = @model.group.hasPermission group, me, {level: 'member'}
+    hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.z-group-members',
       z '.g-grid',
-        if hasPermission
-          z @$inviteButton, {
-            text: 'Invite members'
+        if hasAdminPermission
+          z @$addRecordsButton, {
+            text: 'Add records'
             onclick: =>
-              @router.go "/group/#{group?.id}/invite"
+              @router.go "/group/#{group?.id}/addRecords"
           }
         z 'h2.title',
           'Online'

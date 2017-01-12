@@ -2,6 +2,7 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 
 Icon = require '../icon'
+ActionBar = require '../action_bar'
 EditGroupChangeBadge = require '../edit_group_change_badge'
 GroupHeader = require '../group_header'
 PrimaryButton = require '../primary_button'
@@ -41,9 +42,8 @@ module.exports = class EditGroup
 
     @$isPrivateToggle = new Toggle {isSelectedStreams: @isPrivateStreams}
 
+    @$actionBar = new ActionBar()
     @$groupHeader = new GroupHeader {@group}
-    @$discardIcon = new Icon()
-    @$doneIcon = new Icon()
 
     @$editGroupChangeBadge = new EditGroupChangeBadge {
       @model
@@ -119,32 +119,16 @@ module.exports = class EditGroup
             @state.set isChangingBadge: false
         }
       else [
-        z '.actions',
-          z '.action', {
+        z @$actionBar, {
+          isSaving
+          cancel:
             onclick: =>
               @router.back()
-          },
-            z '.icon',
-              z @$discardIcon,
-                icon: 'close'
-                color: colors.$primary500
-                isTouchTarget: false
-            z '.text', 'Cancel'
-          z '.action', {
+          save:
+            text: if isNewGroup then 'Create' else 'Save'
             onclick: =>
               @save isNewGroup
-          },
-            z '.icon',
-              z @$doneIcon,
-                icon: 'check'
-                color: colors.$primary500
-                isTouchTarget: false
-            z '.text',
-              if isSaving
-              then 'Loading...'
-              else if isNewGroup then 'Create'
-              else 'Save'
-
+        }
         z @$groupHeader, {
           badgeId: selectedBadge
           background: selectedBackground
