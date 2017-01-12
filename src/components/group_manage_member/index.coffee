@@ -1,5 +1,6 @@
 z = require 'zorium'
 moment = require 'moment'
+Rx = require 'rx-lite'
 
 Tabs = require '../tabs'
 UserHeader = require '../user_header'
@@ -15,17 +16,20 @@ module.exports = class GroupManageMember
   constructor: ({@model, @router, group, user}) ->
     @$userHeader = new UserHeader()
 
+    overlay$ = new Rx.BehaviorSubject null
+
     @$general = new GroupManageMemberGeneral {@model, group, user}
-    @$records = new GroupManageMemberRecords {@model, group, user}
+    @$records = new GroupManageMemberRecords {@model, group, user, overlay$}
     @$notes = new GroupManageMemberNotes {@model, group, user}
     @$tabs = new Tabs {@model}
 
     @state = z.state
       group: group
       user: user
+      overlay$: overlay$
 
   render: =>
-    {group, user} = @state.getValue()
+    {group, user, overlay$} = @state.getValue()
 
     z '.z-group-manage-member',
       z @$userHeader, {user: user}
@@ -43,10 +47,10 @@ module.exports = class GroupManageMember
         barBgColor: colors.$tertiary700
         barInactiveColor: colors.$white
         tabs: [
-          {
-            $menuText: 'General'
-            $el: @$general
-          }
+          # {
+          #   $menuText: 'General'
+          #   $el: @$general
+          # }
           {
             $menuText: 'Records'
             $el: @$records
@@ -56,3 +60,5 @@ module.exports = class GroupManageMember
             $el: @$notes
           }
         ]
+
+      overlay$

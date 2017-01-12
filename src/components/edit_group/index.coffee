@@ -74,10 +74,11 @@ module.exports = class EditGroup
       selectedBackground: @selectedBackgroundStreams.switch()
 
   beforeUnmount: =>
-    @selectedBadgeStreams.onNext @group?.map (group) ->
-      group.badgeId
-    @selectedBackgroundStreams.onNext @group?.map (group) ->
-      group.background
+    if @group
+      @selectedBadgeStreams.onNext @group?.map (group) ->
+        group.badgeId
+      @selectedBackgroundStreams.onNext @group?.map (group) ->
+        group.background
 
   save: (isNewGroup) =>
     {selectedBackground, selectedBadge, me, isSaving, group, isPrivate,

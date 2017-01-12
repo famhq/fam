@@ -15,4 +15,4 @@ module.exports = class GroupManageMemberNotes
     {group, user} = @state.getValue()
 
     z '.z-group-manage-member-notes',
-      'Notes...'
+      'Coming soon!'

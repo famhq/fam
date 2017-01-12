@@ -52,8 +52,8 @@ module.exports = class GroupManageRecords
     )
     .map ([isNameFocused, name, timeScale, group]) =>
       if name and timeScale and not isNameFocused
+        @nameValue.onNext ''
         setTimeout =>
-          @nameValue.onNext ''
           @timeScaleValue.onNext ''
         , 100
         @state.set isLoading: true
@@ -88,6 +88,8 @@ module.exports = class GroupManageRecords
   render: =>
     {group, recordTypes, isLoading, deletingRecordType,
       isConfirmDeleteDialogVisible} = @state.getValue()
+
+    console.log 'rerender', recordTypes?.length
 
     z '.z-group-manage-records', [
       _map recordTypes, (options) =>

@@ -3,4 +3,33 @@
 @require '../../vars'
 
 .z-group-manage-member-records
-  display: block
+  padding: 16px
+  width: 100%
+  box-sizing: border-box
+
+  > .record-type
+    background: getColor('$tertiary700')
+    width: 100%
+    padding: 16px
+    box-sizing: border-box
+    margin-bottom: 16px
+
+    > .name
+      responsive-font-body3()
+
+    > .stats
+      margin-top: 24px
+
+      > .stat
+        display: inline-block
+        margin-right: 24px
+
+        > .value
+          responsive-font-body3()
+
+        > .title
+          responsive-font-caption()
+          color: getColor('$white30')
+
+    > .graph
+      margin-top: 24px

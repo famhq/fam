@@ -8,7 +8,7 @@ module.exports = class GroupRecordType
       invalidateAll: true
     }
 
-  getAllByGroupId: (groupId, {embed}) =>
+  getAllByGroupId: (groupId, {embed} = {}) =>
     @auth.stream "#{@namespace}.getAllByGroupId", {groupId, embed}
 
   deleteById: (id) =>

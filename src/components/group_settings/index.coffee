@@ -26,6 +26,7 @@ module.exports = class Settings
     me = @model.user.getMe()
 
     @$leaveIcon = new Icon()
+    @$manageRecordsIcon = new Icon()
 
     @state = z.state
       me: me
@@ -42,31 +43,54 @@ module.exports = class Settings
             isSelected: isSelected
           }, type
 
+  leaveGroup: =>
+    {isLeaveGroupLoading, group} = @state.getValue()
+
+    unless isLeaveGroupLoading
+      @state.set isLeaveGroupLoading: true
+      @model.group.leaveById group.id
+      .then =>
+        @state.set isLeaveGroupLoading: false
+        @router.go '/community'
+
   render: =>
     {me, notificationTypes, group, isLeaveGroupLoading} = @state.getValue()
+
+    items = [
+      {
+        $icon: @$leaveIcon
+        icon: 'subtract-circle'
+        text: if isLeaveGroupLoading \
+              then 'Loading'
+              else 'Leave group'
+        onclick: @leaveGroup
+      }
+    ]
+
+    hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
+    if hasAdminPermission
+      items = items.concat [
+        {
+          $icon: @$manageRecordsIcon
+          icon: 'edit'
+          text: 'Manage Records'
+          onclick: =>
+            @router.go "/group/#{group?.id}/manageRecords"
+        }
+      ]
 
     z '.z-group-settings',
       z '.g-grid',
         z '.title', 'General'
         z 'ul.list',
-          z 'li.item', {
-            onclick: =>
-              unless isLeaveGroupLoading
-                @state.set isLeaveGroupLoading: true
-                @model.group.leaveById group.id
-                .then =>
-                  @state.set isLeaveGroupLoading: false
-                  @router.go '/community'
-          },
-            z '.icon',
-              z @$leaveIcon,
-                icon: 'subtract-circle'
-                isTouchTarget: false
-                color: colors.$primary500
-            z '.text', if isLeaveGroupLoading \
-                       then 'Loading'
-                       else 'Leave group'
-
+          _map items, ({$icon, icon, text, onclick}) ->
+            z 'li.item', {onclick},
+              z '.icon',
+                z $icon,
+                  icon: icon
+                  isTouchTarget: false
+                  color: colors.$primary500
+              z '.text', text
         # z '.title', 'Notifications'
         # z 'ul.list',
         #   _map notificationTypes, ({name, key, $toggle, isSelected}) =>

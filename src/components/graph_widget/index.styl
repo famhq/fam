@@ -1,0 +1,29 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-graph-widget
+  margin-bottom: -16px
+
+  .ct-line
+    stroke: getColor('$primary500')
+    stroke-width: 3px
+    stroke-linecap: round
+    fill: transparent
+
+  .ct-grid
+    stroke: getColor('$white12')
+    stroke-width: 1px
+
+  .ct-label
+    responsive-font-caption()
+    color: getColor('$white30')
+
+    &.ct-vertical
+      transform: translateY(70%)
+      display: inline-block
+
+  .ct-point
+    stroke: getColor('$primary500')
+    stroke-width: 6px
+    stroke-linecap: round

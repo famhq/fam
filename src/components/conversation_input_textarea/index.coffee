@@ -47,7 +47,8 @@ module.exports = class ConversationInputTextarea
   postMessage: (e) =>
     $$textarea = @$$el.querySelector('#textarea')
     $$textarea?.focus()
-    $$textarea?.style.height = 'auto'
+    $$textarea?.style.height = "#{DEFAULT_TEXTAREA_HEIGHT}px"
+    @state.set textareaHeight: DEFAULT_TEXTAREA_HEIGHT
     @onPost?()
     $$textarea?.value = ''
 

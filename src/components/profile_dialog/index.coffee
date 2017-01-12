@@ -30,9 +30,11 @@ module.exports = class ProfileDialog
       group: group
       isFlagLoading: false
       isFlagged: false
+      isConversationLoading: false
 
   render: =>
-    {me, user, platform, isFlagLoading, isFlagged, group} = @state.getValue()
+    {me, user, platform, isFlagLoading, isFlagged, group,
+      isConversationLoading} = @state.getValue()
 
     isBlocked = @model.user.isBlocked me, user?.id
     isFollowing = @model.user.isFollowing me, user?.id
@@ -83,12 +85,15 @@ module.exports = class ProfileDialog
               unless isMe
                 z 'li.menu-item', {
                   onclick: =>
-                    @model.conversation.create {
-                      userIds: [user.id]
-                    }
-                    .then (conversation) =>
-                      @router.go "/conversation/#{conversation.id}"
-                    @selectedProfileDialogUser.onNext null
+                    unless isConversationLoading
+                      @state.set isConversationLoading: true
+                      @model.conversation.create {
+                        userIds: [user.id]
+                      }
+                      .then (conversation) =>
+                        @state.set isConversationLoading: false
+                        @router.go "/conversation/#{conversation.id}"
+                        @selectedProfileDialogUser.onNext null
                 },
                   z '.icon',
                     z @$messageIcon,
@@ -96,7 +101,9 @@ module.exports = class ProfileDialog
                       color: colors.$primary500
                       isTouchTarget: false
                   z '.text',
-                    'Send message'
+                    if isConversationLoading
+                    then 'Loading...'
+                    else 'Send message'
 
               unless isMe
                 z 'li.menu-item', {

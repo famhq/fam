@@ -15,6 +15,8 @@ module.exports = class Changefeed
     @clientChangesStream.onNext _merge diff, {clientId}, localDiff
 
     @auth.call "#{@namespace}.create", _merge diff, {clientId}
+    .catch (err) ->
+      console.log 'err'
 
   stream: (path, body, options) =>
     @auth.stream path, body, _defaults({@clientChangesStream}, options)

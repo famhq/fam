@@ -3,8 +3,8 @@ module.exports = class GroupRecord
 
   constructor: ({@auth}) -> null
 
-  save: ({userIds, groupRecordTypeId, value}) =>
-    @auth.call "#{@namespace}.save", {userIds, groupRecordTypeId, value}, {
+  save: ({userId, groupRecordTypeId, value}) =>
+    @auth.call "#{@namespace}.save", {userId, groupRecordTypeId, value}, {
       invalidateAll: true
     }
 

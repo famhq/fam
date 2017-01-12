@@ -7,7 +7,7 @@ _flatten = require 'lodash/flatten'
 
 Avatar = require '../avatar'
 ActionBar = require '../action_bar'
-PrimaryInput = require '../primary_input'
+SecondaryInput = require '../secondary_input'
 colors = require '../../colors'
 
 if window?
@@ -40,7 +40,7 @@ module.exports = class GroupAddRecords
 
               value = new Rx.BehaviorSubject userValue
               {
-                $input: new PrimaryInput({value})
+                $input: new SecondaryInput({value})
                 value: value
                 initialValue: userValue
                 recordType: recordType
@@ -80,14 +80,15 @@ module.exports = class GroupAddRecords
         save:
           onclick: @save
       }
-      z '.content',
-        _map groupUsers, ({$avatar, user, recordTypes}) =>
-          z '.user',
-            z '.avatar',
-              z $avatar, {user}
-            z '.right',
-              z '.name', @model.user.getDisplayName user
-              _map recordTypes, ({$input, recordType}) ->
-                z '.record-type',
-                  recordType.name
-                  z $input, {type: 'number'}
+      z '.g-grid',
+        z '.content',
+          _map groupUsers, ({$avatar, user, recordTypes}) =>
+            z '.user',
+              z '.avatar',
+                z $avatar, {user}
+              z '.right',
+                z '.name', @model.user.getDisplayName user
+                _map recordTypes, ({$input, recordType}) ->
+                  z '.record-type',
+                    z '.name', "#{recordType.name} / #{recordType.timeScale}"
+                    z '.input', z $input, {type: 'number'}

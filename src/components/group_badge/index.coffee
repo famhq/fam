@@ -23,4 +23,6 @@ module.exports = class GroupBadge
       z '.inner',
         style:
           backgroundImage:
-            "url(#{config.CDN_URL}/groups/badges/#{badgeId}.png)"
+            if badgeId
+            then "url(#{config.CDN_URL}/groups/badges/#{badgeId}.png)"
+            else 'none'

@@ -8,11 +8,26 @@
   overflow: auto
   -webkit-overflow-scrolling: touch
 
-  > .content
-    padding: 16px
+  > .g-grid
+    > .content
+      padding: 16px
 
-    > .user
-      display: flex
+      > .user
+        display: flex
 
-      > .right
-        margin-left: 16px
+        > .right
+          margin-left: 16px
+          flex: 1
+
+          > .name
+            responsive-font-body3()
+
+          > .record-type
+            responsive-font-body2()
+            color: getColor('$white30')
+            display: flex
+            align-items: center
+
+            > .input
+              margin-left: auto
+              width: 60px
