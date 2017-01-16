@@ -21,7 +21,10 @@ TITLE_LENGTH = 30
 DESCRIPTION_LENGTH = 100
 
 module.exports = class ConversationMessage
-  constructor: ({message, @model, @overlay$, @selectedProfileDialogUser}) ->
+  constructor: (options) ->
+    {message, isGrouped, isMe, @model, @overlay$,
+      @selectedProfileDialogUser} = options
+
     @$avatar = new Avatar()
 
     @imageData = new Rx.BehaviorSubject null
@@ -34,6 +37,8 @@ module.exports = class ConversationMessage
 
     @state = z.state
       message: message
+      isMe: isMe
+      isGrouped: isGrouped
       windowSize: @model.window.getSize()
 
   formatMessage: (message) =>
@@ -93,7 +98,7 @@ module.exports = class ConversationMessage
             part
 
   render: ({isTextareaFocused}) =>
-    {message, windowSize} = @state.getValue()
+    {isMe, message, isGrouped, windowSize} = @state.getValue()
 
     {user, body, time, card, id, clientId} = message
 
@@ -106,7 +111,7 @@ module.exports = class ConversationMessage
     z '.z-conversation-message', {
       # re-use elements in v-dom
       key: "message-#{id or clientId}"
-      className: z.classKebab {isSticker, isMe: user.id is me?.id}
+      className: z.classKebab {isSticker, isGrouped, isMe}
     },
       z '.avatar', {onclick},
         z @$avatar, {

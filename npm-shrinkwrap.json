@@ -444,6 +444,11 @@
         }
       }
     },
+    "chartist": {
+      "version": "0.10.1",
+      "from": "chartist@latest",
+      "resolved": "https://registry.npmjs.org/chartist/-/chartist-0.10.1.tgz"
+    },
     "chokidar": {
       "version": "1.5.2",
       "from": "chokidar@>=1.4.1 <2.0.0",
@@ -4309,7 +4314,7 @@
     "zorium-paper": {
       "version": "0.4.1",
       "from": "git://github.com/claydotio/zorium-paper.git",
-      "resolved": "git://github.com/claydotio/zorium-paper.git#c1f915ee9b7556bf6f1724f134369de54d361894"
+      "resolved": "git://github.com/claydotio/zorium-paper.git#815ff1692adc89c971b69a4b03a94e3d28c9cc22"
     }
   }
 }

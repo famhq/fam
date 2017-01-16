@@ -1,12 +1,14 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
+Environment = require 'clay-environment'
 
 Icon = require '../icon'
 PrimaryButton = require '../primary_button'
 Privacy = require '../privacy'
 Tos = require '../tos'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -54,7 +56,7 @@ module.exports = class Policies
     z '.z-policies',
       z '.title', 'Privacy & Content'
       z '.description',
-        'By registering, you agree to Red Tritium\'s Privacy Policy, TOS,
+        'By registering, you agree to Starfire\'s Privacy Policy, TOS,
         and Supercell\'s Fan Content Policy'
 
       _map $dropdowns, ($dropdown, i) =>
@@ -85,4 +87,7 @@ module.exports = class Policies
         z @$continueButton,
           text: 'Continue'
           onclick: =>
-            @router.go '/setAddress'
+            if Environment.isGameApp config.GAME_KEY
+              @router.go '/'
+            else
+              @router.go '/getApp'

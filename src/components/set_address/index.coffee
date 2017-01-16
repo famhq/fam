@@ -73,7 +73,7 @@ module.exports = class SetAddress
         $title: 'Membership card'
         $content: [
           z 'p',
-            'The first 100 members of Red Tritium get a sweet
+            'The first 100 members of Starfire get a sweet
             metal membership card. If you would like one,
             provide your address below.'
           z 'p',
@@ -106,5 +106,9 @@ module.exports = class SetAddress
                 @model.user.setFlags {isAddressSkipped: true}
                 .then =>
                   @state.set isSkipLoading: false
-                  @router.go '/getApp'
+
+                  if Environment.isGameApp config.GAME_KEY
+                    @router.go '/'
+                  else
+                    @router.go '/getApp'
           ]

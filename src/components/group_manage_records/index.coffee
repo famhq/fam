@@ -20,6 +20,10 @@ timeScaleOptions = [
     value: 'week'
     text: 'Weekly'
   }
+  {
+    value: 'biweek'
+    text: 'Biweekly'
+  }
 ]
 
 module.exports = class GroupManageRecords

@@ -20,6 +20,9 @@ module.exports = class Window
   getSize: =>
     @size
 
+  getAppBarHeight: =>
+    if @getSize().getValue().width > 768 then 64 else 56
+
   pauseResizing: =>
     @isPaused = true
 

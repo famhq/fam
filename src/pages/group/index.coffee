@@ -57,12 +57,14 @@ module.exports = class GroupPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
+    @$tabs = new Tabs {@model, selectedIndex}
     @$groupInfo = new GroupInfo {@model, @router, group}
     @$groupChat = new GroupChat {
       @model
       @router
       selectedProfileDialogUser
       overlay$
+      toggleIScroll: @$tabs.toggle
       isActive: selectedIndex.map (index) ->
         index is 1
       conversation: groupAndMe.flatMapLatest ([group, me]) =>
@@ -76,7 +78,6 @@ module.exports = class GroupPage
     @$groupMembers = new GroupMembers {
       @model, @router, group, selectedProfileDialogUser
     }
-    @$tabs = new Tabs {@model, selectedIndex}
     @$editIcon = new Icon()
     @$settingsIcon = new Icon()
     @$groupInfoIcon = new Icon()

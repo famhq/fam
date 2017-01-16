@@ -37,7 +37,7 @@ module.exports = class Join
     @state = z.state
       isLoading: false
 
-  login: (e) =>
+  join: (e) =>
     e?.preventDefault()
 
     @state.set isLoading: true
@@ -56,11 +56,11 @@ module.exports = class Join
   render: =>
     {isLoading} = @state.getValue()
 
-    z '.z-sign-in',
+    z '.z-join',
       z @$infoBlock,
-        $title: 'Welcome back!'
+        $title: 'Get started!'
         $form: z @$form,
-          onsubmit: @login
+          onsubmit: @join
           $inputs: [
             z @$emailInput,
               hintText: 'Email'

@@ -28,7 +28,7 @@ module.exports = class GetApp
           z '.description',
             z 'p', 'Thank you, your registration is complete'
             z 'p',
-              'You can use Red Tritium from a browser, but it\'s best to
+              'You can use Starfire from a browser, but it\'s best to
               install the app'
 
           z '.icon'

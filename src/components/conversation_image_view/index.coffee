@@ -23,14 +23,15 @@ module.exports = class ConversationImageView
 
     imageData ?= {}
 
+    windowHeight = windowSize.height - @$appBar.getHeight()
     imageAspectRatio = imageData.aspectRatio
-    windowAspectRatio = windowSize.width / windowSize.height
+    windowAspectRatio = windowSize.width / windowHeight
     # 3:1, 1:1
     if imageAspectRatio > windowAspectRatio
       imageWidth = windowSize.width
       imageHeight = imageWidth / imageAspectRatio
     else
-      imageHeight = windowSize.height
+      imageHeight = windowHeight
       imageWidth = imageHeight * imageAspectRatio
 
     z '.z-conversation-image-view',

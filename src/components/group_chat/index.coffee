@@ -7,7 +7,7 @@ if window?
 
 module.exports = class GroupChat
   constructor: (options) ->
-    {@model, @router, conversation, overlay$,
+    {@model, @router, conversation, overlay$, toggleIScroll
       selectedProfileDialogUser, isActive} = options
 
     @$conversation = new Conversation {
@@ -15,6 +15,7 @@ module.exports = class GroupChat
       @router
       selectedProfileDialogUser
       isActive
+      toggleIScroll
       conversation
       overlay$
       scrollYOnly: true

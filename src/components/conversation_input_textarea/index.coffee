@@ -13,7 +13,7 @@ DEFAULT_TEXTAREA_HEIGHT = 54
 
 module.exports = class ConversationInputTextarea
   constructor: (options) ->
-    {@message, @onPost, @onResize, @isTextareaFocused,
+    {@message, @onPost, @onResize, @isTextareaFocused, @toggleIScroll
       @hasText, @model} = options
 
     @$sendIcon = new Icon()
@@ -87,9 +87,19 @@ module.exports = class ConversationInputTextarea
             if e.keyCode is 13 and not e.shiftKey
               e.preventDefault()
           oninput: @resizeTextarea
-          ontouchstart: =>
+          ontouchstart: (e) =>
+            isFocused = e.target is document.activeElement
+            if isFocused
+              # so text can be selected
+              @toggleIScroll? 'disable'
             unless Environment.isGameApp config.GAME_KEY
               @model.window.pauseResizing()
+          ontouchend: =>
+            @toggleIScroll? 'enable'
+          onmousedown: =>
+            @toggleIScroll? 'disable'
+          onmouseup: =>
+            @toggleIScroll? 'enable'
           onfocus: =>
             unless Environment.isGameApp config.GAME_KEY
               @model.window.pauseResizing()
@@ -97,6 +107,7 @@ module.exports = class ConversationInputTextarea
             @isTextareaFocused.onNext true
             @onResize?()
           onblur: (e) =>
+            @toggleIScroll? 'enable'
             @blurTimeout = setTimeout =>
               isFocused = e.target is document.activeElement
               unless isFocused

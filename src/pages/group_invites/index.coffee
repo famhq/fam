@@ -24,7 +24,7 @@ module.exports = class GroupInvitePage
         description: 'Group Invites'
       }
     })
-    @$appBar = new AppBar()
+    @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
     @$groupList = new GroupList {
       @router

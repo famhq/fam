@@ -21,7 +21,7 @@ RESIZE_THROTTLE_MS = 150
 
 module.exports = class Conversation
   constructor: (options) ->
-    {@model, @router, @error, @conversation, isActive, @overlay$,
+    {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
       selectedProfileDialogUser, @scrollYOnly, @isGroup} = options
 
     isLoading = new Rx.BehaviorSubject false
@@ -73,6 +73,7 @@ module.exports = class Conversation
       @model
       @message
       isTextareaFocused
+      toggleIScroll
       @overlay$
       onPost: @postMessage
       onResize: @onResize
@@ -80,6 +81,12 @@ module.exports = class Conversation
 
     @debouncedOnResize = _debounce @onResize
     , RESIZE_THROTTLE_MS
+
+    messagesAndMe = Rx.Observable.combineLatest(
+      messages
+      @model.user.getMe()
+      (vals...) -> vals
+    )
 
     @state = z.state
       me: me
@@ -90,12 +97,18 @@ module.exports = class Conversation
       conversation: @conversation
       isScrolledBottom: @isScrolledBottomStreams.switch()
 
-      messages: messages.map (messages) =>
+      messages: messagesAndMe.map ([messages, me]) =>
         if messages
+          prevMessageUserId = null
           _map messages, (message) =>
-            new ConversationMessage {
-              message, @model, @overlay$, selectedProfileDialogUser
+            isGrouped = message.userId is prevMessageUserId
+            isMe = message.userId is me.id
+            $el = new ConversationMessage {
+              message, @model, @overlay$, isMe
+              isGrouped, selectedProfileDialogUser
             }
+            prevMessageUserId = message.userId
+            $el
 
   afterMount: (@$$el) =>
     @conversation.take(1).subscribe (conversation) =>
@@ -146,11 +159,11 @@ module.exports = class Conversation
     {me, conversation, isPostLoading} = @state.getValue()
 
     messageBody = @message.getValue()
-    lineBreaks =  messageBody.split(/\r\n|\r|\n/).length
-    if messageBody.length > MAX_CHARACTERS or
-        lineBreaks > MAX_LINES
-      @error.onNext 'Message is too long'
-      return
+    # lineBreaks =  messageBody.split(/\r\n|\r|\n/).length
+    # if messageBody.length > MAX_CHARACTERS or
+    #     lineBreaks > MAX_LINES
+    #   @error.onNext 'Message is too long'
+    #   return
 
     if not isPostLoading and messageBody
       @state.set isPostLoading: true
@@ -158,6 +171,7 @@ module.exports = class Conversation
       @model.chatMessage.create {
         body: messageBody
         conversationId: conversation?.id
+        userId: me?.id
       }, {user: me}
       .then =>
         # @model.user.emit('chatMessage').catch log.error
@@ -180,6 +194,7 @@ module.exports = class Conversation
           # hidden when inactive for perf
           if messages and not isLoading
             _map messages, ($message) ->
+              isGrouped =
               z $message, {isTextareaFocused}
 
           else

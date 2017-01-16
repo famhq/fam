@@ -38,7 +38,7 @@ module.exports = class ProfileDialog
 
     isBlocked = @model.user.isBlocked me, user?.id
     isFollowing = @model.user.isFollowing me, user?.id
-    isMe = user?.id is me?.id and false # FIXME FIXME
+    isMe = user?.id is me?.id
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
@@ -122,13 +122,14 @@ module.exports = class ProfileDialog
                   z '.text',
                     if isBlocked then 'Unblock user' else 'Block user'
 
-              if not isMe and user?.chatMessageId and not me?.flags.isModerator
+              if not isMe #and user?.chatMessageId and not me?.flags.isModerator
                 z 'li.menu-item', {
                   onclick: =>
-                    @state.set isFlagLoading: true
-                    @model.threadMessage.flag user?.chatMessageId
-                    .then =>
-                      @state.set isFlagLoading: false, isFlagged: true
+                    @selectedProfileDialogUser.onNext null
+                    # @state.set isFlagLoading: true
+                    # @model.threadMessage.flag user?.chatMessageId
+                    # .then =>
+                    #   @state.set isFlagLoading: false, isFlagged: true
                 },
                   z '.icon',
                     z @$flagIcon,

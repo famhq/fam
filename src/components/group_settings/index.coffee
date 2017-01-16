@@ -14,12 +14,12 @@ if window?
 NOTIFICATION_TYPES = [
   {
     name: 'New chat messages'
-    key: 'messages'
+    key: 'chatMessage'
   }
-  {
-    name: 'New announcments'
-    key: 'announcements'
-  }
+  # {
+  #   name: 'New announcments'
+  #   key: 'announcement'
+  # }
 ]
 module.exports = class Settings
   constructor: ({@model, @portal, @router, group}) ->
@@ -32,16 +32,17 @@ module.exports = class Settings
       me: me
       group: group
       isLeaveGroupLoading: false
-      notificationTypes: me.map (me) ->
-        _map NOTIFICATION_TYPES, (type) ->
-          isSelected = new Rx.BehaviorSubject(
-            not me.flags.blockedNotifications?[type.key]
-          )
+      notificationTypes: group.flatMapLatest (group) =>
+        @model.groupUserData.getMeByGroupId(group.id).map (data) ->
+          _map NOTIFICATION_TYPES, (type) ->
+            isSelected = new Rx.BehaviorSubject(
+              not data.globalBlockedNotifications?[type.key]
+            )
 
-          _defaults {
-            $toggle: new Toggle {isSelected}
-            isSelected: isSelected
-          }, type
+            _defaults {
+              $toggle: new Toggle {isSelected}
+              isSelected: isSelected
+            }, type
 
   leaveGroup: =>
     {isLeaveGroupLoading, group} = @state.getValue()
@@ -91,17 +92,16 @@ module.exports = class Settings
                   isTouchTarget: false
                   color: colors.$primary500
               z '.text', text
-        # z '.title', 'Notifications'
-        # z 'ul.list',
-        #   _map notificationTypes, ({name, key, $toggle, isSelected}) =>
-        #     z 'li.item',
-        #       z '.text', name
-        #       z '.toggle',
-        #         z $toggle, {
-        #           onToggle: (isSelected) =>
-        #             @model.user.update {
-        #               flags:
-        #                 blockedNotifications:
-        #                   "#{key}": not isSelected
-        #             }
-        #         }
+        z '.title', 'Notifications'
+        z 'ul.list',
+          _map notificationTypes, ({name, key, $toggle, isSelected}) =>
+            z 'li.item',
+              z '.text', name
+              z '.toggle',
+                z $toggle, {
+                  onToggle: (isSelected) =>
+                    @model.groupUserData.updateMeByGroupId group.id, {
+                      globalBlockedNotifications:
+                        "#{key}": not isSelected
+                    }
+                }

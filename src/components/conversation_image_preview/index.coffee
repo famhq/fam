@@ -26,10 +26,10 @@ module.exports = class ConversationImagePreview
     imageData ?= {}
 
     imageAspectRatio = imageData.width / imageData.height
-    windowAspectRatio = windowSize.widht / windowSize.height
+    windowAspectRatio = windowSize.width / windowSize.height
     # 3:1, 1:1
     if imageAspectRatio > windowAspectRatio
-      previewWidth = Math.min windowSize.widht, imageData.width
+      previewWidth = Math.min windowSize.width, imageData.width
       previewHeight = previewWidth / imageAspectRatio
     else
       previewHeight = Math.min windowSize.height, imageData.height

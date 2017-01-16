@@ -23,6 +23,7 @@ module.exports = class GroupInvite
     z '.z-group-invite',
       z @$findFriends, {
         showCurrentFriends: true
+        alwaysShowBack: true
         onBack: =>
           @router.back()
         onclick: (user) =>

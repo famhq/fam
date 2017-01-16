@@ -3,32 +3,36 @@
 @require '../../vars'
 
 .z-group-manage-member
-  flex: 1
-  display: flex
-  flex-direction: column
+  // flex: 1
+  // display: flex
+  // flex-direction: column
   overflow: auto
   -webkit-overflow-scrolling: touch
 
-  > .info
-    background: getColor('$tertiary700')
-    padding: 16px
+  > .content
+    display: flex
+    flex-direction: column
 
-    > .g-grid
-      > .flex
-        display: flex
+    > .info
+      background: getColor('$tertiary700')
+      padding: 16px
 
-        > .name
-          responsive-font-title()
-          color: getColor('$white')
+      > .g-grid
+        > .flex
+          display: flex
 
-        > .join-date
-          margin-left: auto
-          responsive-font-caption()
-          color: getColor('$white30')
+          > .name
+            responsive-font-title()
+            color: getColor('$white')
 
-          > .title
-            font-weight: 500
-            text-transform: uppercase
+          > .join-date
+            margin-left: auto
+            responsive-font-caption()
+            color: getColor('$white30')
 
-          > .date
-            margin-top: 4px
+            > .title
+              font-weight: 500
+              text-transform: uppercase
+
+            > .date
+              margin-top: 4px

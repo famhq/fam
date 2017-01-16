@@ -63,6 +63,7 @@ module.exports = class FindFriends
       z '.search',
         z @$searchInput, {
           onBack: onBack
+          alwaysShowBack: true
           placeholder: 'Search by username'
         }
       z '.results',

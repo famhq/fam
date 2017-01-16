@@ -19,7 +19,7 @@ colors = require './colors'
 # Don't let server environment variables leak into client code
 serverEnv = process.env
 
-HOST = process.env.RED_TRITIUM_HOST or '127.0.0.1'
+HOST = process.env.STARFIRE_HOST or '127.0.0.1'
 HOSTNAME = HOST.split(':')[0]
 
 URL_REGEX_STR = '(\\bhttps?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])'
@@ -38,13 +38,13 @@ API_HOST = API_HOST_ARRAY[0] + '//' + API_HOST_ARRAY[2]
 API_PATH = API_URL.replace API_HOST, ''
 # All keys must have values at run-time (value may be null)
 isomorphic =
-  CDN_URL: 'https://cdn.wtf/d/images/red_tritium'
-  USER_CDN_URL: 'https://cdn.wtf/images/red_tritium'
-  IOS_APP_URL: 'https://itunes.apple.com/us/app/red-tritium/id1160535565'
+  CDN_URL: 'https://cdn.wtf/d/images/starfire'
+  USER_CDN_URL: 'https://cdn.wtf/images/starfire'
+  IOS_APP_URL: 'https://itunes.apple.com/us/app/starfire/id1160535565'
   GOOGLE_PLAY_APP_URL:
     'https://play.google.com/store/apps/details?id=com.clay.redtritium'
   HOST: HOST
-  GAME_KEY: 'redtritium'
+  GAME_KEY: 'starfire'
   GOOGLE_ANALYTICS_ID: 'UA-27992080-30'
   STRIPE_PUBLISHABLE_KEY:
     serverEnv.STRIPE_PUBLISHABLE_KEY or
@@ -92,7 +92,7 @@ isomorphic =
 
 # Server only
 # All keys must have values at run-time (value may be null)
-PORT = serverEnv.RED_TRITIUM_PORT or 3000
+PORT = serverEnv.STARFIRE_PORT or 3000
 WEBPACK_DEV_PORT = serverEnv.WEBPACK_DEV_PORT or parseInt(PORT) + 1
 
 server =

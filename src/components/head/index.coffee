@@ -18,8 +18,8 @@ module.exports = class Head
     userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
     meta = _merge {
-      title: 'Red Tritium'
-      description: 'Have what it takes?'
+      title: 'Starfire'
+      description: 'The social hub for games'
       icon256: '/images/zorium_icon_256.png'
       twitter:
         siteHandle: '@ZoriumJS'
@@ -33,7 +33,7 @@ module.exports = class Head
         title: undefined
         url: undefined
         description: undefined
-        siteName: 'Red Tritium'
+        siteName: 'Starfire'
         # min 200 x 200, min reccomended 600 x 315, reccomended 1200 x 630
         image: '/images/zorium_icon_1024.png'
 

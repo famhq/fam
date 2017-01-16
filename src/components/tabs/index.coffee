@@ -50,6 +50,7 @@ module.exports = class Tabs
     @mountDisposable = null
     @scrollInterval = null
     @iScrollContainer = null
+    @isPaused = false
 
     @$tabsBar = new TabsBar {@model, @selectedIndex}
 
@@ -57,7 +58,6 @@ module.exports = class Tabs
       selectedIndex: @selectedIndex
       x: 0
       hideTabBar: hideTabBar
-      vDomKey: Math.random()
       windowSize: @model.window.getSize()
 
   afterMount: (@$$el) =>
@@ -84,6 +84,14 @@ module.exports = class Tabs
 
   onTouchEnd: =>
     @isPageScrolling.onNext false
+
+  toggle: (mode) =>
+    if mode is 'enable' and @isPaused
+      @iScrollContainer.enable()
+      @isPaused = false
+    else if mode is 'disable' and not @isPaused
+      @iScrollContainer.disable()
+      @isPaused = true
 
   initIScroll: ($$container) =>
     {hideTabBar} = @state.getValue()
@@ -143,22 +151,23 @@ module.exports = class Tabs
 
   render: (options) =>
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, barTabWidth,
-      hasAppBar, vDomKey, windowSize} = options
+      hasAppBar, windowSize} = options
 
-    if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
-      @beforeUnmount true
-      setTimeout =>
-        @afterMount @$$el
-      , 100
-    @lastTabsLength = tabs?.length
+    # if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
+    #   @beforeUnmount true
+    #   setTimeout =>
+    #     @afterMount @$$el
+    #   , 100
+    # @lastTabsLength = tabs?.length
 
-    {selectedIndex, x, hideTabBar, vDomKey, windowSize} = @state.getValue()
+    {selectedIndex, x, hideTabBar, windowSize} = @state.getValue()
 
+    vDomKey = "tabs-#{tabs?.length}"
     isBarFixed ?= true
 
     z '.z-tabs', {
       className: z.classKebab {isBarFixed}
-      vDomKey: vDomKey
+      key: vDomKey
       style:
         maxWidth: "#{windowSize.width}px"
     },
