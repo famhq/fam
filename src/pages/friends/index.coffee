@@ -88,7 +88,7 @@ module.exports = class FriendsPage
         hasAppBar: true
         tabs: [
           {
-            $menuText: 'My friends'
+            $menuText: 'Friends'
             $el:
               z @$following,
                 noFriendsMessage:

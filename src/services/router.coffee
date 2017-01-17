@@ -10,14 +10,22 @@ isSimpleClick = (e) ->
 class RouterService
   constructor: ({@router, @model}) ->
     @history = []
+    @onBackFn = null
 
-  go: (route, {reset} = {}) =>
-    @history.push(route or window?.location.pathname)
+  go: (route, {ignoreHistory, reset} = {}) =>
+    unless ignoreHistory
+      @history.push(route or window?.location.pathname)
+
     if route is '/' or route is '/community' or reset
       @history = [route]
+
     @router.go route
 
   back: ({fromNative} = {}) =>
+    if @onBackFn
+      fn = @onBackFn()
+      @onBack null
+      return fn
     if @model.drawer.isOpen().getValue()
       return @model.drawer.close()
     if @history.length is 1 and fromNative and (
@@ -30,6 +38,8 @@ class RouterService
       @history.pop()
     else
       @go '/community'
+
+  onBack: (@onBackFn) => null
 
   getStream: =>
     @router.getStream()

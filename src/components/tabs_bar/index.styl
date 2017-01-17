@@ -3,7 +3,6 @@
 @require '../../vars'
 
 .z-tabs-bar
-  zp-shadow-1()
   height: 48px
   width: 100%
   z-index: $zIndexTabs
@@ -15,6 +14,10 @@
     top: 0
     left: 0
     background-position: 0
+
+  &:not(.is-flat)
+    zp-shadow-1()
+
 
   &.is-full-width
     > .g-grid

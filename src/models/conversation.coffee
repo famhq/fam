@@ -3,8 +3,13 @@ module.exports = class Conversation
 
   constructor: ({@auth}) -> null
 
-  create: ({userIds, groupId}) =>
-    @auth.call "#{@namespace}.create", {userIds, groupId}, {
+  create: ({userIds, name, description, groupId}) =>
+    @auth.call "#{@namespace}.create", {userIds, name, description, groupId}, {
+      invalidateAll: true
+    }
+
+  updateById: (id, {name, description, groupId}) =>
+    @auth.call "#{@namespace}.updateById", {id, name, description, groupId}, {
       invalidateAll: true
     }
 

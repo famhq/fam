@@ -74,11 +74,11 @@ module.exports = class ConversationInputTextarea
         z 'textarea.textarea',
           id: 'textarea'
           key: 'conversation-input-textarea'
-          # for some reason necessary on iOS to get it to focus properly
-          onclick: (e) ->
-            setTimeout ->
-              e?.target?.focus()
-            , 0
+          # # for some reason necessary on iOS to get it to focus properly
+          # onclick: (e) ->
+          #   setTimeout ->
+          #     e?.target?.focus()
+          #   , 0
           style:
             height: "#{textareaHeight}px"
           placeholder: 'Type a message'
@@ -94,10 +94,16 @@ module.exports = class ConversationInputTextarea
               @toggleIScroll? 'disable'
             unless Environment.isGameApp config.GAME_KEY
               @model.window.pauseResizing()
-          ontouchend: =>
+          ontouchend: (e) =>
+            isFocused = e.target is document.activeElement
+            # weird bug causes textarea to sometimes not focus
+            unless isFocused
+              e?.target.focus()
             @toggleIScroll? 'enable'
-          onmousedown: =>
-            @toggleIScroll? 'disable'
+          onmousedown: (e) =>
+            isFocused = e.target is document.activeElement
+            if isFocused
+              @toggleIScroll? 'disable'
           onmouseup: =>
             @toggleIScroll? 'enable'
           onfocus: =>

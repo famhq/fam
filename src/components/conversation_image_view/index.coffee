@@ -18,6 +18,13 @@ module.exports = class ConversationImageView
       imageData: @imageData
       windowSize: @model.window.getSize()
 
+  afterMount: =>
+    @router.onBack =>
+      @overlay$.onNext null
+
+  beforeUnmount: =>
+    @router.onBack null
+
   render: =>
     {windowSize, imageData} = @state.getValue()
 

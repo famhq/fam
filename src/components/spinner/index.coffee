@@ -10,15 +10,15 @@ if window?
 DEFAULT_SIZE = 50
 
 module.exports = class Spinner
-  render: ({size, hasTopMargin} = {}) ->
+  render: ({size} = {}) -> #, hasTopMargin} = {}) ->
     size ?= DEFAULT_SIZE
-    hasTopMargin ?= true
+    # hasTopMargin ?= true
 
     z '.z-spinner', {
       style:
         width: "#{size}px"
         height: "#{size * 0.3}px"
-        marginTop: if hasTopMargin then '16px' else 0
+        # marginTop: if hasTopMargin then '16px' else 0
     },
       _map _range(3), ->
         z 'li',

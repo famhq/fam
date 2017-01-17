@@ -104,7 +104,7 @@ module.exports = class Conversation
             isGrouped = message.userId is prevMessageUserId
             isMe = message.userId is me.id
             $el = new ConversationMessage {
-              message, @model, @overlay$, isMe
+              message, @model, @router, @overlay$, isMe
               isGrouped, selectedProfileDialogUser
             }
             prevMessageUserId = message.userId

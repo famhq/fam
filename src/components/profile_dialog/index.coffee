@@ -32,6 +32,13 @@ module.exports = class ProfileDialog
       isFlagged: false
       isConversationLoading: false
 
+  afterMount: =>
+    @router.onBack =>
+      @selectedProfileDialogUser.onNext null
+
+  beforeUnmount: =>
+    @router.onBack null
+
   render: =>
     {me, user, platform, isFlagLoading, isFlagged, group,
       isConversationLoading} = @state.getValue()
@@ -127,7 +134,7 @@ module.exports = class ProfileDialog
                   onclick: =>
                     @selectedProfileDialogUser.onNext null
                     # @state.set isFlagLoading: true
-                    # @model.threadMessage.flag user?.chatMessageId
+                    # @model.threadComment.flag user?.chatMessageId
                     # .then =>
                     #   @state.set isFlagLoading: false, isFlagged: true
                 },

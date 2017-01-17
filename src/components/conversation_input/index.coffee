@@ -48,14 +48,14 @@ module.exports = class ConversationInput
           @model
         }
       }
-      stickers: {
-        $icon: new Icon()
-        icon: 'stickers'
-        $el: new ConversationInputStickers {
-          onPost: @post
-          @message
-        }
-      }
+      # stickers: {
+      #   $icon: new Icon()
+      #   icon: 'stickers'
+      #   $el: new ConversationInputStickers {
+      #     onPost: @post
+      #     @message
+      #   }
+      # }
       image: {
         $icon: new Icon()
         icon: 'image'

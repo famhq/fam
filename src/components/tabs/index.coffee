@@ -150,8 +150,8 @@ module.exports = class Tabs
         updateSelectorPosition()
 
   render: (options) =>
-    {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, barTabWidth,
-      hasAppBar, windowSize} = options
+    {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, isBarFlat,
+      barTabWidth, hasAppBar, windowSize} = options
 
     # if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
     #   @beforeUnmount true
@@ -164,6 +164,7 @@ module.exports = class Tabs
 
     vDomKey = "tabs-#{tabs?.length}"
     isBarFixed ?= true
+    isBarFlat ?= true
 
     z '.z-tabs', {
       className: z.classKebab {isBarFixed}
@@ -176,6 +177,7 @@ module.exports = class Tabs
           z '.tabs-bar',
             z @$tabsBar, {
               isFixed: isBarFixed
+              isFlat: isBarFlat
               tabWidth: barTabWidth
               color: barColor
               inactiveColor: barInactiveColor

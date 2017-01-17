@@ -67,26 +67,27 @@ module.exports = class Cards extends Base
                 @router.link z 'a.card', {
                   href: "/cards/#{card.id}"
                 },
-                  z '.change', {style: {color: rankColor}},
-                    if rankChange
-                      z '.icon',
-                        z $changeIcon,
-                          icon: rankIcon
-                          size: '10px'
-                          color: rankColor
-                          isTouchTarget: false
-                      if rankChange then rankChange
+                  z '.change'
+                  # z '.change', {style: {color: rankColor}},
+                  #   if rankChange
+                  #     z '.icon',
+                  #       z $changeIcon,
+                  #         icon: rankIcon
+                  #         size: '10px'
+                  #         color: rankColor
+                  #         isTouchTarget: false
+                  #     if rankChange then rankChange
                   z '.image', $card
                   z '.info',
                     z '.name', card.name or 'Nameless'
-                    z '.row',
-                      z '.left', 'Win Percentage'
-                      z '.right',
-                        FormatService.percentage verifiedWins / totalMatches
-                    z '.row',
-                      z '.left', 'Popularity'
-                      z '.right',
-                        FormatService.rank card.timeRanges.thisWeek.rank
+                    # z '.row',
+                    #   z '.left', 'Win Percentage'
+                    #   z '.right',
+                    #     FormatService.percentage verifiedWins / totalMatches
+                    # z '.row',
+                    #   z '.left', 'Popularity'
+                    #   z '.right',
+                    #     FormatService.rank card.timeRanges.thisWeek.rank
               z '.divider'
             ]
         else

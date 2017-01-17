@@ -32,14 +32,17 @@ module.exports = class GroupPage
     groupId = requests.map ({route}) ->
       route.params.id
 
+    conversationId = requests.map ({route}) ->
+      route.params.conversationId
+
     group = groupId.flatMapLatest (groupId) =>
       @model.group.getById groupId
 
-
     me = @model.user.getMe()
 
-    groupAndMe = Rx.Observable.combineLatest(
+    groupAndConversationIdAndMe = Rx.Observable.combineLatest(
       group
+      conversationId
       me
       (vals...) -> vals
     )
@@ -62,15 +65,19 @@ module.exports = class GroupPage
     @$groupChat = new GroupChat {
       @model
       @router
+      group
       selectedProfileDialogUser
       overlay$
       toggleIScroll: @$tabs.toggle
       isActive: selectedIndex.map (index) ->
         index is 1
-      conversation: groupAndMe.flatMapLatest ([group, me]) =>
+      conversation: groupAndConversationIdAndMe
+      .flatMapLatest ([group, conversationId, me]) =>
         hasMemberPermission = @model.group.hasPermission group, me
+        conversationId ?= localStorage?['conversationId:' + group.id] or
+                            group.conversations[0].id
         if hasMemberPermission
-          @model.conversation.getByGroupId group.id
+          @model.conversation.getById conversationId
         else
           Rx.Observable.just null
     }
@@ -140,13 +147,14 @@ module.exports = class GroupPage
       if group and me
         z @$tabs,
           isBarFixed: false
+          isBarFlat: true
           barBgColor: colors.$tertiary700
           barInactiveColor: colors.$white
           tabs: _filter [
             if hasMemberPermission
               {
                 $menuIcon: @$groupChatIcon
-                menuIconName: 'chat-bubble'
+                menuIconName: 'hashtag'
                 $menuText: 'Chat'
                 $el: @$groupChat
               }
@@ -159,7 +167,7 @@ module.exports = class GroupPage
             if hasMemberPermission
               {
                 $menuIcon: @$groupAnnouncementsIcon
-                menuIconName: 'notifications'
+                menuIconName: 'notes'
                 $menuText: 'Announcements'
                 $el: @$groupAnnouncements
               }

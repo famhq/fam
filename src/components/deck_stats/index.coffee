@@ -52,11 +52,11 @@ module.exports = class DeckStats
           z '.right',
             '??' # FIXME
 
-        z '.row',
-          z '.icon'
-          z '.stat', 'Community average'
-          z '.right',
-            FormatService.percentage deck?.wins / totalMatches
+        # z '.row',
+        #   z '.icon'
+        #   z '.stat', 'Community average'
+        #   z '.right',
+        #     FormatService.percentage deck?.wins / totalMatches
 
         z '.row',
           z '.icon',
@@ -64,16 +64,16 @@ module.exports = class DeckStats
               icon: 'stats'
               color: colors.$tertiary300
               isTouchTarget: false
-          z '.stat.bold', 'Popularity'
-          z '.right',
-            FormatService.rank deck?.popularity
+          # z '.stat.bold', 'Popularity'
+          # z '.right',
+          #   FormatService.rank deck?.popularity
 
-        z '.row',
-          z '.icon',
-            z @$notesIcon,
-              icon: 'notes'
-              color: colors.$tertiary300
-              isTouchTarget: false
-          z '.stat.bold', 'Personal notes'
-          z '.right.button',
-            'Edit note'
+        # z '.row',
+        #   z '.icon',
+        #     z @$notesIcon,
+        #       icon: 'notes'
+        #       color: colors.$tertiary300
+        #       isTouchTarget: false
+        #   z '.stat.bold', 'Personal notes'
+        #   z '.right.button',
+        #     'Edit note'

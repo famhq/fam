@@ -45,7 +45,7 @@ module.exports = _defaults {
   '$tertiary300': paperColors.$grey300
   '$tertiary400': paperColors.$grey400
   '$tertiary500': '#383838'
-  '$tertiary600': paperColors.$grey600
+  '$tertiary600': '#282828'
   '$tertiary700': '#212121'
   '$tertiary800': paperColors.$grey800
   '$tertiary900': '#1a1a1a'

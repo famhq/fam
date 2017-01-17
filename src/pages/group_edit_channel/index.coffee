@@ -1,29 +1,32 @@
 z = require 'zorium'
 
 Head = require '../../components/head'
-GroupAddRecords = require '../../components/group_add_records'
+GroupEditChannel = require '../../components/group_edit_channel'
 
 if window?
   require './index.styl'
 
-module.exports = class GroupAddRecordsPage
+module.exports = class GroupEditChannelPage
   hideDrawer: true
 
   constructor: ({model, requests, @router, serverData}) ->
     group = requests.flatMapLatest ({route}) ->
       model.group.getById route.params.id
 
+    conversation = requests.flatMapLatest ({route}) ->
+      model.conversation.getById route.params.conversationId
+
     @$head = new Head({
       model
       requests
       serverData
       meta: {
-        title: 'Add Records'
-        description: 'Add Records'
+        title: 'Edit Channel'
+        description: 'Edit Channel'
       }
     })
-    @$groupAddRecords = new GroupAddRecords {
-      model, @router, serverData, group
+    @$groupEditChannel = new GroupEditChannel {
+      model, @router, serverData, group, conversation
     }
 
     @state = z.state
@@ -35,8 +38,8 @@ module.exports = class GroupAddRecordsPage
   render: =>
     {group, windowSize} = @state.getValue()
 
-    z '.p-group-add-records', {
+    z '.p-group-edit-channel', {
       style:
         height: "#{windowSize.height}px"
     },
-      @$groupAddRecords
+      @$groupEditChannel

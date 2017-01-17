@@ -1,0 +1,27 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-channel-list
+  > .channel
+    padding: 12px 16px
+    display: flex
+
+    &.is-selected
+      background: getColor('$tertiary500')
+
+    > .hashtag
+      responsive-font-body1()
+      color: getColor('$white30')
+
+    > .info
+      margin-left: 8px
+
+      > .name
+        responsive-font-body3()
+        color: getColor('$white')
+
+      > .description
+        responsive-font-caption()
+        color: getColor('$white30')
+        margin-top: 4px

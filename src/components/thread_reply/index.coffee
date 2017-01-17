@@ -23,7 +23,7 @@ module.exports = class ThreadReply
       z @$compose,
         isReply: true
         onDone: (e) =>
-          @model.threadMessage.create {
+          @model.threadComment.create {
             body: @bodyValue.getValue()
             threadId: threadId
           }

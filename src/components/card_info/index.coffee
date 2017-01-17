@@ -72,29 +72,29 @@ module.exports = class CardInfo
             z '.right',
               '??' # FIXME
 
-          z '.row',
-            z '.icon'
-            z '.stat', 'Community average'
-            z '.right',
-              FormatService.percentage verifiedWins / totalMatches
+          # z '.row',
+          #   z '.icon'
+          #   z '.stat', 'Community average'
+          #   z '.right',
+          #     FormatService.percentage verifiedWins / totalMatches
 
-          z '.row',
-            z '.icon'
-            z '.stat', 'Last week average'
-            z '.right',
-              FormatService.percentage(
-                lastWeekVerifiedWins / lastWeekTotalMatches
-              )
-
-          z '.row',
-            z '.icon',
-              z @$statsIcon,
-                icon: 'stats'
-                color: colors.$tertiary300
-                isTouchTarget: false
-            z '.stat.bold', 'Popularity'
-            z '.right',
-              FormatService.rank card?.timeRanges.thisWeek.rank
+          # z '.row',
+          #   z '.icon'
+          #   z '.stat', 'Last week average'
+          #   z '.right',
+          #     FormatService.percentage(
+          #       lastWeekVerifiedWins / lastWeekTotalMatches
+          #     )
+          #
+          # z '.row',
+          #   z '.icon',
+          #     z @$statsIcon,
+          #       icon: 'stats'
+          #       color: colors.$tertiary300
+          #       isTouchTarget: false
+          #   z '.stat.bold', 'Popularity'
+          #   z '.right',
+          #     FormatService.rank card?.timeRanges.thisWeek.rank
 
         z '.divider'
 

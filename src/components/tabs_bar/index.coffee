@@ -27,7 +27,7 @@ module.exports = class TabsBar
   beforeUnmount: =>
     @$$el?.removeEventListener 'touchmove', @onTouchMove
 
-  render: ({items, bgColor, color, inactiveColor, isFixed, tabWidth}) =>
+  render: ({items, bgColor, color, inactiveColor, isFixed, isFlat, tabWidth}) =>
     {selectedIndex} = @state.getValue()
 
     bgColor ?= colors.$primary500
@@ -37,7 +37,7 @@ module.exports = class TabsBar
     isFullWidth = not tabWidth
 
     z '.z-tabs-bar', {
-      className: z.classKebab {isFixed, isFullWidth}
+      className: z.classKebab {isFixed, isFlat, isFullWidth}
       style:
         background: bgColor
     },

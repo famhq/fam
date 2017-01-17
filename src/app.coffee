@@ -17,6 +17,9 @@ GroupInvitesPage = require './pages/group_invites'
 GroupInvitePage = require './pages/group_invite'
 GroupAddRecordsPage = require './pages/group_add_records'
 GroupManageRecordsPage = require './pages/group_manage_records'
+GroupManageChannelsPage = require './pages/group_manage_channels'
+GroupAddChannelPage = require './pages/group_add_channel'
+GroupEditChannelPage = require './pages/group_edit_channel'
 GroupManageMemberPage = require './pages/group_manage_member'
 EditGroupPage = require './pages/edit_group'
 NewGroupPage = require './pages/new_group'
@@ -56,15 +59,16 @@ module.exports = class App
 
       _forEach paths, (path) ->
         routes.set path, ->
-          unless $cachedPages[path]
-            $cachedPages[path] = new Page({
+          key = Page.name
+          unless $cachedPages[key]
+            $cachedPages[key] = new Page({
               model
               router
               serverData
               requests: requests.filter ({$page}) ->
                 $page instanceof Page
             })
-          return $cachedPages[path]
+          return $cachedPages[key]
 
     route '/', HomePage
     # route '/', CommunityPage
@@ -76,8 +80,12 @@ module.exports = class App
     route '/thread/:id/:page', ThreadPage
     route '/community', CommunityPage
     route '/group/:id', GroupPage
+    route '/group/:id/channel/:conversationId', GroupPage
     route '/group/:id/invite', GroupInvitePage
     route '/group/:id/manage/:userId', GroupManageMemberPage
+    route '/group/:id/manageChannels', GroupManageChannelsPage
+    route '/group/:id/newChannel', GroupAddChannelPage
+    route '/group/:id/editChannel/:conversationId', GroupEditChannelPage
     route '/group/:id/settings', GroupSettingsPage
     route '/group/:id/addRecords', GroupAddRecordsPage
     route '/group/:id/manageRecords', GroupManageRecordsPage

@@ -23,7 +23,7 @@ DESCRIPTION_LENGTH = 100
 module.exports = class ConversationMessage
   constructor: (options) ->
     {message, isGrouped, isMe, @model, @overlay$,
-      @selectedProfileDialogUser} = options
+      @selectedProfileDialogUser, @router} = options
 
     @$avatar = new Avatar()
 

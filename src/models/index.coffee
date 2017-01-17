@@ -24,7 +24,7 @@ GroupUserData = require './group_user_data'
 Product = require './product'
 PushToken = require './push_token'
 Thread = require './thread'
-ThreadMessage = require './thread_message'
+ThreadComment = require './thread_comment'
 Window = require './window'
 
 Portal = require './portal'
@@ -96,7 +96,7 @@ module.exports = class Model
     @groupRecordType = new GroupRecordType {@auth}
     @groupUserData = new GroupUserData {@auth}
     @thread = new Thread {@auth}
-    @threadMessage = new ThreadMessage {@auth}
+    @threadComment = new ThreadComment {@auth}
     @product = new Product {@auth}
     @pushToken = new PushToken {@auth, pushToken}
     @drawer = new Drawer()

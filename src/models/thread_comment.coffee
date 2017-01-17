@@ -1,5 +1,5 @@
-module.exports = class ThreadMessage
-  namespace: 'threadMessages'
+module.exports = class ThreadComment
+  namespace: 'threadComments'
   constructor: ({@auth}) -> null
 
   create: ({body, threadId}) =>
