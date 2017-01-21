@@ -1,12 +1,12 @@
 z = require 'zorium'
 
 Head = require '../../components/head'
-NewDeck = require '../../components/new_deck'
+AddDeck = require '../../components/add_deck'
 
 if window?
   require './index.styl'
 
-module.exports = class NewDeckPage
+module.exports = class AddDeckPage
   constructor: ({model, requests, @router, serverData}) ->
     @$head = new Head({
       model
@@ -17,7 +17,7 @@ module.exports = class NewDeckPage
         description: 'New Deck'
       }
     })
-    @$newDeck = new NewDeck {model, @router}
+    @$addDeck = new AddDeck {model, @router}
 
     @state = z.state
       windowSize: model.window.getSize()
@@ -27,8 +27,8 @@ module.exports = class NewDeckPage
   render: =>
     {windowSize} = @state.getValue()
 
-    z '.p-new-deck', {
+    z '.p-add-deck', {
       style:
         height: "#{windowSize.height}px"
     },
-      @$newDeck
+      @$addDeck

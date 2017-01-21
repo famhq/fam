@@ -10,8 +10,6 @@ if window?
   require './index.styl'
 
 module.exports = class TosPage
-  isPublic: true
-
   constructor: ({model, requests, @router, serverData}) ->
     @$head = new Head({
       model

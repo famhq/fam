@@ -6,22 +6,23 @@
   > .channel
     padding: 12px 16px
     display: flex
+    cursor: pointer
 
     &.is-selected
       background: getColor('$tertiary500')
 
     > .hashtag
-      responsive-font-body1()
+      font-body1()
       color: getColor('$white30')
 
     > .info
       margin-left: 8px
 
       > .name
-        responsive-font-body3()
+        font-title()
         color: getColor('$white')
 
       > .description
-        responsive-font-caption()
+        font-caption1()
         color: getColor('$white30')
         margin-top: 4px

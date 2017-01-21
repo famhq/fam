@@ -74,6 +74,7 @@
     "lodash": "^4.17.2",
     "loga": "^0.1.4",
     "moment": "^2.13.0",
+    "moment-timezone": "^0.5.11",
     "node-hyperplane": "^0.3.2",
     "normalize-styl": "^3.0.3",
     "portal-gun": "^0.4.1",

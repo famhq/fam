@@ -14,7 +14,7 @@ $zIndexDrawerHeader = 100
   left: 0
   pointer-events: none // not supported in ie9/10 (ie our entire app breaks)
 
-  @media (min-width: $breakPointMedium)
+  @media (min-width: $contentMaxWidth)
     position: relative
     width: 336px
     z-index: 1
@@ -109,7 +109,7 @@ $zIndexDrawerHeader = 100
 
           > .menu-item
             > .menu-item-link
-              responsive-font-body2()
+              font-title()
               display: block
               padding: 16px
 
@@ -132,7 +132,7 @@ $zIndexDrawerHeader = 100
         margin: auto
 
       > .description
-        responsive-font-caption()
+        font-caption1()
         margin-top: 16px
 
     > .deck
@@ -145,7 +145,7 @@ $zIndexDrawerHeader = 100
         width: 196px
 
         > .stats
-          responsive-font-caption()
+          font-caption1()
           text-align: left
           margin-top: 8px
           padding-left: 4px

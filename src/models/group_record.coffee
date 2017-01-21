@@ -15,10 +15,3 @@ module.exports = class GroupRecord
 
   getAllByUserIdAndGroupId: ({userId, groupId}) =>
     @auth.stream "#{@namespace}.getAllByUserIdAndGroupId", {userId, groupId}
-  #
-  # getById: (id) =>
-  #   @auth.stream "#{@namespace}.getById", {id}
-  #
-  #
-  # getByGroupId: (groupId) =>
-  #   @auth.stream "#{@namespace}.getByGroupId", {groupId}

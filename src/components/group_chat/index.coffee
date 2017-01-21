@@ -34,19 +34,31 @@ module.exports = class GroupChat
       isOpen: @isChannelDrawerOpen
     }
 
-    @state = z.state {group, conversation}
+    @state = z.state {
+      group
+      conversation
+      isChannelDrawerOpen: @isChannelDrawerOpen
+    }
 
   render: =>
-    {group, conversation} = @state.getValue()
+    {group, conversation, isChannelDrawerOpen} = @state.getValue()
 
     z '.z-group-chat',
       z '.current-channel', {
         onclick: =>
           @isChannelDrawerOpen.onNext true
       },
-        z '.status'
-        z '.hashtag', '#'
-        z '.name', conversation?.name
-        z '.arrow'
+        z '.g-grid',
+          z '.flex',
+            z '.status'
+            z '.hashtag', '#'
+            z '.name', conversation?.name
+            z '.arrow'
       z @$conversation
-      z @$channelDrawer
+      # always having the channel drawer in the dom slows down scrolling
+      # for some reason. probably fixable since the normal drawer does
+      # fine with scrolling. guessing it has to do with the normal drawer
+      # being a sibling / pos fixed, while this drawer is position
+      # absolute as child of group-chat
+      if isChannelDrawerOpen
+        z @$channelDrawer

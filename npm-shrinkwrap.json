@@ -2589,6 +2589,11 @@
       "from": "moment@>=2.13.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/moment/-/moment-2.13.0.tgz"
     },
+    "moment-timezone": {
+      "version": "0.5.11",
+      "from": "moment-timezone@latest",
+      "resolved": "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.11.tgz"
+    },
     "ms": {
       "version": "0.7.1",
       "from": "ms@0.7.1",
@@ -4314,7 +4319,7 @@
     "zorium-paper": {
       "version": "0.4.1",
       "from": "git://github.com/claydotio/zorium-paper.git",
-      "resolved": "git://github.com/claydotio/zorium-paper.git#815ff1692adc89c971b69a4b03a94e3d28c9cc22"
+      "resolved": "git://github.com/claydotio/zorium-paper.git#a5e217f37f6307d3264c56dd2e0d44dce60aa519"
     }
   }
 }

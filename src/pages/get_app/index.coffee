@@ -8,7 +8,6 @@ if window?
 
 module.exports = class GetAppPage
   hideDrawer: true
-  isPublic: true
 
   constructor: ({model, requests, @router, serverData}) ->
     @$head = new Head({

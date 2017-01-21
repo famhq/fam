@@ -45,7 +45,7 @@ module.exports = class Head
       themeColor: colors.$primary500
       # reccomended 32 x 32 png
       favicon: config.CDN_URL + '/favicon.png'
-      manifestUrl: '/manifest.json'
+      # manifestUrl: '/manifest.json'
     }, meta
 
     meta = _merge {

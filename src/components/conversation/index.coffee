@@ -6,6 +6,7 @@ _isEmpty = require 'lodash/isEmpty'
 _debounce = require 'lodash/debounce'
 
 Spinner = require '../spinner'
+Base = require '../base'
 ConversationInput = require '../conversation_input'
 ConversationMessage = require '../conversation_message'
 
@@ -19,7 +20,7 @@ MAX_CHARACTERS = 500
 MAX_LINES = 20
 RESIZE_THROTTLE_MS = 150
 
-module.exports = class Conversation
+module.exports = class Conversation extends Base
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
       selectedProfileDialogUser, @scrollYOnly, @isGroup} = options
@@ -103,7 +104,7 @@ module.exports = class Conversation
           _map messages, (message) =>
             isGrouped = message.userId is prevMessageUserId
             isMe = message.userId is me.id
-            $el = new ConversationMessage {
+            $el = @getCached$ message.id, ConversationMessage, {
               message, @model, @router, @overlay$, isMe
               isGrouped, selectedProfileDialogUser
             }

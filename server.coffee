@@ -83,12 +83,12 @@ app.use '/setCookie', (req, res) ->
   res.setHeader 'Location', decodeURIComponent req.query?.redirect_url
   res.end()
 
-app.get '/manifest.json', (req, res, next) ->
-  try
-    res.setHeader 'Content-Type', 'application/json'
-    res.send new Buffer(req.query.data, 'base64').toString()
-  catch err
-    next err
+# app.get '/manifest.json', (req, res, next) ->
+#   try
+#     res.setHeader 'Content-Type', 'application/json'
+#     res.send new Buffer(req.query.data, 'base64').toString()
+#   catch err
+#     next err
 
 if config.ENV is config.ENVS.PROD
 then app.use express.static(gulpPaths.dist, {maxAge: '4h'})

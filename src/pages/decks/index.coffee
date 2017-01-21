@@ -75,4 +75,4 @@ module.exports = class DecksPage
             color: colors.$white
           }
           onclick: =>
-            @router.go '/newDeck'
+            @router.go '/addDeck'

@@ -14,20 +14,6 @@ $zIndexDrawerHeader = 100
   left: 0
   pointer-events: none // not supported in ie9/10 (ie our entire app breaks)
 
-  @media (min-width: $breakPointMedium)
-    position: relative
-    width: 336px
-    z-index: 1
-    pointer-events: all // not supported in ie9/10 (ie our entire app breaks)
-
-    > .overlay
-      display: none
-
-    > .drawer
-      position: relative
-      z-index: 1
-      transform: translate(0, 0) !important
-
   &.is-open
     pointer-events: all // not supported in ie9/10
 
@@ -59,7 +45,7 @@ $zIndexDrawerHeader = 100
     backface-visibility: hidden
 
     > .title
-      responsive-font-subhead()
+      font-subhead()
       color: getColor('$primary500')
       padding: 16px
 
@@ -73,7 +59,8 @@ $zIndexDrawerHeader = 100
       padding: 16px
       display: flex
       align-items: center
+      cursor: pointer
 
       > .text
-        responsive-font-body1()
+        font-body1()
         margin-left: 36px

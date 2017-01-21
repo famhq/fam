@@ -17,7 +17,7 @@ module.exports = class Spinner
     z '.z-spinner', {
       style:
         width: "#{size}px"
-        height: "#{size * 0.3}px"
+        height: "#{size * 0.6}px"
         # marginTop: if hasTopMargin then '16px' else 0
     },
       _map _range(3), ->

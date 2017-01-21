@@ -53,7 +53,7 @@
     box-sizing: border-box
 
     > .info
-      responsive-font-subhead()
+      font-title()
       color: getColor('$tertiary900Text')
       padding-right: 16px
       margin-bottom: 4px
@@ -64,12 +64,12 @@
         margin-right: 8px
 
     > .body
-      responsive-font-body1()
+      font-body1()
       color: getColor('$tertiary900Text')
       padding-right: 16px
       margin-top: 4px
       margin-bottom: 8px
-      overflow-x: hidden
+      overflow: hidden
 
       > div
         > .link
@@ -86,7 +86,7 @@
       display: flex
       align-items: center
       padding-right: 16px
-      responsive-font-caption()
+      font-caption1()
       color: getColor('$primary500')
 
       > .name
@@ -102,11 +102,10 @@
       cursor: pointer
 
       > .title
-        responsive-font-body1()
-        font-weight: 500
+        font-title()
 
       > .description
-        responsive-font-caption()
+        font-caption1()
 
 
   @media (min-width: $breakPointMedium)

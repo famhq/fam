@@ -15,10 +15,3 @@ module.exports = class GroupRecordType
     @auth.call "#{@namespace}.deleteById", {id}, {
       invalidateAll: true
     }
-  #
-  # getById: (id) =>
-  #   @auth.stream "#{@namespace}.getById", {id}
-  #
-  #
-  # getByGroupId: (groupId) =>
-  #   @auth.stream "#{@namespace}.getByGroupId", {groupId}

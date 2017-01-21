@@ -10,8 +10,6 @@ if window?
   require './index.styl'
 
 module.exports = class PrivacyPage
-  isPublic: true
-
   constructor: ({model, requests, @router, serverData}) ->
     @$editButton = new Button()
     @$head = new Head({

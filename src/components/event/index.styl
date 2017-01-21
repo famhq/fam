@@ -1,0 +1,18 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-event
+  flex: 1
+  display: flex
+  flex-direction: column
+
+  > .join
+    position: fixed
+    bottom: 0
+    left: 0
+    z-index: 999
+    width: 100%
+    background: getColor('$tertiary700')
+    padding: 10px 16px
+    box-sizing: border-box

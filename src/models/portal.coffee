@@ -72,7 +72,7 @@ module.exports = class Portal
 
     url = "https://#{config.HOST}#{path}"
     title ?= ''
-    text = encodeURIComponent title + ': ' + text + ' ' + url
+    text = encodeURIComponent text + ' ' + url
     @call 'browser.openWindow', {
       url: "https://twitter.com/intent/tweet?text=#{text}"
       target: '_system'

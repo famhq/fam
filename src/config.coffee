@@ -29,6 +29,15 @@ IMAGE_REGEX_BASE_STR = '(\\!\\[(?:.*?)\\]\\((?:.*?)\\))'
 LOCAL_IMAGE_REGEX_STR =
   '(\\!\\[(.*?)\\]\\(local://(.*?) \\=([0-9.]+)x([0-9.]+)\\))'
 
+ONE_HOUR_SECONDS = 3600 * 1
+TWO_HOURS_SECONDS = 3600 * 2
+THREE_HOURS_SECONDS = 3600 * 3
+FOUR_HOURS_SECONDS = 3600 * 4
+EIGHT_HOURS_SECONDS = 3600 * 8
+ONE_DAY_SECONDS = 3600 * 24 * 1
+TWO_DAYS_SECONDS = 3600 * 24 * 2
+THREE_DAYS_SECONDS = 3600 * 24 * 3
+
 API_URL =
   serverEnv.PRIVATE_RADIOACTIVE_API_URL or # server
   process.env.PUBLIC_RADIOACTIVE_API_URL # client
@@ -89,6 +98,16 @@ isomorphic =
   IMAGE_REGEX_BASE_STR: IMAGE_REGEX_BASE_STR
   IMAGE_REGEX_STR: IMAGE_REGEX_STR
   IMAGE_REGEX: new RegExp IMAGE_REGEX_STR, 'gi'
+
+  EVENT_DURATIONS:
+    "#{ONE_HOUR_SECONDS}": '1 hour'
+    "#{TWO_HOURS_SECONDS}": '2 hours'
+    "#{THREE_HOURS_SECONDS}": '3 hours'
+    "#{FOUR_HOURS_SECONDS}": '4 hours'
+    "#{EIGHT_HOURS_SECONDS}": '8 hours'
+    "#{ONE_DAY_SECONDS}": '1 day'
+    "#{TWO_DAYS_SECONDS}": '2 days'
+    "#{THREE_DAYS_SECONDS}": '3 days'
 
 # Server only
 # All keys must have values at run-time (value may be null)

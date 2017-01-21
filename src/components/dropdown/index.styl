@@ -3,7 +3,7 @@
 @require '../../vars'
 
 .zp-dropdown
-  zp-font-subhead()
+  font-input()
   color: getColor('$white')
   min-height: 48px
   display: block
@@ -28,7 +28,7 @@
     position: absolute
     background: transparent
     top: 16px
-    color: $grey600
+    color: getColor('$grey600')
 
     transform-origin: 0% 0%
     transition: top 0.2s cubic-bezier(0.4, 0, 0.2, 1),
@@ -57,11 +57,11 @@
     position: absolute
     height: 1px
     width: 100%
-    background: $grey600
+    background: getColor('$grey600')
 
   > .error
-    zp-font-caption()
-    color: $red500
+    font-caption()
+    color: getColor('$red500')
     margin-top: 8px
     position: absolute
     pointer-events: none
@@ -93,9 +93,9 @@
 
   &.is-error
     > .underline
-      background: $red500
+      background: getColor('$red500')
 
   &.is-disabled
     > .underline
       background: none
-      border-bottom: 1px dashed $grey600
+      border-bottom: 1px dashed getColor('$grey600')

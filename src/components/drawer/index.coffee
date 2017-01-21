@@ -67,27 +67,17 @@ module.exports = class Drawer
         else
           [
             {
-              path: '/profile'
-              title: 'Profile'
-              $icon: new Icon()
-              iconName: 'profile'
-            }
-            {
               path: '/community'
               title: 'Community'
               $icon: new Icon()
               iconName: 'chat'
             }
-            # {
-            #   onClick: =>
-            #     @model.portal.call 'barcode.scan'
-            #     .then (code) ->
-            #       alert code
-            #       console.log code
-            #   title: 'Scan Code'
-            #   $icon: new Icon()
-            #   iconName: 'search'
-            # }
+            {
+              path: '/events'
+              title: 'Events'
+              $icon: new Icon()
+              iconName: 'trophy'
+            }
             {
               path: '/friends'
               title: 'Friends'
@@ -121,6 +111,12 @@ module.exports = class Drawer
             #   $icon: new Icon()
             #   iconName: 'settings'
             # }
+            {
+              path: '/profile'
+              title: 'Profile'
+              $icon: new Icon()
+              iconName: 'profile'
+            }
           ]
           .concat if me?.username is 'austin' then [
             {

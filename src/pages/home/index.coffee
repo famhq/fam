@@ -10,7 +10,6 @@ if window?
 
 module.exports = class HomePage
   hideDrawer: true
-  isPublic: true
 
   constructor: ({@model, @router, serverData}) ->
     @$head = new Head({

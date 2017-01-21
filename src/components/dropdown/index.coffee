@@ -1,6 +1,7 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _map = require 'lodash/map'
+_kebabCase = require 'lodash/kebabCase'
 
 if window?
   require './index.styl'
@@ -27,6 +28,8 @@ module.exports = class Dropdown
     options = [{value: '', text: ''}].concat options
 
     z '.zp-dropdown',
+      # vdom doesn't key defaultValue correctly if elements are switched
+      key: _kebabCase hintText
       className: z.classKebab {
         hasValue: value isnt ''
         isFocused
@@ -55,7 +58,7 @@ module.exports = class Dropdown
           z 'option.option', {
             value: option?.value
             attributes:
-              if option?.value is value
+              if "#{option?.value}" is "#{value}"
                 selected: true
           },
             option?.text

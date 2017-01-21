@@ -1,0 +1,34 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-event-info
+  width: 100%
+
+  > .g-grid
+
+    > .row
+      display: flex
+      align-items: center
+      padding: 12px
+      min-height: 56px
+      box-sizing: border-box
+
+      &.no-vertical-padding
+        padding: 0 12px
+
+      > .icon
+        width: 24px
+
+      > .info
+        font-title()
+        margin-left: 32px
+        color: getColor('$white')
+
+        > .sub-title
+          font-caption1()
+          color: getColor('$white30')
+          margin-top: 4px
+
+      > .copy
+        margin-left: auto

@@ -15,7 +15,7 @@ if window?
 
 CARDS_PER_DECK = 8
 
-module.exports = class NewDeck
+module.exports = class AddDeck
   constructor: ({@model, @router}) ->
     @nameValue ?= new Rx.BehaviorSubject ''
     @nameError ?= new Rx.BehaviorSubject null
@@ -64,7 +64,7 @@ module.exports = class NewDeck
   render: =>
     {me, selectedCards, isLoading} = @state.getValue()
 
-    z '.z-new-deck',
+    z '.z-add-deck',
       z '.header',
         z '.icon',
           z @$cancelIcon,

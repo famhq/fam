@@ -9,7 +9,7 @@ module.exports = class FourOhFourPage
       model
       serverData
       meta:
-        title: 'Zorium Seed - 404'
+        title: 'Starfire - 404'
         description: 'Page not found'
         canonical: "http://#{config.HOST}/404"
     })
