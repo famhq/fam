@@ -34,6 +34,8 @@ module.exports = class HomePage
         if me?.isMember
           localStorage?['isMember'] = '1'
           @router.go '/community'
+        else
+          @router.go '/events'
 
   renderHead: => @$head
 
@@ -44,7 +46,4 @@ module.exports = class HomePage
       style:
         height: "#{windowSize.height}px"
     },
-      if (me?.isMember or not me) and window? and not localStorage?['isMember']
-        @$spinner
-      else if me and window? and not localStorage?['isMember']
-        @$splash
+      @$spinner

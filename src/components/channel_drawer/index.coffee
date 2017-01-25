@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 
 Icon = require '../icon'
 ChannelList = require '../channel_list'
+GroupBadge = require '../group_badge'
 colors = require '../../colors'
 
 if window?
@@ -17,7 +18,12 @@ module.exports = class ChannelDrawer
     me = @model.user.getMe()
 
     @$channelList = new ChannelList {@model, @router, group}
+    @$chatIcon = new Icon()
+    @$membersIcon = new Icon()
     @$settingsIcon = new Icon()
+    @$editIcon = new Icon()
+
+    @$groupBadge = new GroupBadge {@model, group}
 
     @state = z.state
       isOpen: @isOpen
@@ -36,42 +42,62 @@ module.exports = class ChannelDrawer
 
     z '.z-channel-drawer', {
       className: z.classKebab {isOpen}
-      style:
-        display: if window? then 'block' else 'none'
     },
-      z '.overlay', {
-        onclick: (e) =>
-          e?.preventDefault()
+      z '.group-name',
+        z '.badge', z @$groupBadge
+        z '.name', group?.name
+
+      z '.divider'
+
+      z '.menu',
+        z @$chatIcon,
+          icon: 'chat'
+          color: colors.$primary500
+          onclick: =>
+            @isOpen.onNext false
+            @router.go "/group/#{group.id}/chat"
+        z @$membersIcon,
+          icon: 'friends'
+          color: colors.$primary500
+          onclick: =>
+            @isOpen.onNext false
+            @router.go "/group/#{group.id}/members"
+        z @$settingsIcon,
+          icon: 'settings'
+          color: colors.$primary500
+          onclick: =>
+            @isOpen.onNext false
+            @router.go "/group/#{group.id}/settings"
+        if hasAdminPermission
+          z @$editIcon,
+            icon: 'edit'
+            color: colors.$primary500
+            onclick: =>
+              @isOpen.onNext false
+              @router.go "/group/#{group.id}/edit"
+
+      z '.divider'
+
+      z @$channelList, {
+        selectedConversationId: conversation?.id
+        onclick: (e, {id}) =>
+          @router.go "/group/#{group?.id}/chat/#{id}", {
+            ignoreHistory: true
+          }
           @isOpen.onNext false
       }
 
-      z '.drawer', {
-        style:
-          width: "#{drawerWidth}px"
-          transform: "translate(#{translateX}, 0)"
-          webkitTransform: "translate(#{translateX}, 0)"
-      },
-        z '.title', 'Chat channels'
-        z @$channelList, {
-          selectedConversationId: conversation?.id
-          onclick: (e, {id}) =>
-            @router.go "/group/#{group?.id}/channel/#{id}", {
-              ignoreHistory: true
-            }
-            @isOpen.onNext false
-        }
-
-        if hasAdminPermission
-          [
-            z '.divider'
-            z '.manage-channels', {
-              onclick: =>
-                @router.go "/group/#{group?.id}/manageChannels"
-            },
-              z '.icon',
-                z @$settingsIcon,
-                  icon: 'settings'
-                  isTouchTarget: false
-                  color: colors.$primary500
-              z '.text', 'Manage channels'
-          ]
+      if hasAdminPermission
+        [
+          z '.divider'
+          z '.manage-channels', {
+            onclick: =>
+              @router.go "/group/#{group?.id}/manageChannels"
+          },
+            z '.icon',
+              z @$settingsIcon,
+                icon: 'settings'
+                isTouchTarget: false
+                color: colors.$primary500
+            z '.text', 'Manage channels'
+        ]

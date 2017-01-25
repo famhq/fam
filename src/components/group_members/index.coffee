@@ -31,8 +31,8 @@ module.exports = class GroupMembers
     @state = z.state {
       me: @model.user.getMe()
       group: group
-      onlineUsersCount: onlineUsers.map (users) -> users.length
-      allUsersCount: allUsers.map (users) -> users.length
+      onlineUsersCount: onlineUsers.map (users) -> users?.length
+      allUsersCount: allUsers.map (users) -> users?.length
     }
 
   render: =>

@@ -58,7 +58,7 @@ module.exports = class ConversationInputGifs
         placeholder: 'Search gifs...'
       }
       z '.gifs', {
-        style: width: "#{windowSize.width}px"
+        # style: width: "#{windowSize.width - drawerWidth}px"
         ontouchstart: (e) ->
           e?.stopPropagation()
       },

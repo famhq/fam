@@ -8,7 +8,6 @@ EventInfo = require '../event_info'
 EventMembers = require '../event_members'
 Conversation = require '../conversation'
 ProfileDialog = require '../profile_dialog'
-SignInDialog = require '../sign_in_dialog'
 PrimaryButton = require '../primary_button'
 Spinner = require '../spinner'
 colors = require '../../colors'
@@ -42,11 +41,6 @@ module.exports = class Event
       @router
       selectedProfileDialogUser: selectedProfileDialogUser
     }
-    @$signInDialog = new SignInDialog {
-      @model
-      @router
-      @overlay$
-    }
     @$tabs = new Tabs {@model}
 
     @state = z.state
@@ -59,15 +53,12 @@ module.exports = class Event
   join: =>
     {event, isJoinLoading, me} = @state.getValue()
     unless isJoinLoading
-      if me.isMember
+      @model.signInDialog.openIfGuest me
+      .then =>
         @state.set isJoinLoading: true
         @model.event.joinById event.id
         .then =>
           @state.set isJoinLoading: false
-      else
-        @overlay$.onNext z @$signInDialog, {
-          onLoggedIn: @join
-        }
 
   render: =>
     {overlay$, isJoinLoading, selectedProfileDialogUser, me,

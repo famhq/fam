@@ -48,6 +48,8 @@ module.exports = class EditEventPage
   delete: =>
     {event} = @state.getValue()
     @model.event.deleteById event.id
+    .then =>
+      @router.go '/events'
 
   render: =>
     {windowSize} = @state.getValue()

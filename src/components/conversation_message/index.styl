@@ -4,13 +4,10 @@
 
 .z-conversation-message
   display: flex
-  padding: 16px 0 0 16px
+  padding: 16px 12px 12px 16px
   width: 100%
   box-sizing: border-box
-
-  &.is-sticker
-    > .bubble
-      background: none !important
+  overflow: hidden
 
   &.is-grouped
     padding-top: 4px
@@ -18,57 +15,32 @@
     > .avatar
       visibility: hidden
 
-  &.is-me
-    margin-right: auto
-
-    > .avatar
-      display: none
-
-    > .bubble
-      margin-left: auto
-      background: getColor('$tertiary500')
-
-      > .body
-        > div
-          > .sticker
-            margin-left: auto
-            margin-right: 0
-
-          > img
-            cursor: pointer
-
-      > .bottom
-        > .name
-          margin-left: auto
-
   > .avatar
-    margin-right: 4px
+    margin-right: 16px
 
-  > .bubble
-    padding: 10px 12px
-    border-bottom: 1px solid getColor('$black12')
-    width: 234px
-    background: getColor('$tertiary700')
-    border-radius: 2px
-    box-sizing: border-box
+  > .content
+    flex: 1
+    min-width: 0 // fix
 
-    > .info
-      font-title()
-      color: getColor('$tertiary900Text')
-      padding-right: 16px
-      margin-bottom: 4px
+    > .from
+      font-caption1()
+      color: getColor('$white30')
       display: flex
       align-items: center
 
-      > .icon
-        margin-right: 8px
+      > .name
+        font-title()
+        color: getColor('$white')
+        margin-right: 4px
+
+      > .middot
+        margin-right: 4px
 
     > .body
       font-body1()
       color: getColor('$tertiary900Text')
       padding-right: 16px
-      margin-top: 4px
-      margin-bottom: 8px
+      margin-top: 6px
       overflow: hidden
 
       > div
@@ -82,35 +54,23 @@
           background-repeat: no-repeat
           margin-right: auto
 
-    > .bottom
-      display: flex
-      align-items: center
-      padding-right: 16px
-      font-caption1()
-      color: getColor('$primary500')
-
-      > .name
-        margin-right: 4px
-
-      > .middot
-        margin-right: 4px
-
     > .card
-      background: getColor('$tertiary900')
+      background: getColor('$black')
       padding: 8px
-      margin-top: 8px
+      margin-top: 12px
+      border-radius: 2px
       cursor: pointer
+      max-width: 300px
 
       > .title
         font-title()
 
       > .description
-        font-caption1()
+        font-body1()
+        color: getColor('$white70')
+        margin-top: 6px
 
 
   @media (min-width: $breakPointMedium)
-    > .bubble
-      width: 478px
-
     > .content > .info > .name
       max-width: none

@@ -1,18 +1,21 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
+_take = require 'lodash/take'
+_isEmpty = require 'lodash/isEmpty'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
 DeckCards = require '../deck_cards'
 FlatButton = require '../flat_button'
+GroupBadge = require '../group_badge'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
-DRAWER_RIGHT_PADDING = 56
-DRAWER_MAX_WIDTH = 336
+GROUPS_IN_DRAWER = 2
 
 module.exports = class Drawer
   constructor: ({@model, @router}) ->
@@ -24,6 +27,8 @@ module.exports = class Drawer
         @model.clashRoyaleUserDeck.getByDeckId me?.data?.clashRoyaleDeckId
       else
         Rx.Observable.just null
+
+    myGroups = @model.group.getAll({filter: 'mine'})
 
     @$deckCards = new DeckCards {
       @model, @router
@@ -42,82 +47,76 @@ module.exports = class Drawer
     @state = z.state
       isOpen: @model.drawer.isOpen()
       me: me
+      myGroups: myGroups.map (groups) =>
+        _map _take(groups, GROUPS_IN_DRAWER), (group) =>
+          {
+            group
+            $badge: new GroupBadge {@model, group}
+          }
       userDeck: userDeck
       isAddWinLoading: false
       isAddLossLoading: false
       isAddDrawLoading: false
+      drawerWidth: @model.window.getDrawerWidth()
+      breakpoint: @model.window.getBreakpoint()
 
       menuItems: me.map (me) =>
-        if not me.isMember
-          [
-            {
-              path: '/signIn'
-              title: 'Sign In'
-              $icon: new Icon()
-              iconName: 'profile'
-            }
-            {
-              path: '/join'
-              title: 'Create Account'
-              $icon: new Icon()
-              iconName: 'friends'
-            }
-
-          ]
-        else
-          [
+        _filter([
+          {
+            path: '/events'
+            title: 'Events'
+            $icon: new Icon()
+            iconName: 'trophy'
+          }
+          if me.isMember
             {
               path: '/community'
               title: 'Community'
               $icon: new Icon()
               iconName: 'chat'
             }
-            {
-              path: '/events'
-              title: 'Events'
-              $icon: new Icon()
-              iconName: 'trophy'
-            }
+          if me.isMember
             {
               path: '/friends'
               title: 'Friends'
               $icon: new Icon()
               iconName: 'friends'
             }
-            {
-              path: '/decks'
-              title: 'Battle Decks'
-              $icon: new Icon()
-              iconName: 'decks'
-            }
-            {
-              path: '/cards'
-              title: 'Battle Cards'
-              $icon: new Icon()
-              iconName: 'cards'
-            }
-            # {
-            #   isDivider: true
-            # }
-            # {
-            #   path: '/refer'
-            #   title: 'Refer a member'
-            #   $icon: new Icon()
-            #   iconName: 'gem'
-            # }
-            # {
-            #   path: '/settings'
-            #   title: 'Settings'
-            #   $icon: new Icon()
-            #   iconName: 'settings'
-            # }
+          {
+            path: '/decks'
+            title: 'Battle Decks'
+            $icon: new Icon()
+            iconName: 'decks'
+          }
+          {
+            path: '/cards'
+            title: 'Battle Cards'
+            $icon: new Icon()
+            iconName: 'cards'
+          }
+          # {
+          #   isDivider: true
+          # }
+          # {
+          #   path: '/refer'
+          #   title: 'Refer a member'
+          #   $icon: new Icon()
+          #   iconName: 'gem'
+          # }
+          # {
+          #   path: '/settings'
+          #   title: 'Settings'
+          #   $icon: new Icon()
+          #   iconName: 'settings'
+          # }
+          if me.isMember
             {
               path: '/profile'
               title: 'Profile'
               $icon: new Icon()
               iconName: 'profile'
             }
-          ]
+          ])
           .concat if me?.username is 'austin' then [
             {
               onClick: =>
@@ -134,12 +133,9 @@ module.exports = class Drawer
 
   render: ({currentPath}) =>
     {isOpen, me, menuItems, userDeck, isAddWinLoading, isAddLossLoading,
-      isAddDrawLoading} = @state.getValue()
-
+      isAddDrawLoading, myGroups, drawerWidth, breakpoint} = @state.getValue()
     deck = userDeck?.deck
 
-    drawerWidth = Math.min \
-      window?.innerWidth - DRAWER_RIGHT_PADDING, DRAWER_MAX_WIDTH
     translateX = if isOpen then '0' else "-#{drawerWidth}px"
     buttonColors =
       c200: colors.$tertiary500
@@ -151,6 +147,9 @@ module.exports = class Drawer
       className: z.classKebab {isOpen}
       style:
         display: if window? then 'block' else 'none'
+        width: if breakpoint is 'mobile' \
+               then '100%'
+               else "#{drawerWidth}px"
     },
       z '.overlay', {
         onclick: (e) =>
@@ -167,33 +166,60 @@ module.exports = class Drawer
         z '.top',
           z '.header',
             z '.logo'
+            if me and not me?.isMember
+              z '.sign-in',
+                z '.sign-in-button', {
+                  onclick: =>
+                    @model.signInDialog.open()
+                }, 'Sign in'
           z '.content',
             z 'ul.menu',
-              _map menuItems, (menuItem) =>
-                {path, onClick, title, $icon, iconName, isDivider} = menuItem
-                if isDivider
-                  return z 'li.divider'
-                isSelected = currentPath?.indexOf(path) is 0 or (
-                  path is '/games' and currentPath is '/'
-                )
-                z 'li.menu-item', {
-                  className: z.classKebab {isSelected}
-                },
-                  z 'a.menu-item-link', {
-                    href: path
-                    onclick: (e) =>
-                      e.preventDefault()
-                      @model.drawer.close()
-                      onClick?()
-                      if path
-                        @router.go path
+              [
+                _map myGroups, ({$badge, group}) =>
+                  isSelected = currentPath.indexOf("/group/#{group.id}") is 0
+                  z 'li.menu-item', {
+                    className: z.classKebab {isSelected}
                   },
-                    z '.icon',
-                      z $icon,
-                        isTouchTarget: false
-                        icon: iconName
-                        color: colors.$primary500
-                    title
+                    z 'a.menu-item-link', {
+                      href: "/group/#{group.id}/chat"
+                      onclick: (e) =>
+                        e.preventDefault()
+                        @model.drawer.close()
+                        @router.go "/group/#{group.id}/chat"
+                    },
+                      z '.icon',
+                        z $badge
+                      @model.group.getDisplayName group
+
+                unless _isEmpty myGroups
+                  z '.divider'
+
+                _map menuItems, (menuItem) =>
+                  {path, onClick, title, $icon, iconName, isDivider} = menuItem
+                  if isDivider
+                    return z 'li.divider'
+                  isSelected = currentPath?.indexOf(path) is 0 or (
+                    path is '/games' and currentPath is '/'
+                  )
+                  z 'li.menu-item', {
+                    className: z.classKebab {isSelected}
+                  },
+                    z 'a.menu-item-link', {
+                      href: path
+                      onclick: (e) =>
+                        e.preventDefault()
+                        @model.drawer.close()
+                        onClick?()
+                        if path
+                          @router.go path
+                    },
+                      z '.icon',
+                        z $icon,
+                          isTouchTarget: false
+                          icon: iconName
+                          color: colors.$primary500
+                      title
+              ]
         if me?.isMember and not userDeck
           z '.no-deck',
             z '.set-deck-button',

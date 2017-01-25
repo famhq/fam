@@ -25,6 +25,7 @@ GroupUserData = require './group_user_data'
 Product = require './product'
 PushToken = require './push_token'
 Thread = require './thread'
+SignInDialog = require './sign_in_dialog'
 ThreadComment = require './thread_comment'
 Window = require './window'
 
@@ -102,6 +103,7 @@ module.exports = class Model
     @product = new Product {@auth}
     @pushToken = new PushToken {@auth, pushToken}
     @drawer = new Drawer()
+    @signInDialog = new SignInDialog()
     @portal = new Portal {@user, @game, @modal}
     @window = new Window()
 

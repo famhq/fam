@@ -34,12 +34,13 @@ module.exports = class EventsPage
     @$tabs = new Tabs {@model}
 
     @state = z.state
+      me: @model.user.getMe()
       windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, me} = @state.getValue()
 
     z '.p-decks', {
       style:
@@ -74,4 +75,6 @@ module.exports = class EventsPage
             color: colors.$white
           }
           onclick: =>
-            @router.go '/addEvent'
+            @model.signInDialog.openIfGuest(me)
+            .then =>
+              @router.go '/addEvent'

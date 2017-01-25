@@ -3,64 +3,49 @@
 @require '../../vars'
 
 $zIndexDrawer = 300
-$zIndexDrawerHeader = 100
 
 .z-channel-drawer
+  display: none
   position: absolute
   z-index: $zIndexDrawer
   width: 100%
   height: 100%
   top: 0
   left: 0
-  pointer-events: none // not supported in ie9/10 (ie our entire app breaks)
+  flex-direction: column
+  background: getColor('$tertiary600')
 
   &.is-open
-    pointer-events: all // not supported in ie9/10
-
-    > .overlay
-      opacity: 0.5
-      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)
-
-    > .drawer
-      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
-
-  > .overlay
-    background: getColor('$black')
-    opacity: 0
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)
-    width: 100%
-    height: 100%
-    -webkit-tap-highlight-color: getColor('$transparent')
-
-  > .drawer
-    // width and transform translate set in js
-    height: 100%
-    top: 0
-    position: fixed
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
     display: flex
-    flex-direction: column
-    background: getColor('$tertiary600')
-    // prevents flicker glitch http://stackoverflow.com/a/3921870
-    backface-visibility: hidden
 
-    > .title
-      font-subhead()
-      color: getColor('$primary500')
-      padding: 16px
+  > .group-name
+    display: flex
+    align-items: center
+    padding: 16px
 
-    > .divider
-      width: 100%
-      height: 1px
-      background: getColor('$white12')
-      margin: 8px 0
+    > .badge
+      width: 24px
+      height: 24px
 
-    > .manage-channels
-      padding: 16px
-      display: flex
-      align-items: center
-      cursor: pointer
+    > .name
+      font-title()
+      margin-left: 32px
 
-      > .text
-        font-body1()
-        margin-left: 36px
+  > .menu
+    display: flex
+
+  > .divider
+    width: 100%
+    height: 1px
+    background: getColor('$white12')
+    margin: 8px 0
+
+  > .manage-channels
+    padding: 16px
+    display: flex
+    align-items: center
+    cursor: pointer
+
+    > .text
+      font-body1()
+      margin-left: 36px

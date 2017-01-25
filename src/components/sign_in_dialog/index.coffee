@@ -10,7 +10,7 @@ if window?
   require './index.styl'
 
 module.exports = class SignInDialog
-  constructor: ({@overlay$, @model, @router}) ->
+  constructor: ({@model, @router}) ->
 
     @usernameValue = new Rx.BehaviorSubject ''
     @usernameError = new Rx.BehaviorSubject null
@@ -39,7 +39,7 @@ module.exports = class SignInDialog
       mode: 'join'
       isLoading: false
 
-  join: (e, onLoggedIn) =>
+  join: (e) =>
     e?.preventDefault()
     @state.set isLoading: true
 
@@ -50,14 +50,14 @@ module.exports = class SignInDialog
     }
     .then =>
       @state.set isLoading: false
-      @overlay$.onNext null
-      @model.user.getMe().take(1).subscribe ->
-        onLoggedIn?()
+      @model.user.getMe().take(1).subscribe =>
+        @model.signInDialog.loggedIn()
+        @model.signInDialog.close()
     .catch (err) =>
       @usernameError.onNext err.message
       @state.set isLoading: false
 
-  signIn: (e, onLoggedIn) =>
+  signIn: (e) =>
     e?.preventDefault()
     @state.set isLoading: true
 
@@ -67,23 +67,23 @@ module.exports = class SignInDialog
     }
     .then =>
       @state.set isLoading: false
-      @overlay$.onNext null
-      @model.user.getMe().take(1).subscribe ->
-        onLoggedIn?()
+      @model.user.getMe().take(1).subscribe =>
+        @model.signInDialog.loggedIn()
+        @model.signInDialog.close()
     .catch (err) =>
       @usernameError.onNext err.message
       @state.set isLoading: false
 
   cancel: =>
-    @overlay$.onNext null
+    @model.signInDialog.close()
 
-  render: ({onLoggedIn} = {}) =>
+  render: =>
     {mode, isLoading} = @state.getValue()
 
     z '.z-sign-in-dialog',
       z @$dialog,
         onLeave: =>
-          @overlay$.onNext null
+          @model.signInDialog.close()
         $content:
           z '.z-sign-in-dialog_dialog',
             z '.header',
@@ -124,9 +124,9 @@ module.exports = class SignInDialog
                       cText: colors.$primary500
                     onclick: (e) =>
                       if mode is 'signIn'
-                        @signIn e, onLoggedIn
+                        @signIn e
                       else
-                        @join e, onLoggedIn
+                        @join e
                     type: 'submit'
                 z '.button',
                   z @$cancelButton,

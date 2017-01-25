@@ -1,27 +1,55 @@
 Rx = require 'rx-lite'
 
+DRAWER_RIGHT_PADDING = 56
+DRAWER_MAX_WIDTH = 336
+
+getSize = ->
+  {
+    width: window?.innerWidth
+    height: window?.innerHeight
+  }
+
+getBreakpoint = ->
+  if window?.innerWidth > 1280
+    'desktop'
+  else
+    'mobile'
+
+getDrawerWidth = ->
+  Math.min(
+    window?.innerWidth - DRAWER_RIGHT_PADDING
+    DRAWER_MAX_WIDTH
+  )
+
+getAppBarHeight = ->
+  if window?.innerWidth > 768 then 64 else 56
+
 module.exports = class Window
   constructor: ->
     @isPaused = false
 
-    @size = new Rx.BehaviorSubject {
-      width: window?.innerWidth
-      height: window?.innerHeight
-    }
+    @size = new Rx.BehaviorSubject getSize()
+    @breakpoint = new Rx.BehaviorSubject getBreakpoint()
+    @drawerWidth = new Rx.BehaviorSubject getDrawerWidth()
+    @appBarHeight = new Rx.BehaviorSubject getAppBarHeight()
     window?.addEventListener 'resize', @updateSize
 
   updateSize: =>
     unless @isPaused
-      @size.onNext {
-        width: window?.innerWidth
-        height: window?.innerHeight
-      }
+      @size.onNext getSize()
+      @breakpoint.onNext getBreakpoint()
 
   getSize: =>
     @size
 
+  getDrawerWidth: =>
+    @drawerWidth
+
+  getBreakpoint: =>
+    @breakpoint
+
   getAppBarHeight: =>
-    if @getSize().getValue().width > 768 then 64 else 56
+    @appBarHeight
 
   pauseResizing: =>
     @isPaused = true

@@ -32,6 +32,9 @@ module.exports = class Group
       id, name, description, badgeId, background, mode
     }, {invalidateAll: true}
 
+  getDisplayName: (group) ->
+    group?.name or 'Nameless'
+
   hasPermission: (group, user, {level} = {}) ->
     userId = user?.id
     level ?= 'member'

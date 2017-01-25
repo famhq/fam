@@ -19,6 +19,7 @@ MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
 RESIZE_THROTTLE_MS = 150
+FIVE_MINUTES_MS = 60 * 5 * 1000
 
 module.exports = class Conversation extends Base
   constructor: (options) ->
@@ -100,16 +101,18 @@ module.exports = class Conversation extends Base
 
       messages: messagesAndMe.map ([messages, me]) =>
         if messages
-          prevMessageUserId = null
+          prevMessage = null
           _map messages, (message) =>
-            isGrouped = message.userId is prevMessageUserId
+            isRecent = new Date(message.time) - new Date(prevMessage?.time) <
+                        FIVE_MINUTES_MS
+            isGrouped = message.userId is prevMessage?.userId and isRecent
             isMe = message.userId is me.id
             $el = @getCached$ message.id, ConversationMessage, {
               message, @model, @router, @overlay$, isMe
               isGrouped, selectedProfileDialogUser
             }
-            prevMessageUserId = message.userId
-            $el
+            prevMessage = message
+            {$el, isGrouped}
 
   afterMount: (@$$el) =>
     @conversation.take(1).subscribe (conversation) =>
@@ -194,9 +197,12 @@ module.exports = class Conversation extends Base
         },
           # hidden when inactive for perf
           if messages and not isLoading
-            _map messages, ($message) ->
-              isGrouped =
-              z $message, {isTextareaFocused}
+            _map messages, ({$el, isGrouped}, i) ->
+              [
+                if i and not isGrouped
+                  z '.divider'
+                z $el, {isTextareaFocused}
+              ]
 
           else
             @$loadingSpinner

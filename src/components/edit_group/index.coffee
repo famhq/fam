@@ -107,7 +107,7 @@ module.exports = class EditGroup
     .then (newGroup) =>
       group or= newGroup
       @state.set isSaving: false
-      @router.go "/group/#{group.id}"
+      @router.go "/group/#{group.id}/chat"
 
   render: ({isNewGroup} = {}) =>
     {me, isSaving, isChangingBadge, group, name, description,
@@ -134,23 +134,24 @@ module.exports = class EditGroup
           badgeId: selectedBadge
           background: selectedBackground
         }
-        z '.content',
-          z '.button',
-            z @$changeBadgeButton,
-              text: 'Change group badge'
-              onclick: =>
-                @state.set isChangingBadge: true
+        z '.g-grid',
+          z '.content',
+            z '.button',
+              z @$changeBadgeButton,
+                text: 'Change group badge'
+                onclick: =>
+                  @state.set isChangingBadge: true
 
-          z '.input',
-            z @$nameInput,
-              hintText: 'Group name'
+            z '.input',
+              z @$nameInput,
+                hintText: 'Group name'
 
-          z '.input',
-            z @$descriptionTextarea,
-              hintText: 'Description'
+            z '.input',
+              z @$descriptionTextarea,
+                hintText: 'Description'
 
-          z '.label',
-            'Private (invite-only)'
-            z '.right',
-              @$isPrivateToggle
+            z '.label',
+              'Private (invite-only)'
+              z '.right',
+                @$isPrivateToggle
       ]

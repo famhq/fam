@@ -7,15 +7,16 @@ GroupHeader = require '../group_header'
 if window?
   require './index.styl'
 
-module.exports = class Groups
-  constructor: ({@router, groups}) ->
+module.exports = class GroupList
+  constructor: ({@model, @router, groups}) ->
     @state = z.state
+      me: @model.user.getMe()
       groups: groups.map (groups) ->
         _map groups, (group) ->
           {group, $header: new GroupHeader({group})}
 
   render: =>
-    {groups} = @state.getValue()
+    {groups, me} = @state.getValue()
 
     z '.z-group-list',
       if groups and _isEmpty groups
@@ -27,9 +28,14 @@ module.exports = class Groups
           z '.g-grid',
             z '.g-cols',
               _map groups, ({group, $header}) =>
+                hasMemberPermission = @model.group.hasPermission group, me, {
+                  level: 'member'
+                }
                 z '.g-col.g-xs-6.g-md-3',
                   @router.link z 'a.group', {
-                    href: "/group/#{group.id}"
+                    href: if hasMemberPermission \
+                          then "/group/#{group.id}/chat"
+                          else "/group/#{group.id}"
                   },
                     z '.header',
                       z '.inner',

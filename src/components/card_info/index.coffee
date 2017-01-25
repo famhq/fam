@@ -1,6 +1,8 @@
 z = require 'zorium'
+Rx = require 'rx-lite'
 _max = require 'lodash/max'
 _map = require 'lodash/map'
+_find = require 'lodash/find'
 _mapValues = require 'lodash/mapValues'
 _startCase = require 'lodash/startCase'
 
@@ -8,6 +10,7 @@ colors = require '../../colors'
 config = require '../../config'
 Icon = require '../icon'
 Card = require '../card'
+Dropdown = require '../dropdown'
 FormatService = require '../../services/format'
 
 if window?
@@ -25,18 +28,31 @@ module.exports = class CardInfo
   constructor: ({@model, @router, card}) ->
     me = @model.user.getMe()
 
+    @levelValueStreams = new Rx.ReplaySubject 1
+    @levelValueStreams.onNext card.map (card) ->
+      _max(card.data.levels, 'level')?.level
+
     @$crownIcon = new Icon()
     @$statsIcon = new Icon()
     @$hpIcon = new Icon()
     @$clockIcon = new Icon()
     @$levelIcon = new Icon()
+    @$dropdown = new Dropdown {
+      valueStreams: @levelValueStreams
+    }
     @$card = new Card({card})
+
+    cardAndLevel = Rx.Observable.combineLatest(
+      card
+      @levelValueStreams.switch()
+      (vals...) -> vals
+    )
 
     @state = z.state
       me: me
       card: card
-      selectedLevel: card.map (card) ->
-        level = _max card.data.levels, 'level'
+      selectedLevel: cardAndLevel.map ([card, level]) ->
+        level = _find card.data.levels, {level: parseInt(level)}
         _mapValues level, (stat) ->
           {stat, $el: new Icon()}
 
@@ -101,7 +117,12 @@ module.exports = class CardInfo
         z '.g-grid',
           z '.row',
             z '.title', 'Stats'
-            z '.dropdown', "Level #{selectedLevel?.level.stat}"
+            z '.dropdown',
+              z @$dropdown,
+                hintText: 'Level'
+                isFloating: false
+                options: _map card?.data.levels, (level) ->
+                  {value: level.level, text: "Level #{level.level}"}
           _map selectedLevel, ({stat, $el}, key) ->
             if key is 'level'
               return

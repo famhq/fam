@@ -261,7 +261,13 @@ module.exports = class EditEvent
         unless toggle.$el.state.getValue().isSelected
           return false
 
-      z '.row',
+      z '.row', {
+        className: z.classKebab {
+          isInput: field.type in [
+            'text', 'password', 'number', 'date', 'time', 'textarea'
+          ]
+        }
+      },
         z '.icon',
           if $icon
             z $icon,
@@ -291,8 +297,9 @@ module.exports = class EditEvent
               z $el
 
     z '.z-edit-event',
-      z '.content',
-        _map stepFields, fieldsTo$
+      z '.g-grid',
+        z '.content',
+          _map stepFields, fieldsTo$
 
 
       z '.step-bar',

@@ -7,6 +7,7 @@ _groupBy = require 'lodash/groupBy'
 Base = require '../base'
 Avatar = require '../avatar'
 Spinner = require '../spinner'
+Icon = require '../icon'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -19,6 +20,7 @@ module.exports = class Events extends Base
 
     me = @model.user.getMe()
     events = @model.event.getAll({filter})
+    @$trophyIcon = new Icon()
 
     @state = z.state
       me: me
@@ -40,10 +42,17 @@ module.exports = class Events extends Base
       z '.g-grid',
         if eventsByDate and _isEmpty eventsByDate
           z '.no-events',
+            z '.icon',
+              z @$trophyIcon,
+                icon: 'trophy'
+                size: '40px'
+                color: colors.$tertiary500
+                isTouchTarget: false
+
             if filter is 'mine'
               'You haven\'t joined any events.'
             else
-              'No events found. '
+              'There are currently no public events scheduled. Check back soon!'
         else if eventsByDate
           _map eventsByDate, (events, dateStr) =>
             date = moment(dateStr)

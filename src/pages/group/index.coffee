@@ -29,23 +29,8 @@ module.exports = class GroupPage
 
     overlay$ = new Rx.BehaviorSubject null
 
-    groupId = requests.map ({route}) ->
-      route.params.id
-
-    conversationId = requests.map ({route}) ->
-      route.params.conversationId
-
-    group = groupId.flatMapLatest (groupId) =>
-      @model.group.getById groupId
-
-    me = @model.user.getMe()
-
-    groupAndConversationIdAndMe = Rx.Observable.combineLatest(
-      group
-      conversationId
-      me
-      (vals...) -> vals
-    )
+    group = requests.map ({route}) =>
+      @model.group.getById route.params.id
 
     @$head = new Head({
       @model
@@ -62,26 +47,6 @@ module.exports = class GroupPage
     @$buttonBack = new ButtonBack {@model, @router}
     @$tabs = new Tabs {@model, selectedIndex}
     @$groupInfo = new GroupInfo {@model, @router, group}
-    @$groupChat = new GroupChat {
-      @model
-      @router
-      group
-      selectedProfileDialogUser
-      overlay$
-      toggleIScroll: @$tabs.toggle
-      isActive: selectedIndex.map (index) ->
-        index is 1
-      conversation: groupAndConversationIdAndMe
-      .flatMapLatest ([group, conversationId, me]) =>
-        hasMemberPermission = @model.group.hasPermission group, me
-        conversationId ?= localStorage?['conversationId:' + group.id] or
-                            group.conversations[0].id
-        if hasMemberPermission
-          @model.conversation.getById conversationId
-        else
-          Rx.Observable.just null
-    }
-    @$groupAnnouncements = new GroupAnnouncements {@model, @router, group}
     @$groupMembers = new GroupMembers {
       @model, @router, group, selectedProfileDialogUser
     }
@@ -102,8 +67,7 @@ module.exports = class GroupPage
 
     @state = z.state
       group: group
-      me: me
-      overlay$: overlay$
+      me: @model.user.getMe()
       selectedProfileDialogUser: selectedProfileDialogUser
       windowSize: @model.window.getSize()
       selectedIndex: selectedIndex
@@ -111,7 +75,7 @@ module.exports = class GroupPage
   renderHead: => @$head
 
   render: =>
-    {group, me, overlay$, selectedProfileDialogUser, selectedIndex,
+    {group, me, selectedProfileDialogUser, selectedIndex,
       windowSize} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
@@ -150,27 +114,13 @@ module.exports = class GroupPage
           isBarFlat: true
           barBgColor: colors.$tertiary700
           barInactiveColor: colors.$white
-          tabs: _filter [
-            if hasMemberPermission
-              {
-                $menuIcon: @$groupChatIcon
-                menuIconName: 'hashtag'
-                $menuText: 'Chat'
-                $el: @$groupChat
-              }
+          tabs: [
             {
               $menuIcon: @$groupInfoIcon
               menuIconName: 'info'
               $menuText: 'Info'
               $el: @$groupInfo
             }
-            if hasMemberPermission
-              {
-                $menuIcon: @$groupAnnouncementsIcon
-                menuIconName: 'notes'
-                $menuText: 'Announcements'
-                $el: @$groupAnnouncements
-              }
             {
               $menuIcon: @$groupMembersIcon
               menuIconName: 'friends'
@@ -192,9 +142,6 @@ module.exports = class GroupPage
               tab = TABS[selectedIndex]
               if tab is 'members' and hasAdminPermission
                 @router.go "/group/#{group?.id}/invite"
-      if overlay$
-        z '.overlay',
-          overlay$
 
       if selectedProfileDialogUser
         z @$profileDialog

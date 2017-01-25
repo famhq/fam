@@ -103,6 +103,9 @@ module.exports = class ConversationMessage
     {user, body, time, card, id, clientId} = message
 
     isSticker = body.match /^:[a-z_]+:$/
+    avatarSize = if windowSize.width > 840 \
+                 then '56px'
+                 else '40px'
 
     onclick = =>
       unless isTextareaFocused
@@ -111,27 +114,35 @@ module.exports = class ConversationMessage
     z '.z-conversation-message', {
       # re-use elements in v-dom
       key: "message-#{id or clientId}"
+      onclick: onclick
       className: z.classKebab {isSticker, isGrouped, isMe}
     },
-      z '.avatar', {onclick},
-        z @$avatar, {
-          user
-          size: if windowSize.width > 840 \
-                then '56px'
-                else '40px'
-          bgColor: colors.$grey200
-        }
-      z '.bubble', {onclick},
+      z '.avatar', {
+        onclick
+        style:
+          width: avatarSize
+      },
+        unless isGrouped
+          z @$avatar, {
+            user
+            size: avatarSize
+            bgColor: colors.$grey200
+          }
+
+      z '.content',
+        unless isGrouped
+          z '.from',
+            z '.name', @model.user.getDisplayName user
+            z '.middot',
+              innerHTML: '&middot;'
+            z '.time',
+              if time
+              then moment(time).fromNowModified()
+              else '...'
+
         z '.body',
             @formatMessage body
-        z '.bottom',
-          z '.name', @model.user.getDisplayName user
-          z '.middot',
-            innerHTML: '&middot;'
-          z '.time',
-            if time
-            then moment(time).fromNowModified()
-            else '...'
+
         if card
           z '.card', {
             onclick: (e) =>

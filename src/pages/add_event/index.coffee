@@ -11,6 +11,7 @@ if window?
 
 module.exports = class AddEventPage
   hideDrawer: true
+  isPrivate: true
 
   constructor: ({@model, requests, @router, serverData}) ->
     group = requests.flatMapLatest ({route}) =>

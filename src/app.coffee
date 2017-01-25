@@ -4,6 +4,7 @@ HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
 
 Drawer = require './components/drawer'
+SignInDialog = require './components/sign_in_dialog'
 
 Pages =
   HomePage: require './pages/home'
@@ -19,6 +20,8 @@ Pages =
   EventsPage: require './pages/events'
   CommunityPage: require './pages/community'
   GroupPage: require './pages/group'
+  GroupChatPage: require './pages/group_chat'
+  GroupMembersPage: require './pages/group_members'
   GroupSettingsPage: require './pages/group_settings'
   GroupInvitesPage: require './pages/group_invites'
   GroupInvitePage: require './pages/group_invite'
@@ -51,7 +54,7 @@ Pages =
 # page load?
 
 module.exports = class App
-  constructor: ({requests, serverData, model, router}) ->
+  constructor: ({requests, serverData, @model, router}) ->
     routes = new HttpHash()
 
     requests = requests.map (req) ->
@@ -59,16 +62,16 @@ module.exports = class App
       {req, route, $page: route.handler?()}
 
     $cachedPages = []
-    route = (paths, pageKey) ->
+    route = (paths, pageKey) =>
       Page = Pages[pageKey]
       if typeof paths is 'string'
         paths = [paths]
 
-      _forEach paths, (path) ->
-        routes.set path, ->
+      _forEach paths, (path) =>
+        routes.set path, =>
           unless $cachedPages[pageKey]
             $cachedPages[pageKey] = new Page({
-              model
+              @model
               router
               serverData
               requests: requests.filter ({$page}) ->
@@ -90,7 +93,9 @@ module.exports = class App
     route '/thread/:id/:page', 'ThreadPage'
     route '/community', 'CommunityPage'
     route '/group/:id', 'GroupPage'
-    route '/group/:id/channel/:conversationId', 'GroupPage'
+    route '/group/:id/chat', 'GroupChatPage'
+    route '/group/:id/members', 'GroupMembersPage'
+    route '/group/:id/chat/:conversationId', 'GroupChatPage'
     route '/group/:id/invite', 'GroupInvitePage'
     route '/group/:id/manage/:userId', 'GroupManageMemberPage'
     route '/group/:id/manageChannels', 'GroupManageChannelsPage'
@@ -124,14 +129,16 @@ module.exports = class App
     else
       null
 
-    @$drawer = new Drawer({model, router})
+    @$drawer = new Drawer({@model, router})
+    @$signInDialog = new SignInDialog({@model, router})
 
-    me = model.user.getMe()
+    me = @model.user.getMe()
 
     @state = z.state {
       rand: null
       $backupPage
       me: me
+      signInDialogIsOpen: @model.signInDialog.isOpen()
       request: requests.doOnNext ({$page, req}) ->
         if $page instanceof Pages['FourOhFourPage']
           res?.status? 404
@@ -142,7 +149,8 @@ module.exports = class App
     @state.set rand: Math.random()
 
   render: =>
-    {request, $backupPage, $modal, me} = @state.getValue()
+    {request, $backupPage, $modal, me,
+      signInDialogIsOpen} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
@@ -162,3 +170,6 @@ module.exports = class App
                 request.$page
               else
                 $backupPage
+
+            if signInDialogIsOpen
+              z @$signInDialog

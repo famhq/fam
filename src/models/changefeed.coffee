@@ -11,12 +11,13 @@ module.exports = class Changefeed
 
   create: (diff, localDiff) =>
     clientId = uuid.v4()
+    time = Date.now()
 
-    @clientChangesStream.onNext _merge diff, {clientId}, localDiff
+    @clientChangesStream.onNext _merge diff, {clientId, time}, localDiff
 
     @auth.call "#{@namespace}.create", _merge diff, {clientId}
     .catch (err) ->
-      console.log 'err'
+      console.log 'err', err
 
   stream: (path, body, options) =>
     @auth.stream path, body, _defaults({@clientChangesStream}, options)

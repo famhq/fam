@@ -11,10 +11,12 @@ if window?
 module.exports = class Groups
   constructor: ({@model, @router}) ->
     @$myGroupList = new GroupList {
+      @model
       @router
       groups: @model.group.getAll({filter: 'mine'})
     }
     @$openGroupList = new GroupList {
+      @model
       @router
       groups: @model.group.getAll({filter: 'open'})
     }
