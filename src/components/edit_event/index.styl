@@ -9,78 +9,9 @@
 
   > .g-grid
     flex: 1
-    overflow: auto
-    -webkit-overflow-scrolling: touch
+    display: flex
 
     > .content
-      > .row
-        display: flex
-        padding: 12px 16px
-
-        &.is-input
-          > .icon
-            padding-top: 20px
-
-        > .icon
-          width: 48px
-
-        > .input
-          margin-left: 24px
-          flex: 1
-
-          &.flex
-            display: flex
-
-          > .label
-            font-body1()
-            color: getColor('$white')
-
-          > .right
-            margin-left: auto
-
-  > .step-bar
-    width: 100%
-    box-sizing: border-box
-    background: getColor('$white12')
-    display: flex
-    align-items: center
-    justify-content: center
-
-    > .g-grid
       flex: 1
-      display: flex
-      align-items: center
-      justify-content: center
-
-      > .previous, > .next
-        font-body1()
-        text-transform: uppercase
-        color: getColor('$primary500')
-        -webkit-tap-highlight-color: transparent
-        width: 60px
-        padding: 16px
-        box-sizing: content-box
-        cursor: pointer
-
-      > .next
-        display: flex
-        align-items: center
-        color: getColor('$grey500')
-
-        &.can-continue
-          color: getColor('$primary500')
-
-
-      > .step-counter
-        display: flex
-        margin: 0 auto
-
-        > .step-dot
-          width: 6px
-          height: 6px
-          border-radius: 50%
-          margin-right: 4px
-          background: getColor('$tertiary900')
-
-          &.is-active
-            background: getColor('$secondary500')
+      overflow: auto
+      -webkit-overflow-scrolling: touch

@@ -1,6 +1,6 @@
 Rx = require 'rx-lite'
 
-module.exports = class Drawer
+module.exports = class SignInDialog
   constructor: ->
     @_isOpen = new Rx.BehaviorSubject false
     @onLoggedInFn = null

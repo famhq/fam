@@ -26,16 +26,17 @@ module.exports = class HomePage
       windowSize: @model.window.getSize()
 
   afterMount: =>
+    @router.go '/community'
     # TODO: replace with cookie so server-side rendering works
-    if localStorage?['isMember']
-      @router.go '/community'
-    else
-      @model.user.getMe().take(1).subscribe (me) =>
-        if me?.isMember
-          localStorage?['isMember'] = '1'
-          @router.go '/community'
-        else
-          @router.go '/events'
+    # if localStorage?['isMember']
+    #   @router.go '/community'
+    # else
+    #   @model.user.getMe().take(1).subscribe (me) =>
+    #     if me?.isMember
+    #       localStorage?['isMember'] = '1'
+    #       @router.go '/community'
+    #     else
+    #       @router.go '/events'
 
   renderHead: => @$head
 

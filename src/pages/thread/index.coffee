@@ -5,7 +5,8 @@ Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Thread = require '../../components/thread'
-Spinner = require '../../components/spinner'
+Icon = require '../../components/icon'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -32,16 +33,23 @@ module.exports = class ThreadPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
     @$thread = new Thread {@model, @router, thread, isRefreshing}
-    @$refreshingSpinner = new Spinner()
+    @$editIcon = new Icon()
 
     @state = z.state
       isRefreshing: isRefreshing
       windowSize: @model.window.getSize()
+      thread: thread
+      me: @model.user.getMe()
 
   renderHead: => @$head
 
   render: =>
-    {isRefreshing, windowSize} = @state.getValue()
+    {isRefreshing, windowSize, thread, me} = @state.getValue()
+
+    hasAdminPermission = @model.thread.hasPermission thread, me, {
+      level: 'admin'
+    }
+    console.log 'hp', hasAdminPermission
 
     z '.p-thread', {
       style:
@@ -49,11 +57,14 @@ module.exports = class ThreadPage
     },
       z @$appBar, {
         title: ''
-        $topLeftButton: z @$buttonBack
-        $topRightButton: if isRefreshing
-          z @$refreshingSpinner,
-            size: 20
-            hasTopMargin: false
+        bgColor: colors.$tertiary700
+        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topRightButton: if hasAdminPermission
+          z @$editIcon,
+            icon: 'edit'
+            color: colors.$primary500
+            onclick: =>
+              @router.go "/editGuide/#{thread.id}"
         else
           null
       }

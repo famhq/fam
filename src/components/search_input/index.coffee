@@ -66,7 +66,7 @@ module.exports = class SearchInput
                     then 'search'
                     else 'close'
               color: if isSearchIconRight and not searchValue \
-                     then colors.$white30
+                     then colors.$white34
                      else colors.$primary500Text
               touchHeight: height
               onclick: @clear

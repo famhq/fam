@@ -1,0 +1,17 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-deck-input
+  display: block
+
+  > .overlay
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background: getColor('$tertiary900')
+    z-index: 999
+    display: flex
+    flex-direction: column

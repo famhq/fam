@@ -1,13 +1,10 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _map = require 'lodash/map'
-_range = require 'lodash/range'
-_filter = require 'lodash/filter'
-_find = require 'lodash/find'
 
 PrimaryInput = require '../primary_input'
 Icon = require '../icon'
-DeckCards = require '../deck_cards'
+DeckPicker = require '../deck_picker'
 colors = require '../../colors'
 
 if window?
@@ -23,29 +20,16 @@ module.exports = class AddDeck
       value: @nameValue
       error: @nameError
 
-    @selectedCards = new Rx.BehaviorSubject []
-    selectedDeck = @selectedCards.map (cards) ->
-      {cards: _map _range(CARDS_PER_DECK), (i) -> cards[i]}
+    selectedCards = new Rx.BehaviorSubject []
 
-    allCards = @model.clashRoyaleCard.getAll()
-    allCardsAndSelectedCards = Rx.Observable.combineLatest(
-      allCards
-      @selectedCards
-      (vals...) -> vals
-    )
-    allDeck = allCardsAndSelectedCards.map ([allCards, selectedCards]) ->
-      cards = _filter allCards, (card) ->
-        not _find selectedCards, {id: card.id}
-      {cards}
-    @$selectedCards = new DeckCards {@model, @router, deck: selectedDeck}
-    @$allCards = new DeckCards {@model, @router, deck: allDeck}
+    @$deckPicker = new DeckPicker {@model, selectedCards}
 
     @$cancelIcon = new Icon()
     @$saveIcon = new Icon()
 
     @state = z.state
       me: @model.user.getMe()
-      selectedCards: @selectedCards
+      selectedCards: selectedCards
       isLoading: false
 
   create: =>
@@ -79,15 +63,4 @@ module.exports = class AddDeck
             icon: if isLoading then 'ellipsis' else 'check'
             color: colors.$primary500
             onclick: @create
-      z '.selected',
-        z @$selectedCards,
-          onCardClick: (card) =>
-            @selectedCards.onNext _filter selectedCards, (selectedCard) ->
-              card.id isnt selectedCard?.id
-      z '.cards',
-        z '.scroller',
-          z @$allCards, {
-            onCardClick: (card) =>
-              if selectedCards.length < CARDS_PER_DECK
-                @selectedCards.onNext selectedCards.concat [card]
-          }
+      z @$deckPicker

@@ -1,6 +1,5 @@
 z = require 'zorium'
 moment = require 'moment'
-supportsWebP = window? and require 'supports-webp'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'
@@ -8,15 +7,13 @@ _truncate = require 'lodash/truncate'
 Icon = require '../icon'
 Avatar = require '../avatar'
 ConversationImageView = require '../conversation_image_view'
+FormattedText = require '../formatted_text'
 colors = require '../../colors'
 config = require '../../config'
 
 if window?
   require './index.styl'
 
-ALL_REGEX_STR = "#{config.STICKER_REGEX_STR}|#{config.URL_REGEX_STR}|" +
-                  "#{config.IMAGE_REGEX_BASE_STR}"
-ALL_REGEX = new RegExp ALL_REGEX_STR, 'gi'
 TITLE_LENGTH = 30
 DESCRIPTION_LENGTH = 100
 
@@ -37,68 +34,13 @@ module.exports = class ConversationMessage
 
     @state = z.state
       message: message
+      $body: new FormattedText {@model, text: message.body}
       isMe: isMe
       isGrouped: isGrouped
       windowSize: @model.window.getSize()
 
-  formatMessage: (message) =>
-    textLines = message.split('\n') or []
-    _map textLines, (text) =>
-      parts = _filter text.split ALL_REGEX
-      z 'div',
-        _map parts, (part) =>
-          # need to create new regex each time (since exec grabs nth match)
-          if part.match config.IMAGE_REGEX
-            matches = new RegExp(config.LOCAL_IMAGE_REGEX_STR, 'gi').exec(part)
-            if matches
-              imageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}.small.png"
-              largeImageUrl = "#{config.USER_CDN_URL}/cm/#{matches[3]}" +
-                                '.large.png'
-              imageAspectRatio = matches[4] / matches[5]
-            else
-              matches = new RegExp(config.IMAGE_REGEX_STR, 'gi').exec(part)
-              imageUrl = matches[3].trim()
-              if supportsWebP and imageUrl.indexOf('giphy.com') isnt -1
-                imageUrl = imageUrl.replace /\.gif$/, '.webp'
-              largeImageUrl = imageUrl
-              imageAspectRatio = matches[4] / matches[5]
-
-            z 'img', {
-              src: imageUrl
-              width: 200
-              height: 200 / imageAspectRatio
-              onclick: (e) =>
-                e?.stopPropagation()
-                e?.preventDefault()
-                @overlay$.onNext @$conversationImageView
-                @imageData.onNext {
-                  url: largeImageUrl
-                  aspectRatio: imageAspectRatio
-                }
-            }
-          else if part.match config.STICKER_REGEX
-            sticker = part.replace /:/g, ''
-            z '.sticker',
-              style:
-                backgroundImage:
-                  "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
-
-          else if part.match config.URL_REGEX
-            z 'a.link', {
-              href: part
-              onclick: (e) =>
-                e?.stopPropagation()
-                e?.preventDefault()
-                @model.portal.call 'browser.openWindow', {
-                  url: part
-                  target: '_system'
-                }
-            }, part
-          else
-            part
-
   render: ({isTextareaFocused}) =>
-    {isMe, message, isGrouped, windowSize} = @state.getValue()
+    {isMe, message, $body, isGrouped, windowSize} = @state.getValue()
 
     {user, body, time, card, id, clientId} = message
 
@@ -131,7 +73,7 @@ module.exports = class ConversationMessage
 
       z '.content',
         unless isGrouped
-          z '.from',
+          z '.author',
             z '.name', @model.user.getDisplayName user
             z '.middot',
               innerHTML: '&middot;'
@@ -140,8 +82,7 @@ module.exports = class ConversationMessage
               then moment(time).fromNowModified()
               else '...'
 
-        z '.body',
-            @formatMessage body
+        z '.body', $body
 
         if card
           z '.card', {

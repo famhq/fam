@@ -67,7 +67,7 @@ module.exports = class Decks extends Base
           _map decks, ({deck, hasDeck, $deck, $starIcon, $chevronIcon}) =>
             [
               @router.link z 'a.deck', {
-                href: "/decks/#{deck.id}"
+                href: "/deck/#{deck.id}"
               },
                 z '.g-grid',
                   z '.info',

@@ -1,10 +1,12 @@
 z = require 'zorium'
+Rx = require 'rx-lite'
 FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Decks = require '../../components/decks'
+DeckGuides = require '../../components/deck_guides'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
 colors = require '../../colors'
@@ -28,18 +30,22 @@ module.exports = class DecksPage
     @$fab = new FloatingActionButton()
     @$addIcon = new Icon()
 
+    @$deckGuides = new DeckGuides {@model, @router, sort: 'popular'}
     @$recentDecks = new Decks {@model, @router, sort: 'recent', filter: 'mine'}
     @$popularDecks = new Decks {@model, @router, sort: 'popular'}
 
-    @$tabs = new Tabs {@model}
+    selectedIndex = new Rx.BehaviorSubject 0
+    @$tabs = new Tabs {@model, selectedIndex}
 
     @state = z.state
       windowSize: @model.window.getSize()
+      selectedIndex: selectedIndex
+      me: @model.user.getMe()
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, selectedIndex, me} = @state.getValue()
 
     z '.p-decks', {
       style:
@@ -55,6 +61,10 @@ module.exports = class DecksPage
       z @$tabs,
         isBarFixed: false
         tabs: [
+          {
+            $menuText: 'Guides'
+            $el: @$deckGuides
+          }
           {
             $menuText: 'My Decks'
             $el: @$recentDecks
@@ -75,4 +85,9 @@ module.exports = class DecksPage
             color: colors.$white
           }
           onclick: =>
-            @router.go '/addDeck'
+            @model.signInDialog.openIfGuest me
+            .then =>
+              if selectedIndex is 0
+                @router.go '/addGuide'
+              else
+                @router.go '/addDeck'

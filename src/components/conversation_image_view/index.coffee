@@ -10,29 +10,31 @@ if window?
   require './index.styl'
 
 module.exports = class ConversationImageView
-  constructor: ({@model, @imageData, @overlay$, @router}) ->
+  constructor: ({@model, @router}) ->
     @$buttonBack = new ButtonBack {@router}
     @$appBar = new AppBar {@model}
 
     @state = z.state
-      imageData: @imageData
+      imageData: @model.imageViewOverlay.getImageData()
       windowSize: @model.window.getSize()
+      appBarHeight: @model.window.getAppBarHeight()
 
   afterMount: =>
     @router.onBack =>
-      @overlay$.onNext null
+      @model.imageViewOverlay.setImageData null
 
   beforeUnmount: =>
     @router.onBack null
 
   render: =>
-    {windowSize, imageData} = @state.getValue()
+    {windowSize, appBarHeight, imageData} = @state.getValue()
 
     imageData ?= {}
 
-    windowHeight = windowSize.height - @$appBar.getHeight()
+    windowHeight = windowSize.height - appBarHeight
     imageAspectRatio = imageData.aspectRatio
     windowAspectRatio = windowSize.width / windowHeight
+
     # 3:1, 1:1
     if imageAspectRatio > windowAspectRatio
       imageWidth = windowSize.width
@@ -46,8 +48,7 @@ module.exports = class ConversationImageView
         title: 'Image'
         $topLeftButton: z @$buttonBack, {
           onclick: =>
-            @imageData.onNext null
-            @overlay$.onNext null
+            @model.imageViewOverlay.setImageData null
         }
       }
       z 'img',

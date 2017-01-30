@@ -10,7 +10,6 @@ _pick = require 'lodash/pick'
 Auth = require './auth'
 User = require './user'
 UserData = require './user_data'
-Drawer = require './drawer'
 Conversation = require './conversation'
 ClashRoyaleDeck = require './clash_royale_deck'
 ClashRoyaleUserDeck = require './clash_royale_user_deck'
@@ -25,8 +24,10 @@ GroupUserData = require './group_user_data'
 Product = require './product'
 PushToken = require './push_token'
 Thread = require './thread'
-SignInDialog = require './sign_in_dialog'
 ThreadComment = require './thread_comment'
+Drawer = require './drawer'
+SignInDialog = require './sign_in_dialog'
+ImageViewOverlay = require './image_view_overlay'
 Window = require './window'
 
 Portal = require './portal'
@@ -104,6 +105,7 @@ module.exports = class Model
     @pushToken = new PushToken {@auth, pushToken}
     @drawer = new Drawer()
     @signInDialog = new SignInDialog()
+    @imageViewOverlay = new ImageViewOverlay()
     @portal = new Portal {@user, @game, @modal}
     @window = new Window()
 

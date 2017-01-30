@@ -1,0 +1,21 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-card-picker-dialog_dialog
+  > .title
+    font-h1()
+
+  > .cards
+    max-height: 300px
+    margin-top: 20px
+    overflow: auto
+    -webkit-overflow-scrolling: touch
+
+    > .card
+      display: flex
+      padding: 12px 0
+      cursor: pointer
+
+      > .name
+        margin-left: 16px

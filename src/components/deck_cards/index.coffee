@@ -23,25 +23,16 @@ getCardSizeInfo = ->
     {itemsPerRow: DEFAULT_CARDS_PER_ROW}
 
 module.exports = class DeckCards extends Base
-  constructor: ({@model, @router, deck}) ->
-    me = @model.user.getMe()
-
+  constructor: ({deck}) ->
     unless deck.map
       deck = Rx.Observable.just deck
-
-    deckAndMe = Rx.Observable.combineLatest(
-      deck
-      me
-      (vals...) -> vals
-    )
 
     @cardSizeInfo = getCardSizeInfo()
     @cachedCards = []
 
     @state = z.state
-      me: @model.user.getMe()
       deck: deck
-      cardGroups: deckAndMe.map ([deck, me]) =>
+      cardGroups: deck.map (deck) =>
         cards = _map deck?.cards, (card, i) =>
           $el = @getCached$ (card?.id or "empty-#{i}"), Card, {card}
           {card, $el}
@@ -49,11 +40,11 @@ module.exports = class DeckCards extends Base
 
   afterMount: (@$$el) => null
 
-  render: ({onCardClick, cardsPerRow} = {}) =>
-    {me, cardGroups} = @state.getValue()
+  render: ({onCardClick, cardsPerRow, cardWidth} = {}) =>
+    {cardGroups} = @state.getValue()
 
     cardsPerRow ?= @cardSizeInfo.cardsPerRow
-    cardWidth = Math.floor(@$$el?.offsetWidth / cardsPerRow)
+    cardWidth ?= Math.floor(@$$el?.offsetWidth / cardsPerRow)
 
     z '.z-deck-cards',
       _map cardGroups, (cards) ->

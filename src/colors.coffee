@@ -59,16 +59,15 @@ module.exports = _defaults {
   '$tertiary800Text': paperColors.$white
   '$tertiary900Text': paperColors.$white
 
+  '$white34': 'rgba(255, 255, 255, 0.34)'
+
   '$black': '#0c0c0c'
 
   '$tabSelected': paperColors.$white
   '$tabUnselected': '#1a1a1a'
 
   '$tabSelectedAlt': paperColors.$white
-  '$tabUnselectedAlt': paperColors.$white30
-
-  '$messenger': '#0084ff'
-  '$discord': '#7289da'
+  '$tabUnselectedAlt': paperColors.$white34
 
   '$transparent': 'rgba(0, 0, 0, 0)'
   '$common': '#00E676'

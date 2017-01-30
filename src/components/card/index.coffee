@@ -22,12 +22,13 @@ module.exports = class Card
     z '.z-card', {
       onclick: ->
         onclick? card
+      key: card?.id
       style:
         width: "#{width}px"
         height: "#{height}px"
         backgroundImage: if card and card.key \
                          then "url(#{config.CDN_URL}/cards/#{card.key}.png)"
                          else null
-        backgroundColor: if card and card.key then null else colors.$tertiary900
+        backgroundColor: if card and card.key then null else colors.$black
 
     }

@@ -64,7 +64,7 @@ module.exports = class Drawer
         _filter([
           {
             path: '/events'
-            title: 'Events'
+            title: 'Tournaments'
             $icon: new Icon()
             iconName: 'trophy'
           }

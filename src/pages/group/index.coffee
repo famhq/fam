@@ -29,7 +29,7 @@ module.exports = class GroupPage
 
     overlay$ = new Rx.BehaviorSubject null
 
-    group = requests.map ({route}) =>
+    group = requests.flatMapLatest ({route}) =>
       @model.group.getById route.params.id
 
     @$head = new Head({

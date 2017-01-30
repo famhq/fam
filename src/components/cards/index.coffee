@@ -65,7 +65,7 @@ module.exports = class Cards extends Base
             [
               z '.g-grid',
                 @router.link z 'a.card', {
-                  href: "/cards/#{card.id}"
+                  href: "/card/#{card.id}"
                 },
                   z '.change'
                   # z '.change', {style: {color: rankColor}},

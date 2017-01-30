@@ -19,11 +19,16 @@ module.exports = class GroupInfo
     }
 
   join: (group) =>
-    @state.set isJoinLoading: true
-    @model.group.joinById group.id
-    .catch -> null
+    {me} = @state.getValue()
+
+    @model.signInDialog.openIfGuest me
     .then =>
-      @state.set isJoinLoading: false
+      @state.set isJoinLoading: true
+      @model.group.joinById group.id
+      .catch -> null
+      .then =>
+        @state.set isJoinLoading: false
+        @router.go "/group/#{group.id}/chat"
 
   render: =>
     {me, group, isJoinLoading} = @state.getValue()

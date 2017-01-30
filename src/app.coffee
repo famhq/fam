@@ -5,6 +5,7 @@ _forEach = require 'lodash/forEach'
 
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
+ConversationImageView = require './components/conversation_image_view'
 
 Pages =
   HomePage: require './pages/home'
@@ -33,6 +34,8 @@ Pages =
   GroupManageMemberPage: require './pages/group_manage_member'
   EditGroupPage: require './pages/edit_group'
   NewGroupPage: require './pages/new_group'
+  AddGuidePage: require './pages/add_guide'
+  EditGuidePage: require './pages/edit_guide'
   ThreadPage: require './pages/thread'
   ThreadReplyPage: require './pages/thread_reply'
   NewThreadPage: require './pages/new_thread'
@@ -90,7 +93,7 @@ module.exports = class App
     route '/event/:id', 'EventPage'
     route '/event/:id/edit', 'EditEventPage'
     route '/thread/:id/reply', 'ThreadReplyPage'
-    route '/thread/:id/:page', 'ThreadPage'
+    route ['/thread/:id/:page', '/thread/:id'], 'ThreadPage'
     route '/community', 'CommunityPage'
     route '/group/:id', 'GroupPage'
     route '/group/:id/chat', 'GroupChatPage'
@@ -106,13 +109,15 @@ module.exports = class App
     route '/group/:id/manageRecords', 'GroupManageRecordsPage'
     route '/group/:id/edit', 'EditGroupPage'
     route '/groupInvites', 'GroupInvitesPage'
+    route '/addGuide', 'AddGuidePage'
+    route '/editGuide/:id', 'EditGuidePage'
     route '/newGroup', 'NewGroupPage'
     route '/newThread', 'NewThreadPage'
     route '/addDeck', 'AddDeckPage'
     route '/decks', 'DecksPage'
     route '/cards', 'CardsPage'
-    route '/decks/:id', 'DeckPage'
-    route '/cards/:id', 'CardPage'
+    route '/deck/:id', 'DeckPage'
+    route ['/card/:id', '/clashRoyale/card/:key'], 'CardPage'
     route '/policies', 'PoliciesPage'
     route '/tos', 'TosPage'
     route '/privacy', 'PrivacyPage'
@@ -131,6 +136,7 @@ module.exports = class App
 
     @$drawer = new Drawer({@model, router})
     @$signInDialog = new SignInDialog({@model, router})
+    @$conversationImageView = new ConversationImageView({@model, router})
 
     me = @model.user.getMe()
 
@@ -139,6 +145,7 @@ module.exports = class App
       $backupPage
       me: me
       signInDialogIsOpen: @model.signInDialog.isOpen()
+      imageViewOverlayImageData: @model.imageViewOverlay.getImageData()
       request: requests.doOnNext ({$page, req}) ->
         if $page instanceof Pages['FourOhFourPage']
           res?.status? 404
@@ -149,7 +156,7 @@ module.exports = class App
     @state.set rand: Math.random()
 
   render: =>
-    {request, $backupPage, $modal, me,
+    {request, $backupPage, $modal, me, imageViewOverlayImageData
       signInDialogIsOpen} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
@@ -173,3 +180,5 @@ module.exports = class App
 
             if signInDialogIsOpen
               z @$signInDialog
+            if imageViewOverlayImageData
+              z @$conversationImageView

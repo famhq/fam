@@ -38,7 +38,7 @@ module.exports = class Deck
         z '.g-grid',
           z @$deckCards,
             onCardClick: (card) =>
-              @router.go "/cards/#{card.id}"
+              @router.go "/card/#{card.id}"
           if deck?.id isnt me?.data?.clashRoyaleDeckId
             z '.set-as-deck',
               z @$setAsDeckButton,

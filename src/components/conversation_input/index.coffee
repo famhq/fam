@@ -28,7 +28,8 @@ module.exports = class ConversationInput
       @overlay$
       @model
       onUpload: ({key, width, height}) =>
-        @message.onNext "![](local://#{key} =#{width}x#{height})"
+        @message.onNext "![](#{config.USER_CDN_URL}/cm/#{key}.small.png" +
+                          " =#{width}x#{height})"
         @onPost()
     }
 
@@ -105,7 +106,7 @@ module.exports = class ConversationInput
                 icon: icon
                 color: if currentPanel is panel \
                        then colors.$white
-                       else colors.$white30
+                       else colors.$white34
                 isTouchTarget: true
                 touchHeight: '36px'
               }

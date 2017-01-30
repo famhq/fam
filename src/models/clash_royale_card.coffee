@@ -8,3 +8,6 @@ module.exports = class ClashRoyaleCard
 
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
+
+  getByKey: (key) =>
+    @auth.stream "#{@namespace}.getByKey", {key}

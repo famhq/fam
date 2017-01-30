@@ -22,7 +22,12 @@ module.exports = class Threads
       me: @model.user.getMe()
       threads: @model.thread.getAll().map (threads) ->
         _map threads, (thread) ->
-          {thread, $icon: new Icon()}
+          {
+            thread
+            $upvoteIcon: new Icon()
+            $downvoteIcon: new Icon()
+            $commentIcon: new Icon()
+          }
 
   render: =>
     {me, threads} = @state.getValue()
@@ -32,26 +37,56 @@ module.exports = class Threads
         z '.no-threads',
           'No threads found'
       else if threads
-        _map threads, ({thread, $icon}) =>
+        _map threads, ({thread, $upvoteIcon, $downvoteIcon, $commentIcon}) =>
           [
             z '.g-grid',
               @router.link z 'a.thread', {
                 href: "/thread/#{thread.id}/1"
               },
-                z '.count', thread.messageCount or 0
-                z '.info',
+                z '.content',
+                  z '.author',
+                    z '.name', @model.user.getDisplayName thread.user
+                    z '.middot',
+                      innerHTML: '&middot;'
+                    z '.time',
+                      if thread.addTime
+                      then moment(thread.addTime).fromNowModified()
+                      else '...'
                   z '.title', thread.title
                   z '.text', thread.firstMessage?.text
-                  z '.message-info',
-                    z 'span',
-                      @model.user.getDisplayName thread.firstMessage?.user
-                    z 'span', innerHTML: ' &middot; '
-                    z 'span', moment(thread.lastUpdateTime).fromNowModified()
-                z '.right',
-                  z $icon,
-                    icon: thread.platform
-                    isTouchTarget: false
-                    color: colors["$#{thread.platform}"]
+                  z '.stats',
+                    z '.votes',
+                      z $upvoteIcon,
+                        icon: 'upvote'
+                        color: colors.$white34
+                        size: '12px'
+                        touchWidth: '24px'
+                        touchHeight: '24px'
+                        onclick: =>
+                          @vote thread.id, 'up'
+                      z '.count', thread.score or 0
+                      z $downvoteIcon,
+                        icon: 'downvote'
+                        color: colors.$white34
+                        size: '12px'
+                        touchWidth: '24px'
+                        touchHeight: '24px'
+                        onclick: =>
+                          @vote thread.id, 'down'
+                    z '.comments',
+                      z $commentIcon,
+                        icon: 'comment'
+                        color: colors.$white34
+                        size: '12px'
+                        touchWidth: '24px'
+                        touchHeight: '24px'
+                      z '.count', thread.commentCount or 0
+
+
+                if thread.image
+                  z '.right',
+                    z 'img.image',
+                      src: thread.image
             z '.divider'
           ]
       else

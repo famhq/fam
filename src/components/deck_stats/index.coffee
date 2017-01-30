@@ -58,15 +58,15 @@ module.exports = class DeckStats
         #   z '.right',
         #     FormatService.percentage deck?.wins / totalMatches
 
-        z '.row',
-          z '.icon',
-            z @$statsIcon,
-              icon: 'stats'
-              color: colors.$tertiary300
-              isTouchTarget: false
-          # z '.stat.bold', 'Popularity'
-          # z '.right',
-          #   FormatService.rank deck?.popularity
+        # z '.row',
+        #   z '.icon',
+        #     z @$statsIcon,
+        #       icon: 'stats'
+        #       color: colors.$tertiary300
+        #       isTouchTarget: false
+        #   # z '.stat.bold', 'Popularity'
+        #   # z '.right',
+        #   #   FormatService.rank deck?.popularity
 
         # z '.row',
         #   z '.icon',

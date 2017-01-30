@@ -12,12 +12,20 @@
     flex-direction: column
     position: relative
 
+  > .overlay
+    position: fixed
+    z-index: 999999
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+
 .p-group-chat_title
   padding: 12px 0
   cursor: pointer
 
   .hashtag
-    color: getColor('$white30')
+    color: getColor('$white34')
 
   .arrow
     display: inline-block

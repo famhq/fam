@@ -10,7 +10,7 @@ getSize = ->
   }
 
 getBreakpoint = ->
-  if window?.innerWidth > 1280
+  if window?.innerWidth >= 1280
     'desktop'
   else
     'mobile'

@@ -12,7 +12,10 @@ if window?
 module.exports = class CardPage
   constructor: ({@model, requests, @router, serverData}) ->
     card = requests.flatMapLatest ({route}) =>
-      @model.clashRoyaleCard.getById route.params.id
+      if route.params.id
+        @model.clashRoyaleCard.getById route.params.id
+      else if route.params.key
+        @model.clashRoyaleCard.getByKey route.params.key
 
     @$head = new Head({
       @model

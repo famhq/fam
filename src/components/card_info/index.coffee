@@ -30,7 +30,7 @@ module.exports = class CardInfo
 
     @levelValueStreams = new Rx.ReplaySubject 1
     @levelValueStreams.onNext card.map (card) ->
-      _max(card.data.levels, 'level')?.level
+      _max(card.data?.levels, 'level')?.level
 
     @$crownIcon = new Icon()
     @$statsIcon = new Icon()
@@ -52,7 +52,7 @@ module.exports = class CardInfo
       me: me
       card: card
       selectedLevel: cardAndLevel.map ([card, level]) ->
-        level = _find card.data.levels, {level: parseInt(level)}
+        level = _find card.data?.levels, {level: parseInt(level)}
         _mapValues level, (stat) ->
           {stat, $el: new Icon()}
 

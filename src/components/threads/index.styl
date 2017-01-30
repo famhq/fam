@@ -30,24 +30,51 @@
         justify-content: center
         align-items: center
 
-      > .info
+      > .content
+        flex: 1
+
+        > .author
+          font-caption1()
+          color: getColor('$white34')
+          display: flex
+          align-items: center
+
+          > .name
+            margin-right: 4px
+
+          > .middot
+            margin-right: 4px
+
         > .title
           font-title()
-          margin-bottom: 8px
+          margin-top: 8px
 
         > .text
           font-body1()
-          color: getColor('$white70')
 
-        > .message-info
-          font-caption1()
-          color: getColor('$white30')
+        > .stats
+          responsive-font-caption()
+          color: getColor('$white34')
+          display: flex
+          align-items: center
+          margin-top: 8px
+
+          > .votes
+            display: flex
+            align-items: center
+
+          > .comments
+            margin-left: auto
+            display: flex
+            align-items: center
+
+      > .right
+        margin-left: auto
 
   > .divider
     width: 100%
     height: 1px
     background: getColor('$white12')
-    margin: 8px 0
 
   > .fab
     position: fixed
