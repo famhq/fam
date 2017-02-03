@@ -5,6 +5,7 @@ require 'moment-timezone'
 
 Icon = require '../icon'
 PrimaryInput = require '../primary_input'
+FormattedText = require '../formatted_text'
 colors = require '../../colors'
 
 if window?
@@ -37,11 +38,13 @@ module.exports = class EventInfo
 
     @state = z.state
       event: event
+      $description: event.map (event) ->
+        new FormattedText {text: event.description}
 
   afterMount: (@$$el) => null
 
   render: =>
-    {event} = @state.getValue()
+    {event, $description} = @state.getValue()
 
     event ?= {}
     minTrophies = event.data?.minTrophies
@@ -181,4 +184,4 @@ module.exports = class EventInfo
               icon: 'info'
               isTouchTarget: false
               color: colors.$tertiary500
-          z '.info', event.description
+          z '.info', $description

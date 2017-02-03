@@ -1,6 +1,7 @@
 Rx = require 'rx-lite'
 uuid = require 'uuid'
 _merge = require 'lodash/merge'
+_cloneDeep = require 'lodash/cloneDeep'
 _defaults = require 'lodash/defaults'
 
 module.exports = class Changefeed
@@ -11,9 +12,8 @@ module.exports = class Changefeed
 
   create: (diff, localDiff) =>
     clientId = uuid.v4()
-    time = Date.now()
 
-    @clientChangesStream.onNext _merge diff, {clientId, time}, localDiff
+    @clientChangesStream.onNext _merge diff, {clientId}, localDiff
 
     @auth.call "#{@namespace}.create", _merge diff, {clientId}
     .catch (err) ->

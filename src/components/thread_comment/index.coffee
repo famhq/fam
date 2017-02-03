@@ -33,7 +33,7 @@ module.exports = class ThreadComment
 
     @state = z.state
       threadComment: threadComment
-      $body: new FormattedText {text: threadComment.body, @model}
+      $body: new FormattedText {text: threadComment.body, @model, @router}
       isMe: isMe
       windowSize: @model.window.getSize()
 
@@ -49,7 +49,7 @@ module.exports = class ThreadComment
 
     z '.z-thread-comment', {
       # re-use elements in v-dom
-      key: "thread-comment-#{id or clientId}"
+      key: "thread-comment-#{clientId or id}"
       onclick: onclick
       className: z.classKebab {isSticker, isMe}
     },

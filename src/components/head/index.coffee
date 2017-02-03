@@ -20,14 +20,14 @@ module.exports = class Head
     meta = _merge {
       title: 'Starfire'
       description: 'The social hub for games'
-      icon256: '/images/zorium_icon_256.png'
+      icon256: 'http://cdn.wtf/d/images/starfire/web_icon_256.png'
       twitter:
-        siteHandle: '@ZoriumJS'
-        creatorHandle: '@ZoriumJS'
+        siteHandle: '@starfirehq'
+        creatorHandle: '@starfirehq'
         title: undefined
         description: undefined
         # min 280 x 150 < 1MB
-        image: '/images/zorium_icon_1024.png'
+        image: 'http://cdn.wtf/d/images/starfire/web_icon_1024.png'
 
       openGraph:
         title: undefined
@@ -35,7 +35,7 @@ module.exports = class Head
         description: undefined
         siteName: 'Starfire'
         # min 200 x 200, min reccomended 600 x 315, reccomended 1200 x 630
-        image: '/images/zorium_icon_1024.png'
+        image: 'http://cdn.wtf/d/images/starfire/web_icon_1024.png'
 
       ios:
         # min 152 x 152
@@ -97,8 +97,14 @@ module.exports = class Head
       z 'meta', {name: 'twitter:card', content: 'summary_large_image'}
       z 'meta', {name: 'twitter:site', content: "#{twitter.siteHandle}"}
       z 'meta', {name: 'twitter:creator', content: "#{twitter.creatorHandle}"}
-      z 'meta', {name: 'twitter:title', content: "#{twitter.title}"}
-      z 'meta', {name: 'twitter:description', content: "#{twitter.description}"}
+      z 'meta', {
+        name: 'twitter:title'
+        content: "#{twitter.title or meta.title}"
+      }
+      z 'meta', {
+        name: 'twitter:description'
+        content: "#{twitter.description or meta.description}"
+      }
       z 'meta', {name: 'twitter:image:src', content: "#{twitter.image}"}
 
       # Open Graph
@@ -171,7 +177,7 @@ module.exports = class Head
       z 'link',
         rel: 'stylesheet'
         type: 'text/css'
-        href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700'
+        href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,600'
 
       # styles
       if isInliningSource

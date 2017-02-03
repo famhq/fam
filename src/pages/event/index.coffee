@@ -23,10 +23,11 @@ module.exports = class EventPage
       @model
       requests
       serverData
-      meta: {
-        title: 'Event'
-        description: 'Event'
-      }
+      meta: event.map (event) ->
+        {
+          title: event.name
+          description: event.description
+        }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}

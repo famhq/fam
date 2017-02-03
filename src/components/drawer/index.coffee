@@ -32,6 +32,7 @@ module.exports = class Drawer
 
     @$deckCards = new DeckCards {
       @model, @router
+      cardsPerRow: 4
       deck: userDeck.map (userDeck) ->
         userDeck?.deck
     }
@@ -82,6 +83,12 @@ module.exports = class Drawer
               $icon: new Icon()
               iconName: 'friends'
             }
+          {
+            path: '/videos'
+            title: 'Videos'
+            $icon: new Icon()
+            iconName: 'video'
+          }
           {
             path: '/decks'
             title: 'Battle Decks'
@@ -152,6 +159,10 @@ module.exports = class Drawer
                else "#{drawerWidth}px"
     },
       z '.overlay', {
+        ontouchstart: (e) =>
+          e?.preventDefault()
+          e?.stopPropagation()
+          @model.drawer.close()
         onclick: (e) =>
           e?.preventDefault()
           @model.drawer.close()
@@ -241,8 +252,7 @@ module.exports = class Drawer
         else if me?.isMember
           z '.deck',
             z '.deck-cards',
-              z @$deckCards,
-                cardsPerRow: 4
+              z @$deckCards
               z '.stats',
                 "W#{userDeck?.wins or 0} /
                 L#{userDeck?.losses or 0} /

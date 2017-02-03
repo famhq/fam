@@ -57,4 +57,5 @@ module.exports = class DeckInput
                 @state.set isDeckPickerVisible: false
             }
           }
-          z @$deckPicker
+          z '.g-grid',
+            z @$deckPicker

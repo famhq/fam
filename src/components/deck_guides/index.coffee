@@ -33,7 +33,9 @@ module.exports = class DecksGuides extends Base
           if guide.data.deckId
             deckId = guide.data.deckId
             deck = @model.clashRoyaleDeck.getById deckId
-            $deck = @getCached$ guide.id, DeckCards, {@model, @router, deck}
+            $deck = @getCached$ guide.id, DeckCards, {
+              @model, @router, deck, cardsPerRow: 8
+            }
           {
             guide
             $deck: $deck

@@ -7,6 +7,7 @@ _debounce = require 'lodash/debounce'
 
 Spinner = require '../spinner'
 Base = require '../base'
+FormattedText = require '../formatted_text'
 ConversationInput = require '../conversation_input'
 ConversationMessage = require '../conversation_message'
 
@@ -53,11 +54,17 @@ module.exports = class Conversation extends Base
       .map (messages) =>
         isLoading.onNext false
         isLoaded = not _isEmpty @state.getValue().messages
+        # give time for $formattedMessage to resolve
         setTimeout =>
           @scrollToBottom {
             isSmooth: isLoaded
           }
-        , 0
+        , 100
+        setTimeout =>
+          @scrollToBottom {
+            isSmooth: isLoaded
+          }
+        , 500
         messages
       .catch (err) ->
         console.log err
@@ -107,9 +114,15 @@ module.exports = class Conversation extends Base
                         FIVE_MINUTES_MS
             isGrouped = message.userId is prevMessage?.userId and isRecent
             isMe = message.userId is me.id
-            $el = @getCached$ message.id, ConversationMessage, {
+            id = message.id or message.clientId
+            # if we get this in conversationmessasge, there's a flicker for
+            # state to get set
+            $body = @getCached$ message.clientId + ':text', FormattedText, {
+              @model, @router, text: message.body
+            }
+            $el = @getCached$ id, ConversationMessage, {
               message, @model, @router, @overlay$, isMe
-              isGrouped, selectedProfileDialogUser
+              isGrouped, selectedProfileDialogUser, $body
             }
             prevMessage = message
             {$el, isGrouped}
@@ -176,7 +189,7 @@ module.exports = class Conversation extends Base
         body: messageBody
         conversationId: conversation?.id
         userId: me?.id
-      }, {user: me}
+      }, {user: me, time: Date.now()}
       .then =>
         # @model.user.emit('chatMessage').catch log.error
         @state.set isPostLoading: false

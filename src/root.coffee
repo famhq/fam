@@ -167,8 +167,6 @@ init = ->
   .then ->
     model.portal.call 'app.isLoaded'
   .then ->
-    model.portal.call 'top.onData', routeHandler
-  .then ->
     if model.wasCached()
       z.untilStable $app, {timeout: 200} # arbitrary
   .catch -> null

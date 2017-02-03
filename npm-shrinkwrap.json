@@ -1215,7 +1215,7 @@
     "exoid": {
       "version": "0.1.7",
       "from": "git://github.com/claydotio/exoid.git",
-      "resolved": "git://github.com/claydotio/exoid.git#88f1dc5cce916ee525c0439130bc1ca72e8818a2",
+      "resolved": "git://github.com/claydotio/exoid.git#d2146fddb1ca4caf612b2edeb04fe3cc7dd9868c",
       "dependencies": {
         "bluebird": {
           "version": "2.11.0",
@@ -2755,6 +2755,11 @@
       "version": "2.13.0",
       "from": "moment@>=2.13.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/moment/-/moment-2.13.0.tgz"
+    },
+    "moment-duration-format": {
+      "version": "1.3.0",
+      "from": "moment-duration-format@latest",
+      "resolved": "https://registry.npmjs.org/moment-duration-format/-/moment-duration-format-1.3.0.tgz"
     },
     "moment-timezone": {
       "version": "0.5.11",

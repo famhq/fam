@@ -53,6 +53,7 @@ module.exports = class Thread
         text: thread.map (thread) ->
           thread.body
         @model
+        @router
       }
       windowSize: @model.window.getSize()
       threadComments: thread.flatMapLatest (thread) =>
@@ -81,6 +82,7 @@ module.exports = class Thread
               attributes:
                 frameborder: 0
                 allowfullscreen: true
+                webkitallowfullscreen: true
           else
             z '.header-image', {
               onclick: =>

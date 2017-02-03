@@ -5,8 +5,8 @@ DRAWER_MAX_WIDTH = 336
 
 getSize = ->
   {
-    width: window?.innerWidth
-    height: window?.innerHeight
+    width: window?.innerWidth# or 412
+    height: window?.innerHeight# or 732
   }
 
 getBreakpoint = ->

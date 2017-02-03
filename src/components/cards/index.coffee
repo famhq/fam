@@ -20,16 +20,11 @@ module.exports = class Cards extends Base
     @$spinner = new Spinner()
     @$addIcon = new Icon()
 
-    me = @model.user.getMe()
-    cardsAndMe = Rx.Observable.combineLatest(
-      @model.clashRoyaleCard.getAll({sort, filter})
-      me
-      (vals...) -> vals
-    )
+    cards = @model.clashRoyaleCard.getAll({sort, filter})
 
     @state = z.state
       me: @model.user.getMe()
-      cards: cardsAndMe.map ([cards, me]) =>
+      cards: cards.map (cards) =>
         _map cards, (card) =>
           $el = @getCached$ card.id, Card, {@model, @router, card}
           {

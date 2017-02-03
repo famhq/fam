@@ -27,7 +27,10 @@ module.exports = class Event
       @model
       @router
       conversation: event.flatMapLatest (event) =>
-        @model.conversation.getById event.conversationId
+        if event.conversationId
+          @model.conversation.getById event.conversationId
+        else
+          Rx.Observable.just null
       @overlay$
       selectedProfileDialogUser
       scrollYOnly: true

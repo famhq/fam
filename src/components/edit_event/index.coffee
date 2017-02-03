@@ -24,6 +24,7 @@ fields1 = [
     type: 'text'
     isDataField: true
     field: 'data.tournamentId'
+    isOptional: true
   }
   {
     label: 'Password protected'
@@ -135,7 +136,7 @@ module.exports = class EditEvent
     diff = _merge @$step1Form.getSaveDiff(), @$step2Form.getSaveDiff()
 
     @state.set isLoading: true
-    (if isNewEvent
+    (if isNewEvent or not event
       @model.event.create diff
     else
       @model.event.updateById event.id, diff
@@ -164,6 +165,7 @@ module.exports = class EditEvent
                           else @$step2Form.isCompleted()
         save:
           text: if isNewEvent then 'Create' else 'Save'
-          onclick: @save
+          onclick: =>
+            @save isNewEvent
         steps: 2
       }

@@ -30,11 +30,7 @@ module.exports = class ConversationInputTextarea
 
   setMessageFromEvent: (e) =>
     e or= window.event
-    if e.keyCode is 13 and not e.shiftKey
-      e.preventDefault()
-      @postMessage()
-    else
-      @setMessage e.target.value
+    @setMessage e.target.value
 
   setMessage: (message) =>
     currentValue = @message.getValue()
@@ -82,11 +78,16 @@ module.exports = class ConversationInputTextarea
           style:
             height: "#{textareaHeight}px"
           placeholder: 'Type a message'
-          onkeyup: @setMessageFromEvent
           onkeydown: (e) ->
             if e.keyCode is 13 and not e.shiftKey
               e.preventDefault()
-          oninput: @resizeTextarea
+          onkeyup: (e) =>
+            if e.keyCode is 13 and not e.shiftKey
+              e.preventDefault()
+              @postMessage()
+          oninput: (e) =>
+            @resizeTextarea e
+            @setMessageFromEvent e
           ontouchstart: (e) =>
             isFocused = e.target is document.activeElement
             if isFocused

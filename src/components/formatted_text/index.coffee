@@ -2,11 +2,15 @@ z = require 'zorium'
 supportsWebP = window? and require 'supports-webp'
 remark = require 'remark'
 vdom = require 'remark-vdom'
+Rx = require 'rx-lite'
 
 config = require '../../config'
 
+if window?
+  require './index.styl'
+
 module.exports = class FormattedText
-  constructor: ({text, model}) ->
+  constructor: ({text, model, @router}) ->
     text = if text?.map then text else Rx.Observable.just text
 
     $el = text?.map?((text) => @get$ {text, model}) or @get$ {text, model}
@@ -54,16 +58,26 @@ module.exports = class FormattedText
                 aspectRatio: imageAspectRatio
               }
           }
-        a: (tagName, props, children) ->
+        a: (tagName, props, children) =>
           z 'a.link', {
             href: props.href
-            onclick: (e) ->
+            onclick: (e) =>
               e?.stopPropagation()
               e?.preventDefault()
-              model.portal.call 'browser.openWindow', {
-                url: props.href
-                target: '_system'
-              }
+
+              isAbsoluteUrl = props.href?.match /^(?:[a-z]+:)?\/\//i
+              starfireRegex = new RegExp "https?://#{config.HOST}", 'i'
+              isStarfire = props.href?.match starfireRegex
+              if not isAbsoluteUrl or isStarfire
+                path = if isStarfire \
+                       then props.href.replace starfireRegex, ''
+                       else props.href
+                @router.go path
+              else
+                model.portal.call 'browser.openWindow', {
+                  url: props.href
+                  target: '_system'
+                }
           }, children
     }
     .process text
@@ -71,4 +85,6 @@ module.exports = class FormattedText
 
   render: =>
     {$el} = @state.getValue()
-    $el
+
+    z '.z-formatted-text',
+      $el

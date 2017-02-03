@@ -1,9 +1,11 @@
 z = require 'zorium'
+Rx = require 'rx-lite'
 
 Head = require '../../components/head'
 GroupMembers = require '../../components/group_members'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
+ProfileDialog = require '../../components/profile_dialog'
 colors = require '../../colors'
 
 if window?
@@ -25,19 +27,27 @@ module.exports = class GroupManageMemberPage
         description: 'Group Members'
       }
     })
-    @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@model, @router}
+
+    selectedProfileDialogUser = new Rx.BehaviorSubject null
+
+    @$appBar = new AppBar {model}
+    @$buttonBack = new ButtonBack {model, @router}
     @$groupMembers = new GroupMembers {
-      model, @router, serverData, group
+      model, @router, serverData, group, selectedProfileDialogUser
+    }
+
+    @$profileDialog = new ProfileDialog {
+      model, @router, group, selectedProfileDialogUser
     }
 
     @state = z.state
       windowSize: model.window.getSize()
+      selectedProfileDialogUser: selectedProfileDialogUser
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, selectedProfileDialogUser} = @state.getValue()
 
     z '.p-group-manage-member', {
       style:
@@ -50,3 +60,6 @@ module.exports = class GroupManageMemberPage
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }
       @$groupMembers
+
+      if selectedProfileDialogUser
+        @$profileDialog

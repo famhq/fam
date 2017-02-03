@@ -20,10 +20,10 @@ getCardSizeInfo = ->
     else
       {cardsPerRow: DEFAULT_CARDS_PER_ROW}
   else
-    {itemsPerRow: DEFAULT_CARDS_PER_ROW}
+    {cardsPerRow: DEFAULT_CARDS_PER_ROW}
 
 module.exports = class DeckCards extends Base
-  constructor: ({deck}) ->
+  constructor: ({deck, cardsPerRow}) ->
     unless deck.map
       deck = Rx.Observable.just deck
 
@@ -32,21 +32,25 @@ module.exports = class DeckCards extends Base
 
     @state = z.state
       deck: deck
+      cardsPerRow: cardsPerRow
       cardGroups: deck.map (deck) =>
         cards = _map deck?.cards, (card, i) =>
           $el = @getCached$ (card?.id or "empty-#{i}"), Card, {card}
           {card, $el}
-        _chunk cards, @cardSizeInfo.cardsPerRow
+        _chunk cards, cardsPerRow or @cardSizeInfo.cardsPerRow
 
   afterMount: (@$$el) => null
 
-  render: ({onCardClick, cardsPerRow, cardWidth} = {}) =>
-    {cardGroups} = @state.getValue()
+  render: ({onCardClick, cardWidth} = {}) =>
+    {cardGroups, cardsPerRow} = @state.getValue()
 
     cardsPerRow ?= @cardSizeInfo.cardsPerRow
     cardWidth ?= Math.floor(@$$el?.offsetWidth / cardsPerRow)
 
-    z '.z-deck-cards',
+    z '.z-deck-cards', {
+      style:
+        minHeight: "#{(96 / 76) * cardWidth}px"
+    },
       _map cardGroups, (cards) ->
         z '.row',
         _map cards, ({card, $el}) ->

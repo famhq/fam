@@ -19,7 +19,8 @@ class RouterService
     if route is '/' or route is '/community' or reset
       @history = [route]
 
-    @router.go route
+    if route
+      @router.go route
 
   back: ({fromNative} = {}) =>
     if @onBackFn

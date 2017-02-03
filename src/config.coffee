@@ -38,13 +38,20 @@ ONE_DAY_SECONDS = 3600 * 24 * 1
 TWO_DAYS_SECONDS = 3600 * 24 * 2
 THREE_DAYS_SECONDS = 3600 * 24 * 3
 
+# FIXME: for some reason socket.io is
+# returning null for every request
 API_URL =
-  serverEnv.PRIVATE_RADIOACTIVE_API_URL or # server
+  serverEnv.RADIOACTIVE_API_URL or # server
   process.env.PUBLIC_RADIOACTIVE_API_URL # client
 
-API_HOST_ARRAY = API_URL.split('/')
-API_HOST = API_HOST_ARRAY[0] + '//' + API_HOST_ARRAY[2]
-API_PATH = API_URL.replace API_HOST, ''
+isUrl = API_URL.indexOf('/') isnt -1
+if isUrl
+  API_HOST_ARRAY = API_URL.split('/')
+  API_HOST = API_HOST_ARRAY[0] + '//' + API_HOST_ARRAY[2]
+  API_PATH = API_URL.replace API_HOST, ''
+else
+  API_HOST = API_URL
+  API_PATH = ''
 # All keys must have values at run-time (value may be null)
 isomorphic =
   CDN_URL: 'https://cdn.wtf/d/images/starfire'

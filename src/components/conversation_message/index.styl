@@ -43,16 +43,22 @@
       margin-top: 6px
       overflow: hidden
 
-      > div
-        > .link
-          text-decoration: underline
+      p
+        &:first-child
+          margin-top: 0
 
-        > .sticker
-          width: 70px
-          height: 70px
-          background-size: 100%
-          background-repeat: no-repeat
-          margin-right: auto
+        &:last-child
+          margin-bottom: 0
+
+      .link
+        text-decoration: underline
+
+      .sticker
+        width: 70px
+        height: 70px
+        background-size: 100%
+        background-repeat: no-repeat
+        margin-right: auto
 
     > .card
       background: getColor('$black')

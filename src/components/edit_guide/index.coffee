@@ -25,7 +25,7 @@ module.exports = class EditGuide
       @model.clashRoyaleDeck.getById guide.data.deckId
       .map (deck) ->
         deck.cards
-    ) or []
+    ) or Rx.Observable.just []
     @$deckInput = new DeckInput {@model, @router, selectedCardsStreams}
 
     @$step1Form = new LongForm {

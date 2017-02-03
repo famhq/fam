@@ -65,6 +65,7 @@ module.exports = class GroupChatPage
     @$profileDialog = new ProfileDialog {
       @model
       @router
+      group
       selectedProfileDialogUser: selectedProfileDialogUser
     }
 

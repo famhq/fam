@@ -12,8 +12,8 @@ Pages =
   SignInPage: require './pages/sign_in'
   JoinPage: require './pages/join'
   FriendsPage: require './pages/friends'
+  VideosPage: require './pages/videos'
   ConversationPage: require './pages/conversation'
-  ConversationsPage: require './pages/conversations'
   NewConversationPage: require './pages/new_conversation'
   AddEventPage: require './pages/add_event'
   EditEventPage: require './pages/edit_event'
@@ -82,11 +82,11 @@ module.exports = class App
             })
           return $cachedPages[pageKey]
 
-    route '/', 'HomePage'
-    # route '/', 'CommunityPage'
+    # route '/', 'HomePage'
+    route ['/', '/community'], 'CommunityPage'
     route ['/friends/:action', '/friends'], 'FriendsPage'
+    route '/videos', 'VideosPage'
     route '/conversation/:conversationId', 'ConversationPage'
-    route '/conversations', 'ConversationsPage'
     route '/newConversation', 'NewConversationPage'
     route '/addEvent', 'AddEventPage'
     route '/events', 'EventsPage'
@@ -94,7 +94,6 @@ module.exports = class App
     route '/event/:id/edit', 'EditEventPage'
     route '/thread/:id/reply', 'ThreadReplyPage'
     route ['/thread/:id/:page', '/thread/:id'], 'ThreadPage'
-    route '/community', 'CommunityPage'
     route '/group/:id', 'GroupPage'
     route '/group/:id/chat', 'GroupChatPage'
     route '/group/:id/members', 'GroupMembersPage'

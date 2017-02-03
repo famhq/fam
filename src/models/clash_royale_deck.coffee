@@ -1,5 +1,5 @@
 module.exports = class ClashRoyaleDeck
-  namespace: 'clashRoyaleDeck'
+  namespace: 'clashRoyaleDecks'
 
   constructor: ({@auth}) -> null
 
