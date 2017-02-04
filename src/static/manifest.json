@@ -1,16 +1,16 @@
 {
-  "short_name": "Starfire",
-  "name": "Starfire",
+  "short_name": "Starfi.re",
+  "name": "Starfi.re",
   "start_url": "./?utm_source=web_app_manifest",
   "icons": [
     {
-      "src": "/images/zorium_icon_256.png",
+      "src": "https://cdn.wtf/d/images/starfire/web_icon_256.png",
       "sizes": "256x256",
       "type": "image/png"
     }
   ],
-  "background_color": "#FAFAFA",
-  "theme_color": "#00796B",
+  "background_color": "#1a1a1a",
+  "theme_color": "#fa464e",
   "display": "standalone",
   "orientation": "portrait"
 }

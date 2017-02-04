@@ -10,6 +10,7 @@ Avatar = require '../avatar'
 DeckCards = require '../deck_cards'
 FlatButton = require '../flat_button'
 GroupBadge = require '../group_badge'
+Ripple = require '../ripple'
 colors = require '../../colors'
 
 if window?
@@ -53,6 +54,7 @@ module.exports = class Drawer
           {
             group
             $badge: new GroupBadge {@model, group}
+            $ripple: new Ripple()
           }
       userDeck: userDeck
       isAddWinLoading: false
@@ -67,6 +69,7 @@ module.exports = class Drawer
             path: '/events'
             title: 'Tournaments'
             $icon: new Icon()
+            $ripple: new Ripple()
             iconName: 'trophy'
           }
           if me.isMember
@@ -74,6 +77,7 @@ module.exports = class Drawer
               path: '/community'
               title: 'Community'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'chat'
             }
           if me.isMember
@@ -81,24 +85,28 @@ module.exports = class Drawer
               path: '/friends'
               title: 'Friends'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'friends'
             }
           {
             path: '/videos'
             title: 'Videos'
             $icon: new Icon()
+            $ripple: new Ripple()
             iconName: 'video'
           }
           {
             path: '/decks'
             title: 'Battle Decks'
             $icon: new Icon()
+            $ripple: new Ripple()
             iconName: 'decks'
           }
           {
             path: '/cards'
             title: 'Battle Cards'
             $icon: new Icon()
+            $ripple: new Ripple()
             iconName: 'cards'
           }
           # {
@@ -108,12 +116,14 @@ module.exports = class Drawer
           #   path: '/refer'
           #   title: 'Refer a member'
           #   $icon: new Icon()
+          #   $ripple: new Ripple()
           #   iconName: 'gem'
           # }
           # {
           #   path: '/settings'
           #   title: 'Settings'
           #   $icon: new Icon()
+          #   $ripple: new Ripple()
           #   iconName: 'settings'
           # }
           if me.isMember
@@ -121,6 +131,7 @@ module.exports = class Drawer
               path: '/profile'
               title: 'Profile'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'profile'
             }
           ])
@@ -133,6 +144,7 @@ module.exports = class Drawer
                   console.log code
               title: 'Scan Code'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'search'
             }
           ] else []
@@ -186,8 +198,8 @@ module.exports = class Drawer
           z '.content',
             z 'ul.menu',
               [
-                _map myGroups, ({$badge, group}) =>
-                  isSelected = currentPath.indexOf("/group/#{group.id}") is 0
+                _map myGroups, ({$badge, $ripple, group}) =>
+                  isSelected = currentPath?.indexOf("/group/#{group.id}") is 0
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}
                   },
@@ -201,12 +213,14 @@ module.exports = class Drawer
                       z '.icon',
                         z $badge
                       @model.group.getDisplayName group
+                      $ripple
 
                 unless _isEmpty myGroups
                   z '.divider'
 
                 _map menuItems, (menuItem) =>
-                  {path, onClick, title, $icon, iconName, isDivider} = menuItem
+                  {path, onClick, title, $icon, $ripple,
+                    iconName, isDivider} = menuItem
                   if isDivider
                     return z 'li.divider'
                   isSelected = currentPath?.indexOf(path) is 0 or (
@@ -230,6 +244,7 @@ module.exports = class Drawer
                           icon: iconName
                           color: colors.$primary500
                       title
+                      z $ripple
               ]
         if me?.isMember and not userDeck
           z '.no-deck',

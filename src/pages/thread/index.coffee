@@ -12,6 +12,8 @@ if window?
   require './index.styl'
 
 module.exports = class ThreadPage
+  hideDrawer: true
+
   constructor: ({@model, requests, @router, serverData}) ->
     thread = requests.flatMapLatest ({route}) =>
       @model.thread.getById route.params.id

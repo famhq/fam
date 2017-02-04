@@ -1,8 +1,8 @@
 z = require 'zorium'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 ChannelList = require '../channel_list'
 Icon = require '../icon'
+Fab = require '../fab'
 colors = require '../../colors'
 
 if window?
@@ -11,7 +11,7 @@ if window?
 module.exports = class GroupInfo
   constructor: ({@model, @router, group}) ->
 
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
     @$addIcon = new Icon()
     @$channelList = new ChannelList {@model, group}
 

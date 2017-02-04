@@ -44,6 +44,8 @@ API_URL =
   serverEnv.RADIOACTIVE_API_URL or # server
   process.env.PUBLIC_RADIOACTIVE_API_URL # client
 
+DEV_USE_HTTPS = process.env.DEV_USE_HTTPS and process.env.DEV_USE_HTTPS isnt '0'
+
 isUrl = API_URL.indexOf('/') isnt -1
 if isUrl
   API_HOST_ARRAY = API_URL.split('/')
@@ -69,6 +71,8 @@ isomorphic =
   API_URL: API_URL
   API_HOST: API_HOST
   API_PATH: API_PATH
+  VAPID_PUBLIC_KEY: process.env.RADIOACTIVE_VAPID_PUBLIC_KEY
+  DEV_USE_HTTPS: DEV_USE_HTTPS
   AUTH_COOKIE: 'accessToken'
   ENV:
     serverEnv.NODE_ENV or
@@ -120,14 +124,16 @@ isomorphic =
 # All keys must have values at run-time (value may be null)
 PORT = serverEnv.STARFIRE_PORT or 3000
 WEBPACK_DEV_PORT = serverEnv.WEBPACK_DEV_PORT or parseInt(PORT) + 1
+WEBPACK_DEV_PROTOCOL = if DEV_USE_HTTPS then 'https://' else 'http://'
 
 server =
   PORT: PORT
 
   # Development
   WEBPACK_DEV_PORT: WEBPACK_DEV_PORT
+  WEBPACK_DEV_PROTOCOL: WEBPACK_DEV_PROTOCOL
   WEBPACK_DEV_URL: serverEnv.WEBPACK_DEV_URL or
-    "http://#{HOSTNAME}:#{WEBPACK_DEV_PORT}"
+    "#{WEBPACK_DEV_PROTOCOL}#{HOSTNAME}:#{WEBPACK_DEV_PORT}"
   SELENIUM_TARGET_URL: serverEnv.SELENIUM_TARGET_URL or null
   REMOTE_SELENIUM: serverEnv.REMOTE_SELENIUM is '1'
   SELENIUM_BROWSER: serverEnv.SELENIUM_BROWSER or 'chrome'

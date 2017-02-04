@@ -1,8 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 moment = require 'moment'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
-ProfileDialog = require '../profile_dialog'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
 _isEmpty = require 'lodash/isEmpty'
@@ -14,6 +12,8 @@ ThreadComment = require '../thread_comment'
 DeckCards = require '../deck_cards'
 Spinner = require '../spinner'
 FormattedText = require '../formatted_text'
+Fab = require '../fab'
+ProfileDialog = require '../profile_dialog'
 FormatService = require '../../services/format'
 
 if window?
@@ -26,7 +26,7 @@ module.exports = class Thread
     @$upvoteIcon = new Icon()
     @$downvoteIcon = new Icon()
 
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
     @$avatar = new Avatar()
 
     @selectedProfileDialogUser = new Rx.BehaviorSubject false

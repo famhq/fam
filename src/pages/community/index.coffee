@@ -1,6 +1,5 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -10,6 +9,7 @@ Groups = require '../../components/groups'
 Conversations = require '../../components/conversations'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
+Fab = require '../../components/fab'
 colors = require '../../colors'
 
 if window?
@@ -40,7 +40,7 @@ module.exports = class CommunityPage
     @$threadsIcon = new Icon()
     @$groupsIcon = new Icon()
     @$conversationsIcon = new Icon()
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
     @$plusIcon = new Icon()
 
     @state = z.state

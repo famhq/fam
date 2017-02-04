@@ -7,6 +7,7 @@ _truncate = require 'lodash/truncate'
 Icon = require '../icon'
 Avatar = require '../avatar'
 ConversationImageView = require '../conversation_image_view'
+Ripple = require '../ripple'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -22,6 +23,7 @@ module.exports = class ConversationMessage
       @selectedProfileDialogUser, @router} = options
 
     @$avatar = new Avatar()
+    @$ripple = new Ripple()
 
     @imageData = new Rx.BehaviorSubject null
     @$conversationImageView = new ConversationImageView {
@@ -87,12 +89,10 @@ module.exports = class ConversationMessage
           z '.card', {
             onclick: (e) =>
               e?.stopPropagation()
-              @model.portal.call 'browser.openWindow', {
-                url: card.url
-                target: '_system'
-              }
+              @router.openLink card.url
           },
             z '.title', _truncate card.title, {length: TITLE_LENGTH}
             z '.description', _truncate card.description, {
               length: DESCRIPTION_LENGTH
             }
+      @$ripple

@@ -1,7 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _filter = require 'lodash/filter'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -12,6 +11,7 @@ GroupAnnouncements = require '../../components/group_announcements'
 GroupMembers = require '../../components/group_members'
 ProfileDialog = require '../../components/profile_dialog'
 Tabs = require '../../components/tabs'
+Fab = require '../../components/fab'
 Icon = require '../../components/icon'
 colors = require '../../colors'
 
@@ -56,7 +56,7 @@ module.exports = class GroupPage
     @$groupChatIcon = new Icon()
     @$groupAnnouncementsIcon = new Icon()
     @$groupMembersIcon = new Icon()
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
     @$plusIcon = new Icon()
     @$profileDialog = new ProfileDialog {
       @model

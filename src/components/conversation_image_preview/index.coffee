@@ -1,7 +1,7 @@
 z = require 'zorium'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Icon = require '../icon'
+Fab = require '../fab'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -12,7 +12,7 @@ module.exports = class ConversationImagePreview
   constructor: ({@imageData, @model, @overlay$, @onUpload}) ->
     @$sendIcon = new Icon()
     @$closeImagePreviewIcon = new Icon()
-    @$uploadImageFab = new FloatingActionButton()
+    @$uploadImageFab = new Fab()
     @$uploadIcon = new Icon()
 
     @state = z.state

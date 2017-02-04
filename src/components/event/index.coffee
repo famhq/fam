@@ -67,7 +67,7 @@ module.exports = class Event
     {overlay$, isJoinLoading, selectedProfileDialogUser, me,
       event} = @state.getValue()
 
-    isFull = event?.userIds.length >= event?.maxUserCount
+    isFull = event?.userIds?.length >= event?.maxUserCount
     hasMemberPermission = @model.event.hasPermission event, me, {
       level: 'member'
     }

@@ -1,4 +1,5 @@
 Environment = require 'clay-environment'
+base64ToArrayBuffer = require 'base64-arraybuffer'
 
 config = require '../config'
 
@@ -40,7 +41,18 @@ module.exports = class Portal
     # fallbacks
     @portal.on 'app.onResume', -> null
     @portal.on 'top.onData', -> null
-    @portal.on 'push.register', -> null
+    @portal.on 'push.register', ->
+      console.log 'try'
+      # navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
+      #   console.log 'ready'
+      #   # TODO: check if reg'd first
+      #    # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions
+      #   arrayBufferKey = base64ToArrayBuffer.decode config.VAPID_PUBLIC_KEY
+      #   console.log arrayBufferKey
+      #   serviceWorkerRegistration.pushManager.subscribe {
+      #     userVisibleOnly: true,
+      #     applicationServerKey: arrayBufferKey
+      #   }
 
     @portal.on 'messenger.isInstalled', -> false
 

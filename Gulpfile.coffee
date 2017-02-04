@@ -132,10 +132,18 @@ gulp.task 'dev:webpack-server', ->
     ]
   }, webpackBase
 
-  new WebpackDevServer compiler,
+  webpackOptions =
     publicPath: "#{config.WEBPACK_DEV_URL}/"
     hot: true
     noInfo: true
+
+  if config.DEV_USE_HTTPS
+    console.log 'using https'
+    webpackOptions.https = true
+    webpackOptions.key = fs.readFileSync './bin/starfire-dev.key'
+    webpackOptions.cert = fs.readFileSync './bin/starfire-dev.crt'
+
+  new WebpackDevServer compiler, webpackOptions
   .listen config.WEBPACK_DEV_PORT, (err) ->
     if err
       log.error err
@@ -174,7 +182,7 @@ gulp.task 'dist:static', ['dist:clean'], ->
 
 gulp.task 'dist:scripts', ['dist:clean'], ->
   scriptsConfig = _defaultsDeep {
-    devtool: 'source-map'
+    # devtool: 'source-map'
     plugins: [
       # new Visualizer()
       new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])

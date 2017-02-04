@@ -1,3 +1,5 @@
+config = require '../config'
+
 ev = (fn) ->
   # coffeelint: disable=missing_fat_arrows
   (e) ->
@@ -21,6 +23,21 @@ class RouterService
 
     if route
       @router.go route
+
+  openLink: (url) =>
+    isAbsoluteUrl = url?.match /^(?:[a-z]+:)?\/\//i
+    starfireRegex = new RegExp "https?://#{config.HOST}", 'i'
+    isStarfire = url?.match starfireRegex
+    if not isAbsoluteUrl or isStarfire
+      path = if isStarfire \
+             then url.replace starfireRegex, ''
+             else url
+      @go path
+    else
+      @model.portal.call 'browser.openWindow', {
+        url: url
+        target: '_system'
+      }
 
   back: ({fromNative} = {}) =>
     if @onBackFn

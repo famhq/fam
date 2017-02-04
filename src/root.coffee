@@ -109,6 +109,14 @@ init = ->
   $app = z app
   z.bind root, $app
 
+  # check out readme for local ssl
+  # TODO
+  # navigator.serviceWorker?.register '/service_worker.js'
+  # .then (res) ->
+  #   console.log res
+  # .catch (err) ->
+  #   console.log 'err', err
+
   model.portal.call 'networkInformation.onOffline', onOffline
   model.portal.call 'networkInformation.onOnline', onOnline
 

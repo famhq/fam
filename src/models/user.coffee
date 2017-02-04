@@ -37,7 +37,7 @@ module.exports = class User
     me?.data?.blockedUserIds?.indexOf(userId) isnt -1
 
   isFollowing: (me, userId) ->
-    me?.data?.followingIds.indexOf(userId) isnt -1
+    me?.data?.followingIds?.indexOf(userId) isnt -1
 
   setAvatarImage: (file) =>
     formData = new FormData()

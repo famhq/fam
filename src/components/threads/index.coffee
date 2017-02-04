@@ -1,12 +1,12 @@
 z = require 'zorium'
 moment = require 'moment'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
 
 colors = require '../../colors'
 Icon = require '../icon'
 Spinner = require '../spinner'
+Fab = require '../fab'
 
 if window?
   require './index.styl'
@@ -16,7 +16,7 @@ module.exports = class Threads
     @$spinner = new Spinner()
     @$addIcon = new Icon()
 
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
 
     @state = z.state
       me: @model.user.getMe()

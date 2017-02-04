@@ -8,6 +8,7 @@
   width: 100%
   box-sizing: border-box
   overflow: hidden
+  position: relative
 
   &.is-grouped
     padding-top: 4px
@@ -38,6 +39,8 @@
 
     > .body
       font-body1()
+      position: relative
+      z-index: 2
       color: getColor('$tertiary900Text')
       padding-right: 16px
       margin-top: 6px
@@ -61,6 +64,8 @@
         margin-right: auto
 
     > .card
+      position: relative
+      z-index: 2
       background: getColor('$black')
       padding: 8px
       margin-top: 12px

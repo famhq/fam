@@ -16,7 +16,7 @@ module.exports = class ConversationInputTextarea
     {@message, @onPost, @onResize, @isTextareaFocused, @toggleIScroll
       @hasText, @model} = options
 
-    @$sendIcon = new Icon()
+    @$sendIcon = new Icon {hasRipple: true}
 
     @isTextareaFocused ?= new Rx.BehaviorSubject false
 

@@ -1,6 +1,7 @@
 z = require 'zorium'
 _defaultsDeep = require 'lodash/defaultsDeep'
-Button = require 'zorium-paper/button'
+
+Button = require '../button'
 colors = require '../../colors'
 
 module.exports = class FlatButton extends Button

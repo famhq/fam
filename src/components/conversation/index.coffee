@@ -145,7 +145,14 @@ module.exports = class Conversation extends Base
   beforeUnmount: =>
     # to update conversations page, etc...
     unless @isGroup
-      @model.exoid.invalidateAll()
+      # race condition without timeout.
+      # new page tries to get new exoid stuff, but it gets cleared at same
+      # exact time. caused an issue of leaving event page back to home,
+      # and home had no responses / empty streams / unobserved streams
+      # for group data
+      setTimeout =>
+        @model.exoid.invalidateAll()
+      , 0
     @messages.onNext []
 
     @model.portal.call 'push.setContextId', {

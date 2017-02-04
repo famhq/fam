@@ -7,6 +7,7 @@ if window?
   require './index.styl'
 
 module.exports = class AddDeckPage
+  hideDrawer: true
   constructor: ({model, requests, @router, serverData}) ->
     @$head = new Head({
       model

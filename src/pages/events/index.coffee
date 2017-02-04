@@ -1,5 +1,4 @@
 z = require 'zorium'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -7,6 +6,7 @@ ButtonMenu = require '../../components/button_menu'
 Events = require '../../components/events'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
+Fab = require '../../components/fab'
 colors = require '../../colors'
 
 if window?
@@ -25,7 +25,7 @@ module.exports = class EventsPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
     @$addIcon = new Icon()
 
     @$allEvents = new Events {@model, @router}

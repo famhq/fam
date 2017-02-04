@@ -65,19 +65,7 @@ module.exports = class FormattedText
               e?.stopPropagation()
               e?.preventDefault()
 
-              isAbsoluteUrl = props.href?.match /^(?:[a-z]+:)?\/\//i
-              starfireRegex = new RegExp "https?://#{config.HOST}", 'i'
-              isStarfire = props.href?.match starfireRegex
-              if not isAbsoluteUrl or isStarfire
-                path = if isStarfire \
-                       then props.href.replace starfireRegex, ''
-                       else props.href
-                @router.go path
-              else
-                model.portal.call 'browser.openWindow', {
-                  url: props.href
-                  target: '_system'
-                }
+              @router.openLink props.href
           }, children
     }
     .process text

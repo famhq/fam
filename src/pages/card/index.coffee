@@ -10,6 +10,8 @@ if window?
   require './index.styl'
 
 module.exports = class CardPage
+  hideDrawer: true
+
   constructor: ({@model, requests, @router, serverData}) ->
     card = requests.flatMapLatest ({route}) =>
       if route.params.id

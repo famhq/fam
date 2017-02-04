@@ -38,7 +38,7 @@
     "karma-mocha": "^0.2.0",
     "karma-phantomjs-launcher": "^0.2.1",
     "karma-sourcemap-loader": "^0.3.6",
-    "karma-webpack": "^1.7.0",
+    "karma-webpack": "^1.8.1",
     "mocha": "^2.3.2",
     "node-libs-browser": "^0.5.2",
     "phantomjs": "^1.9.18",
@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "assert-none-missing": "git://github.com/claydotio/assert-none-missing.git",
+    "base64-arraybuffer": "^0.1.5",
     "bluebird": "^3.4.6",
     "body-parser": "^1.14.1",
     "chartist": "^0.10.1",

@@ -115,10 +115,6 @@ app.use (req, res, next) ->
     timeout: 5000
     transports: ['websocket', 'polling']
   }
-  console.log config.API_HOST, (config.API_PATH or '') + '/socket.io'
-  io.on 'connect', -> console.log 'conn'
-  io.on 'connect_error', (err) -> console.log 'err', err
-  io.on 'error', (err) -> console.log err
   model = new Model({cookieSubject, io, serverHeaders: req.headers})
   requests = new Rx.BehaviorSubject(req)
   serverData = {req, res, styles, bundlePath}

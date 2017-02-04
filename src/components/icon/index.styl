@@ -9,6 +9,12 @@
     margin: auto
     -webkit-tap-highlight-color: transparent
 
+  &.has-ripple
+    position: relative
+    border-radius: 50%
+    z-index: 1 // req for rounded clipping of ripple
+    overflow: hidden
+
   &.is-clickable
     cursor: pointer
 

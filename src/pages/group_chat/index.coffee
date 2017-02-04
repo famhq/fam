@@ -7,6 +7,7 @@ AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
+Ripple = require '../../components/ripple'
 colors = require '../../colors'
 
 if window?
@@ -53,6 +54,7 @@ module.exports = class GroupChatPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
+    @$titleRipple = new Ripple()
 
     @$groupChat = new GroupChat {
       @model
@@ -107,9 +109,15 @@ module.exports = class GroupChatPage
           z 'span.hashtag', '#'
           conversation?.name
           z '.arrow'
+          z @$titleRipple
         bgColor: colors.$tertiary700
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {
+          color: colors.$primary500
+          onclick: =>
+            @isChannelDrawerOpen.onNext false
+            @model.drawer.open()
+        }
         $topRightButton:
           z '.p-group_top-right',
             z '.icon',

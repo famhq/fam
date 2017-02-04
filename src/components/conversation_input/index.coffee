@@ -37,7 +37,7 @@ module.exports = class ConversationInput
 
     @panels =
       text: {
-        $icon: new Icon()
+        $icon: new Icon {hasRipple: true}
         icon: 'text'
         $el: new ConversationInputTextarea {
           onPost: @post
@@ -50,7 +50,7 @@ module.exports = class ConversationInput
         }
       }
       # stickers: {
-      #   $icon: new Icon()
+      #   $icon: new Icon {hasRipple: true}
       #   icon: 'stickers'
       #   $el: new ConversationInputStickers {
       #     onPost: @post
@@ -58,13 +58,13 @@ module.exports = class ConversationInput
       #   }
       # }
       image: {
-        $icon: new Icon()
+        $icon: new Icon {hasRipple: true}
         icon: 'image'
         onclick: -> null
         $uploadOverlay: new UploadOverlay {@model}
       }
       gifs: {
-        $icon: new Icon()
+        $icon: new Icon {hasRipple: true}
         icon: 'gifs'
         $el: new ConversationInputGifs {
           onPost: @post
@@ -108,6 +108,7 @@ module.exports = class ConversationInput
                        then colors.$white
                        else colors.$white34
                 isTouchTarget: true
+                touchWidth: '36px'
                 touchHeight: '36px'
               }
               if $uploadOverlay

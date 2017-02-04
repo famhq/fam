@@ -1,6 +1,5 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -9,6 +8,7 @@ Decks = require '../../components/decks'
 DeckGuides = require '../../components/deck_guides'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
+Fab = require '../../components/fab'
 colors = require '../../colors'
 
 if window?
@@ -27,7 +27,7 @@ module.exports = class DecksPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
     @$addIcon = new Icon()
 
     @$deckGuides = new DeckGuides {@model, @router, sort: 'popular'}
@@ -84,10 +84,10 @@ module.exports = class DecksPage
             isTouchTarget: false
             color: colors.$white
           }
-          onclick: =>
-            @model.signInDialog.openIfGuest me
-            .then =>
-              if selectedIndex is 0
-                @router.go '/addGuide'
-              else
-                @router.go '/addDeck'
+          # onclick: =>
+          #   @model.signInDialog.openIfGuest me
+          #   .then =>
+          #     if selectedIndex is 0
+          #       @router.go '/addGuide'
+          #     else
+          #       @router.go '/addDeck'

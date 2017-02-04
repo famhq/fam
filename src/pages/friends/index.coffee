@@ -1,6 +1,5 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-FloatingActionButton = require 'zorium-paper/floating_action_button'
 
 Head = require '../../components/head'
 Tabs = require '../../components/tabs'
@@ -9,6 +8,7 @@ FindFriends = require '../../components/find_friends'
 ProfileDialog = require '../../components/profile_dialog'
 AppBar = require '../../components/app_bar'
 Icon = require '../../components/icon'
+Fab = require '../../components/fab'
 ButtonMenu = require '../../components/button_menu'
 colors = require '../../colors'
 
@@ -53,7 +53,7 @@ module.exports = class FriendsPage
     @$blockedUsers = new Friends {
       @model, users: blockedUsers, @selectedProfileDialogUser
     }
-    @$fab = new FloatingActionButton()
+    @$fab = new Fab()
     @$searchIcon = new Icon()
     @$findFriends = new FindFriends {
       @model, @isFindFriendsVisible, @selectedProfileDialogUser

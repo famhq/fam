@@ -1,11 +1,15 @@
 z = require 'zorium'
 
 icons = require './icons'
+Ripple = require '../ripple'
 
 if window?
   require './index.styl'
 
 module.exports = class Icon
+  constructor: ({@hasRipple} = {}) ->
+    @$ripple = if @hasRipple then new Ripple() else null
+
   render: (options) ->
     {icon, size, isAlignedTop, isAlignedLeft, isAlignedRight,
               isAlignedBottom, isTouchTarget, color, onclick,
@@ -21,7 +25,7 @@ module.exports = class Icon
 
     z 'div.z-icon', {
       className: z.classKebab {isAlignedTop, isAlignedLeft, isAlignedRight,
-                                isTouchTarget, isClickable}
+                                isTouchTarget, isClickable, @hasRipple}
       onclick: onclick
       style:
         minWidth: if isTouchTarget then touchWidth else '100%'
@@ -51,3 +55,4 @@ module.exports = class Icon
                        then 'translate(12, 12) scale(-1, 1) translate(-12, -12)'
                        else 'scale(1, 1)'
         }
+      @$ripple

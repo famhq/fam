@@ -18,4 +18,7 @@ module.exports = class ButtonMenu
         color: color or colors.$tertiary900
         onclick: (e) =>
           e.preventDefault()
-          @model.drawer.open()
+          if onclick
+            onclick()
+          else
+            @model.drawer.open()
