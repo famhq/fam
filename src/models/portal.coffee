@@ -7,7 +7,7 @@ if window?
   PortalGun = require 'portal-gun'
 
 module.exports = class Portal
-  constructor: ({@user, @game, @modal}) ->
+  constructor: ->
     if window?
       @portal = new PortalGun() # TODO: check isParentValid
 
@@ -15,6 +15,8 @@ module.exports = class Portal
     GAME_APP: 'game_app'
     CLAY_APP: 'clay_app'
     WEB: 'web'
+
+  setModels: ({@user, @game, @modal}) => null
 
   call: (args...) =>
     unless window?

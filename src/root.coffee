@@ -17,6 +17,7 @@ CookieService = require './services/cookie'
 RouterService = require './services/router'
 App = require './app'
 Model = require './models'
+Portal = require './models/portal'
 
 MAX_ERRORS_LOGGED = 5
 
@@ -68,6 +69,10 @@ setCookies = (currentCookies) ->
           key, value, CookieService.getCookieOpts()
     currentCookies = cookies
 
+# start before dom has loaded
+portal = new Portal()
+getDataPromise = portal.call 'top.getData'
+
 init = ->
   FastClick.attach document.body
   currentCookies = cookie.parse(document.cookie)
@@ -81,7 +86,7 @@ init = ->
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
   }
-  model = new Model({cookieSubject, io})
+  model = new Model({cookieSubject, io, portal})
   model.portal.listen()
 
   onOnline = ->
@@ -167,7 +172,7 @@ init = ->
       {category, action, label} = data.logEvent
       ga? 'send', 'event', category, action, label
 
-  model.portal.call 'top.getData'
+  getDataPromise
   .then routeHandler
   .catch (err) ->
     log.error err
@@ -285,7 +290,7 @@ init = ->
 
 if document.readyState isnt 'complete' and
     not document.getElementById 'zorium-root'
-  window.addEventListener 'load', init
+  document.addEventListener 'DOMContentLoaded', init
 else
   init()
 

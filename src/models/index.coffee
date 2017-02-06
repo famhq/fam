@@ -32,14 +32,13 @@ SignInDialog = require './sign_in_dialog'
 ImageViewOverlay = require './image_view_overlay'
 Window = require './window'
 
-Portal = require './portal'
 config = require '../config'
 
 SERIALIZATION_KEY = 'MODEL'
 SERIALIZATION_EXPIRE_TIME_MS = 1000 * 10 # 10 seconds
 
 module.exports = class Model
-  constructor: ({cookieSubject, serverHeaders, io}) ->
+  constructor: ({cookieSubject, serverHeaders, io, @portal}) ->
     serverHeaders ?= {}
 
     serialization = window?[SERIALIZATION_KEY] or {}
@@ -110,7 +109,7 @@ module.exports = class Model
     @drawer = new Drawer()
     @signInDialog = new SignInDialog()
     @imageViewOverlay = new ImageViewOverlay()
-    @portal = new Portal {@user, @game, @modal}
+    @portal?.setModels {@user, @game, @modal}
     @window = new Window()
 
   wasCached: => @isFromCache

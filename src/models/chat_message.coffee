@@ -1,17 +1,42 @@
 Rx = require 'rx-lite'
 uuid = require 'uuid'
 _sortBy = require 'lodash/sortBy'
+_merge = require 'lodash/merge'
+_cloneDeep = require 'lodash/cloneDeep'
+_defaults = require 'lodash/defaults'
 
-Changefeed = require './changefeed'
 config = require '../config'
 
-module.exports = class ChatMessage extends Changefeed
+module.exports = class ChatMessage
   namespace: 'chatMessages'
 
+  constructor: ({@auth, @proxy, @exoid}) ->
+    @clientChangesStream = {}
+
+  create: (diff, localDiff) =>
+    clientId = uuid.v4()
+
+    @clientChangesStream[diff.conversationId]?.onNext(
+      _merge diff, {clientId}, localDiff
+    )
+
+    @auth.call "#{@namespace}.create", _merge diff, {clientId}
+    .catch (err) ->
+      console.log 'err', err
+
   getAllByConversationId: (conversationId) =>
-    @stream "#{@namespace}.getAllByConversationId", {conversationId}, {
+    # buffer 0 so future streams don't try to add the client changes
+    # (causes smooth scroll to bottom in conversations)
+    @clientChangesStream[conversationId] ?= new Rx.ReplaySubject(0)
+
+    options = {
       initialSortFn: ((items) -> _sortBy items, 'time')
+      clientChangesStream: @clientChangesStream[conversationId]
     }
+
+    @auth.stream "#{@namespace}.getAllByConversationId", {
+      conversationId
+    }, options
 
   uploadImage: (file) =>
     formData = new FormData()

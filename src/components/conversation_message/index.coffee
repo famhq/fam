@@ -4,7 +4,6 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'
 
-Icon = require '../icon'
 Avatar = require '../avatar'
 ConversationImageView = require '../conversation_image_view'
 Ripple = require '../ripple'

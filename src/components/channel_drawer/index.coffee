@@ -21,6 +21,7 @@ module.exports = class ChannelDrawer
     @$chatIcon = new Icon()
     @$membersIcon = new Icon()
     @$settingsIcon = new Icon()
+    @$manageChannelsSettingsIcon = new Icon()
     @$editIcon = new Icon()
 
     @$groupBadge = new GroupBadge {@model, group}
@@ -95,7 +96,7 @@ module.exports = class ChannelDrawer
               @router.go "/group/#{group?.id}/manageChannels"
           },
             z '.icon',
-              z @$settingsIcon,
+              z @$manageChannelsSettingsIcon,
                 icon: 'settings'
                 isTouchTarget: false
                 color: colors.$primary500
