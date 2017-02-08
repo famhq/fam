@@ -80,7 +80,7 @@ module.exports = class DecksGuides extends Base
                   z '.title', guide.title
                   z '.summary', guide.summary
                   z '.deck',
-                    z $deck, {cardWidth: 45}
+                    z $deck, {maxCardWidth: 45}
               z '.divider'
             ]
         else

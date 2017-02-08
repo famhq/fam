@@ -41,11 +41,16 @@ module.exports = class DeckCards extends Base
 
   afterMount: (@$$el) => null
 
-  render: ({onCardClick, cardWidth} = {}) =>
+  render: ({onCardClick, maxCardWidth} = {}) =>
     {cardGroups, cardsPerRow} = @state.getValue()
 
     cardsPerRow ?= @cardSizeInfo.cardsPerRow
-    cardWidth ?= Math.floor(@$$el?.offsetWidth / cardsPerRow)
+    if cardWidth
+      cardWidth = Math.min(
+        maxCardWidth, Math.floor(@$$el?.offsetWidth / cardsPerRow)
+      )
+    else
+      cardWidth = Math.floor(@$$el?.offsetWidth / cardsPerRow)
 
     z '.z-deck-cards', {
       style:

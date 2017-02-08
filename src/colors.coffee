@@ -7,6 +7,7 @@ module.exports = _defaults {
   '$primary300': paperColors.$red300
   '$primary400': '#f85f65'
   '$primary500': '#fa464e'
+  '$primary50096': 'rgba(252, 67, 73, 0.96)'
   '$primary600': '#e33f47'
   '$primary700': '#cd3a3e'
   '$primary800': paperColors.$red800

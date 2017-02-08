@@ -1,103 +1,96 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
-_map = require 'lodash/map'
-_isEmpty = require 'lodash/isEmpty'
 
+Head = require '../../components/head'
+AppBar = require '../../components/app_bar'
+ButtonMenu = require '../../components/button_menu'
+DeckList = require '../../components/deck_list'
+DeckGuides = require '../../components/deck_guides'
+Thread = require '../../components/thread'
+Tabs = require '../../components/tabs'
+Icon = require '../../components/icon'
+Fab = require '../../components/fab'
 colors = require '../../colors'
-DeckCards = require '../deck_cards'
-Base = require '../base'
-Icon = require '../icon'
-Spinner = require '../spinner'
 
 if window?
   require './index.styl'
 
-CARDS_PER_ROW = 4
-PADDING = 16
+module.exports = class Decks
+  constructor: ({@model, @router, thread}) ->
+    @$appBar = new AppBar {@model}
+    @$buttonMenu = new ButtonMenu {@model}
+    @$fab = new Fab()
+    @$addIcon = new Icon()
 
-module.exports = class Decks extends Base
-  constructor: ({@model, @router, sort, filter}) ->
-    @$spinner = new Spinner()
+    @$deckGuides = new DeckGuides {@model, @router, sort: 'popular'}
+    @$recentDecks = new DeckList {
+      @model, @router, sort: 'recent', filter: 'mine'
+    }
+    @$popularDecks = new DeckList {@model, @router, sort: 'popular'}
 
-    me = @model.user.getMe()
-    decksAndMe = Rx.Observable.combineLatest(
-      @model.clashRoyaleDeck.getAll({sort, filter})
-      me
-      (vals...) -> vals
-    )
+    selectedIndex = new Rx.BehaviorSubject 0
+    @$tabs = new Tabs {@model, selectedIndex}
+
+    @$cachedThread = null
 
     @state = z.state
+      selectedIndex: selectedIndex
       me: @model.user.getMe()
-      filter: filter
-      windowSize: @model.window.getSize()
-      decks: decksAndMe.map ([decks, me]) =>
-        _map decks, (deck) =>
-          hasDeck =  me.data.clashRoyaleDeckIds and
-            me.data.clashRoyaleDeckIds.indexOf(deck.id) isnt -1
-
-          $el = @getCached$ deck.id, DeckCards, {@model, @router, deck}
-          {
-            deck
-            hasDeck
-            $deck: $el
-            $starIcon: new Icon()
-            $chevronIcon: new Icon()
-          }
-
-  afterMount: (@$$el) => null
+      $sideEl: thread?.map (threadVal) =>
+        if threadVal
+          unless @$cachedThread
+            @$cachedThread = new Thread {
+              @model, @router, thread, isInline: true
+            }
+          @$cachedThread
+        else
+          null
 
   render: =>
-    {me, decks, filter, windowSize} = @state.getValue()
-
-    cardWidth = (@$$el?.children?[0]?.offsetWidth - (PADDING * 2)) /
-                  CARDS_PER_ROW
+    {selectedIndex, me, $sideEl} = @state.getValue()
 
     z '.z-decks',
-      z '.decks', {
-        # force scrollbar initially
-        style:
-          minHeight: "#{windowSize.height * 1.2}px"
-      },
-        if decks and _isEmpty decks
-          z '.no-decks',
-            'No decks found. '
-            if filter is 'mine'
-              'Select a popular deck to add it, or create a new deck.'
-        else if decks
-          _map decks, ({deck, hasDeck, $deck, $starIcon, $chevronIcon}) =>
-            [
-              @router.link z 'a.deck', {
-                href: "/deck/#{deck.id}"
-              },
-                z '.g-grid',
-                  z '.info',
-                    z '.star',
-                      z $starIcon,
-                        icon: if hasDeck then 'star' else 'star-outline'
-                        isAlignedLeft: true
-                        color: if hasDeck \
-                               then colors.$primary500
-                               else colors.$white12
-                        onclick: (e) =>
-                          e?.stopPropagation()
-                          e?.preventDefault()
-                          if hasDeck
-                            @model.clashRoyaleUserDeck.unfavorite {
-                              deckId: deck.id
-                            }
-                          else
-                            @model.clashRoyaleUserDeck.favorite {
-                              deckId: deck.id
-                            }
-                    z '.name', deck.name or 'Nameless'
-                    z '.chevron',
-                      z $chevronIcon,
-                        icon: 'chevron-right'
-                        color: colors.$primary500
-                        isTouchTarget: false
-                  z '.cards',
-                    $deck
-              z '.divider'
-            ]
-        else
-          @$spinner
+      z '.primary',
+        z @$appBar, {
+          title: 'Battle Decks'
+          isFlat: true
+          $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
+          $topRightButton: null # FIXME
+        }
+
+        z @$tabs,
+          isBarFixed: false
+          vDomKey: 'decks-' + if $sideEl then 'side' else 'noside'
+          tabs: [
+            {
+              $menuText: 'Guides'
+              $el: @$deckGuides
+            }
+            {
+              $menuText: 'My Decks'
+              $el: @$recentDecks
+            }
+            {
+              $menuText: 'Popular'
+              $el: @$popularDecks
+            }
+          ]
+      if $sideEl
+        z '.secondary',
+          $sideEl
+      z '.fab',
+        z @$fab,
+          colors:
+            c500: colors.$primary500
+          $icon: z @$addIcon, {
+            icon: 'add'
+            isTouchTarget: false
+            color: colors.$white
+          }
+          onclick: =>
+            @model.signInDialog.openIfGuest me
+            .then =>
+              if selectedIndex is 0
+                @router.go '/addGuide'
+              else
+                @router.go '/addDeck'

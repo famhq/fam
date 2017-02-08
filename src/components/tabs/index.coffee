@@ -151,7 +151,7 @@ module.exports = class Tabs
 
   render: (options) =>
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, isBarFlat,
-      barTabWidth, hasAppBar, windowSize} = options
+      barTabWidth, hasAppBar, windowSize, vDomKey} = options
 
     # if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
     #   @beforeUnmount true
@@ -162,7 +162,7 @@ module.exports = class Tabs
 
     {selectedIndex, x, hideTabBar, windowSize} = @state.getValue()
 
-    vDomKey = "tabs-#{tabs?.length}"
+    vDomKey = "#{vDomKey}-tabs-#{tabs?.length}"
     isBarFixed ?= true
     isBarFlat ?= true
 

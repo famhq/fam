@@ -11,6 +11,8 @@ module.exports =
   serverTests: './test/server/index.coffee'
   functionalTests: './test/functional/**/*.coffee'
   root: './src/root.coffee'
+  sw: './src/service_worker.coffee'
+  distStatic: './src/static'
   dist: './dist'
   build: './build'
   manifest: [

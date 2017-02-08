@@ -5,9 +5,8 @@ module.exports = class PushToken
 
   constructor: ({@auth, @pushToken}) -> null
 
-  create: ({token} = {}) =>
+  create: ({token, sourceType} = {}) =>
     unless localStorage['pushTokenStored']
-      sourceType = if Environment.isAndroid() then 'android' else 'ios'
       @auth.call "#{@namespace}.create", {sourceType, token}
       .then ->
         localStorage['pushTokenStored'] = '1'

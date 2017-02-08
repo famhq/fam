@@ -1,13 +1,1 @@
-// https://serviceworke.rs/push-rich.html
-// https://www.npmjs.com/package/web-push
-
-// console.log('service');
-// self.addEventListener('push', function(event) {
-//   console.log('service2');
-//   var payload = event.data ? event.data.text() : 'no payload';
-//   event.waitUntil(
-//     self.registration.showNotification('Starfire', {
-//       body: payload,
-//     })
-//   );
-// });
+!function(t){function o(n){if(e[n])return e[n].exports;var r=e[n]={exports:{},id:n,loaded:!1};return t[n].call(r.exports,r,r.exports,o),r.loaded=!0,r.exports}var e={};return o.m=t,o.c=e,o.p="",o(0)}([function(t,o){console.log("service"),self.addEventListener("push",function(t){var o;return console.log("push",t),o=t.data?t.data.text():"no payload",console.log(o),t.waitUntil(self.registration.showNotification("Starfire",{icon:o.icon,body:o.title+": "+o.text}))})}]);

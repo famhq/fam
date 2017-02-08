@@ -1,16 +1,16 @@
 {
   "short_name": "Starfi.re",
   "name": "Starfi.re",
-  "start_url": "./?utm_source=web_app_manifest",
   "icons": [
     {
-      "src": "https://cdn.wtf/d/images/starfire/web_icon_256.png",
-      "sizes": "256x256",
+      "src": "https://cdn.wtf/d/images/starfire/android-chrome-144x144.png",
+      "sizes": "144x144",
       "type": "image/png"
     }
   ],
   "background_color": "#1a1a1a",
   "theme_color": "#fa464e",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "start_url": "."
 }

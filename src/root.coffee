@@ -114,13 +114,11 @@ init = ->
   $app = z app
   z.bind root, $app
 
-  # check out readme for local ssl
-  # TODO
-  # navigator.serviceWorker?.register '/service_worker.js'
-  # .then (res) ->
-  #   console.log res
-  # .catch (err) ->
-  #   console.log 'err', err
+  navigator.serviceWorker?.register '/service_worker.js'
+  window.addEventListener 'beforeinstallprompt', (e) ->
+    e.preventDefault()
+    model.installOverlay.setPrompt e
+    return false
 
   model.portal.call 'networkInformation.onOffline', onOffline
   model.portal.call 'networkInformation.onOnline', onOnline
@@ -201,11 +199,14 @@ init = ->
   #
 
   model.portal.call 'push.register'
-  .then ({token} = {}) ->
+  .then ({token, sourceType} = {}) ->
+    console.log 'got'
     if token?
-      unless localStorage?['pushTokenStored']
-        model.pushToken.create {token}
-        localStorage?['pushTokenStored'] = 1
+      unless localStorage?['isPushTokenStored']
+        console.log 'go'
+        sourceType ?= if Environment.isAndroid() then 'android' else 'ios'
+        model.pushToken.create {token, sourceType}
+        localStorage?['isPushTokenStored'] = 1
       model.pushToken.setCurrentPushToken token
   .catch (err) ->
     unless err.message is 'Method not found'

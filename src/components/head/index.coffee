@@ -4,6 +4,7 @@ _merge = require 'lodash/merge'
 
 config = require '../../config'
 colors = require '../../colors'
+robotoCss = require './roboto'
 
 module.exports = class Head
   constructor: ({model, meta, serverData}) ->
@@ -45,7 +46,7 @@ module.exports = class Head
       themeColor: colors.$primary500
       # reccomended 32 x 32 png
       favicon: config.CDN_URL + '/favicon.png'
-      # manifestUrl: '/manifest.json'
+      manifestUrl: '/manifest.json'
     }, meta
 
     meta = _merge {
@@ -174,10 +175,12 @@ module.exports = class Head
       #   ]
 
       # fonts
-      z 'link',
-        rel: 'stylesheet'
-        type: 'text/css'
-        href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,600'
+      # z 'link',
+      #   rel: 'stylesheet'
+      #   type: 'text/css'
+      #   href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,600'
+      # inline to improve pageload / lighthouse score
+      z 'style.roboto', robotoCss
 
       # styles
       if isInliningSource

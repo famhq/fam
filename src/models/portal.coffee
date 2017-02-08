@@ -1,10 +1,20 @@
 Environment = require 'clay-environment'
-base64ToArrayBuffer = require 'base64-arraybuffer'
 
 config = require '../config'
 
 if window?
   PortalGun = require 'portal-gun'
+
+urlBase64ToUint8Array = (base64String) ->
+  padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+  rawData = window.atob(base64)
+  outputArray = new Uint8Array(rawData.length)
+  i = 0
+  while i < rawData.length
+    outputArray[i] = rawData.charCodeAt(i)
+    i += 1
+  outputArray
 
 module.exports = class Portal
   constructor: ->
@@ -16,7 +26,7 @@ module.exports = class Portal
     CLAY_APP: 'clay_app'
     WEB: 'web'
 
-  setModels: ({@user, @game, @modal}) => null
+  setModels: ({@user, @game, @modal, @installOverlay}) => null
 
   call: (args...) =>
     unless window?
@@ -39,22 +49,22 @@ module.exports = class Portal
     @portal.on 'auth.getStatus', @authGetStatus
     @portal.on 'share.any', @shareAny
     @portal.on 'env.getPlatform', @getPlatform
+    @portal.on 'app.install', @appInstall
 
     # fallbacks
     @portal.on 'app.onResume', -> null
     @portal.on 'top.onData', -> null
-    @portal.on 'push.register', ->
-      console.log 'try'
+    @portal.on 'push.register', -> null
       # navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
-      #   console.log 'ready'
       #   # TODO: check if reg'd first
-      #    # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions
-      #   arrayBufferKey = base64ToArrayBuffer.decode config.VAPID_PUBLIC_KEY
-      #   console.log arrayBufferKey
+      #   # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions
       #   serviceWorkerRegistration.pushManager.subscribe {
       #     userVisibleOnly: true,
-      #     applicationServerKey: arrayBufferKey
+      #     applicationServerKey: urlBase64ToUint8Array config.VAPID_PUBLIC_KEY
       #   }
+      #   .then (subscription) ->
+      #     subscriptionToken = JSON.stringify subscription
+      #     {token: subscriptionToken, sourceType: 'web'}
 
     @portal.on 'messenger.isInstalled', -> false
 
@@ -101,6 +111,31 @@ module.exports = class Portal
         @PLATFORMS.CLAY_APP
       else
         @PLATFORMS.WEB
+
+  isChrome: ->
+    navigator.userAgent.match /chrome/i
+
+  appInstall: =>
+    userAgent = navigator.userAgent
+    if Environment.isGameApp(config.GAME_KEY, {userAgent})
+      return null
+    else if Environment.isAndroid() and @isChrome()
+      if @installOverlay.prompt
+        prompt = @installOverlay.prompt
+        @installOverlay.setPrompt null
+      else
+        @installOverlay.open()
+
+    else if Environment.isiOS()
+      @call 'browser.openWindow',
+        url: config.IOS_APP_URL
+        target: '_system'
+
+    else
+      @call 'browser.openWindow',
+        url: config.GOOGLE_PLAY_APP_URL
+        target: '_system'
+
 
   networkInformationOnOnline: (fn) ->
     window.addEventListener 'online', fn

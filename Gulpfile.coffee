@@ -180,7 +180,26 @@ gulp.task 'dist:static', ['dist:clean'], ->
   gulp.src paths.static
     .pipe gulp.dest paths.dist
 
-gulp.task 'dist:scripts', ['dist:clean'], ->
+gulp.task 'dist:sw', ->
+  gulp.src paths.sw
+  .pipe webpackStream
+    module:
+      loaders: [
+        {test: /\.coffee$/, loader: 'coffee'}
+      ]
+    output:
+      filename: 'service_worker.js'
+    plugins: [
+      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
+      new webpack.optimize.UglifyJsPlugin
+        mangle:
+          except: ['process']
+    ]
+    resolve:
+      extensions: ['.coffee', '.js', '.json', '']
+  .pipe gulp.dest paths.distStatic
+
+gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   scriptsConfig = _defaultsDeep {
     # devtool: 'source-map'
     plugins: [

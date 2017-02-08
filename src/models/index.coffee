@@ -29,6 +29,7 @@ ThreadComment = require './thread_comment'
 Video = require './video'
 Drawer = require './drawer'
 SignInDialog = require './sign_in_dialog'
+InstallOverlay = require './install_overlay'
 ImageViewOverlay = require './image_view_overlay'
 Window = require './window'
 
@@ -108,8 +109,9 @@ module.exports = class Model
     @video = new Video {@auth}
     @drawer = new Drawer()
     @signInDialog = new SignInDialog()
+    @installOverlay = new InstallOverlay()
     @imageViewOverlay = new ImageViewOverlay()
-    @portal?.setModels {@user, @game, @modal}
+    @portal?.setModels {@user, @game, @modal, @installOverlay}
     @window = new Window()
 
   wasCached: => @isFromCache

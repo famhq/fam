@@ -11,7 +11,7 @@ if window?
 
 module.exports = class DeckPage
   hideDrawer: true
-  
+
   constructor: ({@model, requests, @router, serverData}) ->
     deck = requests.flatMapLatest ({route}) =>
       @model.clashRoyaleDeck.getById route.params.id

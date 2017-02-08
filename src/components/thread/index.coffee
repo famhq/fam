@@ -6,6 +6,8 @@ _defaults = require 'lodash/defaults'
 _isEmpty = require 'lodash/isEmpty'
 
 colors = require '../../colors'
+AppBar = require '..//app_bar'
+ButtonBack = require '..//button_back'
 Icon = require '../icon'
 Avatar = require '../avatar'
 ThreadComment = require '../thread_comment'
@@ -20,11 +22,15 @@ if window?
   require './index.styl'
 
 module.exports = class Thread
-  constructor: ({@model, @router, thread}) ->
+  constructor: ({@model, @router, thread, @isInline}) ->
+    @$appBar = new AppBar {@model}
+    @$buttonBack = new ButtonBack {@router}
+
     @$spinner = new Spinner()
     @$replyIcon = new Icon()
     @$upvoteIcon = new Icon()
     @$downvoteIcon = new Icon()
+    @$editIcon = new Icon()
 
     @$fab = new Fab()
     @$avatar = new Avatar()
@@ -35,7 +41,7 @@ module.exports = class Thread
     }
 
     deck = thread.flatMapLatest (thread) =>
-      if thread.data?.deckId
+      if thread?.data?.deckId
         @model.clashRoyaleDeck.getById thread.data.deckId
       else
         Rx.Observable.just null
@@ -51,18 +57,21 @@ module.exports = class Thread
       isVideoVisible: false
       $body: new FormattedText {
         text: thread.map (thread) ->
-          thread.body
+          thread?.body
         @model
         @router
       }
       windowSize: @model.window.getSize()
       threadComments: thread.flatMapLatest (thread) =>
-        @model.threadComment.getAllByThreadId thread.id
-        .map (threadComments) =>
-          _map threadComments, (threadComment) =>
-            new ThreadComment {
-              @model, @router, threadComment, @selectedProfileDialogUser
-            }
+        if thread?.id
+          @model.threadComment.getAllByThreadId thread.id
+          .map (threadComments) =>
+            _map threadComments, (threadComment) =>
+              new ThreadComment {
+                @model, @router, threadComment, @selectedProfileDialogUser
+              }
+        else
+          Rx.Observable.just null
 
 
   render: =>
@@ -71,7 +80,25 @@ module.exports = class Thread
 
     videoWidth = Math.min(windowSize.width, 512)
 
+    hasAdminPermission = @model.thread.hasPermission thread, me, {
+      level: 'admin'
+    }
+
     z '.z-thread',
+      z @$appBar, {
+        title: ''
+        bgColor: colors.$tertiary700
+        $topLeftButton: unless @isInline
+                          z @$buttonBack, {color: colors.$primary500}
+        $topRightButton: if hasAdminPermission
+          z @$editIcon,
+            icon: 'edit'
+            color: colors.$primary500
+            onclick: =>
+              @router.go "/editGuide/#{thread.id}"
+        else
+          null
+      }
       if thread?.headerImage
         z '.header',
           if isVideoVisible

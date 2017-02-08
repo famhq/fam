@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dist": "./bin/dist.sh",
+    "sw": "./bin/sw.sh",
     "test": "./bin/test.sh",
     "test-functional": "./bin/test_functional.sh",
     "start": "./bin/start.sh",
@@ -55,7 +56,6 @@
   },
   "dependencies": {
     "assert-none-missing": "git://github.com/claydotio/assert-none-missing.git",
-    "base64-arraybuffer": "^0.1.5",
     "bluebird": "^3.4.6",
     "body-parser": "^1.14.1",
     "chartist": "^0.10.1",

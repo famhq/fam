@@ -5,6 +5,8 @@ _forEach = require 'lodash/forEach'
 
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
+InstallOverlay = require './components/install_overlay'
+AddToHomeScreenSheet = require './components/add_to_home_sheet'
 ConversationImageView = require './components/conversation_image_view'
 
 Pages =
@@ -53,18 +55,68 @@ Pages =
   EditProfilePage: require './pages/edit_profile'
   FourOhFourPage: require './pages/404'
 
-# TODO: is there a way we can not construct every single Page class for every
-# page load?
+TIME_UNTIL_ADD_TO_HOME_PROMPT_MS = 60000
 
 module.exports = class App
-  constructor: ({requests, serverData, @model, router}) ->
-    routes = new HttpHash()
+  constructor: ({requests, @serverData, @model, @router}) ->
+    @$cachedPages = []
+    routes = @model.window.getBreakpoint().map @getRoutes
 
-    requests = requests.map (req) ->
+    requestsAndRoutes = Rx.Observable.combineLatest(
+      requests, routes, (vals...) -> vals
+    )
+
+    @requests = requestsAndRoutes.map ([req, routes]) ->
       route = routes.get req.path
       {req, route, $page: route.handler?()}
 
-    $cachedPages = []
+    # used if state / requests fails to work
+    $backupPage = if @serverData?
+      @getRoutes().get(@serverData.req.path).handler?()
+    else
+      null
+
+    isAddToHomeSheetVisible = new Rx.BehaviorSubject false
+
+    @$drawer = new Drawer {@model, @router}
+    @$signInDialog = new SignInDialog {@model, @router}
+    @$installOverlay = new InstallOverlay {@model, @router}
+    @$conversationImageView = new ConversationImageView {@model, @router}
+    @$addToHomeSheet = new AddToHomeScreenSheet {
+      @model
+      @router
+      isVisible: isAddToHomeSheetVisible
+    }
+
+    me = @model.user.getMe()
+
+    if localStorage? and not localStorage['lastAddToHomePromptTime']
+      setTimeout ->
+        unless not localStorage['lastAddToHomePromptTime']
+          isAddToHomeSheetVisible.onNext true
+          localStorage['lastAddToHomePromptTime'] = Date.now()
+      , TIME_UNTIL_ADD_TO_HOME_PROMPT_MS
+
+    @state = z.state {
+      $backupPage: $backupPage
+      me: me
+      isAddToHomeSheetVisible: isAddToHomeSheetVisible
+      signInDialogIsOpen: @model.signInDialog.isOpen()
+      installOverlayIsOpen: @model.installOverlay.isOpen()
+      imageViewOverlayImageData: @model.imageViewOverlay.getImageData()
+      hideDrawer: @requests.flatMapLatest (request) ->
+        hideDrawer = request.$page.hideDrawer
+        if hideDrawer?.map
+        then hideDrawer
+        else Rx.Observable.just (hideDrawer or false)
+      request: @requests.doOnNext ({$page, req}) ->
+        if $page instanceof Pages['FourOhFourPage']
+          res?.status? 404
+    }
+
+  getRoutes: (breakpoint) =>
+    routes = new HttpHash()
+
     route = (paths, pageKey) =>
       Page = Pages[pageKey]
       if typeof paths is 'string'
@@ -72,18 +124,19 @@ module.exports = class App
 
       _forEach paths, (path) =>
         routes.set path, =>
-          unless $cachedPages[pageKey]
-            $cachedPages[pageKey] = new Page({
+          unless @$cachedPages[pageKey]
+            @$cachedPages[pageKey] = new Page({
               @model
-              router
-              serverData
-              requests: requests.filter ({$page}) ->
+              @router
+              @serverData
+              requests: @requests.filter ({$page}) ->
                 $page instanceof Page
             })
-          return $cachedPages[pageKey]
+          return @$cachedPages[pageKey]
+
 
     # route '/', 'HomePage'
-    route ['/', '/community'], 'CommunityPage'
+    route '/community', 'CommunityPage'
     route ['/friends/:action', '/friends'], 'FriendsPage'
     route '/videos', 'VideosPage'
     route '/conversation/:conversationId', 'ConversationPage'
@@ -93,7 +146,13 @@ module.exports = class App
     route '/event/:id', 'EventPage'
     route '/event/:id/edit', 'EditEventPage'
     route '/thread/:id/reply', 'ThreadReplyPage'
-    route ['/thread/:id/:page', '/thread/:id'], 'ThreadPage'
+
+    if breakpoint is 'desktop'
+      route ['/', '/decks', '/thread/:id'], 'DecksPage'
+    else
+      route '/thread/:id', 'ThreadPage'
+      route ['/', '/decks'], 'DecksPage'
+
     route '/group/:id', 'GroupPage'
     route '/group/:id/chat', 'GroupChatPage'
     route '/group/:id/members', 'GroupMembersPage'
@@ -102,7 +161,9 @@ module.exports = class App
     route '/group/:id/manage/:userId', 'GroupManageMemberPage'
     route '/group/:id/manageChannels', 'GroupManageChannelsPage'
     route '/group/:id/newChannel', 'GroupAddChannelPage'
-    route '/group/:id/editChannel/:conversationId', 'GroupEditChannelPage'
+    route(
+      '/group/:id/editChannel/:conversationId', 'GroupEditChannelPage'
+    )
     route '/group/:id/settings', 'GroupSettingsPage'
     route '/group/:id/addRecords', 'GroupAddRecordsPage'
     route '/group/:id/manageRecords', 'GroupManageRecordsPage'
@@ -113,7 +174,6 @@ module.exports = class App
     route '/newGroup', 'NewGroupPage'
     route '/newThread', 'NewThreadPage'
     route '/addDeck', 'AddDeckPage'
-    route '/decks', 'DecksPage'
     route '/cards', 'CardsPage'
     route '/deck/:id', 'DeckPage'
     route ['/card/:id', '/clashRoyale/card/:key'], 'CardPage'
@@ -127,48 +187,26 @@ module.exports = class App
     route '/profile', 'ProfilePage'
     route '/editProfile', 'EditProfilePage'
     route '/*', 'FourOhFourPage'
-
-    $backupPage = if serverData?
-      routes.get(serverData.req.path).handler?()
-    else
-      null
-
-    @$drawer = new Drawer({@model, router})
-    @$signInDialog = new SignInDialog({@model, router})
-    @$conversationImageView = new ConversationImageView({@model, router})
-
-    me = @model.user.getMe()
-
-    @state = z.state {
-      rand: null
-      $backupPage
-      me: me
-      signInDialogIsOpen: @model.signInDialog.isOpen()
-      imageViewOverlayImageData: @model.imageViewOverlay.getImageData()
-      request: requests.doOnNext ({$page, req}) ->
-        if $page instanceof Pages['FourOhFourPage']
-          res?.status? 404
-    }
-
-  onResize: =>
-    # re-render
-    @state.set rand: Math.random()
+    routes
 
   render: =>
-    {request, $backupPage, $modal, me, imageViewOverlayImageData
-      signInDialogIsOpen} = @state.getValue()
+    {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
+      installOverlayIsOpen, signInDialogIsOpen,
+      isAddToHomeSheetVisible} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
     isIos = /iPad|iPhone|iPod/.test userAgent
     isPageAvailable = (me?.isMember or not request?.$page?.isPrivate)
+    defaultInstallMessage = 'Add Starfi.re to your homescreen to quickly
+                            access all features anytime'
 
     z 'html',
       request?.$page.renderHead() or $backupPage?.renderHead()
       z 'body',
         z '#zorium-root', {className: z.classKebab {isIos}},
           z '.z-root',
-            unless request?.$page?.hideDrawer
+            unless hideDrawer
               z @$drawer, {currentPath: request?.req.path}
             z '.page',
               # show page before me has loaded
@@ -179,5 +217,11 @@ module.exports = class App
 
             if signInDialogIsOpen
               z @$signInDialog
+            if installOverlayIsOpen
+              z @$installOverlay
             if imageViewOverlayImageData
               z @$conversationImageView
+            if isAddToHomeSheetVisible
+              z @$addToHomeSheet, {
+                message: request?.$page?.installMessage or defaultInstallMessage
+              }

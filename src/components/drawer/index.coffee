@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
+Environment = require 'clay-environment'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
@@ -12,6 +13,7 @@ FlatButton = require '../flat_button'
 GroupBadge = require '../group_badge'
 Ripple = require '../ripple'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -46,6 +48,11 @@ module.exports = class Drawer
     @$addDrawButton = new FlatButton()
     @$addDrawIcon = new Icon()
 
+    userAgent = navigator?.userAgent
+    needsApp = userAgent and
+                not Environment.isGameApp(config.GAME_KEY, {userAgent}) and
+                not window?.matchMedia('(display-mode: standalone)').matches
+
     @state = z.state
       isOpen: @model.drawer.isOpen()
       me: me
@@ -66,20 +73,20 @@ module.exports = class Drawer
       menuItems: me.map (me) =>
         _filter([
           {
+            path: '/community'
+            title: 'Community'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'chat'
+          }
+          {
             path: '/events'
             title: 'Tournaments'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'trophy'
           }
-          if me.isMember
-            {
-              path: '/community'
-              title: 'Community'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'chat'
-            }
+
           if me.isMember
             {
               path: '/friends'
@@ -109,23 +116,6 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'cards'
           }
-          # {
-          #   isDivider: true
-          # }
-          # {
-          #   path: '/refer'
-          #   title: 'Refer a member'
-          #   $icon: new Icon()
-          #   $ripple: new Ripple()
-          #   iconName: 'gem'
-          # }
-          # {
-          #   path: '/settings'
-          #   title: 'Settings'
-          #   $icon: new Icon()
-          #   $ripple: new Ripple()
-          #   iconName: 'settings'
-          # }
           if me.isMember
             {
               path: '/profile'
@@ -134,20 +124,40 @@ module.exports = class Drawer
               $ripple: new Ripple()
               iconName: 'profile'
             }
-          ])
-          .concat if me?.username is 'austin' then [
+          if needsApp
             {
-              onClick: =>
-                @model.portal.call 'barcode.scan'
-                .then (code) ->
-                  alert code
-                  console.log code
-              title: 'Scan Code'
+              isDivider: true
+            }
+          if needsApp
+            {
+              onclick: =>
+                @model.portal.call 'app.install'
+              title: 'Get the app'
               $icon: new Icon()
               $ripple: new Ripple()
-              iconName: 'search'
+              iconName: 'get'
             }
-          ] else []
+          # {
+          #   path: '/settings'
+          #   title: 'Settings'
+          #   $icon: new Icon()
+          #   $ripple: new Ripple()
+          #   iconName: 'settings'
+          # }
+          ])
+          # .concat if me?.username is 'austin' then [
+          #   {
+          #     onclick: =>
+          #       @model.portal.call 'barcode.scan'
+          #       .then (code) ->
+          #         alert code
+          #         console.log code
+          #     title: 'Scan Code'
+          #     $icon: new Icon()
+          #     $ripple: new Ripple()
+          #     iconName: 'search'
+          #   }
+          # ] else []
 
 
   render: ({currentPath}) =>
@@ -219,12 +229,14 @@ module.exports = class Drawer
                   z '.divider'
 
                 _map menuItems, (menuItem) =>
-                  {path, onClick, title, $icon, $ripple,
+                  {path, onclick, title, $icon, $ripple,
                     iconName, isDivider} = menuItem
+
                   if isDivider
                     return z 'li.divider'
+
                   isSelected = currentPath?.indexOf(path) is 0 or (
-                    path is '/games' and currentPath is '/'
+                    path is '/decks' and currentPath is '/'
                   )
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}
@@ -234,7 +246,7 @@ module.exports = class Drawer
                       onclick: (e) =>
                         e.preventDefault()
                         @model.drawer.close()
-                        onClick?()
+                        onclick?()
                         if path
                           @router.go path
                     },

@@ -1,93 +1,44 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
 
 Head = require '../../components/head'
-AppBar = require '../../components/app_bar'
-ButtonMenu = require '../../components/button_menu'
 Decks = require '../../components/decks'
-DeckGuides = require '../../components/deck_guides'
-Tabs = require '../../components/tabs'
-Icon = require '../../components/icon'
-Fab = require '../../components/fab'
-colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 module.exports = class DecksPage
+  installMessage: 'Add Starfi.re to your homescreen to quickly access
+                  these guides anytime'
+
   constructor: ({@model, requests, @router, serverData}) ->
+    thread = requests.flatMapLatest ({route}) =>
+      if route.params.id
+        @model.thread.getById route.params.id
+      else
+        Rx.Observable.just null
+
+    @$decks = new Decks {@model, @router, thread}
+
     @$head = new Head({
       @model
       requests
       serverData
       meta: {
-        title: 'Battle Decks'
-        description: 'Battle Decks'
+        title: 'Decks'
+        description: 'Decks'
       }
     })
-    @$appBar = new AppBar {@model}
-    @$buttonMenu = new ButtonMenu {@model}
-    @$fab = new Fab()
-    @$addIcon = new Icon()
-
-    @$deckGuides = new DeckGuides {@model, @router, sort: 'popular'}
-    @$recentDecks = new Decks {@model, @router, sort: 'recent', filter: 'mine'}
-    @$popularDecks = new Decks {@model, @router, sort: 'popular'}
-
-    selectedIndex = new Rx.BehaviorSubject 0
-    @$tabs = new Tabs {@model, selectedIndex}
 
     @state = z.state
       windowSize: @model.window.getSize()
-      selectedIndex: selectedIndex
-      me: @model.user.getMe()
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, selectedIndex, me} = @state.getValue()
+    {windowSize} = @state.getValue()
 
     z '.p-decks', {
       style:
         height: "#{windowSize.height}px"
     },
-      z @$appBar, {
-        title: 'Battle Decks'
-        isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
-        $topRightButton: null # FIXME
-      }
-
-      z @$tabs,
-        isBarFixed: false
-        tabs: [
-          {
-            $menuText: 'Guides'
-            $el: @$deckGuides
-          }
-          {
-            $menuText: 'My Decks'
-            $el: @$recentDecks
-          }
-          {
-            $menuText: 'Popular'
-            $el: @$popularDecks
-          }
-        ]
-
-      z '.fab',
-        z @$fab,
-          colors:
-            c500: colors.$primary500
-          $icon: z @$addIcon, {
-            icon: 'add'
-            isTouchTarget: false
-            color: colors.$white
-          }
-          # onclick: =>
-          #   @model.signInDialog.openIfGuest me
-          #   .then =>
-          #     if selectedIndex is 0
-          #       @router.go '/addGuide'
-          #     else
-          #       @router.go '/addDeck'
+      @$decks

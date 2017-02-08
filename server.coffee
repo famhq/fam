@@ -23,7 +23,7 @@ RouterService = require './src/services/router'
 
 MIN_TIME_REQUIRED_FOR_HSTS_GOOGLE_PRELOAD_MS = 10886400000 # 18 weeks
 HEALTHCHECK_TIMEOUT = 200
-RENDER_TO_STRING_TIMEOUT_MS = 250
+RENDER_TO_STRING_TIMEOUT_MS = 1200
 BOT_RENDER_TO_STRING_TIMEOUT_MS = 3000
 
 styles = if config.ENV is config.ENVS.PROD
@@ -123,7 +123,7 @@ app.use (req, res, next) ->
       userAgent?.indexOf('Facebot') isnt -1
   isOtherBot = userAgent?.indexOf('bot') isnt -1
   z.renderToString new App({requests, model, serverData, router}), {
-    timeout: if isFacebookCrawler or isOtherBot or true \
+    timeout: if isFacebookCrawler or isOtherBot \
              then BOT_RENDER_TO_STRING_TIMEOUT_MS
              else RENDER_TO_STRING_TIMEOUT_MS
   }
