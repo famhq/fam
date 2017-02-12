@@ -21,7 +21,8 @@ module.exports = class DecksGuides extends Base
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
-    guides = @model.thread.getAll({type: 'guide', sort, filter}).map (guides) ->
+    guides = @model.thread.getAll({type: 'deckGuide', sort, filter})
+    .map (guides) ->
       guides
 
     @state = z.state
@@ -30,9 +31,8 @@ module.exports = class DecksGuides extends Base
       windowSize: @model.window.getSize()
       guides: guides.map (guides) =>
         _map guides, (guide) =>
-          if guide.data.deckId
-            deckId = guide.data.deckId
-            deck = @model.clashRoyaleDeck.getById deckId
+          if guide.deck
+            deck = guide.deck
             $deck = @getCached$ guide.id, DeckCards, {
               @model, @router, deck, cardsPerRow: 8
             }

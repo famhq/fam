@@ -175,7 +175,6 @@ module.exports = class Drawer
     z '.z-drawer', {
       className: z.classKebab {isOpen}
       style:
-        display: if window? then 'block' else 'none'
         width: if breakpoint is 'mobile' \
                then '100%'
                else "#{drawerWidth}px"

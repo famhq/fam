@@ -31,14 +31,18 @@
     box-sizing: border-box
     z-index: 1
 
-    > .content
-      display: flex
-      align-items: center
+    > .inner
+      max-width: 500px
+      margin: auto
 
-      > .message
-        margin-left: 40px
+      > .content
+        display: flex
+        align-items: center
 
-    > .actions
-      display: flex
-      justify-content: flex-end
-      margin-top: 12px
+        > .message
+          margin-left: 40px
+
+      > .actions
+        display: flex
+        justify-content: flex-end
+        margin-top: 12px

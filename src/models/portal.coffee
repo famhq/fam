@@ -54,17 +54,8 @@ module.exports = class Portal
     # fallbacks
     @portal.on 'app.onResume', -> null
     @portal.on 'top.onData', -> null
-    @portal.on 'push.register', -> null
-      # navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
-      #   # TODO: check if reg'd first
-      #   # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions
-      #   serviceWorkerRegistration.pushManager.subscribe {
-      #     userVisibleOnly: true,
-      #     applicationServerKey: urlBase64ToUint8Array config.VAPID_PUBLIC_KEY
-      #   }
-      #   .then (subscription) ->
-      #     subscriptionToken = JSON.stringify subscription
-      #     {token: subscriptionToken, sourceType: 'web'}
+    @portal.on 'top.getData', -> null
+    @portal.on 'push.register', @pushRegister
 
     @portal.on 'messenger.isInstalled', -> false
 
@@ -135,6 +126,22 @@ module.exports = class Portal
       @call 'browser.openWindow',
         url: config.GOOGLE_PLAY_APP_URL
         target: '_system'
+
+  pushRegister: ->
+    navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
+      # TODO: check if reg'd first
+      # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions
+
+      serviceWorkerRegistration.pushManager.subscribe {
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array config.VAPID_PUBLIC_KEY
+      }
+      .then (subscription) ->
+        subscriptionToken = JSON.stringify subscription
+        {token: subscriptionToken, sourceType: 'web'}
+
+  pushSetContextId: ({contextId}) ->
+    PushService.setContextId contextId
 
 
   networkInformationOnOnline: (fn) ->

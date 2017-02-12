@@ -1,6 +1,6 @@
 Rx = require 'rx-lite'
 
-module.exports = class InstallOverlay
+module.exports = class PushNotificationSheet
   constructor: ->
     @_isOpen = new Rx.BehaviorSubject false
     @onActionFn = null
@@ -9,8 +9,6 @@ module.exports = class InstallOverlay
     @_isOpen
 
   onAction: (@onActionFn) => null
-
-  setPrompt: (@prompt) => null
 
   open: =>
     @_isOpen.onNext true

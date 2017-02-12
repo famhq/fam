@@ -2,9 +2,6 @@ z = require 'zorium'
 
 Sheet = require '../sheet'
 
-if window?
-  require './index.styl'
-
 module.exports = class AddToHomeSheet
   constructor: ({@model, router, @isVisible}) ->
     @$sheet = new Sheet {@model, router, @isVisible}

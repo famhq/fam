@@ -186,18 +186,19 @@ gulp.task 'dist:sw', ->
     module:
       loaders: [
         {test: /\.coffee$/, loader: 'coffee'}
+        {test: /\.json$/, loader: 'json'}
       ]
     output:
       filename: 'service_worker.js'
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
-      new webpack.optimize.UglifyJsPlugin
-        mangle:
-          except: ['process']
+      # new webpack.optimize.UglifyJsPlugin
+      #   mangle:
+      #     except: ['process']
     ]
     resolve:
       extensions: ['.coffee', '.js', '.json', '']
-  .pipe gulp.dest paths.distStatic
+  .pipe gulp.dest paths.dist
 
 gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   scriptsConfig = _defaultsDeep {

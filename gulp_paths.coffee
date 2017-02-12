@@ -12,9 +12,9 @@ module.exports =
   functionalTests: './test/functional/**/*.coffee'
   root: './src/root.coffee'
   sw: './src/service_worker.coffee'
-  distStatic: './src/static'
   dist: './dist'
   build: './build'
+  swBuild: './build/service_worker.js'
   manifest: [
     './dist/**/*'
     '!./dist/**/*.map'

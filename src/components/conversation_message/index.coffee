@@ -1,4 +1,5 @@
 z = require 'zorium'
+Rx = require 'rx-lite'
 moment = require 'moment'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'

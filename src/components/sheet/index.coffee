@@ -19,8 +19,8 @@ module.exports = class Sheet
     @router.onBack =>
       @isVisible.onNext false
 
-  beforeUnmount: =>
-    @isVisible.onNext false
+  # beforeUnmount: =>
+  #   @isVisible.onNext false
 
   render: ({icon, message, submitButton}) =>
     z '.z-sheet',
@@ -28,20 +28,21 @@ module.exports = class Sheet
         onclick: =>
           @isVisible.onNext false
       z '.sheet',
-        z '.content',
-          z '.icon',
-            z @$icon,
-              icon: icon
-              color: colors.$primary500
-              isTouchTarget: false
-          z '.message', message
-        z '.actions',
-          z @$closeButton,
-            text: 'Not now'
-            isFullWidth: false
-            onclick: =>
-              @isVisible.onNext false
-          z @$submitButton, _defaults submitButton, {
-            isFullWidth: false
-            colors: {cText: colors.$primary500}
-          }
+        z '.inner',
+          z '.content',
+            z '.icon',
+              z @$icon,
+                icon: icon
+                color: colors.$primary500
+                isTouchTarget: false
+            z '.message', message
+          z '.actions',
+            z @$closeButton,
+              text: 'Not now'
+              isFullWidth: false
+              onclick: =>
+                @isVisible.onNext false
+            z @$submitButton, _defaults submitButton, {
+              isFullWidth: false
+              colors: {cText: colors.$primary500}
+            }

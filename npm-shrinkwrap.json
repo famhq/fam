@@ -1285,7 +1285,7 @@
     "exoid": {
       "version": "0.1.7",
       "from": "git://github.com/claydotio/exoid.git",
-      "resolved": "git://github.com/claydotio/exoid.git#71c8736c56c7852c086578a7a1f1af7e6ef0b054",
+      "resolved": "git://github.com/claydotio/exoid.git#0aca583258dcca493910385b3ad132de812dcd8c",
       "dependencies": {
         "bluebird": {
           "version": "2.11.0",
@@ -5026,7 +5026,7 @@
     "zorium": {
       "version": "1.0.13",
       "from": "git://github.com/claydotio/zorium.git",
-      "resolved": "git://github.com/claydotio/zorium.git#8a9ddbc3f3cd98ae85697a3a16fadab0ca3097da",
+      "resolved": "git://github.com/claydotio/zorium.git#68807e9af2605c601f11b6971dfca84a970dbf7d",
       "dependencies": {
         "qs": {
           "version": "2.4.2",

@@ -8,8 +8,8 @@ module.exports = class Thread
   create: (diff) =>
     @auth.call "#{@namespace}.create", diff, {invalidateAll: true}
 
-  getAll: ({ignoreCache} = {}) =>
-    @auth.stream "#{@namespace}.getAll", {}, {ignoreCache}
+  getAll: ({type, ignoreCache} = {}) =>
+    @auth.stream "#{@namespace}.getAll", {type}, {ignoreCache}
 
   getById: (id, {ignoreCache} = {}) =>
     @auth.stream "#{@namespace}.getById", {id}, {ignoreCache}

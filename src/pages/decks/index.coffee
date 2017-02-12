@@ -1,4 +1,5 @@
 z = require 'zorium'
+Rx = require 'rx-lite'
 
 Head = require '../../components/head'
 Decks = require '../../components/decks'

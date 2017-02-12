@@ -6,13 +6,7 @@ module.exports = class PushToken
   constructor: ({@auth, @pushToken}) -> null
 
   create: ({token, sourceType} = {}) =>
-    unless localStorage['pushTokenStored']
-      @auth.call "#{@namespace}.create", {sourceType, token}
-      .then ->
-        localStorage['pushTokenStored'] = '1'
-      .catch (response) ->
-        if response.status is '400' # push token already stored
-          localStorage['pushTokenStored'] = '1'
+    @auth.call "#{@namespace}.create", {sourceType, token}
 
   claimToken: (token) =>
     @auth.call "#{@namespace}.updateByToken", {token}

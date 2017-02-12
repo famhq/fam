@@ -15,6 +15,7 @@ require './root.styl'
 config = require './config'
 CookieService = require './services/cookie'
 RouterService = require './services/router'
+PushService = require './services/push'
 App = require './app'
 Model = require './models'
 Portal = require './models/portal'
@@ -78,6 +79,10 @@ init = ->
   currentCookies = cookie.parse(document.cookie)
   cookieSubject = new Rx.BehaviorSubject currentCookies
   cookieSubject.subscribeOnNext setCookies(currentCookies)
+
+  CookieService.set(
+    cookieSubject, 'resolution', "#{window.innerWidth}x#{window.innerHeight}"
+  )
 
   isOffline = new Rx.BehaviorSubject false
   isBackendUnavailable = new Rx.BehaviorSubject false
@@ -178,6 +183,9 @@ init = ->
   .then ->
     model.portal.call 'app.isLoaded'
   .then ->
+    model.portal.call 'top.onData', (e) ->
+      console.log e
+      routeHandler e
     if model.wasCached()
       z.untilStable $app, {timeout: 200} # arbitrary
   .catch -> null
@@ -194,31 +202,9 @@ init = ->
   window.addEventListener 'resize', app.onResize
   model.portal.call 'orientation.onChange', app.onResize
 
-  #
-  # PUSH NOTIFICATIONS
-  #
-
-  model.portal.call 'push.register'
-  .then ({token, sourceType} = {}) ->
-    console.log 'got'
-    if token?
-      unless localStorage?['isPushTokenStored']
-        console.log 'go'
-        sourceType ?= if Environment.isAndroid() then 'android' else 'ios'
-        model.pushToken.create {token, sourceType}
-        localStorage?['isPushTokenStored'] = 1
-      model.pushToken.setCurrentPushToken token
-  .catch (err) ->
-    unless err.message is 'Method not found'
-      log.error err
-
-  model.portal.call 'push.registerAction', {
-    action: 'reply'
-  }, (reply) ->
-    model.chatMessage.create {
-      body: reply.additionalData.inlineReply
-      conversationId: reply.additionalData.data.conversationId
-    }
+  PushService.init {model}
+  if Environment.isAndroid() and Environment.isGameApp config.GAME_KEY
+    PushService.register {model, isAlwaysCalled: true}
 
   model.portal.call 'app.onResume', ->
     model.auth.clearNetoxCache()

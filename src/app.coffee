@@ -7,6 +7,7 @@ Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
 InstallOverlay = require './components/install_overlay'
 AddToHomeScreenSheet = require './components/add_to_home_sheet'
+PushNotificationsSheet = require './components/push_notifications_sheet'
 ConversationImageView = require './components/conversation_image_view'
 
 Pages =
@@ -76,7 +77,7 @@ module.exports = class App
     else
       null
 
-    isAddToHomeSheetVisible = new Rx.BehaviorSubject false
+    addToHomeSheetIsVisible = new Rx.BehaviorSubject false
 
     @$drawer = new Drawer {@model, @router}
     @$signInDialog = new SignInDialog {@model, @router}
@@ -85,23 +86,25 @@ module.exports = class App
     @$addToHomeSheet = new AddToHomeScreenSheet {
       @model
       @router
-      isVisible: isAddToHomeSheetVisible
+      isVisible: addToHomeSheetIsVisible
     }
+    @$pushNotificationsSheet = new PushNotificationsSheet {@model, @router}
 
     me = @model.user.getMe()
 
     if localStorage? and not localStorage['lastAddToHomePromptTime']
       setTimeout ->
         unless not localStorage['lastAddToHomePromptTime']
-          isAddToHomeSheetVisible.onNext true
+          addToHomeSheetIsVisible.onNext true
           localStorage['lastAddToHomePromptTime'] = Date.now()
       , TIME_UNTIL_ADD_TO_HOME_PROMPT_MS
 
     @state = z.state {
       $backupPage: $backupPage
       me: me
-      isAddToHomeSheetVisible: isAddToHomeSheetVisible
+      addToHomeSheetIsVisible: addToHomeSheetIsVisible
       signInDialogIsOpen: @model.signInDialog.isOpen()
+      pushNotificationSheetIsOpen: @model.pushNotificationSheet.isOpen()
       installOverlayIsOpen: @model.installOverlay.isOpen()
       imageViewOverlayImageData: @model.imageViewOverlay.getImageData()
       hideDrawer: @requests.flatMapLatest (request) ->
@@ -191,8 +194,8 @@ module.exports = class App
 
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
-      installOverlayIsOpen, signInDialogIsOpen,
-      isAddToHomeSheetVisible} = @state.getValue()
+      installOverlayIsOpen, signInDialogIsOpen, pushNotificationSheetIsOpen
+      addToHomeSheetIsVisible} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
@@ -221,7 +224,9 @@ module.exports = class App
               z @$installOverlay
             if imageViewOverlayImageData
               z @$conversationImageView
-            if isAddToHomeSheetVisible
+            if addToHomeSheetIsVisible
               z @$addToHomeSheet, {
                 message: request?.$page?.installMessage or defaultInstallMessage
               }
+            if pushNotificationSheetIsOpen
+              z @$pushNotificationsSheet

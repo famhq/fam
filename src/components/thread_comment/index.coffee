@@ -1,4 +1,5 @@
 z = require 'zorium'
+Rx = require 'rx-lite'
 moment = require 'moment'
 supportsWebP = window? and require 'supports-webp'
 _map = require 'lodash/map'

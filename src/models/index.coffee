@@ -29,6 +29,7 @@ ThreadComment = require './thread_comment'
 Video = require './video'
 Drawer = require './drawer'
 SignInDialog = require './sign_in_dialog'
+PushNotificationSheet = require './push_notification_sheet'
 InstallOverlay = require './install_overlay'
 ImageViewOverlay = require './image_view_overlay'
 Window = require './window'
@@ -42,14 +43,14 @@ module.exports = class Model
   constructor: ({cookieSubject, serverHeaders, io, @portal}) ->
     serverHeaders ?= {}
 
-    serialization = window?[SERIALIZATION_KEY] or {}
-    isExpired = if serialization.expires?
-      # Because of potential clock skew we check around the value
-      delta = Math.abs(Date.now() - serialization.expires)
-      delta > SERIALIZATION_EXPIRE_TIME_MS
-    else
-      true
-    cache = if isExpired then {} else serialization
+    cache = window?[SERIALIZATION_KEY] or {}
+    # isExpired = if serialization.expires?
+    #   # Because of potential clock skew we check around the value
+    #   delta = Math.abs(Date.now() - serialization.expires)
+    #   delta > SERIALIZATION_EXPIRE_TIME_MS
+    # else
+    #   true
+    # cache = if isExpired then {} else serialization
     @isFromCache = not _isEmpty cache
 
     accessToken = cookieSubject.map (cookies) ->
@@ -84,6 +85,7 @@ module.exports = class Model
       ioEmit: ioEmit
       io: io
       cache: cache.exoid
+      isServerSide: not window?
 
     pushToken = new Rx.BehaviorSubject null
 
@@ -111,8 +113,9 @@ module.exports = class Model
     @signInDialog = new SignInDialog()
     @installOverlay = new InstallOverlay()
     @imageViewOverlay = new ImageViewOverlay()
+    @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {@user, @game, @modal, @installOverlay}
-    @window = new Window()
+    @window = new Window {cookieSubject}
 
   wasCached: => @isFromCache
 
@@ -123,6 +126,7 @@ module.exports = class Model
     .map ([exoidCache]) ->
       string = JSON.stringify {
         exoid: exoidCache
-        expires: Date.now() + SERIALIZATION_EXPIRE_TIME_MS
+        # problem with this is clock skew
+        # expires: Date.now() + SERIALIZATION_EXPIRE_TIME_MS
       }
       "window['#{SERIALIZATION_KEY}']=#{string};"

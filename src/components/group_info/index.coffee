@@ -24,6 +24,10 @@ module.exports = class GroupInfo
     @model.signInDialog.openIfGuest me
     .then =>
       @state.set isJoinLoading: true
+
+      unless me.hasPushToken
+        @model.pushNotificationSheet.open()
+
       @model.group.joinById group.id
       .catch -> null
       .then =>

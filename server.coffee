@@ -113,7 +113,9 @@ app.use (req, res, next) ->
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
     timeout: 5000
-    transports: ['websocket', 'polling']
+    transports: unless config.ENV is config.ENVS.DEV \
+                then ['websocket', 'polling']
+                else null
   }
   model = new Model({cookieSubject, io, serverHeaders: req.headers})
   requests = new Rx.BehaviorSubject(req)

@@ -1,43 +1,60 @@
 Rx = require 'rx-lite'
 
+CookieService = require '../services/cookie'
+
 DRAWER_RIGHT_PADDING = 56
 DRAWER_MAX_WIDTH = 336
 
-getSize = ->
-  {
-    width: window?.innerWidth# or 412
-    height: window?.innerHeight# or 732
-  }
-
-getBreakpoint = ->
-  if window?.innerWidth >= 1280
-    'desktop'
-  else
-    'mobile'
-
-getDrawerWidth = ->
-  Math.min(
-    window?.innerWidth - DRAWER_RIGHT_PADDING
-    DRAWER_MAX_WIDTH
-  )
-
-getAppBarHeight = ->
-  if window?.innerWidth > 768 then 64 else 56
-
 module.exports = class Window
-  constructor: ->
+  constructor: ({@cookieSubject}) ->
     @isPaused = false
 
-    @size = new Rx.BehaviorSubject getSize()
-    @breakpoint = new Rx.BehaviorSubject getBreakpoint()
-    @drawerWidth = new Rx.BehaviorSubject getDrawerWidth()
-    @appBarHeight = new Rx.BehaviorSubject getAppBarHeight()
+    @size = new Rx.BehaviorSubject @getSizeVal()
+    @breakpoint = new Rx.BehaviorSubject @getBreakpointVal()
+    @drawerWidth = new Rx.BehaviorSubject @getDrawerWidthVal()
+    @appBarHeight = new Rx.BehaviorSubject @getAppBarHeightVal()
     window?.addEventListener 'resize', @updateSize
 
   updateSize: =>
     unless @isPaused
-      @size.onNext getSize()
-      @breakpoint.onNext getBreakpoint()
+      @size.onNext @getSizeVal()
+      @breakpoint.onNext @getBreakpointVal()
+
+  getSizeVal: =>
+    resolution = CookieService.get @cookieSubject, 'resolution'
+    if window?
+      width = window.innerWidth
+      height = window.innerHeight
+    else if resolution
+      arr = resolution.split 'x'
+      width = arr[0]
+      height = arr[1]
+    else
+      width = null
+      height = 732
+
+    {
+      width: width
+      height: height
+    }
+
+  getBreakpointVal: =>
+    {width} = @getSizeVal()
+    if width >= 1280
+      'desktop'
+    else
+      'mobile'
+
+  getDrawerWidthVal: =>
+    {width} = @getSizeVal()
+    Math.min(
+      width - DRAWER_RIGHT_PADDING
+      DRAWER_MAX_WIDTH
+    )
+
+  getAppBarHeightVal: =>
+    {width} = @getSizeVal()
+    if width > 768 then 64 else 56
 
   getSize: =>
     @size
