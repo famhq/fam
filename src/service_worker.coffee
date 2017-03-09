@@ -13,15 +13,20 @@ portal.on 'top.onData', topOnData
 self.addEventListener 'install', (e) ->
   self.skipWaiting()
 
+self.addEventListener 'activate', (e) ->
+  e.waitUntil self.clients.claim()
+
 self.addEventListener 'push', (e) ->
   message = if e.data then e.data.json() else {}
 
-  e.waitUntil self.registration.showNotification 'Starfire',
+  self.registration.showNotification 'Starfire',
     icon: if message.icon \
           then message.icon
           else "#{config.CDN_URL}/android-chrome-192x192.png"
-    body: message.title + ': ' + message.text
-    vibrate: [200, 100, 200, 100, 200, 100, 400]
+    title: message.title
+    body: message.text
+    tag: message.data.path
+    vibrate: [200, 100, 200]
     data:
       url: "#{config.HOST}#{message.data.path}"
       path: message.data.path
@@ -30,7 +35,7 @@ self.addEventListener 'notificationclick', (e) ->
   # close the notification
   e.notification.close()
   #To open the app after click notification
-  e.waitUntil clients.matchAll(type: 'window').then((clientList) ->
+  clients.matchAll(type: 'window').then((clientList) ->
     i = 0
     while i < clientList.length
       client = clientList[i]

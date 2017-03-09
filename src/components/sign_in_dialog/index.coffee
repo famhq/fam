@@ -97,6 +97,18 @@ module.exports = class SignInDialog
                     mode: if mode is 'join' then 'signIn' else 'join'
               },
                 if mode is 'join' then 'Sign in' else 'Sign up'
+
+
+            # z '.signup-facebook', {
+            #   onclick: =>
+            #     @state.set isFacebookSigninLoading: true
+            #     @model.auth.loginFacebook {
+            #       isLoginOnly: mode isnt 'join'
+            #     }
+            #     .then =>
+            #       @state.set isFacebookSigninLoading: false
+            #       @router.go redirectPath
+            # }, 'LFB'
             z 'form.content',
               z '.input',
                 z @$usernameInput, {

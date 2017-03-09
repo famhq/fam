@@ -1,7 +1,9 @@
 z = require 'zorium'
 
-Avatar = require '../avatar'
-PrimaryButton = require '../primary_button'
+Tabs = require '../tabs'
+Icon = require '../icon'
+ProfileInfo = require '../profile_info'
+ProfileHistory = require '../profile_history'
 
 if window?
   require './index.styl'
@@ -9,28 +11,42 @@ if window?
 module.exports = class Profile
   constructor: ({@model, @router}) ->
     me = @model.user.getMe()
-    @$avatar = new Avatar()
-    @$editButton = new PrimaryButton()
+
+    @$tabs = new Tabs {@model}
+    @$infoIcon = new Icon()
+    @$historyIcon = new Icon()
+    @$graphIcon = new Icon()
+
+    @$profileInfo = new ProfileInfo {@model, @router}
+    @$profileHistory = new ProfileHistory {@model, @router}
+    # @$profileGraphs = new ProfileGraphs {@model, @router}
 
     @state = z.state
       me: me
+
   render: =>
     {me} = @state.getValue()
 
     z '.z-profile',
-      z '.header',
-        z '.avatar',
-          z @$avatar, {user: me, size: '158px'}
-        z '.name',
-          @model.user.getDisplayName me
-        z '.edit-button',
-          z @$editButton,
-            text: 'Edit profile'
-            onclick: =>
-              @router.go '/editProfile'
-
-      z '.g-grid',
-        z '.section',
-          z '.top',
-            z '.left',
-              z '.title', ''
+      z @$tabs,
+        isBarFixed: false
+        tabs: [
+          {
+            $menuIcon: @$infoIcon
+            menuIconName: 'info'
+            $menuText: 'Info'
+            $el: @$profileInfo
+          }
+          {
+            $menuIcon: @$historyIcon
+            menuIconName: 'history'
+            $menuText: 'History'
+            $el: @$profileHistory
+          }
+          {
+            $menuIcon: @$graphIcon
+            menuIconName: 'stats'
+            $menuText: 'Graphs'
+            $el: @$profileGraphs
+          }
+        ]

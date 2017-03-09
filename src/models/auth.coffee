@@ -44,18 +44,31 @@ module.exports = class Auth
       .then =>
         @exoid.invalidateAll()
 
+  afterLogin: ({accessToken}) =>
+    @setAccessToken accessToken
+    .then =>
+      @exoid.invalidateAll()
+      # give time to set accessToken, I don't think it's sync (onNext)
+      setTimeout =>
+        pushToken = @pushToken.getValue()
+        if pushToken
+          @call 'pushTokens.updateByToken', {token: pushToken}
+          .catch -> null
+
   login: ({username, password} = {}) =>
     @exoid.call 'auth.loginUsername', {username, password}
-    .then ({username, accessToken}) =>
-      @setAccessToken accessToken
-      .then =>
-        @exoid.invalidateAll()
-        # give time to set accessToken, I don't think it's sync (onNext)
-        setTimeout =>
-          pushToken = @pushToken.getValue()
-          if pushToken
-            @call 'pushTokens.updateByToken', {token: pushToken}
-            .catch -> null
+    .then @afterLogin
+
+  loginFacebook: ({facebookAccessToken, isLoginOnly} = {}) =>
+    cookieAccessToken = @cookieSubject.getValue()[config.AUTH_COOKIE]
+
+    (if facebookAccessToken
+    then Promise.resolve {facebookAccessToken}
+    else @portal.call 'facebook.login'
+    )
+    .then ({status, facebookAccessToken}) =>
+      @exoid.call 'auth.loginFacebook', {isLoginOnly, facebookAccessToken}
+    .then @afterLogin
 
   stream: (path, body, options = {}) =>
     options = _pick options, [

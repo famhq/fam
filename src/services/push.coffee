@@ -15,7 +15,6 @@ class PushService
   register: ({model, isAlwaysCalled}) ->
     model.portal.call 'push.register'
     .then ({token, sourceType} = {}) ->
-      console.log 'reg', token, sourceType
       if token?
         if not isAlwaysCalled or localStorage?['isPushTokenStored']
           sourceType ?= if Environment.isAndroid() then 'android' else 'ios'

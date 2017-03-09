@@ -1,0 +1,29 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+json('zorium-paper/colors.json')
+
+.p-facebook-login
+  display: flex
+  flex-direction: column
+  background: getColor('$tertiary900')
+  align-items: center
+
+  > .content
+    margin: auto
+    text-align: center
+
+    > .spinner
+      margin-bottom: 48px
+
+    > .title
+      responsive-font-headline()
+      color: getColor('$primary500')
+      margin-bottom: 8px
+
+    > .description
+      responsive-font-body2()
+      text-transform: uppercase
+      color: getColor('$tertiary900Text')
+      opacity: 0.54

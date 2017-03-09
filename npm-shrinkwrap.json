@@ -1285,7 +1285,7 @@
     "exoid": {
       "version": "0.1.7",
       "from": "git://github.com/claydotio/exoid.git",
-      "resolved": "git://github.com/claydotio/exoid.git#0aca583258dcca493910385b3ad132de812dcd8c",
+      "resolved": "git://github.com/claydotio/exoid.git#110716e5f41b53420c5d0a417fc7b46b1025c3f7",
       "dependencies": {
         "bluebird": {
           "version": "2.11.0",
@@ -1478,11 +1478,6 @@
           "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz"
         }
       }
-    },
-    "find-index": {
-      "version": "0.1.1",
-      "from": "find-index@>=0.1.1 <0.2.0",
-      "resolved": "https://registry.npmjs.org/find-index/-/find-index-0.1.1.tgz"
     },
     "find-up": {
       "version": "1.1.2",
@@ -1685,7 +1680,14 @@
     "glob2base": {
       "version": "0.0.12",
       "from": "glob2base@>=0.0.12 <0.0.13",
-      "resolved": "https://registry.npmjs.org/glob2base/-/glob2base-0.0.12.tgz"
+      "resolved": "https://registry.npmjs.org/glob2base/-/glob2base-0.0.12.tgz",
+      "dependencies": {
+        "find-index": {
+          "version": "0.1.1",
+          "from": "find-index@>=0.1.1 <0.2.0",
+          "resolved": "https://registry.npmjs.org/find-index/-/find-index-0.1.1.tgz"
+        }
+      }
     },
     "global": {
       "version": "4.3.1",
@@ -3381,8 +3383,8 @@
     },
     "portal-gun": {
       "version": "0.4.1",
-      "from": "portal-gun@>=0.4.1 <0.5.0",
-      "resolved": "https://registry.npmjs.org/portal-gun/-/portal-gun-0.4.1.tgz",
+      "from": "git://github.com/claydotio/portal-gun.git",
+      "resolved": "git://github.com/claydotio/portal-gun.git#ab5fd8c6160c664db0e924a8c769145537e919b1",
       "dependencies": {
         "promiz": {
           "version": "1.0.3",

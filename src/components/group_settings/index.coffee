@@ -33,7 +33,7 @@ module.exports = class Settings
       group: group
       isLeaveGroupLoading: false
       notificationTypes: group.flatMapLatest (group) =>
-        @model.groupUserData.getMeByGroupId(group.id).map (data) ->
+        @model.userGroupData.getMeByGroupId(group.id).map (data) ->
           _map NOTIFICATION_TYPES, (type) ->
             isSelected = new Rx.BehaviorSubject(
               not data.globalBlockedNotifications?[type.key]
@@ -100,7 +100,7 @@ module.exports = class Settings
               z '.toggle',
                 z $toggle, {
                   onToggle: (isSelected) =>
-                    @model.groupUserData.updateMeByGroupId group.id, {
+                    @model.userGroupData.updateMeByGroupId group.id, {
                       globalBlockedNotifications:
                         "#{key}": not isSelected
                     }

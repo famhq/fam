@@ -35,3 +35,5 @@ require('smoothscroll-polyfill').polyfill()
 
 # transitionend support
 require 'transition-event'
+
+require 'setimmediate'

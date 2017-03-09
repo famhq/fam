@@ -1,0 +1,41 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-profile-landing
+  padding: 16px
+  text-align: center
+
+  > .g-grid
+    > .image
+      display: block
+      background-image: url('https://cdn.wtf/d/images/starfire/battle_history.svg')
+      background-size: 100%
+      background-repeat: no-repeat
+      width: 232px
+      height: 209px
+      margin: 0 auto
+
+    > .description
+      font-body1()
+      color: getColor('$white')
+      margin-top: 16px
+
+    > .form
+      margin-top: 16px
+
+      > .button
+        margin-top: 20px
+
+.z-profile-landing_dialog
+  > .description
+    font-caption1()
+
+  > .elixir-collector
+    display: block
+    background-image: url('https://cdn.wtf/d/images/starfire/elixir_collector.svg')
+    background-size: 100%
+    background-repeat: no-repeat
+    width: 160px
+    height: 160px
+    margin: 20px auto 0 auto

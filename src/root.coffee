@@ -70,9 +70,9 @@ setCookies = (currentCookies) ->
           key, value, CookieService.getCookieOpts()
     currentCookies = cookies
 
+navigator.serviceWorker?.register '/service_worker.js'
 # start before dom has loaded
 portal = new Portal()
-getDataPromise = portal.call 'top.getData'
 
 init = ->
   FastClick.attach document.body
@@ -119,7 +119,6 @@ init = ->
   $app = z app
   z.bind root, $app
 
-  navigator.serviceWorker?.register '/service_worker.js'
   window.addEventListener 'beforeinstallprompt', (e) ->
     e.preventDefault()
     model.installOverlay.setPrompt e
@@ -175,20 +174,29 @@ init = ->
       {category, action, label} = data.logEvent
       ga? 'send', 'event', category, action, label
 
-  getDataPromise
+  model.portal.call 'top.onData', (e) ->
+    routeHandler e
+
+  start = Date.now()
+  (if Environment.isGameApp config.GAME_KEY
+    portal.call 'top.getData'
+  else
+    Promise.resolve null)
   .then routeHandler
   .catch (err) ->
     log.error err
     router.go()
   .then ->
     model.portal.call 'app.isLoaded'
-  .then ->
-    model.portal.call 'top.onData', (e) ->
-      console.log e
-      routeHandler e
+
+    # untilStable hangs many seconds and the
+    # timeout (200ms) doesn't actually work
     if model.wasCached()
-      z.untilStable $app, {timeout: 200} # arbitrary
-  .catch -> null
+      new Promise (resolve) ->
+        setTimeout resolve, 150
+        # z.untilStable $app, {timeout: 200} # arbitrary
+    else
+      null
   .then ->
     requests.subscribeOnNext ({path}) ->
       if window?

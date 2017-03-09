@@ -57,6 +57,8 @@ module.exports = class Portal
     @portal.on 'top.getData', -> null
     @portal.on 'push.register', @pushRegister
 
+    @portal.on 'facebook.login', @facebookLogin
+
     @portal.on 'messenger.isInstalled', -> false
 
     @portal.on 'networkInformation.onOffline', @networkInformationOnOffline
@@ -126,6 +128,32 @@ module.exports = class Portal
       @call 'browser.openWindow',
         url: config.GOOGLE_PLAY_APP_URL
         target: '_system'
+
+
+  facebookLogin: ->
+    new Promise (resolve) ->
+      FB.getLoginStatus (response) ->
+        if response.status is 'connected'
+          resolve {
+            status: response.status
+            facebookAccessToken: response.authResponse.accessToken
+            id: response.authResponse.userID
+          }
+        else if Environment.isGameChromeApp(config.GAME_KEY)
+          redirectUri = encodeURIComponent(
+            "https://#{config.HOST}/facebookLogin/chrome"
+          )
+          window.location.href = 'https://www.facebook.com/dialog/oauth?' +
+               "client_id=#{config.FB_ID}&" +
+               "redirect_uri=#{redirectUri}&" +
+               'response_type=token'
+        else
+          FB.login (response) ->
+            resolve {
+              status: response.status
+              facebookAccessToken: response.authResponse.accessToken
+              id: response.authResponse.userID
+            }
 
   pushRegister: ->
     navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->

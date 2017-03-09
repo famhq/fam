@@ -67,6 +67,7 @@ module.exports = class Drawer
       isAddWinLoading: false
       isAddLossLoading: false
       isAddDrawLoading: false
+      windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
 
@@ -162,7 +163,8 @@ module.exports = class Drawer
 
   render: ({currentPath}) =>
     {isOpen, me, menuItems, userDeck, isAddWinLoading, isAddLossLoading,
-      isAddDrawLoading, myGroups, drawerWidth, breakpoint} = @state.getValue()
+      isAddDrawLoading, myGroups, drawerWidth, breakpoint,
+      windowSize} = @state.getValue()
     deck = userDeck?.deck
 
     translateX = if isOpen then '0' else "-#{drawerWidth}px"
@@ -175,6 +177,7 @@ module.exports = class Drawer
     z '.z-drawer', {
       className: z.classKebab {isOpen}
       style:
+        display: if windowSize.width then 'block' else 'none'
         width: if breakpoint is 'mobile' \
                then '100%'
                else "#{drawerWidth}px"
@@ -235,7 +238,7 @@ module.exports = class Drawer
                     return z 'li.divider'
 
                   isSelected = currentPath?.indexOf(path) is 0 or (
-                    path is '/decks' and currentPath is '/'
+                    path is '/community' and currentPath is '/'
                   )
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}

@@ -19,10 +19,11 @@ Pages =
   ConversationPage: require './pages/conversation'
   NewConversationPage: require './pages/new_conversation'
   AddEventPage: require './pages/add_event'
+  CommunityPage: require './pages/community'
   EditEventPage: require './pages/edit_event'
   EventPage: require './pages/event'
   EventsPage: require './pages/events'
-  CommunityPage: require './pages/community'
+  FacebookLoginPage: require './pages/facebook_login'
   GroupPage: require './pages/group'
   GroupChatPage: require './pages/group_chat'
   GroupMembersPage: require './pages/group_members'
@@ -139,7 +140,7 @@ module.exports = class App
 
 
     # route '/', 'HomePage'
-    route '/community', 'CommunityPage'
+    route ['/', '/community'], 'CommunityPage'
     route ['/friends/:action', '/friends'], 'FriendsPage'
     route '/videos', 'VideosPage'
     route '/conversation/:conversationId', 'ConversationPage'
@@ -151,10 +152,10 @@ module.exports = class App
     route '/thread/:id/reply', 'ThreadReplyPage'
 
     if breakpoint is 'desktop'
-      route ['/', '/decks', '/thread/:id'], 'DecksPage'
+      route ['/decks', '/thread/:id'], 'DecksPage'
     else
       route '/thread/:id', 'ThreadPage'
-      route ['/', '/decks'], 'DecksPage'
+      route ['/decks'], 'DecksPage'
 
     route '/group/:id', 'GroupPage'
     route '/group/:id/chat', 'GroupChatPage'
@@ -180,6 +181,7 @@ module.exports = class App
     route '/cards', 'CardsPage'
     route '/deck/:id', 'DeckPage'
     route ['/card/:id', '/clashRoyale/card/:key'], 'CardPage'
+    route '/facebookLogin/:type', 'FacebookLoginPage'
     route '/policies', 'PoliciesPage'
     route '/tos', 'TosPage'
     route '/privacy', 'PrivacyPage'

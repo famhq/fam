@@ -28,7 +28,9 @@ module.exports = class Dialog
         if cancelButton or submitButton
           z '.actions',
             if cancelButton
-              z '.action',
+              z '.action', {
+                className: z.classKebab {isFullWidth: cancelButton.isFullWidth}
+              },
                 z @$cancelButton, _defaults cancelButton, {
                   colors: {cText: colors.$primary500}
                 }

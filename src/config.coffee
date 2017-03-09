@@ -56,6 +56,9 @@ else
   API_PATH = ''
 # All keys must have values at run-time (value may be null)
 isomorphic =
+  # hardcoded while we just have one game
+  CLASH_ROYALE_ID: '319a9065-e3dc-4d02-ad30-62047716a88f'
+
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
   USER_CDN_URL: 'https://cdn.wtf/images/starfire'
   IOS_APP_URL: 'https://itunes.apple.com/us/app/starfire/id1160535565'
@@ -68,6 +71,7 @@ isomorphic =
     serverEnv.STRIPE_PUBLISHABLE_KEY or
     process.env.STRIPE_PUBLISHABLE_KEY
   GIPHY_API_KEY: process.env.GIPHY_API_KEY
+  FB_ID: process.env.STARFIRE_FB_ID
   API_URL: API_URL
   API_HOST: API_HOST
   API_PATH: API_PATH

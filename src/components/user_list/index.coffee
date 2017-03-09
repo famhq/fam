@@ -34,4 +34,4 @@ module.exports = class UserList
               user: user.userInfo
               bgColor: colors.$grey200
           z '.right',
-            z '.name', user.userInfo.username
+            z '.name', user.userInfo?.username

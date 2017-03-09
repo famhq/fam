@@ -1,0 +1,66 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-profile-info
+  flex: 1
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .header
+    width: 100%
+    box-sizing: border-box
+    background-color: getColor('$tertiary700')
+    padding: 16px
+
+    > .g-grid
+      > .info
+        display: flex
+        align-items: flex-end
+        margin-bottom: 8px
+
+        > .left
+          > .name
+            font-h1()
+
+          > .tag
+            font-caption1()
+            color: getColor('$white34')
+            margin-top: 4px
+
+        > .right
+          margin-left: auto
+
+          > .clan-name
+            font-body1()
+
+          > .clan-tag
+            font-caption1()
+            color: getColor('$white34')
+            margin-top: 4px
+
+      > .g-cols
+        > .g-col
+          > .text
+            font-title()
+            text-align: center
+
+  > .content
+    padding: 0 16px
+
+    > .block
+      > .g-grid
+        > .title
+          font-subhead()
+          color: getColor('$primary500')
+          margin: 16px 0
+
+        > .g-cols
+          > .g-col
+            > .name
+              font-caption1()
+              color: getColor('$white34')
+
+            > .value
+              font-title()
+              margin-top: 4px

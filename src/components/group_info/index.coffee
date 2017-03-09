@@ -25,7 +25,7 @@ module.exports = class GroupInfo
     .then =>
       @state.set isJoinLoading: true
 
-      unless me.hasPushToken
+      unless localStorage?['isPushTokenStored']
         @model.pushNotificationSheet.open()
 
       @model.group.joinById group.id

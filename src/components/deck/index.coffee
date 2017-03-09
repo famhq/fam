@@ -26,7 +26,6 @@ module.exports = class Deck
     @state = z.state
       me: me
       deck: deck
-      isSetDeckLoading: false
 
   render: =>
     {me, deck, isSetDeckLoading} = @state.getValue()
@@ -39,17 +38,6 @@ module.exports = class Deck
           z @$deckCards,
             onCardClick: (card) =>
               @router.go "/card/#{card.id}"
-          if deck?.id isnt me?.data?.clashRoyaleDeckId
-            z '.set-as-deck',
-              z @$setAsDeckButton,
-                text: if isSetDeckLoading \
-                      then 'Loading...'
-                      else 'Set as current deck'
-                onclick: =>
-                  @state.set isSetDeckLoading: true
-                  @model.userData.setClashRoyaleDeckId deck.id
-                  .then =>
-                    @state.set isSetDeckLoading: false
       z @$tabs,
         isBarFixed: false
         tabs: [

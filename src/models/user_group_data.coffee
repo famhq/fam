@@ -1,7 +1,7 @@
 _defaults = require 'lodash/defaults'
 
-module.exports = class GroupUserData
-  namespace: 'groupUserData'
+module.exports = class UserGroupData
+  namespace: 'userGroupData'
 
   constructor: ({@auth}) -> null
 

@@ -56,9 +56,8 @@ module.exports = class Compose
           z 'textarea.textarea',
             # for some reason necessary on iOS to get it to focus properly
             onclick: (e) ->
-              setTimeout ->
+              setImmediate ->
                 e?.target?.focus()
-              , 0
             placeholder: if isReply \
                         then 'Write a response'
                         else 'Write a post...'

@@ -30,7 +30,7 @@ module.exports = class Window
       width = arr[0]
       height = arr[1]
     else
-      width = null
+      width = undefined
       height = 732
 
     {

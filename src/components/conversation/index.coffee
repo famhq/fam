@@ -28,6 +28,7 @@ module.exports = class Conversation extends Base
       selectedProfileDialogUser, @scrollYOnly, @isGroup} = options
 
     isLoading = new Rx.BehaviorSubject false
+    @isPostLoading = new Rx.BehaviorSubject false
     isTextareaFocused = new Rx.BehaviorSubject false
     isActive ?= new Rx.BehaviorSubject false
     me = @model.user.getMe()
@@ -102,6 +103,7 @@ module.exports = class Conversation extends Base
       isLoading: isLoading
       isActive: isActive
       isTextareaFocused: isTextareaFocused
+      isPostLoading: @isPostLoading
       error: null
       conversation: @conversation
       isScrolledBottom: @isScrolledBottomStreams.switch()
@@ -150,9 +152,8 @@ module.exports = class Conversation extends Base
       # exact time. caused an issue of leaving event page back to home,
       # and home had no responses / empty streams / unobserved streams
       # for group data
-      setTimeout =>
+      setImmediate =>
         @model.exoid.invalidateAll()
-      , 0
     @messages.onNext []
 
     @model.portal.call 'push.setContextId', {
@@ -175,9 +176,8 @@ module.exports = class Conversation extends Base
   onResize: =>
     {isScrolledBottom} = @state.getValue()
     if isScrolledBottom
-      setTimeout =>
+      setImmediate =>
         @scrollToBottom {isSmooth: true}
-      , 0
 
   postMessage: =>
     {me, conversation, isPostLoading} = @state.getValue()
@@ -190,7 +190,7 @@ module.exports = class Conversation extends Base
     #   return
 
     if not isPostLoading and messageBody
-      @state.set isPostLoading: true
+      @isPostLoading.onNext true
 
       @model.chatMessage.create {
         body: messageBody
@@ -199,9 +199,9 @@ module.exports = class Conversation extends Base
       }, {user: me, time: Date.now()}
       .then =>
         # @model.user.emit('chatMessage').catch log.error
-        @state.set isPostLoading: false
+        @isPostLoading.onNext false
       .catch =>
-        @state.set isPostLoading: false
+        @isPostLoading.onNext false
 
   render: =>
     {me, isLoading, message, isTextareaFocused

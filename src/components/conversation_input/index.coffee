@@ -18,7 +18,7 @@ if window?
 module.exports = class ConversationInput
   constructor: (options) ->
     {@model, @message, @onPost, @onResize, toggleIScroll,
-      @isTextareaFocused, @overlay$} = options
+      @isTextareaFocused, @overlay$, isPostLoading} = options
 
     @imageData = new Rx.BehaviorSubject null
     @hasText = new Rx.BehaviorSubject false
@@ -45,6 +45,7 @@ module.exports = class ConversationInput
           @message
           @isTextareaFocused
           toggleIScroll
+          isPostLoading
           @hasText
           @model
         }

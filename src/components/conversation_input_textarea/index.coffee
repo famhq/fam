@@ -14,7 +14,7 @@ DEFAULT_TEXTAREA_HEIGHT = 54
 module.exports = class ConversationInputTextarea
   constructor: (options) ->
     {@message, @onPost, @onResize, @isTextareaFocused, @toggleIScroll
-      @hasText, @model} = options
+      @hasText, @model, isPostLoading} = options
 
     @$sendIcon = new Icon {hasRipple: true}
 
@@ -22,6 +22,7 @@ module.exports = class ConversationInputTextarea
 
     @state = z.state
       isTextareaFocused: @isTextareaFocused
+      isPostLoading: isPostLoading
       textareaHeight: DEFAULT_TEXTAREA_HEIGHT
       hasText: @hasText
 
@@ -41,12 +42,14 @@ module.exports = class ConversationInputTextarea
     @message.onNext message
 
   postMessage: (e) =>
-    $$textarea = @$$el.querySelector('#textarea')
-    $$textarea?.focus()
-    $$textarea?.style.height = "#{DEFAULT_TEXTAREA_HEIGHT}px"
-    @state.set textareaHeight: DEFAULT_TEXTAREA_HEIGHT
-    @onPost?()
-    $$textarea?.value = ''
+    {isPostLoading} = @state.getValue()
+    unless isPostLoading
+      $$textarea = @$$el.querySelector('#textarea')
+      $$textarea?.focus()
+      $$textarea?.style.height = "#{DEFAULT_TEXTAREA_HEIGHT}px"
+      @state.set textareaHeight: DEFAULT_TEXTAREA_HEIGHT
+      @onPost?()
+      $$textarea?.value = ''
 
   resizeTextarea: (e) =>
     {textareaHeight} = @state.getValue()
