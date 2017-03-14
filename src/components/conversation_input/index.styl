@@ -12,10 +12,13 @@
       max-height: 150px // also in conversation_input_textarea
 
     > .bottom-icons
-      display: flex
       align-items: center
       position: relative
       background: getColor('$tertiary500')
+      display: none
+
+      &.is-visible
+        display: flex
 
       > .icon
         position: relative

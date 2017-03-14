@@ -31,6 +31,10 @@ module.exports = class Decks
     selectedIndex = new Rx.BehaviorSubject 0
     @$tabs = new Tabs {@model, selectedIndex}
 
+    @$favoritedIcon = new Icon()
+    @$guidesIcon = new Icon()
+    @$popularIcon = new Icon()
+
     @$cachedThread = null
 
     @state = z.state
@@ -63,14 +67,20 @@ module.exports = class Decks
           vDomKey: 'decks-' + if $sideEl then 'side' else 'noside'
           tabs: [
             {
+              $menuIcon: @$guidesIcon
+              menuIconName: 'compass'
               $menuText: 'Guides'
               $el: @$deckGuides
             }
             {
-              $menuText: 'My Decks'
+              $menuIcon: @$favoritedIcon
+              menuIconName: 'star'
+              $menuText: 'Starred Decks'
               $el: @$recentDecks
             }
             {
+              $menuIcon: @$popularIcon
+              menuIconName: 'decks'
               $menuText: 'Popular'
               $el: @$popularDecks
             }

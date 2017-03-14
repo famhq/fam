@@ -32,16 +32,12 @@ module.exports = class ProfileLanding
 
     @state.set isLoading: true
 
-    @model.userGameData.updateMeByGameId null, {
-      playerId: playerTag
-    }
+    @model.clashRoyaleAPI.refreshByPlayerTag playerTag
     .then =>
-      @model.clashRoyaleAPI.refreshByPlayerTag playerTag
-      .then =>
-        @model.userGameData.getMeByGameId config.CLASH_ROYAL_ID
-        .take(1).toPromise()
-      .then =>
-        @state.set isLoading: false
+      @model.userGameData.getMeByGameId config.CLASH_ROYAL_ID
+      .take(1).toPromise()
+    .then =>
+      @state.set isLoading: false
     .catch (err) =>
       console.log err
       @playerTagError.onNext 'Hmmm, we can\'t find that tag!'

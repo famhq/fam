@@ -4,6 +4,7 @@ Tabs = require '../tabs'
 Icon = require '../icon'
 ProfileInfo = require '../profile_info'
 ProfileHistory = require '../profile_history'
+ProfileGraphs = require '../profile_graphs'
 
 if window?
   require './index.styl'
@@ -19,7 +20,7 @@ module.exports = class Profile
 
     @$profileInfo = new ProfileInfo {@model, @router}
     @$profileHistory = new ProfileHistory {@model, @router}
-    # @$profileGraphs = new ProfileGraphs {@model, @router}
+    @$profileGraphs = new ProfileGraphs {@model, @router}
 
     @state = z.state
       me: me

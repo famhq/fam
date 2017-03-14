@@ -50,14 +50,14 @@ module.exports = class ConversationInput
           @model
         }
       }
-      # stickers: {
-      #   $icon: new Icon {hasRipple: true}
-      #   icon: 'stickers'
-      #   $el: new ConversationInputStickers {
-      #     onPost: @post
-      #     @message
-      #   }
-      # }
+      stickers: {
+        $icon: new Icon {hasRipple: true}
+        icon: 'stickers'
+        $el: new ConversationInputStickers {
+          onPost: @post
+          @message
+        }
+      }
       image: {
         $icon: new Icon {hasRipple: true}
         icon: 'image'
@@ -98,34 +98,37 @@ module.exports = class ConversationInput
         },
           @panels[currentPanel].$el
 
-        z '.bottom-icons', [
-          _map @panels, ({$icon, icon, onclick, $uploadOverlay}, panel) =>
-            z '.icon',
-              z $icon, {
-                onclick: onclick or =>
-                  @currentPanel.onNext panel
-                icon: icon
-                color: if currentPanel is panel \
-                       then colors.$white
-                       else colors.$white34
-                isTouchTarget: true
-                touchWidth: '36px'
-                touchHeight: '36px'
-              }
-              if $uploadOverlay
-                z '.upload-overlay',
-                  z $uploadOverlay, {
-                    onSelect: ({file, dataUrl}) =>
-                      img = new Image()
-                      img.src = dataUrl
-                      img.onload = =>
-                        @imageData.onNext {
-                          file
-                          dataUrl
-                          width: img.width
-                          height: img.height
-                        }
-                        @overlay$.onNext @$conversationImagePreview
-                  }
-          z '.powered-by-giphy'
-        ]
+        z '.bottom-icons',  {
+          className: z.classKebab {isVisible: true}
+        },
+          [
+            _map @panels, ({$icon, icon, onclick, $uploadOverlay}, panel) =>
+              z '.icon',
+                z $icon, {
+                  onclick: onclick or =>
+                    @currentPanel.onNext panel
+                  icon: icon
+                  color: if currentPanel is panel \
+                         then colors.$white
+                         else colors.$white34
+                  isTouchTarget: true
+                  touchWidth: '36px'
+                  touchHeight: '36px'
+                }
+                if $uploadOverlay
+                  z '.upload-overlay',
+                    z $uploadOverlay, {
+                      onSelect: ({file, dataUrl}) =>
+                        img = new Image()
+                        img.src = dataUrl
+                        img.onload = =>
+                          @imageData.onNext {
+                            file
+                            dataUrl
+                            width: img.width
+                            height: img.height
+                          }
+                          @overlay$.onNext @$conversationImagePreview
+                    }
+            z '.powered-by-giphy'
+          ]

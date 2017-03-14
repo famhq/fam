@@ -58,7 +58,8 @@ module.exports = class DecksGuides extends Base
       },
         if guides and _isEmpty guides
           z '.no-guides',
-            'No guides found. '
+            'No guides found, we\'re brand spankin\' new! Tap the plus icon to
+            the bottom right to write the first one :)'
             if filter is 'mine'
               'Select a popular deck to add it, or create a new deck.'
         else if guides

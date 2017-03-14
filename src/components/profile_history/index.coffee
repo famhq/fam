@@ -2,9 +2,10 @@ z = require 'zorium'
 _find = require 'lodash/find'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
+_isEmpty = require 'lodash/isEmpty'
 
 FormatService = require '../../services/format'
-DeckCards = require '../deck_cards'
+DeckWithStats = require '../deck_with_stats'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -18,22 +19,34 @@ module.exports = class ProfileHistory
     @state = z.state {
       currentDeck: userDecks.map (userDecks) ->
         userDeck = _find userDecks, {isCurrentDeck: true}
-        if userDeck
-          {userDeck: userDeck, $el: new DeckCards {deck: userDeck.deck}}
+        if userDeck?.deck
+          {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
       otherDecks: userDecks.map (userDecks) ->
-        userDecks = _filter userDecks, {isCurrentDeck: false}
-        _map userDecks, (deck) ->
-          {userDeck: userDeck, $el: new DeckCards {deck: userDeck.deck}}
+        userDecks = _filter userDecks, ({isCurrentDeck}) ->
+          not isCurrentDeck
+        _filter _map userDecks, (userDeck) ->
+          if userDeck?.deck
+            {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
       gameData: @model.userGameData.getMeByGameId config.CLASH_ROYALE_ID
     }
 
   render: =>
     {currentDeck, otherDecks, gameData} = @state.getValue()
 
-    console.log currentDeck, otherDecks, gameData
-
     z '.z-profile-history',
-      'History'
       z '.title',
         'Current deck'
-      z currentDeck?.$el
+      z '.deck',
+        z currentDeck?.$el
+
+
+      z '.divider'
+
+      z '.title',
+        'Other decks'
+      if _isEmpty otherDecks
+        'No other decks found'
+      else
+        _map otherDecks, ({$el}) ->
+          z '.deck',
+            z $el

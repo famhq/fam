@@ -86,16 +86,6 @@ $zIndexDrawerHeader = 100
           // @media (min-width: $breakPointMedium)
           //   height: 24px
 
-        > .sign-in
-          margin-top: 72px
-
-          > .sign-in-button
-            font-button()
-            padding: 10px
-            background: getColor('$tertiary900')
-            text-align: center
-            cursor: pointer
-
       > .content
         flex: 1
         width: 100%
@@ -108,6 +98,22 @@ $zIndexDrawerHeader = 100
           list-style-type: none
           margin: 0
           padding: 0
+
+          > .sign-in-buttons
+            padding: 6px 16px
+            display: flex
+
+            > .button
+              font-button()
+              flex: 1
+              padding: 10px
+              background: getColor('$primary500')
+              text-align: center
+              border-radius: 2px
+              cursor: pointer
+
+              &:first-child
+                margin-right: 16px
 
           > .divider
             width: 100%
@@ -132,49 +138,3 @@ $zIndexDrawerHeader = 100
             &.is-selected
               > .menu-item-link
                 background: getColor('$tertiary500')
-
-    > .no-deck
-      background: getColor('$tertiary900')
-      padding: 16px
-      text-align: center
-      border-right: 1px solid getColor('$black')
-
-      > .set-deck-button
-        margin: auto
-
-      > .description
-        font-caption1()
-        margin-top: 16px
-
-    > .deck
-      background: getColor('$tertiary900')
-      padding: 16px
-      display: flex
-      border-right: 1px solid getColor('$black')
-
-      > .deck-cards
-        width: 196px
-
-        > .stats
-          font-caption1()
-          text-align: left
-          margin-top: 8px
-          padding-left: 4px
-
-      > .buttons
-        margin-left: auto
-        min-width: 96px
-
-.z-drawer_button
-  display: flex
-  align-items: center
-
-  > .text
-    margin-left: 8px
-
-.z-drawer_set-deck-button
-  display: flex
-  align-items: center
-
-  > .text
-    margin-left: 8px

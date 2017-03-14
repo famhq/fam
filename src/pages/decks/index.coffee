@@ -3,6 +3,7 @@ Rx = require 'rx-lite'
 
 Head = require '../../components/head'
 Decks = require '../../components/decks'
+BottomBar = require '../../components/bottom_bar'
 
 if window?
   require './index.styl'
@@ -29,6 +30,7 @@ module.exports = class DecksPage
         description: 'Decks'
       }
     })
+    @$bottomBar = new BottomBar {@model, @router, requests}
 
     @state = z.state
       windowSize: @model.window.getSize()
@@ -43,3 +45,4 @@ module.exports = class DecksPage
         height: "#{windowSize.height}px"
     },
       @$decks
+      @$bottomBar

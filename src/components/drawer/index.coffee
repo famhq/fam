@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
+_orderBy = require 'lodash/orderBy'
 Environment = require 'clay-environment'
 
 Icon = require '../icon'
@@ -57,6 +58,9 @@ module.exports = class Drawer
       isOpen: @model.drawer.isOpen()
       me: me
       myGroups: myGroups.map (groups) =>
+        groups = _orderBy groups, (group) ->
+          group.conversations?[0]?.lastUpdateTime
+        , 'desc'
         _map _take(groups, GROUPS_IN_DRAWER), (group) =>
           {
             group
@@ -74,57 +78,56 @@ module.exports = class Drawer
       menuItems: me.map (me) =>
         _filter([
           {
-            path: '/community'
+            path: '/profile'
+            title: 'Profile'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'profile'
+          }
+          {
+            path: '/decks'
+            title: 'Decks'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'decks'
+          }
+          # {
+          #   path: '/cards'
+          #   title: 'Cards'
+          #   $icon: new Icon()
+          #   $ripple: new Ripple()
+          #   iconName: 'cards'
+          # }
+          {
+            path: '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
             title: 'Community'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'chat'
           }
-          {
-            path: '/events'
-            title: 'Tournaments'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'trophy'
-          }
-
-          if me.isMember
-            {
-              path: '/friends'
-              title: 'Friends'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'friends'
-            }
-          {
-            path: '/videos'
-            title: 'Videos'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'video'
-          }
-          {
-            path: '/decks'
-            title: 'Battle Decks'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'decks'
-          }
-          {
-            path: '/cards'
-            title: 'Battle Cards'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'cards'
-          }
-          if me.isMember
-            {
-              path: '/profile'
-              title: 'Profile'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'profile'
-            }
+          # {
+          #   path: '/events'
+          #   title: 'Tournaments'
+          #   $icon: new Icon()
+          #   $ripple: new Ripple()
+          #   iconName: 'trophy'
+          # }
+          #
+          # if me.isMember
+          #   {
+          #     path: '/friends'
+          #     title: 'Friends'
+          #     $icon: new Icon()
+          #     $ripple: new Ripple()
+          #     iconName: 'friends'
+          #   }
+          # {
+          #   path: '/videos'
+          #   title: 'Videos'
+          #   $icon: new Icon()
+          #   $ripple: new Ripple()
+          #   iconName: 'video'
+          # }
           if needsApp
             {
               isDivider: true
@@ -201,15 +204,22 @@ module.exports = class Drawer
         z '.top',
           z '.header',
             z '.logo'
-            if me and not me?.isMember
-              z '.sign-in',
-                z '.sign-in-button', {
-                  onclick: =>
-                    @model.signInDialog.open()
-                }, 'Sign in'
           z '.content',
             z 'ul.menu',
               [
+                if me and not me?.isMember
+                  [
+                    z 'li.sign-in-buttons',
+                      z '.button', {
+                        onclick: =>
+                          @model.signInDialog.open()
+                      }, 'Sign in'
+                      z '.button', {
+                        onclick: =>
+                          @model.signInDialog.open()
+                      }, 'Join'
+                    z '.divider'
+                  ]
                 _map myGroups, ({$badge, $ripple, group}) =>
                   isSelected = currentPath?.indexOf("/group/#{group.id}") is 0
                   z 'li.menu-item', {
@@ -260,89 +270,3 @@ module.exports = class Drawer
                       title
                       z $ripple
               ]
-        if me?.isMember and not userDeck
-          z '.no-deck',
-            z '.set-deck-button',
-              z @$setDeckButton,
-                colors: buttonColors
-                isFullWidth: false
-                onclick: =>
-                  @model.drawer.close()
-                  @router.go '/decks'
-                text:
-                  z '.z-drawer_set-deck-button',
-                    z @$setDeckIcon,
-                      icon: 'check'
-                      isTouchTarget: false
-                      color: colors.$primary500
-                    z '.text', 'Set current deck'
-            z '.description',
-              'Set your current deck to easily track new wins, losses, or draws'
-        else if me?.isMember
-          z '.deck',
-            z '.deck-cards',
-              z @$deckCards
-              z '.stats',
-                "W#{userDeck?.wins or 0} /
-                L#{userDeck?.losses or 0} /
-                D#{userDeck?.draws or 0}"
-            z '.buttons',
-              z '.button',
-                z @$addWinButton,
-                  colors: buttonColors
-                  onclick: =>
-                    @state.set isAddWinLoading: true
-                    @model.clashRoyaleUserDeck.incrementByDeckId(
-                      deck.id
-                      {state: 'win'}
-                    )
-                    .catch -> null
-                    .then =>
-                      @state.set isAddWinLoading: false
-                  text: z '.z-drawer_button',
-                    z '.icon',
-                      z @$addWinIcon,
-                        icon: 'add'
-                        color: colors.$primary500
-                        isTouchTarget: false
-                    z '.text', if isAddWinLoading then '...' else 'Win'
-
-              z '.button',
-                z @$addLossButton,
-                  colors: buttonColors
-                  onclick: =>
-                    @state.set isAddLossLoading: true
-                    @model.clashRoyaleUserDeck.incrementByDeckId(
-                      deck.id
-                      {state: 'loss'}
-                    )
-                    .catch -> null
-                    .then =>
-                      @state.set isAddLossLoading: false
-                  text: z '.z-drawer_button',
-                    z '.icon',
-                      z @$addLossIcon,
-                        icon: 'add'
-                        color: colors.$primary500
-                        isTouchTarget: false
-                    z '.text', if isAddLossLoading then '...' else 'Loss'
-
-              z '.button',
-                z @$addDrawButton,
-                  colors: buttonColors
-                  onclick: =>
-                    @state.set isAddDrawLoading: true
-                    @model.clashRoyaleUserDeck.incrementByDeckId(
-                      deck.id
-                      {state: 'draw'}
-                    )
-                    .catch -> null
-                    .then =>
-                      @state.set isAddDrawLoading: false
-                  text: z '.z-drawer_button',
-                    z '.icon',
-                      z @$addDrawIcon,
-                        icon: 'add'
-                        color: colors.$primary500
-                        isTouchTarget: false
-                    z '.text', if isAddDrawLoading then '...' else 'Draw'

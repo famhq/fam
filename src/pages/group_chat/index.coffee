@@ -8,6 +8,7 @@ ButtonMenu = require '../../components/button_menu'
 ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
 Ripple = require '../../components/ripple'
+BottomBar = require '../../components/bottom_bar'
 colors = require '../../colors'
 
 if window?
@@ -55,6 +56,7 @@ module.exports = class GroupChatPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$titleRipple = new Ripple()
+    @$bottomBar = new BottomBar {@model, @router, requests}
 
     @$groupChat = new GroupChat {
       @model
@@ -110,10 +112,8 @@ module.exports = class GroupChatPage
           conversation?.name
           z '.arrow'
           z @$titleRipple
-        bgColor: colors.$tertiary700
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {
-          color: colors.$primary500
+          color: colors.$tertiary900
           onclick: =>
             @isChannelDrawerOpen.onNext false
             @model.drawer.open()
@@ -124,19 +124,21 @@ module.exports = class GroupChatPage
               if hasAdminPermission
                 z @$editIcon,
                   icon: 'edit'
-                  color: colors.$primary500
+                  color: colors.$tertiary900
                   onclick: =>
                     @router.go "/group/#{group?.id}/edit"
             z '.icon',
               z @$settingsIcon,
                 icon: 'settings'
-                color: colors.$primary500
+                color: colors.$tertiary900
                 onclick: =>
                   @router.go "/group/#{group?.id}/settings"
       }
       z '.content',
         @$groupChat
         @$channelDrawer
+
+      @$bottomBar
 
       if overlay$
         z '.overlay',

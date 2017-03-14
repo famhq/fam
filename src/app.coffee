@@ -140,7 +140,7 @@ module.exports = class App
 
 
     # route '/', 'HomePage'
-    route ['/', '/community'], 'CommunityPage'
+    route '/community', 'CommunityPage'
     route ['/friends/:action', '/friends'], 'FriendsPage'
     route '/videos', 'VideosPage'
     route '/conversation/:conversationId', 'ConversationPage'
@@ -189,7 +189,7 @@ module.exports = class App
     route '/join', 'JoinPage'
     route '/setAddress', 'SetAddressPage'
     route '/getApp', 'GetAppPage'
-    route '/profile', 'ProfilePage'
+    route ['/', '/profile'], 'ProfilePage'
     route '/editProfile', 'EditProfilePage'
     route '/*', 'FourOhFourPage'
     routes
