@@ -62,13 +62,14 @@ getTypeStats = (stats) ->[
 ]
 
 module.exports = class ProfileInfo
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, user}) ->
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
 
     @state = z.state {
-      gameData: @model.userGameData.getMeByGameId config.CLASH_ROYALE_ID
+      gameData: user.flatMapLatest ({id}) =>
+        @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
     }
 
   render: =>
@@ -111,7 +112,8 @@ module.exports = class ProfileInfo
         }
       ]
       ladder: getTypeStats gameData?.data?.stats?.ladder
-      challenge: getTypeStats gameData?.data?.stats?.challenge
+      grandChallenge: getTypeStats gameData?.data?.stats?.grandChallenge
+      classicChallenge: getTypeStats gameData?.data?.stats?.classicChallenge
 
     z '.z-profile-info',
       z '.header',
@@ -120,28 +122,31 @@ module.exports = class ProfileInfo
             z '.left',
               z '.name', gameData?.data?.name
               z '.tag', "##{gameData?.playerId}"
-            z '.right',
-              z '.clan-name', gameData?.data?.clan.name
-              z '.clan-tag', "##{gameData?.data?.clan.tag}"
+            if gameData?.data?.clan
+              z '.right',
+                z '.clan-name', gameData?.data?.clan.name
+                z '.clan-tag', "##{gameData?.data?.clan.tag}"
           z '.g-cols',
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$trophyIcon,
                   icon: 'trophy'
-                  color: colors.$white12
+                  color: colors.$yellow500
               z '.text', gameData?.data?.trophies
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$arenaIcon,
                   icon: 'castle'
-                  color: colors.$white12
-              z '.text', 'Arena ' + gameData?.data?.arena
+                  color: colors.$yellow500
+              z '.text', "Arena #{gameData?.data?.arena?.number}"
+              if gameData?.data?.league
+                z '.text', gameData?.data?.league?.name
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$levelIcon,
                   icon: 'crown'
-                  color: colors.$white12
-              z '.text', gameData?.data?.level
+                  color: colors.$yellow500
+              z '.text', "Level #{gameData?.data?.level}"
       z '.content',
         z '.block',
           _map metrics, (stats, key) ->

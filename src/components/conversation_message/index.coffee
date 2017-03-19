@@ -50,6 +50,13 @@ module.exports = class ConversationMessage
                  then '56px'
                  else '40px'
 
+    if isSticker
+      sticker = body.replace /:/g, ''
+      $body = z '.sticker',
+        style:
+          backgroundImage:
+            "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
+
     onclick = =>
       unless isTextareaFocused
         @selectedProfileDialogUser.onNext user
@@ -83,7 +90,8 @@ module.exports = class ConversationMessage
               then moment(time).fromNowModified()
               else '...'
 
-        z '.body', $body
+        z '.body',
+          $body
 
         if card
           z '.card', {

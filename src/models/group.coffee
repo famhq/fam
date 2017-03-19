@@ -1,3 +1,5 @@
+config = require '../config'
+
 module.exports = class Group
   namespace: 'groups'
 
@@ -46,4 +48,4 @@ module.exports = class Group
       when 'admin'
       then group.creatorId is userId
       # member
-      else group.userIds?.indexOf(userId) isnt -1
+      else group.userIds?.indexOf(userId) isnt -1 or group.id is config.MAIN_GROUP_ID

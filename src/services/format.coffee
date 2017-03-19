@@ -4,10 +4,6 @@ _filter = require 'lodash/filter'
 
 config = require '../config'
 
-ALL_REGEX_STR = "#{config.STICKER_REGEX_STR}|#{config.URL_REGEX_STR}|" +
-                  "#{config.IMAGE_REGEX_BASE_STR}"
-ALL_REGEX = new RegExp ALL_REGEX_STR, 'gi'
-
 class FormatService
   number: (number) ->
     # http://stackoverflow.com/a/2901298

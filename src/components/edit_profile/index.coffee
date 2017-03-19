@@ -8,6 +8,7 @@ UploadOverlay = require '../upload_overlay'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -15,10 +16,19 @@ if window?
 module.exports = class EditProfile
   constructor: ({@model, @router}) ->
     me = @model.user.getMe()
+
     @usernameValueStreams = new Rx.ReplaySubject 1
     @usernameValueStreams.onNext me.map (me) ->
       me.username
     @usernameError = new Rx.BehaviorSubject null
+
+    @playerTagValueStreams = new Rx.ReplaySubject 1
+    currentPlayerTag = me.flatMapLatest ({id}) =>
+      @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      .map (userGameData) ->
+        userGameData.playerId
+    @playerTagValueStreams.onNext currentPlayerTag
+    @playerTagError = new Rx.BehaviorSubject null
 
     @$actionBar = new ActionBar()
 
@@ -30,16 +40,23 @@ module.exports = class EditProfile
       valueStreams: @usernameValueStreams
       error: @usernameError
 
+    @$playerTagInput = new PrimaryInput
+      valueStreams: @playerTagValueStreams
+      error: @playerTagError
+
     @state = z.state
       me: me
       avatarImage: null
       avatarDataUrl: null
       avatarUploadError: null
       username: @usernameValueStreams.switch()
+      playerTag: @playerTagValueStreams.switch()
+      currentPlayerTag: currentPlayerTag
       isSaving: false
 
   save: =>
-    {avatarImage, username, me, isSaving} = @state.getValue()
+    {avatarImage, username, playerTag,
+      me, isSaving, currentPlayerTag} = @state.getValue()
     if isSaving
       return
 
@@ -52,6 +69,9 @@ module.exports = class EditProfile
         @usernameError.onNext JSON.stringify err
     else
       Promise.resolve null)
+    .then =>
+      if playerTag isnt currentPlayerTag
+        @model.clashRoyaleAPI.refreshByPlayerTag playerTag
     .then =>
       if avatarImage
         @upload avatarImage
@@ -83,10 +103,13 @@ module.exports = class EditProfile
       }
 
       z '.section',
-        z '.title', 'Change username'
         z '.input',
           z @$usernameInput,
-            hintText: 'username...'
+            hintText: 'Username'
+
+        z '.input',
+          z @$playerTagInput,
+            hintText: 'Player tag'
 
       z '.section',
         z '.title', 'Change avatar'

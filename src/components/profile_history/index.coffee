@@ -13,8 +13,9 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileHistory
-  constructor: ({@model, @router}) ->
-    userDecks = @model.clashRoyaleUserDeck.getAll()
+  constructor: ({@model, @router, user}) ->
+    userDecks = user.flatMapLatest ({id}) =>
+      @model.clashRoyaleUserDeck.getAllByUserId id
 
     @state = z.state {
       currentDeck: userDecks.map (userDecks) ->
@@ -27,11 +28,10 @@ module.exports = class ProfileHistory
         _filter _map userDecks, (userDeck) ->
           if userDeck?.deck
             {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
-      gameData: @model.userGameData.getMeByGameId config.CLASH_ROYALE_ID
     }
 
   render: =>
-    {currentDeck, otherDecks, gameData} = @state.getValue()
+    {currentDeck, otherDecks} = @state.getValue()
 
     z '.z-profile-history',
       z '.title',

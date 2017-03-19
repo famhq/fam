@@ -31,9 +31,9 @@ module.exports = class Decks
     selectedIndex = new Rx.BehaviorSubject 0
     @$tabs = new Tabs {@model, selectedIndex}
 
-    @$favoritedIcon = new Icon()
-    @$guidesIcon = new Icon()
     @$popularIcon = new Icon()
+    @$guidesIcon = new Icon()
+    @$decksIcon = new Icon()
 
     @$cachedThread = null
 
@@ -73,16 +73,16 @@ module.exports = class Decks
               $el: @$deckGuides
             }
             {
-              $menuIcon: @$favoritedIcon
+              $menuIcon: @$popularIcon
               menuIconName: 'star'
-              $menuText: 'Starred Decks'
-              $el: @$recentDecks
+              $menuText: 'Popular Decks'
+              $el: @$popularDecks
             }
             {
-              $menuIcon: @$popularIcon
+              $menuIcon: @$decksIcon
               menuIconName: 'decks'
-              $menuText: 'Popular'
-              $el: @$popularDecks
+              $menuText: 'My Decks'
+              $el: @$recentDecks
             }
           ]
       if $sideEl

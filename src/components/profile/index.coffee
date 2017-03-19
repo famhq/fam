@@ -10,7 +10,7 @@ if window?
   require './index.styl'
 
 module.exports = class Profile
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, user}) ->
     me = @model.user.getMe()
 
     @$tabs = new Tabs {@model}
@@ -18,9 +18,9 @@ module.exports = class Profile
     @$historyIcon = new Icon()
     @$graphIcon = new Icon()
 
-    @$profileInfo = new ProfileInfo {@model, @router}
-    @$profileHistory = new ProfileHistory {@model, @router}
-    @$profileGraphs = new ProfileGraphs {@model, @router}
+    @$profileInfo = new ProfileInfo {@model, @router, user}
+    @$profileHistory = new ProfileHistory {@model, @router, user}
+    @$profileGraphs = new ProfileGraphs {@model, @router, user}
 
     @state = z.state
       me: me

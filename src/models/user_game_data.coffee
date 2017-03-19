@@ -3,8 +3,5 @@ module.exports = class UserGameData
 
   constructor: ({@auth}) -> null
 
-  getMeByGameId: ({gameId, embed} = {}) =>
-    @auth.stream "#{@namespace}.getMeByGameId", {gameId, embed}
-
-  updateMeByGameId: (gameId, diff) =>
-    @auth.call "#{@namespace}.updateMeByGameId", {gameId, diff}
+  getByUserIdAndGameId: (userId, gameId, {embed} = {}) =>
+    @auth.stream "#{@namespace}.getByUserIdAndGameId", {userId, gameId, embed}

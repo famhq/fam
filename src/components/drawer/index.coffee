@@ -25,6 +25,14 @@ module.exports = class Drawer
   constructor: ({@model, @router}) ->
     @$avatar = new Avatar()
     me = @model.user.getMe()
+    hasConversations = @model.conversation.getAll().map (conversations) ->
+      not _isEmpty conversations
+
+    meAndHasConversations = Rx.Observable.combineLatest(
+      me
+      hasConversations
+      (vals...) -> vals
+    )
 
     userDeck = me.flatMapLatest (me) =>
       if me?.data?.clashRoyaleDeckId
@@ -75,7 +83,7 @@ module.exports = class Drawer
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
 
-      menuItems: me.map (me) =>
+      menuItems: meAndHasConversations.map ([me, hasConversations]) =>
         _filter([
           {
             path: '/profile'
@@ -105,6 +113,14 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'chat'
           }
+          if hasConversations
+            {
+              path: '/conversations'
+              title: 'Conversations'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'chat-bubble'
+            }
           # {
           #   path: '/events'
           #   title: 'Tournaments'

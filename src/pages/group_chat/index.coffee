@@ -38,8 +38,8 @@ module.exports = class GroupChatPage
     .flatMapLatest ([group, conversationId, me]) =>
       hasMemberPermission = @model.group.hasPermission group, me
       conversationId ?= localStorage?['conversationId:' + group.id] or
-                          group.conversations[0].id
-      if hasMemberPermission
+                          group.conversations?[0].id
+      if hasMemberPermission and conversationId
         @model.conversation.getById conversationId
       else
         Rx.Observable.just null

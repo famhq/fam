@@ -6,6 +6,9 @@ module.exports = class ClashRoyaleUserDeck
   getAll: ({sort, filter} = {}) =>
     @auth.stream "#{@namespace}.getAll", {sort, filter}
 
+  getAllByUserId: (userId, {sort, filter} = {}) =>
+    @auth.stream "#{@namespace}.getAllByUserId", {userId, sort, filter}
+
   getByDeckId: (deckId) =>
     @auth.stream "#{@namespace}.getByDeckId", {deckId}
 

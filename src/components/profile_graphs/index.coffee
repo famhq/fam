@@ -11,16 +11,18 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileGraphs
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, user}) ->
     @$communityButton = new PrimaryButton()
 
     @$trophiesGraph = new GraphWidget()
-    recordTypes = @model.gameRecordType.getAllByGameId config.CLASH_ROYALE_ID, {
-      embed: ['meValues']
-    }
+    recordTypes = user.flatMapLatest ({id}) =>
+      @model.gameRecordType.getAllByUserIdAndGameId(
+        id
+        config.CLASH_ROYALE_ID
+        {embed: ['meValues']}
+      )
 
     @state = z.state {
-      gameData: @model.userGameData.getMeByGameId config.CLASH_ROYALE_ID
       recordTypes: recordTypes.map (recordTypes) ->
         _map recordTypes, (recordType) ->
           {
@@ -30,7 +32,7 @@ module.exports = class ProfileGraphs
     }
 
   render: =>
-    {gameData, recordTypes} = @state.getValue()
+    {recordTypes} = @state.getValue()
 
     z '.z-profile-graphs',
       _map recordTypes, ({recordType, $graph}) ->

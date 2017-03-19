@@ -60,6 +60,8 @@ module.exports = _defaults {
   '$tertiary800Text': paperColors.$white
   '$tertiary900Text': paperColors.$white
 
+  '$yellow500': '#ffab18'
+
   '$white4': 'rgba(255, 255, 255, 0.04)'
   '$white34': 'rgba(255, 255, 255, 0.34)'
 

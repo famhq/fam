@@ -58,6 +58,7 @@ else
 isomorphic =
   # hardcoded while we just have one game
   CLASH_ROYALE_ID: '319a9065-e3dc-4d02-ad30-62047716a88f'
+  MAIN_GROUP_ID: '73ed4af0-a2f2-4371-a893-1360d3989708' # TODO: remove?
 
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
   USER_CDN_URL: 'https://cdn.wtf/images/starfire'
