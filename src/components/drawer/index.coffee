@@ -66,6 +66,8 @@ module.exports = class Drawer
       isOpen: @model.drawer.isOpen()
       me: me
       myGroups: myGroups.map (groups) =>
+        groups = _filter groups, (group) ->
+          group?.id isnt '73ed4af0-a2f2-4371-a893-1360d3989708'
         groups = _orderBy groups, (group) ->
           group.conversations?[0]?.lastUpdateTime
         , 'desc'

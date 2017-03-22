@@ -73,6 +73,18 @@ module.exports = class ProfileDialog
               unless isMe
                 z 'li.menu-item', {
                   onclick: =>
+                    @router.go "/user/#{user?.id}"
+                    @selectedProfileDialogUser.onNext null
+                },
+                  z '.icon',
+                    z @$profileIcon,
+                      icon: 'profile'
+                      color: colors.$primary500
+                      isTouchTarget: false
+                  z '.text', 'View profile'
+              unless isMe
+                z 'li.menu-item', {
+                  onclick: =>
                     if isFollowing
                       @model.userData.unfollowByUserId user?.id
                     else
@@ -87,7 +99,7 @@ module.exports = class ProfileDialog
                       color: colors.$primary500
                       isTouchTarget: false
                   z '.text',
-                    if isFollowing then 'Remove Friend' else 'Add Friend'
+                    if isFollowing then 'Unfollow' else 'Follow'
 
               unless isMe
                 z 'li.menu-item', {
@@ -153,9 +165,8 @@ module.exports = class ProfileDialog
               if me?.flags?.isModerator and not isMe
                 z 'li.menu-item', {
                   onclick: =>
-                    @model.user.updateById user?.id, {
-                      flags:
-                        isChatBanned: not user?.flags?.isChatBanned
+                    @model.user.setFlagsById user?.id, {
+                      isChatBanned: not user?.flags?.isChatBanned
                     }
                     @selectedProfileDialogUser.onNext null
                 },

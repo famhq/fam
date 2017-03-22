@@ -1,8 +1,11 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
+Rx = require 'rx-lite'
 
 Icon = require '../icon'
+UiCard = require '../ui_card'
+RequestNotificationsCard = require '../request_notifications_card'
 FormatService = require '../../services/format'
 config = require '../../config'
 colors = require '../../colors'
@@ -66,14 +69,26 @@ module.exports = class ProfileInfo
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
+    @$splitsInfoCard = new UiCard()
+
+    isRequestNotificationCardVisible = new Rx.BehaviorSubject(
+      window? and not localStorage?['hideNotificationCard']
+    )
+    @$requestNotificationsCard = new RequestNotificationsCard {
+      @model
+      isVisible: isRequestNotificationCardVisible
+    }
 
     @state = z.state {
+      isRequestNotificationCardVisible
+      isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
       gameData: user.flatMapLatest ({id}) =>
         @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
     }
 
   render: =>
-    {gameData} = @state.getValue()
+    {gameData, isRequestNotificationCardVisible,
+      isSplitsInfoCardVisible} = @state.getValue()
 
 
     metrics =
@@ -111,9 +126,9 @@ module.exports = class ProfileInfo
           value: FormatService.number gameData?.data?.stats.totalDonations
         }
       ]
-      ladder: getTypeStats gameData?.data?.stats?.ladder
-      grandChallenge: getTypeStats gameData?.data?.stats?.grandChallenge
-      classicChallenge: getTypeStats gameData?.data?.stats?.classicChallenge
+      ladder: getTypeStats gameData?.data?.splits?.ladder
+      grandChallenge: getTypeStats gameData?.data?.splits?.grandChallenge
+      classicChallenge: getTypeStats gameData?.data?.splits?.classicChallenge
 
     z '.z-profile-info',
       z '.header',
@@ -148,9 +163,24 @@ module.exports = class ProfileInfo
                   color: colors.$yellow500
               z '.text', "Level #{gameData?.data?.level}"
       z '.content',
-        z '.block',
-          _map metrics, (stats, key) ->
+        if isRequestNotificationCardVisible
+          z '.card',
             z '.g-grid',
+              z @$requestNotificationsCard
+        z '.block',
+          _map metrics, (stats, key) =>
+            z '.g-grid',
+              if key is 'ladder' and isSplitsInfoCardVisible
+                z '.splits-info-card',
+                  z @$splitsInfoCard,
+                    text: 'Note: The stats below will only account for your
+                          previous 25 games initially. All future stats will
+                          be tracked.'
+                    submit:
+                      text: 'got it'
+                      onclick: =>
+                        @state.set isSplitsInfoCardVisible: false
+                        localStorage?['hideSplitsInfo'] = '1'
               z '.title',
                 _startCase key
               z '.g-cols',

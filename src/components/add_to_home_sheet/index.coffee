@@ -15,6 +15,7 @@ module.exports = class AddToHomeSheet
         submitButton:
           text: 'Add to home'
           onclick: =>
+            console.log '123', @model.portal.call
             @model.portal.call 'app.install'
             @isVisible.onNext false
       }

@@ -156,6 +156,7 @@ module.exports = class Portal
             }
 
   pushRegister: ->
+    console.log 'register'
     navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
       # TODO: check if reg'd first
       # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions

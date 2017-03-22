@@ -55,17 +55,19 @@ module.exports = class Conversation extends Base
       .map (messages) =>
         isLoading.onNext false
         isLoaded = not _isEmpty @state.getValue().messages
-        # give time for $formattedMessage to resolve
-        setTimeout =>
-          @scrollToBottom {
-            isSmooth: isLoaded
-          }
-        , 100
-        setTimeout =>
-          @scrollToBottom {
-            isSmooth: isLoaded
-          }
-        , 500
+        # HACK: give time for $formattedMessage to resolve
+        {isScrolledBottom} = @state.getValue()
+        if isScrolledBottom or not isLoaded
+          setTimeout =>
+            @scrollToBottom {
+              isSmooth: isLoaded
+            }
+          , 100
+          setTimeout =>
+            @scrollToBottom {
+              isSmooth: isLoaded
+            }
+          , 500
         messages
       .catch (err) ->
         console.log err
@@ -106,6 +108,7 @@ module.exports = class Conversation extends Base
       isPostLoading: @isPostLoading
       error: null
       conversation: @conversation
+      isLoaded: false
       isScrolledBottom: @isScrolledBottomStreams.switch()
 
       messages: messagesAndMe.map ([messages, me]) =>
@@ -173,6 +176,11 @@ module.exports = class Conversation extends Base
       @$$messages.scrollTop = @$$messages.scrollHeight -
                                 @$$messages.offsetHeight
 
+
+
+    {messages} = @state.getValue()
+    @state.set isLoaded: not _isEmpty messages
+
   onResize: =>
     {isScrolledBottom} = @state.getValue()
     if isScrolledBottom
@@ -204,9 +212,8 @@ module.exports = class Conversation extends Base
         @isPostLoading.onNext false
 
   render: =>
-    {me, isLoading, message, isTextareaFocused
+    {me, isLoading, message, isTextareaFocused, isLoaded
       messages, conversation, isScrolledBottom} = @state.getValue()
-    isLoaded = not _isEmpty messages
 
     z '.z-conversation',
       z '.g-grid',

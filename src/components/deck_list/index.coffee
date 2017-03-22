@@ -20,9 +20,10 @@ module.exports = class DeckList extends Base
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
-    decksAndMe = Rx.Observable.combineLatest(
+    favoritedDeckIds = @model.clashRoyaleUserDeck.getFavoritedDeckIds()
+    decksAndFavoritedDeckIds = Rx.Observable.combineLatest(
       @model.clashRoyaleDeck.getAll({sort, filter})
-      me
+      favoritedDeckIds
       (vals...) -> vals
     )
 
@@ -30,12 +31,14 @@ module.exports = class DeckList extends Base
       me: @model.user.getMe()
       filter: filter
       windowSize: @model.window.getSize()
-      decks: decksAndMe.map ([decks, me]) =>
+      decks: decksAndFavoritedDeckIds.map ([decks, favoritedDeckIds]) =>
         _map decks, (deck) =>
-          hasDeck =  me.data.clashRoyaleDeckIds and
-            me.data.clashRoyaleDeckIds.indexOf(deck.id) isnt -1
+          hasDeck =  favoritedDeckIds and
+            favoritedDeckIds.indexOf(deck.id) isnt -1
 
-          $el = @getCached$ deck.id, DeckCards, {@model, @router, deck}
+          $el = @getCached$ "#{filter}-#{deck.id}", DeckCards, {
+            @model, @router, deck
+          }
           {
             deck
             hasDeck

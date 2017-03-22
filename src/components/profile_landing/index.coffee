@@ -30,11 +30,13 @@ module.exports = class ProfileLanding
     e?.preventDefault()
     playerTag = @playerTagValue.getValue()
 
+    {me} = @state.getValue()
+
     @state.set isLoading: true
 
     @model.clashRoyaleAPI.refreshByPlayerTag playerTag
     .then =>
-      @model.userGameData.getMeByGameId config.CLASH_ROYAL_ID
+      @model.userGameData.getByUserIdAndGameId me?.id, config.CLASH_ROYAL_ID
       .take(1).toPromise()
     .then =>
       @state.set isLoading: false
@@ -62,6 +64,15 @@ module.exports = class ProfileLanding
             z @$trackButton,
               text: if isLoading then 'Loading...' else 'Track my stats'
               type: 'submit'
+        z '.terms',
+          z 'p',
+            'You can find your player tag by tapping on your username in
+            Clash Royale to open your profile. It\'s right below your username
+            in the profile.'
+          z 'p',
+            'This content is not affiliated with, endorsed, sponsored, or
+            specifically approved by Supercell and Supercell is
+            not responsible for it.'
       if isLoading
         z @$dialog,
           isVanilla: true

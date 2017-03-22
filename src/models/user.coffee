@@ -28,6 +28,9 @@ module.exports = class User
   setFlags: (flags) =>
     @auth.call "#{@namespace}.setFlags", flags, {invalidateAll: true}
 
+  setFlagsById: (id, flags) =>
+    @auth.call "#{@namespace}.setFlagsById", {id, flags}, {invalidateAll: true}
+
   requestInvite: ({clanTag, username, email, referrerId}) =>
     @auth.call "#{@namespace}.requestInvite", {
       clanTag, username, email, referrerId

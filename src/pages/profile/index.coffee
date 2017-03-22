@@ -31,8 +31,9 @@ module.exports = class ProfilePage
       requests
       serverData
       meta: {
-        title: 'Profile'
-        description: 'Profile'
+        title: 'Starfire - track wins, losses and more in Clash Royale'
+        description: 'Automatically track useful Clash Royale stats to become' +
+                      ' a better player!'
       }
     })
     @$appBar = new AppBar {model}
@@ -58,8 +59,8 @@ module.exports = class ProfilePage
   render: =>
     {windowSize, clashRoyaleData, me, userId} = @state.getValue()
 
-    isMe = userId? and (me?.id is userId) or not userId
     isTagSet = clashRoyaleData?.playerId
+    isMe = isTagSet and ((me?.id is userId) or not userId)
 
     z '.p-profile', {
       style:

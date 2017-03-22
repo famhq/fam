@@ -18,7 +18,7 @@ class RouterService
     unless ignoreHistory
       @history.push(route or window?.location.pathname)
 
-    if route is '/' or route is '/community' or reset
+    if route is '/' or route is '/profile' or reset
       @history = [route]
 
     if route
@@ -48,14 +48,14 @@ class RouterService
       return @model.drawer.close()
     if @history.length is 1 and fromNative and (
       @history[0] is '/' or
-      @history[0] is '/community'
+      @history[0] is '/profile'
     )
       @model.portal.call 'app.exit'
     else if @history.length > 1 and window.history.length > 0
       window.history.back()
       @history.pop()
     else
-      @go '/community'
+      @go '/profile'
 
   onBack: (@onBackFn) => null
 

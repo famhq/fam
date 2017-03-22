@@ -2,6 +2,7 @@ z = require 'zorium'
 _find = require 'lodash/find'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
+_takeRight = require 'lodash/takeRight'
 _isEmpty = require 'lodash/isEmpty'
 
 FormatService = require '../../services/format'
@@ -19,15 +20,16 @@ module.exports = class ProfileHistory
 
     @state = z.state {
       currentDeck: userDecks.map (userDecks) ->
-        userDeck = _find userDecks, {isCurrentDeck: true}
+        # userDeck = _find userDecks, {isCurrentDeck: true}
+        userDeck = userDecks[0]
         if userDeck?.deck
           {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
       otherDecks: userDecks.map (userDecks) ->
-        userDecks = _filter userDecks, ({isCurrentDeck}) ->
-          not isCurrentDeck
-        _filter _map userDecks, (userDeck) ->
-          if userDeck?.deck
-            {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
+        # userDecks = _filter userDecks, ({isCurrentDeck}) ->
+        #   not isCurrentDeck
+        # _filter _map userDecks, (userDeck) ->
+        _map _takeRight(userDecks, userDecks?.length - 1), (userDeck) ->
+          {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
     }
 
   render: =>

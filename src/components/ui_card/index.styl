@@ -1,0 +1,17 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-ui-card
+  font-body1()
+  padding: 16px 16px 8px 16px
+  color: getColor('$white')
+  border-radius: 2px
+  background: getColor('$tertiary700')
+
+  &.is-highlighted
+    background: getColor('$primary500')
+
+  > .buttons
+    display: flex
+    justify-content: flex-end

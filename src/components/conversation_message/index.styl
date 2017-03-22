@@ -18,6 +18,7 @@
 
   > .avatar
     margin-right: 16px
+    cursor: pointer
 
   > .content
     flex: 1
@@ -28,14 +29,25 @@
       color: getColor('$white34')
       display: flex
       align-items: center
+      cursor: pointer
 
       > .name
         font-title()
         color: getColor('$white')
-        margin-right: 4px
+
+      > .time
+        margin-left: auto
 
       > .middot
+        margin-left: 4px
         margin-right: 4px
+
+      > .trophies
+        display: flex
+        align-items: center
+
+        > .icon
+          margin-left: 4px
 
     > .body
       font-body1()

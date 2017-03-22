@@ -2,6 +2,7 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
+Environment = require 'clay-environment'
 
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
@@ -9,6 +10,7 @@ InstallOverlay = require './components/install_overlay'
 AddToHomeScreenSheet = require './components/add_to_home_sheet'
 PushNotificationsSheet = require './components/push_notifications_sheet'
 ConversationImageView = require './components/conversation_image_view'
+config = require './config'
 
 Pages =
   HomePage: require './pages/home'
@@ -58,7 +60,7 @@ Pages =
   EditProfilePage: require './pages/edit_profile'
   FourOhFourPage: require './pages/404'
 
-TIME_UNTIL_ADD_TO_HOME_PROMPT_MS = 60000
+TIME_UNTIL_ADD_TO_HOME_PROMPT_MS = 90000 # 1.5 min
 
 module.exports = class App
   constructor: ({requests, @serverData, @model, @router}) ->
@@ -96,7 +98,8 @@ module.exports = class App
 
     if localStorage? and not localStorage['lastAddToHomePromptTime']
       setTimeout ->
-        unless not localStorage['lastAddToHomePromptTime']
+        isNative = Environment.isGameApp(config.GAME_KEY)
+        if not isNative and not localStorage['lastAddToHomePromptTime']
           addToHomeSheetIsVisible.onNext true
           localStorage['lastAddToHomePromptTime'] = Date.now()
       , TIME_UNTIL_ADD_TO_HOME_PROMPT_MS

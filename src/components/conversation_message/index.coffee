@@ -6,8 +6,10 @@ _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'
 
 Avatar = require '../avatar'
+Icon = require '../icon'
 ConversationImageView = require '../conversation_image_view'
 Ripple = require '../ripple'
+FormatService = require '../../services/format'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -24,6 +26,7 @@ module.exports = class ConversationMessage
 
     @$avatar = new Avatar()
     @$ripple = new Ripple()
+    @$trophyIcon = new Icon()
 
     @imageData = new Rx.BehaviorSubject null
     @$conversationImageView = new ConversationImageView {
@@ -64,7 +67,6 @@ module.exports = class ConversationMessage
     z '.z-conversation-message', {
       # re-use elements in v-dom
       key: "message-#{id or clientId}"
-      onclick: onclick
       className: z.classKebab {isSticker, isGrouped, isMe}
     },
       z '.avatar', {
@@ -81,14 +83,22 @@ module.exports = class ConversationMessage
 
       z '.content',
         unless isGrouped
-          z '.author',
+          z '.author', {onclick},
             z '.name', @model.user.getDisplayName user
-            z '.middot',
-              innerHTML: '&middot;'
             z '.time',
               if time
               then moment(time).fromNowModified()
               else '...'
+            z '.middot',
+              innerHTML: '&middot;'
+            z '.trophies',
+              FormatService.number user?.gameData?.data?.trophies
+              z '.icon',
+                z @$trophyIcon,
+                  icon: 'trophy'
+                  color: colors.$white34
+                  isTouchTarget: false
+                  size: '16px'
 
         z '.body',
           $body
@@ -103,4 +113,4 @@ module.exports = class ConversationMessage
             z '.description', _truncate card.description, {
               length: DESCRIPTION_LENGTH
             }
-      @$ripple
+      # @$ripple
