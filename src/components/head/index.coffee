@@ -4,7 +4,7 @@ _merge = require 'lodash/merge'
 
 config = require '../../config'
 colors = require '../../colors'
-robotoCss = require './roboto'
+rubikCss = require './rubik'
 
 module.exports = class Head
   constructor: ({model, meta, serverData}) ->
@@ -178,9 +178,9 @@ module.exports = class Head
       # z 'link',
       #   rel: 'stylesheet'
       #   type: 'text/css'
-      #   href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,600'
+      #   href: 'https://fonts.googleapis.com/css?family=Rubik:400,500,700'
       # inline to improve pageload / lighthouse score
-      z 'style.roboto', robotoCss
+      z 'style.rubik', rubikCss
 
       # styles
       if isInliningSource

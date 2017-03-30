@@ -29,7 +29,7 @@ module.exports = class SearchInput
 
   render: (options = {}) =>
     {placeholder, isFocused, onBack, height, bgColor,
-      alwaysShowBack, isSearchIconRight} = options
+      alwaysShowBack, isSearchIconRight, onclick} = options
 
     {_isFocused, searchValue} = @state.getValue()
 
@@ -39,9 +39,14 @@ module.exports = class SearchInput
     isFocused ?= _isFocused
     bgColor ?= colors.$tertiary700
     placeholder ?= 'Search...'
+    hasOnClick = Boolean onclick
 
     z '.z-search-input', {
-      className: z.classKebab {isFocused, isSearchIconRight}
+      className: z.classKebab {isFocused, isSearchIconRight, hasOnClick}
+      onclick: (e) ->
+        if onclick
+          e?.preventDefault()
+          onclick?()
     },
       z '.search-overlay', {
         style:
@@ -66,7 +71,7 @@ module.exports = class SearchInput
                     then 'search'
                     else 'close'
               color: if isSearchIconRight and not searchValue \
-                     then colors.$white34
+                     then colors.$white54
                      else colors.$primary500Text
               touchHeight: height
               onclick: @clear

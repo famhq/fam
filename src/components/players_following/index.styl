@@ -1,0 +1,28 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-players-following
+  width: 100%
+  box-sizing: border-box
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .g-grid
+    > .search
+      padding: 16px
+      cursor: pointer
+
+    > .empty-state
+      font-caption1()
+      color: getColor('$white54')
+      text-align: center
+
+      > .image
+        display: block
+        background-image: url('https://cdn.wtf/d/images/starfire/empty_friends.svg')
+        background-size: 100%
+        background-repeat: no-repeat
+        width: 232px
+        height: 209px
+        margin: 0 auto 16px auto

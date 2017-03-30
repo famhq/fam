@@ -36,7 +36,7 @@ module.exports = class SignInDialog
     @$dialog = new Dialog()
 
     @state = z.state
-      mode: 'join'
+      mode: @model.signInDialog.getMode()
       isLoading: false
 
   join: (e) =>
@@ -93,8 +93,9 @@ module.exports = class SignInDialog
                 else 'Welcome back'
               z '.button', {
                 onclick: =>
-                  @state.set
-                    mode: if mode is 'join' then 'signIn' else 'join'
+                  @model.signInDialog.setMode(
+                    if mode is 'join' then 'signIn' else 'join'
+                  )
               },
                 if mode is 'join' then 'Sign in' else 'Sign up'
 

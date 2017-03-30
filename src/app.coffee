@@ -51,6 +51,8 @@ Pages =
   DecksPage: require './pages/decks'
   CardPage: require './pages/card'
   CardsPage: require './pages/cards'
+  PlayersPage: require './pages/players'
+  PlayersSearchPage: require './pages/players_search'
   ProfilePage: require './pages/profile'
   TosPage: require './pages/tos'
   PoliciesPage: require './pages/policies'
@@ -187,6 +189,8 @@ module.exports = class App
     route '/deck/:id', 'DeckPage'
     route ['/card/:id', '/clashRoyale/card/:key'], 'CardPage'
     route '/facebookLogin/:type', 'FacebookLoginPage'
+    route '/players', 'PlayersPage'
+    route '/players/search', 'PlayersSearchPage'
     route '/policies', 'PoliciesPage'
     route '/tos', 'TosPage'
     route '/privacy', 'PrivacyPage'
@@ -194,7 +198,9 @@ module.exports = class App
     route '/join', 'JoinPage'
     route '/setAddress', 'SetAddressPage'
     route '/getApp', 'GetAppPage'
-    route ['/', '/profile', '/user/:id'], 'ProfilePage'
+    route [
+      '/', '/profile', '/user/id/:id', '/user/:username'
+    ], 'ProfilePage'
     route '/editProfile', 'EditProfilePage'
     route '/*', 'FourOhFourPage'
     routes

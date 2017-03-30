@@ -13,6 +13,9 @@ module.exports = class User
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
 
+  getByUsername: (username) =>
+    @auth.stream "#{@namespace}.getByUsername", {username}
+
   getByCode: (code) =>
     @auth.stream "#{@namespace}.getByCode", {code}
 

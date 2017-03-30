@@ -1,0 +1,48 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-players-search
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+  box-sizing: border-box
+  padding: 16px
+  text-align: center
+
+  > .g-grid
+    > .image
+      display: block
+      background-image: url('https://cdn.wtf/d/images/starfire/empty_friends.svg')
+      background-size: 100%
+      background-repeat: no-repeat
+      width: 232px
+      height: 209px
+      margin: 0 auto
+
+    > .description
+      font-body1()
+      color: getColor('$white')
+      margin-top: 16px
+
+    > .form
+      margin-top: 16px
+      max-width: 600px
+      margin: 0 auto
+
+      > .button
+        margin-top: 20px
+
+.z-players-search_dialog
+  > .description
+    font-caption1()
+
+  > .elixir-collector
+    display: block
+    background-image: url('https://cdn.wtf/d/images/starfire/elixir_collector.svg')
+    background-size: 100%
+    background-repeat: no-repeat
+    width: 160px
+    height: 160px
+    margin: 20px auto 0 auto

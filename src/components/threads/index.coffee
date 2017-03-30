@@ -58,7 +58,7 @@ module.exports = class Threads
                     z '.votes',
                       z $upvoteIcon,
                         icon: 'upvote'
-                        color: colors.$white34
+                        color: colors.$white54
                         size: '12px'
                         touchWidth: '24px'
                         touchHeight: '24px'
@@ -67,7 +67,7 @@ module.exports = class Threads
                       z '.count', thread.score or 0
                       z $downvoteIcon,
                         icon: 'downvote'
-                        color: colors.$white34
+                        color: colors.$white54
                         size: '12px'
                         touchWidth: '24px'
                         touchHeight: '24px'
@@ -76,7 +76,7 @@ module.exports = class Threads
                     z '.comments',
                       z $commentIcon,
                         icon: 'comment'
-                        color: colors.$white34
+                        color: colors.$white54
                         size: '12px'
                         touchWidth: '24px'
                         touchHeight: '24px'

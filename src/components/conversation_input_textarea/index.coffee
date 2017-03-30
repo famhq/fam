@@ -134,4 +134,4 @@ module.exports = class ConversationInputTextarea
               icon: 'send'
               color: if hasText \
                      then colors.$white
-                     else colors.$white34
+                     else colors.$white54

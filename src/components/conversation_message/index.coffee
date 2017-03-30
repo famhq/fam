@@ -22,11 +22,12 @@ DESCRIPTION_LENGTH = 100
 module.exports = class ConversationMessage
   constructor: (options) ->
     {message, $body, isGrouped, isMe, @model, @overlay$,
-      @selectedProfileDialogUser, @router} = options
+      @selectedProfileDialogUser, @router, @tapHoldTimeout} = options
 
     @$avatar = new Avatar()
     @$ripple = new Ripple()
     @$trophyIcon = new Icon()
+    @$statusIcon = new Icon()
 
     @imageData = new Rx.BehaviorSubject null
     @$conversationImageView = new ConversationImageView {
@@ -62,12 +63,30 @@ module.exports = class ConversationMessage
 
     onclick = =>
       unless isTextareaFocused
-        @selectedProfileDialogUser.onNext user
+        @selectedProfileDialogUser.onNext _.defaults {
+          chatMessageId: id
+        }, user
+
+    oncontextmenu = =>
+      @selectedProfileDialogUser.onNext _.defaults {
+        chatMessageId: id
+      }, user
 
     z '.z-conversation-message', {
       # re-use elements in v-dom
       key: "message-#{id or clientId}"
       className: z.classKebab {isSticker, isGrouped, isMe}
+      oncontextmenu: (e) ->
+        e?.preventDefault()
+        oncontextmenu?()
+      ontouchstart: (e) =>
+        clearTimeout @tapHoldTimeout
+        @tapHoldTimeout = setTimeout ->
+          e?.preventDefault()
+          oncontextmenu?()
+        , 1000
+      ontouchend: (e) =>
+        clearTimeout @tapHoldTimeout
     },
       z '.avatar', {
         onclick
@@ -84,6 +103,20 @@ module.exports = class ConversationMessage
       z '.content',
         unless isGrouped
           z '.author', {onclick},
+            if user?.flags?.isDev
+              z '.icon',
+                z @$statusIcon,
+                  icon: 'dev'
+                  color: colors.$white
+                  isTouchTarget: false
+                  size: '22px'
+            else if user?.flags?.isModerator
+              z '.icon',
+                z @$statusIcon,
+                  icon: 'mod'
+                  color: colors.$white
+                  isTouchTarget: false
+                  size: '22px'
             z '.name', @model.user.getDisplayName user
             z '.time',
               if time
@@ -96,7 +129,7 @@ module.exports = class ConversationMessage
               z '.icon',
                 z @$trophyIcon,
                   icon: 'trophy'
-                  color: colors.$white34
+                  color: colors.$white54
                   isTouchTarget: false
                   size: '16px'
 

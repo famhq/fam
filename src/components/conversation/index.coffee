@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 _last = require 'lodash/last'
 _isEmpty = require 'lodash/isEmpty'
 _debounce = require 'lodash/debounce'
+Environment = require 'clay-environment'
 
 Spinner = require '../spinner'
 Base = require '../base'
@@ -34,6 +35,7 @@ module.exports = class Conversation extends Base
     me = @model.user.getMe()
     @conversation ?= new Rx.BehaviorSubject null
     @error = new Rx.BehaviorSubject null
+    @tapHoldTimeout = null
 
     conversationAndMe = Rx.Observable.combineLatest(
       @conversation
@@ -63,11 +65,12 @@ module.exports = class Conversation extends Base
               isSmooth: isLoaded
             }
           , 100
-          setTimeout =>
-            @scrollToBottom {
-              isSmooth: isLoaded
-            }
-          , 500
+          unless isLoaded
+            setTimeout =>
+              @scrollToBottom {
+                isSmooth: isLoaded
+              }
+            , 500
         messages
       .catch (err) ->
         console.log err
@@ -126,7 +129,7 @@ module.exports = class Conversation extends Base
               @model, @router, text: message.body
             }
             $el = @getCached$ id, ConversationMessage, {
-              message, @model, @router, @overlay$, isMe
+              message, @model, @router, @overlay$, isMe, @tapHoldTimeout
               isGrouped, selectedProfileDialogUser, $body
             }
             prevMessage = message
@@ -143,8 +146,9 @@ module.exports = class Conversation extends Base
     @$$messages = @$$el?.querySelector('.messages')
     # TODO: make sure this is being disposed of correctly
     isScrolledBottom = Rx.Observable.fromEvent @$$messages, 'scroll'
-    .map (e) ->
-      e.target.scrollHeight - e.target.scrollTop is e.target.offsetHeight
+    .map (e) =>
+      clearTimeout @tapHoldTimeout
+      e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10
     @isScrolledBottomStreams.onNext isScrolledBottom
 
   beforeUnmount: =>
@@ -165,9 +169,10 @@ module.exports = class Conversation extends Base
     window?.removeEventListener 'resize', @debouncedOnResize
 
   scrollToBottom: ({isSmooth} = {}) =>
-    $messageArr = @$$el?.querySelectorAll('.message')
+    $messageArr = @$$el?.querySelectorAll('.z-conversation-message')
     $$lastMessage = _last $messageArr
-    if not @scrollYOnly and $$lastMessage?.scrollIntoView
+    isMobile = Environment.isMobile()
+    if not @scrollYOnly and $$lastMessage?.scrollIntoView and not isMobile
       try
         $$lastMessage.scrollIntoView {
           behavior: if isSmooth then 'smooth' else 'instant'

@@ -77,11 +77,21 @@ module.exports = class ConversationInput
 
     @state = z.state
       currentPanel: @currentPanel
+      me: @model.user.getMe()
 
   post: =>
-    @onPost()
-    @message.onNext ''
-    @hasText.onNext false
+    {me} = @state.getValue()
+
+    @model.signInDialog.openIfGuest me
+    .then =>
+      # SUPER HACK:
+      # stream doesn't update while cache is being invalidated, for whatever
+      # reason, so this waits until invalidation for login is ~done
+      setTimeout =>
+        @onPost()
+        @message.onNext ''
+        @hasText.onNext false
+      , 500
 
   render: =>
     {currentPanel} = @state.getValue()
@@ -110,7 +120,7 @@ module.exports = class ConversationInput
                   icon: icon
                   color: if currentPanel is panel \
                          then colors.$white
-                         else colors.$white34
+                         else colors.$white54
                   isTouchTarget: true
                   touchWidth: '36px'
                   touchHeight: '36px'

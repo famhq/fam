@@ -63,7 +63,7 @@ module.exports = _defaults {
   '$yellow500': '#ffab18'
 
   '$white4': 'rgba(255, 255, 255, 0.04)'
-  '$white34': 'rgba(255, 255, 255, 0.34)'
+  '$white54': 'rgba(255, 255, 255, 0.54)'
 
   '$black': '#0c0c0c'
 
@@ -71,7 +71,7 @@ module.exports = _defaults {
   '$tabUnselected': '#1a1a1a'
 
   '$tabSelectedAlt': paperColors.$white
-  '$tabUnselectedAlt': paperColors.$white34
+  '$tabUnselectedAlt': paperColors.$white54
 
   '$transparent': 'rgba(0, 0, 0, 0)'
   '$common': '#00E676'

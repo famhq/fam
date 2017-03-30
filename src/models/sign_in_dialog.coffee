@@ -3,6 +3,7 @@ Rx = require 'rx-lite'
 module.exports = class SignInDialog
   constructor: ->
     @_isOpen = new Rx.BehaviorSubject false
+    @_mode = new Rx.BehaviorSubject 'join'
     @onLoggedInFn = null
 
   isOpen: =>
@@ -21,7 +22,15 @@ module.exports = class SignInDialog
         @open()
         @onLoggedIn resolve
 
-  open: =>
+  getMode: =>
+    @_mode
+
+  setMode: (mode) =>
+    @_mode.onNext mode
+
+  open: (mode) =>
+    mode ?= 'join'
+    @setMode mode
     @_isOpen.onNext true
     # prevent body scrolling while viewing menu
     document.body.style.overflow = 'hidden'

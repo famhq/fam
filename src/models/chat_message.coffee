@@ -24,6 +24,11 @@ module.exports = class ChatMessage
     .catch (err) ->
       console.log 'err', err
 
+  deleteById: (id) =>
+    @auth.call "#{@namespace}.deleteById", {id}, {
+      invalidateAll: true
+    }
+
   getAllByConversationId: (conversationId) =>
     # buffer 0 so future streams don't try to add the client changes
     # (causes smooth scroll to bottom in conversations)

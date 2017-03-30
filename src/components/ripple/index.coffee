@@ -1,6 +1,7 @@
 z = require 'zorium'
 _ = require 'lodash'
 Rx = require 'rx-lite'
+Environment = require 'clay-environment'
 
 colors = require '../../colors'
 
@@ -65,17 +66,20 @@ module.exports = class Ripple
   render: ({color, isCircle, isCenter, onComplete}) ->
     # {$waves} = @state.getValue()
 
+    onTouch = (e) =>
+      $$el = e.target
+      e?.preventDefault()
+      @ripple {
+        $$el
+        color
+        isCenter
+        onComplete
+        mouseX: e.clientX or e.touches?[0]?.clientX
+        mouseY: e.clientY or e.touches?[0]?.clientY
+      }
+
     z '.z-ripple',
       className: z.classKebab {isCircle}
-      onmousedown: (e) =>
-        $$el = e.target
-        e?.preventDefault()
-        @ripple {
-          $$el
-          color
-          isCenter
-          onComplete
-          mouseX: e.clientX
-          mouseY: e.clientY
-        }
+      ontouchstart: if Environment.isAndroid() then null else onTouch
+      onmousedown: onTouch
       # $waves

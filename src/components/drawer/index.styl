@@ -13,6 +13,8 @@ $zIndexDrawerHeader = 100
   // display: none breaks the animation
   top: 0
   left: 0
+  box-sizing: border-box
+  border-right: 1px solid getColor('$black')
   pointer-events: none // not supported in ie9/10 (ie our entire app breaks)
 
   @media (min-width: $contentMaxWidth)
@@ -72,9 +74,14 @@ $zIndexDrawerHeader = 100
         // prevents flicker glitch http://stackoverflow.com/a/3921870
         backface-visibility: hidden
         padding: 20px 16px
+        height: 56px
+        box-sizing: border-box
         border-bottom: 1px solid $white12
         border-right: 1px solid getColor('$black')
         background: getColor('$primary500')
+
+        @media (min-width: $breakPointMedium)
+          height: 64px
 
         > .logo
           width: 100%
@@ -92,7 +99,6 @@ $zIndexDrawerHeader = 100
         box-sizing: border-box
         background: getColor('$tertiary700')
         padding: 8px 0
-        border-right: 1px solid getColor('$black')
 
         > .menu
           list-style-type: none

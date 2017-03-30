@@ -123,6 +123,16 @@ module.exports = class Drawer
               $ripple: new Ripple()
               iconName: 'chat-bubble'
             }
+          {
+            isDivider: true
+          }
+          {
+            path: '/players'
+            title: 'Players'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'friends'
+          }
           # {
           #   path: '/events'
           #   title: 'Tournaments'
@@ -230,7 +240,7 @@ module.exports = class Drawer
                     z 'li.sign-in-buttons',
                       z '.button', {
                         onclick: =>
-                          @model.signInDialog.open()
+                          @model.signInDialog.open 'signIn'
                       }, 'Sign in'
                       z '.button', {
                         onclick: =>

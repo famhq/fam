@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_clone = require 'lodash/clone'
 
 FormatService = require '../../services/format'
 GraphWidget = require '../graph_widget'
@@ -27,6 +28,7 @@ module.exports = class ProfileGraphs
         _map recordTypes, (recordType) ->
           {
             recordType
+            graphSeries: _clone(recordType.userValues)?.reverse()
             $graph: new GraphWidget()
           }
     }
@@ -35,8 +37,7 @@ module.exports = class ProfileGraphs
     {recordTypes} = @state.getValue()
 
     z '.z-profile-graphs',
-      _map recordTypes, ({recordType, $graph}) ->
-        graphSeries = recordType.userValues
+      _map recordTypes, ({recordType, graphSeries, $graph}) ->
         z '.record-type',
           z '.title', 'Trophies'
           z $graph, {

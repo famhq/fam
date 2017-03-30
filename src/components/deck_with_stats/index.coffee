@@ -30,18 +30,27 @@ module.exports = class DeckWithStats
       else 0
     )
 
+    commWinsAndLosses = userDeck?.deck?.wins + userDeck?.deck?.losses
+    commWinRate = FormatService.percentage(
+      if winsAndLosses and not isNaN commWinsAndLosses
+      then userDeck?.deck?.wins / commWinsAndLosses
+      else 0
+    )
+
     z '.z-deck-with-stats',
       z @$deckCards
       z '.stats',
         z '.stat',
-          z '.name', 'Wins'
-          z '.value', FormatService.number userDeck?.wins
-        z '.stat',
-          z '.name', 'Losses'
-          z '.value', FormatService.number userDeck?.losses
-        z '.stat',
-          z '.name', 'Draws'
-          z '.value', FormatService.number userDeck?.draws
+          z '.name', 'W / L / D'
+          z '.value',
+            FormatService.number userDeck?.wins
+            ' / '
+            FormatService.number userDeck?.losses
+            ' / '
+            FormatService.number userDeck?.draws
         z '.stat',
           z '.name', 'Win rate'
           z '.value', winRate
+        z '.stat',
+          z '.name', 'Comm win rate'
+          z '.value', commWinRate

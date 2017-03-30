@@ -8,6 +8,9 @@
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.24)
   border-top: 1px solid getColor('$white4')
 
+  @media (min-width: $contentMaxWidth)
+    display: none
+
   > .menu-item
     flex: 1
     text-align: center
@@ -19,5 +22,5 @@
 
     > .text
       font-caption1()
-      color: getColor('$white34')
+      color: getColor('$white54')
       margin-top: 2px

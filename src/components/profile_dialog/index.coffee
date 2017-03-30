@@ -20,6 +20,7 @@ module.exports = class ProfileDialog
     @$flagIcon = new Icon()
     @$blockIcon = new Icon()
     @$banIcon = new Icon()
+    @$deleteIcon = new Icon()
     @$chevronIcon = new Icon()
 
     me = @model.user.getMe()
@@ -73,7 +74,7 @@ module.exports = class ProfileDialog
               unless isMe
                 z 'li.menu-item', {
                   onclick: =>
-                    @router.go "/user/#{user?.id}"
+                    @router.go "/user/id/#{user?.id}"
                     @selectedProfileDialogUser.onNext null
                 },
                   z '.icon',
@@ -172,7 +173,7 @@ module.exports = class ProfileDialog
                 },
                   z '.icon',
                     z @$banIcon,
-                      icon: 'lock'
+                      icon: 'warning'
                       color: colors.$primary500
                       isTouchTarget: false
                   z '.text',
@@ -180,6 +181,20 @@ module.exports = class ProfileDialog
                       'User banned'
                     else
                       'Ban from chat'
+
+              if me?.flags?.isModerator and user?.chatMessageId
+                z 'li.menu-item', {
+                  onclick: =>
+                    @model.chatMessage.deleteById user?.chatMessageId
+                    @selectedProfileDialogUser.onNext null
+                },
+                  z '.icon',
+                    z @$deleteIcon,
+                      icon: 'delete'
+                      color: colors.$primary500
+                      isTouchTarget: false
+                  z '.text',
+                    'Delete post'
 
               if group and hasAdminPermission
                 [

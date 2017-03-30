@@ -6,6 +6,7 @@ Rx = require 'rx-lite'
 Icon = require '../icon'
 UiCard = require '../ui_card'
 RequestNotificationsCard = require '../request_notifications_card'
+PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
 config = require '../../config'
 colors = require '../../colors'
@@ -70,6 +71,7 @@ module.exports = class ProfileInfo
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
     @$splitsInfoCard = new UiCard()
+    @$followButton = new PrimaryButton()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not localStorage?['hideNotificationCard']
@@ -82,14 +84,18 @@ module.exports = class ProfileInfo
     @state = z.state {
       isRequestNotificationCardVisible
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
+      user: user
+      me: @model.user.getMe()
       gameData: user.flatMapLatest ({id}) =>
         @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
     }
 
   render: =>
     {gameData, isRequestNotificationCardVisible,
-      isSplitsInfoCardVisible} = @state.getValue()
+      isSplitsInfoCardVisible, user, me} = @state.getValue()
 
+    isMe = user?.id and user?.id is me?.id
+    isFollowing = @model.user.isFollowing me, user?.id
 
     metrics =
       stats: [
@@ -162,6 +168,15 @@ module.exports = class ProfileInfo
                   icon: 'crown'
                   color: colors.$yellow500
               z '.text', "Level #{gameData?.data?.level}"
+
+          unless isMe
+            z @$followButton,
+              text: if isFollowing then 'Unfollow' else 'Follow'
+              onclick: =>
+                if isFollowing
+                  @model.userData.unfollowByUserId user?.id
+                else
+                  @model.userData.followByUserId user?.id
       z '.content',
         if isRequestNotificationCardVisible
           z '.card',

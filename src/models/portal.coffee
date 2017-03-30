@@ -57,9 +57,10 @@ module.exports = class Portal
     @portal.on 'top.getData', -> null
     @portal.on 'push.register', @pushRegister
 
-    @portal.on 'facebook.login', @facebookLogin
+    @portal.on 'twitter.share', @twitterShare
 
-    @portal.on 'messenger.isInstalled', -> false
+    @portal.on 'facebook.login', @facebookLogin
+    @portal.on 'facebook.share', @facebookShare
 
     @portal.on 'networkInformation.onOffline', @networkInformationOnOffline
     @portal.on 'networkInformation.onOnline', @networkInformationOnOnline
@@ -84,16 +85,12 @@ module.exports = class Portal
       accessToken: user.id # Temporary
       userId: user.id
 
-  shareAny: ({title, text, dataUrl, imageUrl, path}) =>
+  shareAny: ({text, url, path}) =>
     ga? 'send', 'event', 'share_service', 'share_any'
 
     url = "https://#{config.HOST}#{path}"
-    title ?= ''
-    text = encodeURIComponent text + ' ' + url
-    @call 'browser.openWindow', {
-      url: "https://twitter.com/intent/tweet?text=#{text}"
-      target: '_system'
-    }
+    text = "#{text} #{url}"
+    @call 'twitter.share', {text}
 
   getPlatform: ({gameKey} = {}) =>
     userAgent = navigator.userAgent
@@ -129,6 +126,11 @@ module.exports = class Portal
         url: config.GOOGLE_PLAY_APP_URL
         target: '_system'
 
+  twitterShare: ({text}) =>
+    @call 'browser.openWindow', {
+      url: "https://twitter.com/intent/tweet?text=#{encodeURIComponent text}"
+      target: '_system'
+    }
 
   facebookLogin: ->
     new Promise (resolve) ->
@@ -155,8 +157,13 @@ module.exports = class Portal
               id: response.authResponse.userID
             }
 
+  facebookShare: ({url}) ->
+    FB.ui {
+      method: 'share',
+      href: url
+    }
+
   pushRegister: ->
-    console.log 'register'
     navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
       # TODO: check if reg'd first
       # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions

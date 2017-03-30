@@ -8,6 +8,9 @@ module.exports = class UserData
   getMe: ({embed} = {}) =>
     @auth.stream "#{@namespace}.getMe", {embed}
 
+  getMeFollowers: =>
+    @auth.stream "#{@namespace}.getMeFollowers"
+
   getByUserId: (userId, {embed} = {}) =>
     @auth.stream "#{@namespace}.getByUserId", {userId, embed}
 

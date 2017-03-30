@@ -5,14 +5,13 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class GroupManageMemberNotes
-  constructor: ({@model, group, user}) ->
+module.exports = class PlayersTop
+  constructor: ({@model, user}) ->
     @state = z.state
-      group: group
       user: user
 
   render: =>
-    {group, user} = @state.getValue()
+    {user} = @state.getValue()
 
-    z '.z-group-manage-member-notes',
+    z '.z-players-top',
       'Coming soon!'

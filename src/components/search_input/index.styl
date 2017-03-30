@@ -10,6 +10,10 @@ $zIndexForm = 1
 .z-search-input
   position: relative
 
+  &.has-on-click
+    > .form > .input
+      cursor: pointer
+
   > .search-overlay
     position: absolute
     z-index: $zIndexSearchOverlay

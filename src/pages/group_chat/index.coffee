@@ -1,5 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+_find = require 'lodash/find'
 
 Head = require '../../components/head'
 GroupChat = require '../../components/group_chat'
@@ -37,8 +38,16 @@ module.exports = class GroupChatPage
     conversation = groupAndConversationIdAndMe
     .flatMapLatest ([group, conversationId, me]) =>
       hasMemberPermission = @model.group.hasPermission group, me
-      conversationId ?= localStorage?['conversationId:' + group.id] or
-                          group.conversations?[0].id
+      conversationId ?= localStorage?['groupConversationId3:' + group.id]
+      unless conversationId
+        if me.country in ['RU', 'LV']
+          conversationId = _find(group.conversations, {name: 'русский'})?.id
+        if me.country is 'FR'
+          conversationId = _find(group.conversations, {name: 'francais'})?.id
+        else
+          conversationId = _find(group.conversations, {name: 'general'})?.id
+
+        conversationId ?= group.conversations?[0].id
       if hasMemberPermission and conversationId
         @model.conversation.getById conversationId
       else
