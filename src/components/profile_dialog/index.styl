@@ -13,30 +13,32 @@
   border-radius: 2px
 
   > .header
-    padding: 8px 0 8px 16px
+    padding: 24px 16px 16px 16px
     background: getColor('$tertiary900')
     border-top-left-radius: 2px
     border-top-right-radius: 2px
-    display: flex
-    align-items: center
     position: relative
-    // cursor: pointer
+    text-align: center
 
-    > .chevron
-      margin-left: auto
+    > .close
+      position: absolute
+      top: 8px
+      right: 8px
 
     > .avatar
-      margin-right: 16px
+      width: 72px
+      margin: 0 auto
 
     > .about
+      margin-top: 8px
+
       > .name
         font-title()
         color: getColor('$white')
         margin-bottom: 4px
 
       > .roles
-        font-caption1()
-        color: getColor('$grey700')
+        font-caption2()
 
   > .content
     list-style-type: none
@@ -50,15 +52,16 @@
       margin: 8px 0
 
     > .menu-item
-      margin: 0
-      padding: 16px
-      display: flex
-      align-items: center
       cursor: pointer
+      margin: 0
+      padding: 8px 0
+      display: inline-block
+      box-sizing: border-box
+      width: 25%
+      text-align: center
 
       > .icon
-        margin-right: 32px
+        margin-bottom: 12px
 
       > .text
-        font-title()
-        color: getColor('$white')
+        font-caption2()

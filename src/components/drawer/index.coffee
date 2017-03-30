@@ -232,6 +232,7 @@ module.exports = class Drawer
         z '.top',
           z '.header',
             z '.logo'
+            z '.beta'
           z '.content',
             z 'ul.menu',
               [

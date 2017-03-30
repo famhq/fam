@@ -4,6 +4,7 @@ Avatar = require '../avatar'
 Dialog = require '../dialog'
 Icon = require '../icon'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -22,12 +23,15 @@ module.exports = class ProfileDialog
     @$banIcon = new Icon()
     @$deleteIcon = new Icon()
     @$chevronIcon = new Icon()
+    @$closeIcon = new Icon()
 
     me = @model.user.getMe()
 
     @state = z.state
       me: me
       user: @selectedProfileDialogUser
+      clashRoyaleData: @selectedProfileDialogUser.flatMapLatest (user) =>
+        @model.userGameData.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
       group: group
       isFlagLoading: false
       isFlagged: false
@@ -41,13 +45,14 @@ module.exports = class ProfileDialog
     @router.onBack null
 
   render: =>
-    {me, user, platform, isFlagLoading, isFlagged, group,
+    {me, user, platform, isFlagLoading, isFlagged, group, clashRoyaleData,
       isConversationLoading} = @state.getValue()
 
     isBlocked = @model.user.isBlocked me, user?.id
-    isFollowing = @model.user.isFollowing me, user?.id
     isMe = user?.id is me?.id
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
+
+    console.log clashRoyaleData
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
       z @$dialog,
@@ -60,15 +65,19 @@ module.exports = class ProfileDialog
                 #   @router.go "/profile/#{user.id}"
             },
               z '.avatar',
-                z @$avatar, {user, bgColor: colors.$grey100, size: '40px'}
+                z @$avatar, {user, bgColor: colors.$grey100, size: '72px'}
               z '.about',
                 z '.name', @model.user.getDisplayName user
-                z '.roles', 'Member' # TODO
-              # z '.chevron',
-              #   z '.icon',
-              #     z @$chevronIcon,
-              #       icon: 'chevron-right'
-              #       color: colors.$primary500
+                z '.roles', clashRoyaleData?.data?.clan?.name
+              z '.close',
+                z '.icon',
+                  z @$closeIcon,
+                    icon: 'close'
+                    color: colors.$primary500
+                    isAlignedTop: true
+                    isAlignedRight: true
+                    onclick: =>
+                      @selectedProfileDialogUser.onNext null
 
             z 'ul.content',
               unless isMe
@@ -82,25 +91,7 @@ module.exports = class ProfileDialog
                       icon: 'profile'
                       color: colors.$primary500
                       isTouchTarget: false
-                  z '.text', 'View profile'
-              unless isMe
-                z 'li.menu-item', {
-                  onclick: =>
-                    if isFollowing
-                      @model.userData.unfollowByUserId user?.id
-                    else
-                      @model.userData.followByUserId user?.id
-                    @selectedProfileDialogUser.onNext null
-                },
-                  z '.icon',
-                    z @$friendIcon,
-                      icon: if isFollowing \
-                            then 'remove-friend'
-                            else 'add-friend'
-                      color: colors.$primary500
-                      isTouchTarget: false
-                  z '.text',
-                    if isFollowing then 'Unfollow' else 'Follow'
+                  z '.text', 'Profile'
 
               unless isMe
                 z 'li.menu-item', {
@@ -122,8 +113,8 @@ module.exports = class ProfileDialog
                       isTouchTarget: false
                   z '.text',
                     if isConversationLoading
-                    then 'Loading...'
-                    else 'Send message'
+                    then 'Loading'
+                    else 'Message'
 
               unless isMe
                 z 'li.menu-item', {
@@ -140,7 +131,7 @@ module.exports = class ProfileDialog
                       color: colors.$primary500
                       isTouchTarget: false
                   z '.text',
-                    if isBlocked then 'Unblock user' else 'Block user'
+                    if isBlocked then 'Unblock' else 'Block'
 
               if not isMe #and user?.chatMessageId and not me?.flags.isModerator
                 z 'li.menu-item', {
@@ -158,10 +149,13 @@ module.exports = class ProfileDialog
                       isTouchTarget: false
                   z '.text',
                     if isFlagLoading \
-                    then 'Loading...'
+                    then 'Loading'
                     else if isFlagged
                     then 'Reported'
-                    else 'Report post'
+                    else 'Report'
+
+              if me?.flags?.isModerator
+                z '.divider'
 
               if me?.flags?.isModerator and not isMe
                 z 'li.menu-item', {
@@ -178,9 +172,9 @@ module.exports = class ProfileDialog
                       isTouchTarget: false
                   z '.text',
                     if user?.flags?.isChatBanned
-                      'User banned'
+                      'Banned'
                     else
-                      'Ban from chat'
+                      'Ban'
 
               if me?.flags?.isModerator and user?.chatMessageId
                 z 'li.menu-item', {
@@ -194,7 +188,7 @@ module.exports = class ProfileDialog
                       color: colors.$primary500
                       isTouchTarget: false
                   z '.text',
-                    'Delete post'
+                    'Delete'
 
               if group and hasAdminPermission
                 [
@@ -208,5 +202,5 @@ module.exports = class ProfileDialog
                         icon: 'settings'
                         color: colors.$primary500
                         isTouchTarget: false
-                    z '.text', 'Manage member'
+                    z '.text', 'Manage'
                 ]

@@ -79,16 +79,28 @@ $zIndexDrawerHeader = 100
         border-bottom: 1px solid $white12
         border-right: 1px solid getColor('$black')
         background: getColor('$primary500')
+        display: flex
+        align-items: center
 
         @media (min-width: $breakPointMedium)
           height: 64px
 
         > .logo
-          width: 100%
+          width: 152px
+          height: 20px
           background: url($cdnUrl + '/sf_logo_invert.svg') no-repeat
           background-size: auto 100%
           background-position: 0 center
-          height: 20px
+
+        > .beta
+          width: 35px
+          height: 16px
+          background: url($cdnUrl + '/beta_tag.svg') no-repeat
+          background-size: auto 100%
+          background-position: 0 center
+          margin-left: 16px
+
+
 
           // @media (min-width: $breakPointMedium)
           //   height: 24px

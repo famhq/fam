@@ -67,11 +67,15 @@ font-button()
 font-body1()
   font-family: Rubik
   font-weight: 400
-  color: rgba(255, 255, 255, 0.54)
+  color: getColor('$white')
   line-height: 20px
   font-size: 14px
   @media (min-width: $breakPointLarge)
     font-size: 16px
+
+font-body2()
+  font-body1()
+  color: getColor('$white54')
 
 font-input()
   font-body()
@@ -89,10 +93,5 @@ font-caption1()
     font-size: 14px
 
 font-caption2()
-  font-family: Rubik
+  font-caption1()
   color: getColor('$white54')
-  font-weight: 400
-  font-size: 10px
-
-  @media (min-width: $breakPointLarge)
-    font-size: 12px
