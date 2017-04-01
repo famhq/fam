@@ -100,7 +100,6 @@ init = ->
   onOffline = ->
     isOffline.onNext true
 
-
   router = new RouterService {
     model: model
     router: new LocationRouter()
@@ -126,12 +125,6 @@ init = ->
 
   model.portal.call 'networkInformation.onOffline', onOffline
   model.portal.call 'networkInformation.onOnline', onOnline
-
-  model.portal.call 'app.onResume', ->
-    model.auth.clearNetoxCache()
-    model.user.updateServerTime()
-    if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
-      model.portal.call 'push.setBadgeNumber', {number: 0}
 
   model.portal.call 'app.onBack', ->
     router.back({fromNative: true})
@@ -211,77 +204,15 @@ init = ->
   model.portal.call 'orientation.onChange', app.onResize
 
   PushService.init {model}
-  if Environment.isAndroid() and Environment.isGameApp config.GAME_KEY
+  (if Environment.isGameApp config.GAME_KEY
     PushService.register {model, isAlwaysCalled: true}
-
-  model.portal.call 'app.onResume', ->
-    model.auth.clearNetoxCache()
-    model.user.updateServerTime()
-    if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
-      model.portal.call 'push.setBadgeNumber', {number: 0}
-
-  model.portal.call 'app.onBack', ->
-    router.back({fromNative: true})
-
-  #
-  # PAYMENTS
-  #
-  # consume any pending payments (eg the req to clay server failed)
-  # This can't run simultaneously with getProductDetail
-  # because of how IABHelper works on Android. If 2 async requests are
-  # called at same time (in our case, getProduct and getPending),
-  # the prev one is killed...
-  # rewardPending = ->
-  #   model.portal.call 'payments.getPending'
-  #   .then (pendingPayments) ->
-  #     Promise.all _.map pendingPayments, (payment) ->
-  #       {purchaseToken, receipt, productId, packageName, price} = payment
-  #       platform = if purchaseToken then 'android' else 'ios'
-  #       receipt or= purchaseToken
-  #       model.payment.verify {
-  #         platform: platform
-  #         receipt: receipt
-  #         productId: productId
-  #         packageName: packageName
-  #         price: price
-  #         isFromPending: true
-  #       }
-  #       .catch -> null
-  #     .then (paymentVerifications) ->
-  #       productIds = _.filter _.map paymentVerifications, 'productId'
-  #
-  #       unless _.isEmpty productIds
-  #         model.portal.call 'payments.consumePurchase', {
-  #           productIds: productIds
-  #         }
-  #   .catch (err) ->
-  #     unless err.message is 'Method not found'
-  #       log.error err
-  #
-  # rewardPending()
-  # .then ->
-  #   # fetch immediately so they're available right when store loads (fetching
-  #   # takes a few seconds)
-  #   productsObservable = model.product.getAll().flatMapLatest((apiProducts) ->
-  #     if not Environment.isGameApp config.GAME_KEY
-  #       return Rx.Observable.just apiProducts
-  #     else
-  #       productIds = _.map apiProducts, 'productId'
-  #       Rx.Observable.fromPromise model.portal.call(
-  #         'payments.getProductDetail', {productIds}
-  #       ).then ({products}) ->
-  #         products = _.filter products
-  #         _.map products, (product) ->
-  #           _.defaults(
-  #             product, _.find(apiProducts, {productId: product.productId})
-  #           )
-  #   ).share()
-  #   model.product.setAllCached productsObservable
-  #   productsObservable.take(1).toPromise()
-  # .then ->
-  #   # try again in case it didn't work the first time
-  #   rewardPending()
-
+  else
+    Promise.resolve null)
+  .then ->
+    model.portal.call 'app.onResume', ->
+      model.exoid.invalidateAll()
+      if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
+        model.portal.call 'push.setBadgeNumber', {number: 0}
 
 if document.readyState isnt 'complete' and
     not document.getElementById 'zorium-root'

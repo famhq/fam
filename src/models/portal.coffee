@@ -21,12 +21,14 @@ module.exports = class Portal
     if window?
       @portal = new PortalGun() # TODO: check isParentValid
 
+      @appResumeHandler = null
+
   PLATFORMS:
     GAME_APP: 'game_app'
     CLAY_APP: 'clay_app'
     WEB: 'web'
 
-  setModels: ({@user, @game, @modal, @installOverlay}) => null
+  setModels: ({@user, @game, @modal, @installOverlay, @getAppDialog}) => null
 
   call: (args...) =>
     unless window?
@@ -52,7 +54,8 @@ module.exports = class Portal
     @portal.on 'app.install', @appInstall
 
     # fallbacks
-    @portal.on 'app.onResume', -> null
+    @portal.on 'app.onResume', @appOnResume
+
     @portal.on 'top.onData', -> null
     @portal.on 'top.getData', -> null
     @portal.on 'push.register', @pushRegister
@@ -105,6 +108,16 @@ module.exports = class Portal
   isChrome: ->
     navigator.userAgent.match /chrome/i
 
+  appOnResume: (callback) =>
+    if @appResumeHandler
+      window.removeEventListener 'visibilitychange', @appResumeHandler
+
+    @appResumeHandler = ->
+      unless document.hidden
+        callback()
+
+    window.addEventListener 'visibilitychange', @appResumeHandler
+
   appInstall: =>
     userAgent = navigator.userAgent
     if Environment.isGameApp(config.GAME_KEY, {userAgent})
@@ -121,10 +134,13 @@ module.exports = class Portal
         url: config.IOS_APP_URL
         target: '_system'
 
-    else
+    else if Environment.isAndroid()
       @call 'browser.openWindow',
         url: config.GOOGLE_PLAY_APP_URL
         target: '_system'
+
+    else
+      @getAppDialog.open()
 
   twitterShare: ({text}) =>
     @call 'browser.openWindow', {

@@ -31,6 +31,7 @@ Thread = require './thread'
 ThreadComment = require './thread_comment'
 Video = require './video'
 Drawer = require './drawer'
+GetAppDialog = require './get_app_dialog'
 SignInDialog = require './sign_in_dialog'
 PushNotificationSheet = require './push_notification_sheet'
 InstallOverlay = require './install_overlay'
@@ -117,10 +118,11 @@ module.exports = class Model
     @video = new Video {@auth}
     @drawer = new Drawer()
     @signInDialog = new SignInDialog()
+    @getAppDialog = new GetAppDialog()
     @installOverlay = new InstallOverlay()
     @imageViewOverlay = new ImageViewOverlay()
     @pushNotificationSheet = new PushNotificationSheet()
-    @portal?.setModels {@user, @game, @modal, @installOverlay}
+    @portal?.setModels {@user, @game, @modal, @installOverlay, @getAppDialog}
     @window = new Window {cookieSubject}
 
   wasCached: => @isFromCache

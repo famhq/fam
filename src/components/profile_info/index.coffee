@@ -2,6 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
 Rx = require 'rx-lite'
+Environment = require 'clay-environment'
 
 Icon = require '../icon'
 UiCard = require '../ui_card'
@@ -74,7 +75,8 @@ module.exports = class ProfileInfo
     @$followButton = new PrimaryButton()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
-      window? and not localStorage?['hideNotificationCard']
+      window? and not Environment.isGameApp(config.GAME_KEY) and
+        not localStorage?['hideNotificationCard']
     )
     @$requestNotificationsCard = new RequestNotificationsCard {
       @model
@@ -152,13 +154,13 @@ module.exports = class ProfileInfo
               z '.icon',
                 z @$trophyIcon,
                   icon: 'trophy'
-                  color: colors.$yellow500
+                  color: colors.$secondary500
               z '.text', gameData?.data?.trophies
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$arenaIcon,
                   icon: 'castle'
-                  color: colors.$yellow500
+                  color: colors.$secondary500
               z '.text', "Arena #{gameData?.data?.arena?.number}"
               if gameData?.data?.league
                 z '.text', gameData?.data?.league?.name
@@ -166,7 +168,7 @@ module.exports = class ProfileInfo
               z '.icon',
                 z @$levelIcon,
                   icon: 'crown'
-                  color: colors.$yellow500
+                  color: colors.$secondary500
               z '.text', "Level #{gameData?.data?.level}"
 
           unless isMe

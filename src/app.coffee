@@ -7,9 +7,11 @@ Environment = require 'clay-environment'
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
 InstallOverlay = require './components/install_overlay'
+GetAppDialog = require './components/get_app_dialog'
 AddToHomeScreenSheet = require './components/add_to_home_sheet'
 PushNotificationsSheet = require './components/push_notifications_sheet'
 ConversationImageView = require './components/conversation_image_view'
+OfflineOverlay = require './components/offline_overlay'
 config = require './config'
 
 Pages =
@@ -56,8 +58,6 @@ Pages =
   ProfilePage: require './pages/profile'
   TosPage: require './pages/tos'
   PoliciesPage: require './pages/policies'
-  SetAddressPage: require './pages/set_address'
-  GetAppPage: require './pages/get_app'
   PrivacyPage: require './pages/privacy'
   EditProfilePage: require './pages/edit_profile'
   FourOhFourPage: require './pages/404'
@@ -65,7 +65,7 @@ Pages =
 TIME_UNTIL_ADD_TO_HOME_PROMPT_MS = 90000 # 1.5 min
 
 module.exports = class App
-  constructor: ({requests, @serverData, @model, @router}) ->
+  constructor: ({requests, @serverData, @model, @router, isOffline}) ->
     @$cachedPages = []
     routes = @model.window.getBreakpoint().map @getRoutes
 
@@ -85,8 +85,10 @@ module.exports = class App
 
     addToHomeSheetIsVisible = new Rx.BehaviorSubject false
 
+    @$offlineOverlay = new OfflineOverlay {isOffline}
     @$drawer = new Drawer {@model, @router}
     @$signInDialog = new SignInDialog {@model, @router}
+    @$getAppDialog = new GetAppDialog {@model, @router}
     @$installOverlay = new InstallOverlay {@model, @router}
     @$conversationImageView = new ConversationImageView {@model, @router}
     @$addToHomeSheet = new AddToHomeScreenSheet {
@@ -109,8 +111,10 @@ module.exports = class App
     @state = z.state {
       $backupPage: $backupPage
       me: me
+      isOffline: isOffline
       addToHomeSheetIsVisible: addToHomeSheetIsVisible
       signInDialogIsOpen: @model.signInDialog.isOpen()
+      getAppDialogIsOpen: @model.getAppDialog.isOpen()
       pushNotificationSheetIsOpen: @model.pushNotificationSheet.isOpen()
       installOverlayIsOpen: @model.installOverlay.isOpen()
       imageViewOverlayImageData: @model.imageViewOverlay.getImageData()
@@ -196,8 +200,6 @@ module.exports = class App
     route '/privacy', 'PrivacyPage'
     route '/signIn', 'SignInPage'
     route '/join', 'JoinPage'
-    route '/setAddress', 'SetAddressPage'
-    route '/getApp', 'GetAppPage'
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'
     ], 'ProfilePage'
@@ -208,7 +210,8 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
       installOverlayIsOpen, signInDialogIsOpen, pushNotificationSheetIsOpen
-      addToHomeSheetIsVisible} = @state.getValue()
+      getAppDialogIsOpen, addToHomeSheetIsVisible,
+      isOffline} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
@@ -233,6 +236,8 @@ module.exports = class App
 
             if signInDialogIsOpen
               z @$signInDialog
+            if getAppDialogIsOpen
+              z @$getAppDialog
             if installOverlayIsOpen
               z @$installOverlay
             if imageViewOverlayImageData
@@ -243,3 +248,5 @@ module.exports = class App
               }
             if pushNotificationSheetIsOpen
               z @$pushNotificationsSheet
+            if isOffline
+              z @$offlineOverlay

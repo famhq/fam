@@ -48,14 +48,6 @@ module.exports = class Drawer
       deck: userDeck.map (userDeck) ->
         userDeck?.deck
     }
-    @$setDeckButton = new FlatButton()
-    @$setDeckIcon = new Icon()
-    @$addWinButton = new FlatButton()
-    @$addWinIcon = new Icon()
-    @$addLossButton = new FlatButton()
-    @$addLossIcon = new Icon()
-    @$addDrawButton = new FlatButton()
-    @$addDrawIcon = new Icon()
 
     userAgent = navigator?.userAgent
     needsApp = userAgent and
@@ -78,9 +70,6 @@ module.exports = class Drawer
             $ripple: new Ripple()
           }
       userDeck: userDeck
-      isAddWinLoading: false
-      isAddLossLoading: false
-      isAddDrawLoading: false
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
@@ -193,8 +182,7 @@ module.exports = class Drawer
 
 
   render: ({currentPath}) =>
-    {isOpen, me, menuItems, userDeck, isAddWinLoading, isAddLossLoading,
-      isAddDrawLoading, myGroups, drawerWidth, breakpoint,
+    {isOpen, me, menuItems, userDeck, myGroups, drawerWidth, breakpoint,
       windowSize} = @state.getValue()
     deck = userDeck?.deck
 

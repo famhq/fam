@@ -22,12 +22,13 @@ DESCRIPTION_LENGTH = 100
 module.exports = class ConversationMessage
   constructor: (options) ->
     {message, $body, isGrouped, isMe, @model, @overlay$,
-      @selectedProfileDialogUser, @router, @tapHoldTimeout} = options
+      @selectedProfileDialogUser, @router} = options
 
     @$avatar = new Avatar()
     @$ripple = new Ripple()
     @$trophyIcon = new Icon()
     @$statusIcon = new Icon()
+    @$verifiedIcon = new Icon()
 
     @imageData = new Rx.BehaviorSubject null
     @$conversationImageView = new ConversationImageView {
@@ -72,6 +73,8 @@ module.exports = class ConversationMessage
         chatMessageId: id
       }, user
 
+    isVerified = user and user.gameData?.verifiedUserId is user.id
+
     z '.z-conversation-message', {
       # re-use elements in v-dom
       key: "message-#{id or clientId}"
@@ -79,14 +82,6 @@ module.exports = class ConversationMessage
       oncontextmenu: (e) ->
         e?.preventDefault()
         oncontextmenu?()
-      ontouchstart: (e) =>
-        clearTimeout @tapHoldTimeout
-        @tapHoldTimeout = setTimeout ->
-          e?.preventDefault()
-          oncontextmenu?()
-        , 1000
-      ontouchend: (e) =>
-        clearTimeout @tapHoldTimeout
     },
       z '.avatar', {
         onclick
@@ -118,6 +113,13 @@ module.exports = class ConversationMessage
                   isTouchTarget: false
                   size: '22px'
             z '.name', @model.user.getDisplayName user
+            if isVerified
+              z '.verified',
+                z @$verifiedIcon,
+                  icon: 'verified'
+                  color: colors.$secondary500
+                  isTouchTarget: false
+                  size: '14px'
             z '.time',
               if time
               then moment(time).fromNowModified()

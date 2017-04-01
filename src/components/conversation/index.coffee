@@ -35,7 +35,6 @@ module.exports = class Conversation extends Base
     me = @model.user.getMe()
     @conversation ?= new Rx.BehaviorSubject null
     @error = new Rx.BehaviorSubject null
-    @tapHoldTimeout = null
 
     conversationAndMe = Rx.Observable.combineLatest(
       @conversation
@@ -129,7 +128,7 @@ module.exports = class Conversation extends Base
               @model, @router, text: message.body
             }
             $el = @getCached$ id, ConversationMessage, {
-              message, @model, @router, @overlay$, isMe, @tapHoldTimeout
+              message, @model, @router, @overlay$, isMe,
               isGrouped, selectedProfileDialogUser, $body
             }
             prevMessage = message
@@ -147,7 +146,6 @@ module.exports = class Conversation extends Base
     # TODO: make sure this is being disposed of correctly
     isScrolledBottom = Rx.Observable.fromEvent @$$messages, 'scroll'
     .map (e) =>
-      clearTimeout @tapHoldTimeout
       e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10
     @isScrolledBottomStreams.onNext isScrolledBottom
 

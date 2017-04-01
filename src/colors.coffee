@@ -26,7 +26,7 @@ module.exports = _defaults {
   '$secondary200': paperColors.$white
   '$secondary300': paperColors.$white
   '$secondary400': paperColors.$white
-  '$secondary500': paperColors.$white
+  '$secondary500': '#ffab18'
   '$secondary600': paperColors.$white
   '$secondary700': paperColors.$white
   '$secondary800': paperColors.$white
@@ -59,8 +59,6 @@ module.exports = _defaults {
   '$tertiary700Text': paperColors.$white
   '$tertiary800Text': paperColors.$white
   '$tertiary900Text': paperColors.$white
-
-  '$yellow500': '#ffab18'
 
   '$white4': 'rgba(255, 255, 255, 0.04)'
   '$white54': 'rgba(255, 255, 255, 0.54)'

@@ -1,7 +1,6 @@
 z = require 'zorium'
 
 Head = require '../../components/head'
-Splash = require '../../components/splash'
 Spinner = require '../../components/spinner'
 config = require '../../config'
 
@@ -18,7 +17,6 @@ module.exports = class HomePage
       meta:
         canonical: "https://#{config.HOST}"
     })
-    @$splash = new Splash {@model, @router}
     @$spinner = new Spinner()
 
     @state = z.state
