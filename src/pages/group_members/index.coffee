@@ -55,7 +55,7 @@ module.exports = class GroupManageMemberPage
     },
       z @$appBar, {
         title: 'Group Members'
-        bgColor: colors.$tertiary700
+        style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }

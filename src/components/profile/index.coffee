@@ -5,6 +5,7 @@ Icon = require '../icon'
 ProfileInfo = require '../profile_info'
 ProfileHistory = require '../profile_history'
 ProfileGraphs = require '../profile_graphs'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -25,12 +26,14 @@ module.exports = class Profile
     @state = z.state
       me: me
 
-  render: =>
+  render: ({isOtherProfile} = {}) =>
     {me} = @state.getValue()
 
     z '.z-profile',
       z @$tabs,
         isBarFixed: false
+        isBarFlat: false
+        barStyle: if isOtherProfile then 'secondary' else 'primary'
         tabs: [
           {
             $menuIcon: @$infoIcon

@@ -1,10 +1,10 @@
 z = require 'zorium'
 
-DeckCards = require '../../components/deck_cards'
-DeckStats = require '../../components/deck_stats'
-Icon = require '../../components/icon'
-Tabs = require '../../components/tabs'
-PrimaryButton = require '../../components/primary_button'
+DeckInfo = require '../deck_info'
+DeckGuides = require '../deck_guides'
+Icon = require '../icon'
+Tabs = require '../tabs'
+PrimaryButton = require '../primary_button'
 
 if window?
   require './index.styl'
@@ -13,15 +13,12 @@ module.exports = class Deck
   constructor: ({@model, @router, deck}) ->
     me = @model.user.getMe()
 
-    @$elixirIcon = new Icon()
-    @$crownIcon = new Icon()
-    @$statsIcon = new Icon()
-    @$notesIcon = new Icon()
-    @$setAsDeckButton = new PrimaryButton()
-    @$deckStats = new DeckStats {@model, @router, deck}
-    @$tabs = new Tabs {@model}
+    @$infoIcon = new Icon()
+    @$guidesIcon = new Icon()
 
-    @$deckCards = new DeckCards {@model, @router, deck}
+    @$deckInfo = new DeckInfo {@model, @router, deck}
+    @$deckGuides = new DeckGuides {@model, @router, deck}
+    @$tabs = new Tabs {@model}
 
     @state = z.state
       me: me
@@ -33,20 +30,20 @@ module.exports = class Deck
     totalMatches = (deck?.wins + deck?.losses) or 1
 
     z '.z-deck',
-      z '.deck',
-        z '.g-grid',
-          z @$deckCards,
-            onCardClick: (card) =>
-              @router.go "/card/#{card.id}"
       z @$tabs,
         isBarFixed: false
+        barStyle: 'secondary'
         tabs: [
           {
-            $menuText: 'Stats'
-            $el: @$deckStats
+            $menuIcon: @$infoIcon
+            menuIconName: 'info'
+            $menuText: 'Info'
+            $el: @$deckInfo
           }
           {
-            $menuText: 'Notes'
-            $el: null
+            $menuIcon: @$guidesIcon
+            menuIconName: 'compass'
+            $menuText: 'Guides'
+            $el: @$deckGuides
           }
         ]

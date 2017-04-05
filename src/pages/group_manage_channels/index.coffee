@@ -50,7 +50,7 @@ module.exports = class GroupManageChannelsPage
     },
       z @$appBar, {
         title: 'Manage Channels'
-        bgColor: colors.$tertiary700
+        style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }

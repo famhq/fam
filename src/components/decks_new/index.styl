@@ -1,0 +1,55 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-decks
+  flex: 1
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+  position: relative
+
+  > .header-background
+    background: getColor('$primary500')
+    width: 100%
+    height: 168px
+    position: absolute
+    top: 0
+    left: 0
+
+  > .content
+    position: relative
+    z-index: 1
+    padding: 16px
+    width: 100%
+    box-sizing: border-box
+
+    > .g-grid
+      > .header
+        font-h1()
+        text-align: center
+
+      > .filters
+        background: getColor('$tertiary700')
+        margin-top: 16px
+        border-radius: 2px
+
+        > .filter
+          padding: 16px
+          display: flex
+          cursor: pointer
+
+          > .info
+            > .title
+              font-title()
+
+            > .description
+              font-caption2()
+
+          > .chevron
+            margin-left: auto
+
+        > .search-button
+          padding: 16px
+
+      > .flat-button
+        margin-top: 16px

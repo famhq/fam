@@ -45,7 +45,7 @@ module.exports = class AddGuidePage
     },
       z @$appBar, {
         title: 'Add Guide'
-        bgColor: colors.$tertiary700
+        style: 'secondary'
         isFlat: true
         $topLeftButton: z @$closeIcon, {
           icon: 'close'

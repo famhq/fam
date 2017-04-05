@@ -45,7 +45,7 @@ module.exports = class GroupManageRecordsPage
     },
       z @$appBar, {
         title: 'Manage Records'
-        bgColor: colors.$tertiary700
+        style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }

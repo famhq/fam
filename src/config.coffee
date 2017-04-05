@@ -74,6 +74,7 @@ isomorphic =
   GIPHY_API_KEY: process.env.GIPHY_API_KEY
   FB_ID: process.env.STARFIRE_FB_ID
   API_URL: API_URL
+  PUBLIC_API_URL: process.env.PUBLIC_RADIOACTIVE_API_URL
   API_HOST: API_HOST
   API_PATH: API_PATH
   VAPID_PUBLIC_KEY: process.env.RADIOACTIVE_VAPID_PUBLIC_KEY
@@ -103,6 +104,19 @@ isomorphic =
     colors.$red500
     colors.$blue500
   ]
+  ARENAS:
+    0: 'Training Camp'
+    1: 'A1 - Goblin Stadium'
+    2: 'A2 - Bone Pit'
+    3: 'A3 - Barbarian Bowl'
+    4: 'A4 - PEKKA\'s Playhouse'
+    5: 'A5 - Spell Valley'
+    6: 'A6 - Buildre\'s Workshop'
+    7: 'A7 - Royal Arena'
+    8: 'A8 - Frozen Peak'
+    9: 'A9 - Jungle Arena'
+    10: 'A10 - Hog Mountain'
+    11: 'A11 - Legendary Arena'
   # also in radioactive
   STICKERS: ['angry', 'crying', 'laughing', 'thumbs_up']
 

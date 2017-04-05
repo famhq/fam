@@ -1,0 +1,31 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-card-list
+  > .row
+    clearfix()
+
+    > .card
+      margin: -4px 0
+      float: left
+      padding: 4px
+      box-sizing: border-box
+      position: relative
+      cursor: pointer
+
+      > .selected
+        position: absolute
+        top: 50%
+        left: 50%
+        content: ''
+        width: 40px
+        height: 40px
+        margin-left: -20px
+        margin-top: -20px
+        border-radius: 50%
+        background: getColor('$black87')
+        box-sizing: border-box
+        display: flex
+        align-items: center
+        justify-content: center

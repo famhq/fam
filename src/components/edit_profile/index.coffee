@@ -36,6 +36,8 @@ module.exports = class EditProfile
     @$avatarButton = new PrimaryButton()
     @$uploadOverlay = new UploadOverlay {@model}
 
+    @$forumSigButton = new PrimaryButton()
+
     @$usernameInput = new PrimaryInput
       valueStreams: @usernameValueStreams
       error: @usernameError
@@ -127,3 +129,9 @@ module.exports = class EditProfile
               z @$uploadOverlay,
                 onSelect: ({file, dataUrl}) =>
                   @state.set avatarImage: file, avatarDataUrl: dataUrl
+
+      z '.section',
+        z @$forumSigButton,
+          text: 'Create forum signature'
+          onclick: =>
+            @router.go '/forumSignature'

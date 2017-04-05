@@ -64,11 +64,9 @@ class RouterService
 
   link: (node) =>
     node.properties.onclick = ev (e, $$el) =>
-      isLocal = $$el.hostname is window.location.hostname
-
-      if isLocal and isSimpleClick e
+      if isSimpleClick e
         e.preventDefault()
-        @go $$el.pathname + $$el.search
+        @openLink $$el.href
 
     return node
 

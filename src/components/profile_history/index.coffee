@@ -6,7 +6,8 @@ _takeRight = require 'lodash/takeRight'
 _isEmpty = require 'lodash/isEmpty'
 
 FormatService = require '../../services/format'
-DeckWithStats = require '../deck_with_stats'
+DeckCards = require '../deck_cards'
+UserDeckStats = require '../user_deck_stats'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -23,13 +24,21 @@ module.exports = class ProfileHistory
         # userDeck = _find userDecks, {isCurrentDeck: true}
         userDeck = userDecks[0]
         if userDeck?.deck
-          {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
+          {
+            userDeck: userDeck
+            $deck: new DeckCards {deck: userDeck?.deck}
+            $stats: new UserDeckStats {userDeck}
+          }
       otherDecks: userDecks.map (userDecks) ->
         # userDecks = _filter userDecks, ({isCurrentDeck}) ->
         #   not isCurrentDeck
         # _filter _map userDecks, (userDeck) ->
         _map _takeRight(userDecks, userDecks?.length - 1), (userDeck) ->
-          {userDeck: userDeck, $el: new DeckWithStats {userDeck}}
+          {
+            userDeck: userDeck
+            $deck: new DeckCards {deck: userDeck?.deck}
+            $stats: new UserDeckStats {userDeck}
+          }
     }
 
   render: =>
@@ -39,7 +48,8 @@ module.exports = class ProfileHistory
       z '.title',
         'Current deck'
       z '.deck',
-        z currentDeck?.$el
+        z currentDeck?.$deck
+        z currentDeck?.$stats
 
 
       z '.divider'
@@ -49,6 +59,7 @@ module.exports = class ProfileHistory
       if _isEmpty otherDecks
         'No other decks found'
       else
-        _map otherDecks, ({$el}) ->
+        _map otherDecks, ({$deck, $stats}) ->
           z '.deck',
-            z $el
+            z $deck
+            z $stats

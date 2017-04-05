@@ -151,7 +151,7 @@ module.exports = class Tabs
 
   render: (options) =>
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, isBarFlat,
-      barTabWidth, hasAppBar, windowSize, vDomKey} = options
+      barTabWidth, hasAppBar, windowSize, vDomKey, barStyle} = options
 
     # if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
     #   @beforeUnmount true
@@ -182,6 +182,7 @@ module.exports = class Tabs
               color: barColor
               inactiveColor: barInactiveColor
               bgColor: barBgColor
+              style: barStyle
               items: tabs
             }
         z '.tabs-scroller', {

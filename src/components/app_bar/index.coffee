@@ -11,7 +11,14 @@ module.exports = class AppBar
   getHeight: =>
     @model.window.getAppBarHeight()
 
-  render: ({$topLeftButton, $topRightButton, title, bgColor, color, isFlat}) ->
+  render: (options) ->
+    {$topLeftButton, $topRightButton, title, bgColor, color, isFlat,
+      style} = options
+
+    if style is 'secondary'
+      color = colors.$tertiary700Text
+      bgColor = colors.$tertiary700
+
     color ?= colors.$primary500Text
     bgColor ?= colors.$primary500
 

@@ -38,8 +38,8 @@ module.exports = class PlayersSearch
     .then =>
       @model.userGameData.search playerTag
     .then (userGameData) =>
-      console.log 'ug', userGameData
-      @router.go "/user/id/#{userGameData?.userIds?[0]}"
+      userId = userGameData?.verifiedUserId or userGameData?.userIds?[0]
+      @router.go "/user/id/#{userId}"
     .then =>
       @state.set isLoading: false
     .catch (err) =>

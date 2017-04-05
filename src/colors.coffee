@@ -65,6 +65,8 @@ module.exports = _defaults {
 
   '$black': '#0c0c0c'
 
+  '$purple500': '#dd00e2'
+
   '$tabSelected': paperColors.$white
   '$tabUnselected': '#1a1a1a'
 

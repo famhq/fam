@@ -43,7 +43,7 @@ module.exports = class GroupSettingsPage
     },
       z @$appBar, {
         title: 'Group Settings'
-        bgColor: colors.$tertiary700
+        style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }

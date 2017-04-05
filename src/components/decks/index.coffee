@@ -5,7 +5,7 @@ Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 DeckList = require '../../components/deck_list'
-DeckGuides = require '../../components/deck_guides'
+DecksGuides = require '../../components/decks_guides'
 Thread = require '../../components/thread'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
@@ -22,7 +22,7 @@ module.exports = class Decks
     @$fab = new Fab()
     @$addIcon = new Icon()
 
-    @$deckGuides = new DeckGuides {@model, @router, sort: 'popular'}
+    @$decksGuides = new DecksGuides {@model, @router, sort: 'popular'}
     @$recentDecks = new DeckList {
       @model, @router, sort: 'recent', filter: 'mine'
     }
@@ -70,7 +70,7 @@ module.exports = class Decks
               $menuIcon: @$guidesIcon
               menuIconName: 'compass'
               $menuText: 'Guides'
-              $el: @$deckGuides
+              $el: @$decksGuides
             }
             {
               $menuIcon: @$popularIcon

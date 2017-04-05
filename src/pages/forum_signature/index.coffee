@@ -1,7 +1,7 @@
 z = require 'zorium'
 
 Head = require '../../components/head'
-GroupManageMember = require '../../components/group_manage_member'
+ForumSignature = require '../../components/forum_signature'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 colors = require '../../colors'
@@ -9,30 +9,22 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class GroupManageMemberPage
+module.exports = class ForumSignaturePage
   hideDrawer: true
 
   constructor: ({model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) ->
-      model.group.getById route.params.id
-
-    user = requests.flatMapLatest ({route}) ->
-      model.user.getById route.params.userId
-
     @$head = new Head({
       model
       requests
       serverData
       meta: {
-        title: 'Manage Member'
-        description: 'Manage Member'
+        title: 'Forum Signature'
+        description: 'Forum Signature'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$groupManageMember = new GroupManageMember {
-      model, @router, serverData, group, user
-    }
+    @$forumSignature = new ForumSignature {model, @router, serverData}
 
     @state = z.state
       windowSize: model.window.getSize()
@@ -42,14 +34,14 @@ module.exports = class GroupManageMemberPage
   render: =>
     {windowSize} = @state.getValue()
 
-    z '.p-group-manage-member', {
+    z '.p-forum-signature', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Manage Member'
+        title: 'Forum Signature'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }
-      @$groupManageMember
+      @$forumSignature

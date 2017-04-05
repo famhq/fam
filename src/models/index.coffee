@@ -18,6 +18,7 @@ ClashRoyaleDeck = require './clash_royale_deck'
 ClashRoyaleUserDeck = require './clash_royale_user_deck'
 ClashRoyaleCard = require './clash_royale_card'
 ChatMessage = require './chat_message'
+DynamicImage = require './dynamic_image'
 Event = require './event'
 Gif = require './gif'
 Group = require './group'
@@ -98,6 +99,7 @@ module.exports = class Model
     @userData = new UserData {@auth}
     @userGroupData = new UserGroupData {@auth}
     @userGameData = new UserGameData {@auth}
+    @dynamicImage = new DynamicImage {@auth}
     @chatMessage = new ChatMessage {@auth, proxy, @exoid}
     @conversation = new Conversation {@auth}
     @clashRoyaleAPI = new ClashRoyaleAPI {@auth}
@@ -132,9 +134,9 @@ module.exports = class Model
       @exoid.getCacheStream()
     ], (results...) -> results
     .map ([exoidCache]) ->
-      string = JSON.stringify {
+      string = JSON.stringify({
         exoid: exoidCache
         # problem with this is clock skew
         # expires: Date.now() + SERIALIZATION_EXPIRE_TIME_MS
-      }
+      }).replace /<\/script/gi, '<\\/script'
       "window['#{SERIALIZATION_KEY}']=#{string};"

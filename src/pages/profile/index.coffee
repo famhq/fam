@@ -31,6 +31,7 @@ module.exports = class ProfilePage
       (vals...) -> vals
     )
 
+    me = @model.user.getMe()
     user = usernameAndId.flatMapLatest ([username, id]) =>
       if username
         @model.user.getByUsername username
@@ -38,6 +39,9 @@ module.exports = class ProfilePage
         @model.user.getById id
       else
         @model.user.getMe()
+
+    @hideDrawer = usernameAndId.map ([username, id]) ->
+      username or id
 
     clashRoyaleData = user.flatMapLatest ({id}) =>
       @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
@@ -76,22 +80,23 @@ module.exports = class ProfilePage
 
     @state = z.state
       windowSize: @model.window.getSize()
-      username: username
+      routeUsername: username
       user: user
-      id: id
+      routeId: id
       isShareSheetVisible: @isShareSheetVisible
-      me: @model.user.getMe()
+      me: me
       clashRoyaleData: clashRoyaleData
       requests: requests
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, clashRoyaleData, me, username, id, user,
+    {windowSize, clashRoyaleData, me, routeUsername, routeId, user,
       isShareSheetVisible} = @state.getValue()
 
     isTagSet = clashRoyaleData?.playerId
-    isMe = me?.id is user?.id or (not id and not username)
+    isOtherProfile = routeId or routeUsername
+    isMe = me?.id is user?.id or not user
     playerName = clashRoyaleData?.data?.name
 
     if isMe
@@ -106,30 +111,44 @@ module.exports = class ProfilePage
 
     path = if username then "/user/#{username}" else "/user/id/#{id}"
 
+    $button = if routeUsername or routeId then @$buttonBack else @$buttonMenu
+
     z '.p-profile', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
         title: if not isMe then clashRoyaleData?.data?.name else 'Profile'
-        $topLeftButton: if not isMe then @$buttonBack else @$buttonMenu
+        bgColor: if isOtherProfile \
+                 then colors.$tertiary700
+                 else colors.$primary500
+        $topLeftButton:
+          z $button,
+            color: if isOtherProfile \
+                   then colors.$primary500
+                   else colors.$tertiary900
         $topRightButton: z '.p-profile_top-right',
           if isTagSet
             z @$shareIcon,
               icon: 'share'
+              color: if isOtherProfile \
+                     then colors.$primary500
+                     else colors.$tertiary900
               onclick: =>
                 @isShareSheetVisible.onNext true
           if isMe and isTagSet
             z @$settingsIcon, {
               icon: 'settings'
-              color: colors.$tertiary900
+              color: if isOtherProfile \
+                     then colors.$primary500
+                     else colors.$tertiary900
               onclick: =>
                 @router.go '/editProfile'
               }
         isFlat: isTagSet
       }
       if clashRoyaleData and isTagSet
-        @$profile
+        z @$profile, {isOtherProfile}
       else if clashRoyaleData
         @$profileLanding
       else

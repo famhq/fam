@@ -29,6 +29,7 @@ Pages =
   EventPage: require './pages/event'
   EventsPage: require './pages/events'
   FacebookLoginPage: require './pages/facebook_login'
+  ForumSignaturePage: require './pages/forum_signature'
   GroupPage: require './pages/group'
   GroupChatPage: require './pages/group_chat'
   GroupMembersPage: require './pages/group_members'
@@ -51,6 +52,7 @@ Pages =
   AddDeckPage: require './pages/add_deck'
   DeckPage: require './pages/deck'
   DecksPage: require './pages/decks'
+  DecksNewPage: require './pages/decks_new'
   CardPage: require './pages/card'
   CardsPage: require './pages/cards'
   PlayersPage: require './pages/players'
@@ -162,11 +164,15 @@ module.exports = class App
     route '/event/:id/edit', 'EditEventPage'
     route '/thread/:id/reply', 'ThreadReplyPage'
 
+    route '/decksNew', 'DecksNewPage'
+
     if breakpoint is 'desktop'
       route ['/decks', '/thread/:id'], 'DecksPage'
     else
       route '/thread/:id', 'ThreadPage'
       route ['/decks'], 'DecksPage'
+
+    route '/forumSignature', 'ForumSignaturePage'
 
     route '/group/:id', 'GroupPage'
     route '/group/:id/chat', 'GroupChatPage'

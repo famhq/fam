@@ -3,8 +3,6 @@ Rx = require 'rx-lite'
 _map = require 'lodash/map'
 
 Dialog = require '../dialog'
-PrimaryInput = require '../primary_input'
-FlatButton = require '../flat_button'
 Card = require '../card'
 colors = require '../../colors'
 
@@ -45,8 +43,7 @@ module.exports = class CardPickerDialog
                     @onPickFn? card
                     @overlay$.onNext null
                 },
-                  z '.image', z $card, {width: 20}
-                  z '.name', card.name
+                  z '.image', z $card, {width: 50}
         cancelButton:
           text: 'cancel'
           onclick: =>
