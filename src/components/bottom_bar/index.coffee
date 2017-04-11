@@ -21,6 +21,12 @@ module.exports = class BottomBar
       }
       {
         $icon: new Icon()
+        icon: 'clan'
+        route: '/clan'
+        text: 'Clan'
+      }
+      {
+        $icon: new Icon()
         icon: 'decks'
         route: '/decks'
         text: 'Decks'
@@ -48,9 +54,9 @@ module.exports = class BottomBar
 
     z '.z-bottom-bar',
       _map @menuItems, ({$icon, icon, route, text}) =>
-        isSelected = currentPath?.indexOf(route) isnt -1 or (
+        isSelected = currentPath and (currentPath.indexOf(route) isnt -1 or (
           currentPath is '/' and route is '/profile'
-        )
+        ))
 
         z '.menu-item', {
           className: z.classKebab {isSelected}

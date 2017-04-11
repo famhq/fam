@@ -9,7 +9,7 @@ if window?
 
 module.exports = class PlayersFollowing
   constructor: ({@model, @router, @selectedProfileDialogUser}) ->
-    players = @model.userGameData.getMeFollowing()
+    players = @model.player.getMeFollowing()
 
     @$playerList = new PlayerList {
       @model
@@ -33,7 +33,7 @@ module.exports = class PlayersFollowing
               players\' list'
         else
           z @$playerList, {
-            onclick: ({userGameData}) =>
-              userId = userGameData?.verifiedUserId or userGameData?.userIds?[0]
+            onclick: ({player}) =>
+              userId = player?.verifiedUserId or player?.userIds?[0]
               @router.go "/user/id/#{userId}"
           }

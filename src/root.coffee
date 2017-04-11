@@ -96,6 +96,7 @@ init = ->
 
   onOnline = ->
     isOffline.onNext false
+    console.log 'online invalidate'
     model.exoid.invalidateAll()
   onOffline = ->
     isOffline.onNext true
@@ -210,6 +211,7 @@ init = ->
     Promise.resolve null)
   .then ->
     model.portal.call 'app.onResume', ->
+      console.log 'resume invalidate'
       model.exoid.invalidateAll()
       if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
         model.portal.call 'push.setBadgeNumber', {number: 0}

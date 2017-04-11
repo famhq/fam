@@ -1,5 +1,5 @@
-module.exports = class UserGameData
-  namespace: 'userGameData'
+module.exports = class Player
+  namespace: 'players'
 
   constructor: ({@auth}) -> null
 

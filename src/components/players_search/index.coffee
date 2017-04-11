@@ -36,9 +36,9 @@ module.exports = class PlayersSearch
 
     @model.signInDialog.openIfGuest me
     .then =>
-      @model.userGameData.search playerTag
-    .then (userGameData) =>
-      userId = userGameData?.verifiedUserId or userGameData?.userIds?[0]
+      @model.player.search playerTag
+    .then (player) =>
+      userId = player?.verifiedUserId or player?.userIds?[0]
       @router.go "/user/id/#{userId}"
     .then =>
       @state.set isLoading: false

@@ -84,6 +84,13 @@ module.exports = class Drawer
             iconName: 'profile'
           }
           {
+            path: '/clan'
+            title: 'Clan'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'clan'
+          }
+          {
             path: '/decks'
             title: 'Decks'
             $icon: new Icon()

@@ -24,9 +24,9 @@ module.exports = class EditProfile
 
     @playerTagValueStreams = new Rx.ReplaySubject 1
     currentPlayerTag = me.flatMapLatest ({id}) =>
-      @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
-      .map (userGameData) ->
-        userGameData.playerId
+      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      .map (player) ->
+        player.playerId
     @playerTagValueStreams.onNext currentPlayerTag
     @playerTagError = new Rx.BehaviorSubject null
 

@@ -23,7 +23,7 @@ module.exports = class VideosPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
 
-    @$cards = new Videos {@model, @router, sort: 'popular'}
+    @$videos = new Videos {@model, @router, sort: 'popular'}
 
     @state = z.state
       windowSize: @model.window.getSize()
@@ -33,7 +33,7 @@ module.exports = class VideosPage
   render: =>
     {windowSize} = @state.getValue()
 
-    z '.p-cards', {
+    z '.p-videos', {
       style:
         height: "#{windowSize.height}px"
     },
@@ -42,4 +42,4 @@ module.exports = class VideosPage
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }
-      @$cards
+      @$videos

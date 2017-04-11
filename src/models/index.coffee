@@ -11,7 +11,8 @@ Auth = require './auth'
 User = require './user'
 UserData = require './user_data'
 UserGroupData = require './user_group_data'
-UserGameData = require './user_game_data'
+Player = require './player'
+Clan = require './clan'
 Conversation = require './conversation'
 ClashRoyaleAPI = require './clash_royale_api'
 ClashRoyaleDeck = require './clash_royale_deck'
@@ -98,7 +99,8 @@ module.exports = class Model
     @user = new User {@auth, proxy, @exoid}
     @userData = new UserData {@auth}
     @userGroupData = new UserGroupData {@auth}
-    @userGameData = new UserGameData {@auth}
+    @player = new Player {@auth}
+    @clan = new Clan {@auth}
     @dynamicImage = new DynamicImage {@auth}
     @chatMessage = new ChatMessage {@auth, proxy, @exoid}
     @conversation = new Conversation {@auth}
@@ -130,10 +132,8 @@ module.exports = class Model
   wasCached: => @isFromCache
 
   getSerializationStream: =>
-    Rx.Observable.combineLatest [
-      @exoid.getCacheStream()
-    ], (results...) -> results
-    .map ([exoidCache]) ->
+    @exoid.getCacheStream()
+    .map (exoidCache) ->
       string = JSON.stringify({
         exoid: exoidCache
         # problem with this is clock skew

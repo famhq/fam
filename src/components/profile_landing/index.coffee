@@ -36,7 +36,7 @@ module.exports = class ProfileLanding
 
     @model.clashRoyaleAPI.refreshByPlayerTag playerTag
     .then =>
-      @model.userGameData.getByUserIdAndGameId me?.id, config.CLASH_ROYAL_ID
+      @model.player.getByUserIdAndGameId me?.id, config.CLASH_ROYAL_ID
       .take(1).toPromise()
     .then =>
       @state.set isLoading: false

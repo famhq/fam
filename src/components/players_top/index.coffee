@@ -15,7 +15,7 @@ module.exports = class PlayersTop
     @$playerList = new PlayerList {
       @model
       @selectedProfileDialogUser
-      players: @model.userGameData.getTop()
+      players: @model.player.getTop()
     }
 
   render: =>
@@ -32,8 +32,8 @@ module.exports = class PlayersTop
             placeholder: 'Find player...'
           }
         z @$playerList, {
-          onclick: ({userGameData}) =>
-            userId = userGameData?.verifiedUserId or userGameData?.userIds?[0]
+          onclick: ({player}) =>
+            userId = player?.verifiedUserId or player?.userIds?[0]
             @router.go "/user/id/#{userId}"
 
         }

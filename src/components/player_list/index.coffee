@@ -29,8 +29,8 @@ module.exports = class PlayerList
           onclick: =>
             if onclick
               onclick player
-            else
-              @selectedProfileDialogUser.onNext player
+            else if player?.user
+              @selectedProfileDialogUser.onNext player?.user
         },
           if player.rank
             z '.rank', "##{player.rank}"
@@ -40,11 +40,11 @@ module.exports = class PlayerList
                 user: player.user
                 bgColor: colors.$grey200
           z '.content',
-            z '.name', player.userGameData?.data?.name
+            z '.name', player.player?.data?.name
             z '.details',
-              z '.clan', player.userGameData?.data?.clan?.name
+              z '.clan', player.player?.data?.clan?.name
               z '.trophies',
-                FormatService.number player.userGameData?.data?.trophies
+                FormatService.number player.player?.data?.trophies
                 z '.icon',
                   z $trophyIcon,
                     icon: 'trophy'

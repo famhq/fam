@@ -89,7 +89,7 @@ module.exports = class ProfileInfo
       user: user
       me: @model.user.getMe()
       gameData: user.flatMapLatest ({id}) =>
-        @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+        @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
     }
 
   render: =>

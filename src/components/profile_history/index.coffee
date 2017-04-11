@@ -33,33 +33,39 @@ module.exports = class ProfileHistory
         # userDecks = _filter userDecks, ({isCurrentDeck}) ->
         #   not isCurrentDeck
         # _filter _map userDecks, (userDeck) ->
-        _map _takeRight(userDecks, userDecks?.length - 1), (userDeck) ->
-          {
-            userDeck: userDeck
-            $deck: new DeckCards {deck: userDeck?.deck}
-            $stats: new UserDeckStats {userDeck}
-          }
+        otherDecks = _takeRight(userDecks, userDecks?.length - 1)
+        _filter _map otherDecks, (userDeck) ->
+          if userDeck?.deck
+            {
+              userDeck: userDeck
+              $deck: new DeckCards {deck: userDeck?.deck}
+              $stats: new UserDeckStats {userDeck}
+            }
+          else
+            console.log 'missing deck', userDeck
+            null
     }
 
   render: =>
     {currentDeck, otherDecks} = @state.getValue()
 
     z '.z-profile-history',
-      z '.title',
-        'Current deck'
-      z '.deck',
-        z currentDeck?.$deck
-        z currentDeck?.$stats
+      z '.g-grid',
+        z '.title',
+          'Current deck'
+        z '.deck',
+          z currentDeck?.$deck
+          z currentDeck?.$stats
 
 
-      z '.divider'
+        z '.divider'
 
-      z '.title',
-        'Other decks'
-      if _isEmpty otherDecks
-        'No other decks found'
-      else
-        _map otherDecks, ({$deck, $stats}) ->
-          z '.deck',
-            z $deck
-            z $stats
+        z '.title',
+          'Other decks'
+        if _isEmpty otherDecks
+          'No other decks found'
+        else
+          _map otherDecks, ({$deck, $stats}) ->
+            z '.deck',
+              z $deck
+              z $stats

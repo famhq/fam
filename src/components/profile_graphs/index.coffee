@@ -37,26 +37,27 @@ module.exports = class ProfileGraphs
     {recordTypes} = @state.getValue()
 
     z '.z-profile-graphs',
-      _map recordTypes, ({recordType, graphSeries, $graph}) ->
-        z '.record-type',
-          z '.title', 'Trophies'
-          z $graph, {
-            labels: [recordType.name]
-            series: [graphSeries]
-            options:
-              lineSmooth: false
-              axisY:
-                onlyInteger: true
-                showGrid: true
-              axisX:
-                showLabel: false
-                showGrid: false
-          }
+      z '.g-grid',
+        _map recordTypes, ({recordType, graphSeries, $graph}) ->
+          z '.record-type',
+            z '.title', 'Trophies'
+            z $graph, {
+              labels: [recordType.name]
+              series: [graphSeries]
+              options:
+                lineSmooth: false
+                axisY:
+                  onlyInteger: true
+                  showGrid: true
+                axisX:
+                  showLabel: false
+                  showGrid: false
+            }
 
-      z '.ask',
-        'What else do you want us to track? Tell us in the community!'
-        z '.button',
-          z @$communityButton,
-            text: 'Go to community'
-            onclick: =>
-              @router.go '/community'
+        z '.ask',
+          'What else do you want us to track? Tell us in the community!'
+          z '.button',
+            z @$communityButton,
+              text: 'Go to community'
+              onclick: =>
+                @router.go '/community'

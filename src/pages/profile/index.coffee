@@ -44,9 +44,9 @@ module.exports = class ProfilePage
       username or id
 
     clashRoyaleData = user.flatMapLatest ({id}) =>
-      @model.userGameData.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
-      .map (userGameData) ->
-        return userGameData or {}
+      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      .map (player) ->
+        return player or {}
 
     @isShareSheetVisible = new Rx.BehaviorSubject false
 

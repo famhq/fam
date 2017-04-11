@@ -31,7 +31,7 @@ module.exports = class ProfileDialog
       me: me
       user: @selectedProfileDialogUser
       clashRoyaleData: @selectedProfileDialogUser.flatMapLatest (user) =>
-        @model.userGameData.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
+        @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
       group: group
       isFlagLoading: false
       isFlagged: false
