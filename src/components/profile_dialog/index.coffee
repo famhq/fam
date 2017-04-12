@@ -31,7 +31,10 @@ module.exports = class ProfileDialog
       me: me
       user: @selectedProfileDialogUser
       clashRoyaleData: @selectedProfileDialogUser.flatMapLatest (user) =>
-        @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
+        if user
+          @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
+        else
+          Rx.Observable.just null
       group: group
       isFlagLoading: false
       isFlagged: false
@@ -52,7 +55,6 @@ module.exports = class ProfileDialog
     isMe = user?.id is me?.id
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
-    console.log clashRoyaleData
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
       z @$dialog,

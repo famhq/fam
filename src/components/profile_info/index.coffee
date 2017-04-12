@@ -1,13 +1,16 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_take = require 'lodash/take'
 _startCase = require 'lodash/startCase'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
+moment = require 'moment'
 
 Icon = require '../icon'
 UiCard = require '../ui_card'
 RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
+SecondaryButton = require '../secondary_button'
 FormatService = require '../../services/format'
 config = require '../../config'
 colors = require '../../colors'
@@ -71,8 +74,10 @@ module.exports = class ProfileInfo
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
+    @$refreshIcon = new Icon()
     @$splitsInfoCard = new UiCard()
     @$followButton = new PrimaryButton()
+    @$moreDetailsButton = new SecondaryButton()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
@@ -85,15 +90,17 @@ module.exports = class ProfileInfo
 
     @state = z.state {
       isRequestNotificationCardVisible
+      hasUpdatedPlayer: false
+      isRefreshing: false
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
       user: user
       me: @model.user.getMe()
-      gameData: user.flatMapLatest ({id}) =>
+      player: user.flatMapLatest ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
     }
 
   render: =>
-    {gameData, isRequestNotificationCardVisible,
+    {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing
       isSplitsInfoCardVisible, user, me} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
@@ -103,73 +110,94 @@ module.exports = class ProfileInfo
       stats: [
         {
           name: 'Wins'
-          value: FormatService.number gameData?.data?.stats.wins
+          value: FormatService.number player?.data?.stats.wins
         }
         {
           name: 'Losses'
-          value: FormatService.number gameData?.data?.stats.losses
+          value: FormatService.number player?.data?.stats.losses
         }
         {
           name: 'Win rate'
-          value: getWinRateFromStats gameData?.data?.stats
+          value: getWinRateFromStats player?.data?.stats
         }
         {
           name: 'Current favorite card'
-          value: _startCase gameData?.data?.stats.favoriteCard
+          value: _startCase player?.data?.stats.favoriteCard
         }
         {
           name: 'Three crown wins'
-          value: FormatService.number gameData?.data?.stats.threeCrowns
+          value: FormatService.number player?.data?.stats.threeCrowns
         }
         {
           name: 'Cards found'
-          value: FormatService.number gameData?.data?.stats.cardsFound
+          value: FormatService.number player?.data?.stats.cardsFound
         }
         {
           name: 'Highest trophies'
-          value: FormatService.number gameData?.data?.stats.maxTrophies
+          value: FormatService.number player?.data?.stats.maxTrophies
         }
         {
           name: 'Total donations'
-          value: FormatService.number gameData?.data?.stats.totalDonations
+          value: FormatService.number player?.data?.stats.totalDonations
         }
       ]
-      ladder: getTypeStats gameData?.data?.splits?.ladder
-      grandChallenge: getTypeStats gameData?.data?.splits?.grandChallenge
-      classicChallenge: getTypeStats gameData?.data?.splits?.classicChallenge
+      ladder: getTypeStats player?.data?.splits?.ladder
+      grandChallenge: getTypeStats player?.data?.splits?.grandChallenge
+      classicChallenge: getTypeStats player?.data?.splits?.classicChallenge
 
     z '.z-profile-info',
       z '.header',
         z '.g-grid',
           z '.info',
             z '.left',
-              z '.name', gameData?.data?.name
-              z '.tag', "##{gameData?.playerId}"
-            if gameData?.data?.clan
+              z '.name', player?.data?.name
+              z '.tag', "##{player?.playerId}"
+            if player?.data?.clan
               z '.right',
-                z '.clan-name', gameData?.data?.clan.name
-                z '.clan-tag', "##{gameData?.data?.clan.tag}"
+                z '.clan-name', player?.data?.clan.name
+                z '.clan-tag', "##{player?.data?.clan.tag}"
           z '.g-cols',
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$trophyIcon,
                   icon: 'trophy'
                   color: colors.$secondary500
-              z '.text', gameData?.data?.trophies
+              z '.text', player?.data?.trophies
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$arenaIcon,
                   icon: 'castle'
                   color: colors.$secondary500
-              z '.text', "Arena #{gameData?.data?.arena?.number}"
-              if gameData?.data?.league
-                z '.text', gameData?.data?.league?.name
+              z '.text', "Arena #{player?.data?.arena?.number}"
+              if player?.data?.league
+                z '.text', player?.data?.league?.name
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$levelIcon,
                   icon: 'crown'
                   color: colors.$secondary500
-              z '.text', "Level #{gameData?.data?.level}"
+              z '.text', "Level #{player?.data?.level}"
+        z '.divider'
+        z '.g-grid',
+          z '.last-updated',
+            z '.time',
+              'Last updated '
+              moment(player?.lastUpdateTime).fromNowModified()
+            if player?.isUpdatable and not hasUpdatedPlayer and isMe
+              z '.refresh',
+                if isRefreshing
+                  '...'
+                else
+                  z @$refreshIcon,
+                    icon: 'refresh'
+                    isTouchTarget: false
+                    color: colors.$primary500
+                    onclick: =>
+                      tag = player?.playerId
+                      @state.set isRefreshing: true
+                      @model.clashRoyaleAPI.refreshByPlayerTag tag
+                      .then =>
+                        @state.set hasUpdatedPlayer: true, isRefreshing: false
 
           unless isMe
             z @$followButton,
@@ -184,6 +212,27 @@ module.exports = class ProfileInfo
           z '.card',
             z '.g-grid',
               z @$requestNotificationsCard
+
+        if player?.data?.chestCycle
+          z '.block',
+            z '.g-grid',
+              z '.title', 'Upcoming chests'
+              z '.chests', {
+                ontouchstart: (e) ->
+                  console.log 'ts'
+                  e?.stopPropagation()
+              },
+                _map _take(player?.data.chestCycle.chests, 10), (chest) ->
+                  z 'img.chest',
+                    src: "#{config.CDN_URL}/chests/#{chest}_chest.png"
+                    width: 90
+                    height: 90
+              z '.chests-button',
+                z @$moreDetailsButton,
+                  text: 'More details'
+                  onclick: =>
+                    @router.go "/user/id/#{user?.id}/chests"
+
         z '.block',
           _map metrics, (stats, key) =>
             z '.g-grid',

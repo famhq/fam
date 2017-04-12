@@ -1,0 +1,50 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-profile-chests
+  flex: 1
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+  padding: 16px
+
+  > .g-grid
+    > .title
+      font-subhead()
+      color: getColor('$primary500')
+      margin: 16px 0
+
+    > .chests
+      width: 100%
+      overflow-x: auto
+      -webkit-overflow-scrolling: touch
+      white-space: nowrap
+      margin-top: -16px
+
+      > .chest
+        display: inline-block
+
+    > .chests-until
+      display: flex
+      margin-top: -16px
+
+      > .chest
+        flex: 1
+        padding: 16px
+        max-width: 200px
+
+        > .image
+          width: 100%
+          background-size: 100%
+          padding-bottom: 100%
+
+        > .info
+          text-align: center
+          margin-top: 4px
+
+          > .name
+            font-caption1()
+
+          > .amount
+            font-title()
+            margin-top: 2px

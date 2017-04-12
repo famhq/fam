@@ -59,6 +59,7 @@ Pages =
   PlayersPage: require './pages/players'
   PlayersSearchPage: require './pages/players_search'
   ProfilePage: require './pages/profile'
+  ProfileChestsPage: require './pages/profile_chests'
   TosPage: require './pages/tos'
   PoliciesPage: require './pages/policies'
   PrivacyPage: require './pages/privacy'
@@ -211,6 +212,7 @@ module.exports = class App
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'
     ], 'ProfilePage'
+    route '/user/id/:id/chests', 'ProfileChestsPage'
     route '/editProfile', 'EditProfilePage'
     route '/*', 'FourOhFourPage'
     routes

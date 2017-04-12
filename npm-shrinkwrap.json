@@ -1285,7 +1285,7 @@
     "exoid": {
       "version": "0.1.7",
       "from": "git://github.com/claydotio/exoid.git",
-      "resolved": "git://github.com/claydotio/exoid.git#110716e5f41b53420c5d0a417fc7b46b1025c3f7",
+      "resolved": "git://github.com/claydotio/exoid.git#67306a1c613e42cce271d2e5c5860551d9e7481e",
       "dependencies": {
         "bluebird": {
           "version": "2.11.0",

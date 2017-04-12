@@ -4,6 +4,7 @@ moment = require 'moment'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'
+_defaults = require 'lodash/defaults'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
@@ -64,12 +65,12 @@ module.exports = class ConversationMessage
 
     onclick = =>
       unless isTextareaFocused
-        @selectedProfileDialogUser.onNext _.defaults {
+        @selectedProfileDialogUser.onNext _defaults {
           chatMessageId: id
         }, user
 
     oncontextmenu = =>
-      @selectedProfileDialogUser.onNext _.defaults {
+      @selectedProfileDialogUser.onNext _defaults {
         chatMessageId: id
       }, user
 
