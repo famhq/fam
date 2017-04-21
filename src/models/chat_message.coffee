@@ -37,6 +37,7 @@ module.exports = class ChatMessage
     options = {
       initialSortFn: ((items) -> _sortBy items, 'time')
       clientChangesStream: @clientChangesStream[conversationId]
+      isStreamed: true
     }
 
     @auth.stream "#{@namespace}.getAllByConversationId", {

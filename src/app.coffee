@@ -123,7 +123,7 @@ module.exports = class App
       installOverlayIsOpen: @model.installOverlay.isOpen()
       imageViewOverlayImageData: @model.imageViewOverlay.getImageData()
       hideDrawer: @requests.flatMapLatest (request) ->
-        hideDrawer = request.$page.hideDrawer
+        hideDrawer = request.$page?.hideDrawer
         if hideDrawer?.map
         then hideDrawer
         else Rx.Observable.just (hideDrawer or false)

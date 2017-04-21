@@ -1,8 +1,10 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
+_find = require 'lodash/find'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
+moment = require 'moment'
 
 Icon = require '../icon'
 UiCard = require '../ui_card'
@@ -15,12 +17,16 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class ProfileInfo
-  constructor: ({@model, @router, clan}) ->
+module.exports = class ClanInfo
+  constructor: (options) ->
+    {@model, @router, clan, @isClaimClanDialogVisible,
+      @isJoinGroupDialogVisible} = options
     @$trophyIcon = new Icon()
     @$donationsIcon = new Icon()
     @$membersIcon = new Icon()
+    @$refreshIcon = new Icon()
     @$splitsInfoCard = new UiCard()
+    @$claimButton = new PrimaryButton()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
@@ -31,17 +37,31 @@ module.exports = class ProfileInfo
       isVisible: isRequestNotificationCardVisible
     }
 
+    me = @model.user.getMe()
+
     @state = z.state {
       isRequestNotificationCardVisible
+      @isClaimClanDialogVisible
       # isSplitsInfoCardVisible: window? and not localStorage?['hideClanSplitsInfo']
-      me: @model.user.getMe()
+      me: me
+      hasUpdatedClan: false
+      isUpdatable: false
+      mePlayer: me.flatMapLatest ({id}) =>
+        @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       clan: clan
     }
 
   render: =>
-    {isSplitsInfoCardVisible, clan, me} = @state.getValue()
+    {isSplitsInfoCardVisible, clan, mePlayer, me,
+      hasUpdatedClan, isRefreshing} = @state.getValue()
 
     isMe = clan?.id and clan?.id is me?.id
+
+    mePlayerIsVerified = mePlayer?.verifiedUserId is me?.id
+    clanPlayer = _find clan?.players, {playerId: mePlayer?.playerId}
+    isLeader = clanPlayer?.role in ['coLeader', 'leader']
+
+    isClaimed = clan?.groupId
 
     metrics =
       stats: [
@@ -64,8 +84,6 @@ module.exports = class ProfileInfo
       ]
 
     memberCount = clan?.players?.length
-
-    console.log clan
 
     z '.z-clan-info',
       z '.header',
@@ -100,6 +118,50 @@ module.exports = class ProfileInfo
                   color: colors.$secondary500
               z '.text', "#{memberCount} / 50"
 
+        z '.divider'
+        z '.g-grid',
+          z '.last-updated',
+            z '.time',
+              'Last updated '
+              moment(clan?.lastUpdateTime).fromNowModified()
+            if clan?.isUpdatable and not hasUpdatedClan and isLeader
+              z '.refresh',
+                if isRefreshing
+                  '...'
+                else
+                  z @$refreshIcon,
+                    icon: 'refresh'
+                    isTouchTarget: false
+                    color: colors.$primary500
+                    onclick: =>
+                      clanId = clan?.clanId
+                      @state.set isRefreshing: true
+                      @model.clashRoyaleAPI.refreshByClanId clanId
+                      .then =>
+                        @state.set hasUpdatedClan: true, isRefreshing: false
+
+          if isLeader and not isClaimed
+            z '.claim-button',
+              z @$claimButton,
+                text: 'Claim clan'
+                onclick: =>
+                  @model.signInDialog.openIfGuest me
+                  .then =>
+                    @isClaimClanDialogVisible.onNext true
+          else if mePlayerIsVerified and clanPlayer and isClaimed
+            z '.claim-button',
+              z @$claimButton,
+                text: 'Clan chat'
+                onclick: =>
+                  @router.go "/group/#{clan.groupId}/chat"
+          else if clanPlayer and isClaimed
+            z '.claim-button',
+              z @$claimButton,
+                text: 'Verify self'
+                onclick: =>
+                  @model.signInDialog.openIfGuest me
+                  .then =>
+                    @isJoinGroupDialogVisible.onNext true
       z '.content',
         z '.block',
           z '.g-grid',

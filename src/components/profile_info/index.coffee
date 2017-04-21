@@ -145,6 +145,10 @@ module.exports = class ProfileInfo
       grandChallenge: getTypeStats player?.data?.splits?.grandChallenge
       classicChallenge: getTypeStats player?.data?.splits?.classicChallenge
 
+    lastUpdateTime = if player?.lastUpdateTime > player?.lastMatchesUpdateTime \
+                     then player?.lastUpdateTime
+                     else player?.lastMatchesUpdateTime
+
     z '.z-profile-info',
       z '.header',
         z '.g-grid',
@@ -182,7 +186,7 @@ module.exports = class ProfileInfo
           z '.last-updated',
             z '.time',
               'Last updated '
-              moment(player?.lastUpdateTime).fromNowModified()
+              moment(lastUpdateTime).fromNowModified()
             if player?.isUpdatable and not hasUpdatedPlayer and isMe
               z '.refresh',
                 if isRefreshing
@@ -200,15 +204,16 @@ module.exports = class ProfileInfo
                         @state.set hasUpdatedPlayer: true, isRefreshing: false
 
           unless isMe
-            z @$followButton,
-              text: if isFollowing then 'Unfollow' else 'Follow'
-              onclick: =>
-                if isFollowing
-                  @model.userData.unfollowByUserId user?.id
-                else
-                  @model.userData.followByUserId user?.id
+            z '.follow-button',
+              z @$followButton,
+                text: if isFollowing then 'Unfollow' else 'Follow'
+                onclick: =>
+                  if isFollowing
+                    @model.userData.unfollowByUserId user?.id
+                  else
+                    @model.userData.followByUserId user?.id
       z '.content',
-        if isRequestNotificationCardVisible
+        if isRequestNotificationCardVisible and isMe
           z '.card',
             z '.g-grid',
               z @$requestNotificationsCard
@@ -219,7 +224,6 @@ module.exports = class ProfileInfo
               z '.title', 'Upcoming chests'
               z '.chests', {
                 ontouchstart: (e) ->
-                  console.log 'ts'
                   e?.stopPropagation()
               },
                 _map _take(player?.data.chestCycle.chests, 10), (chest) ->

@@ -17,7 +17,7 @@ module.exports = class SignInDialog
   openIfGuest: (user) =>
     new Promise (resolve, reject) =>
       if user?.isMember
-        resolve()
+        resolve true
       else
         @open()
         @onLoggedIn resolve

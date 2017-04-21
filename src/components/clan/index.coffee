@@ -6,6 +6,8 @@ Icon = require '../icon'
 ClanInfo = require '../clan_info'
 ClanMembers = require '../clan_members'
 ClanGraphs = require '../clan_graphs'
+ClaimClanDialog = require '../claim_clan_dialog'
+JoinGroupDialog = require '../join_group_dialog'
 ProfileDialog = require '../profile_dialog'
 colors = require '../../colors'
 
@@ -27,7 +29,25 @@ module.exports = class Clan
       @model, @router, selectedProfileDialogUser
     }
 
-    @$clanInfo = new ClanInfo {@model, @router, clan}
+    isClaimClanDialogVisible = new Rx.BehaviorSubject false
+
+    @$claimClanDialog = new ClaimClanDialog {
+      @model, @router
+      isVisible: isClaimClanDialogVisible
+      clan
+    }
+
+    isJoinGroupDialogVisible = new Rx.BehaviorSubject false
+
+    @$joinGroupDialog = new JoinGroupDialog {
+      @model, @router
+      isVisible: isJoinGroupDialogVisible
+      clan
+    }
+
+    @$clanInfo = new ClanInfo {
+      @model, @router, clan, isClaimClanDialogVisible, isJoinGroupDialogVisible
+    }
     @$clanMembers = new ClanMembers {
       @model, @router, clan, selectedProfileDialogUser
     }
@@ -35,10 +55,13 @@ module.exports = class Clan
 
     @state = z.state
       me: me
+      isClaimClanDialogVisible: isClaimClanDialogVisible
+      isJoinGroupDialogVisible: isJoinGroupDialogVisible
       selectedProfileDialogUser: selectedProfileDialogUser
 
   render: ({isOtherClan} = {}) =>
-    {me, selectedProfileDialogUser} = @state.getValue()
+    {me, selectedProfileDialogUser, isClaimClanDialogVisible,
+      isJoinGroupDialogVisible} = @state.getValue()
 
     z '.z-clan',
       z @$tabs,
@@ -67,3 +90,9 @@ module.exports = class Clan
         ]
       if selectedProfileDialogUser
         @$selectedProfileDialog
+
+      if isClaimClanDialogVisible
+        @$claimClanDialog
+
+      if isJoinGroupDialogVisible
+        @$joinGroupDialog

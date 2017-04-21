@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_shuffle = require 'lodash/shuffle'
 Rx = require 'rx-lite'
 supportsWebP = window? and require 'supports-webp'
 
@@ -35,7 +36,7 @@ module.exports = class ConversationInputGifs
         }
         search.take(1).subscribe =>
           @state.set isLoadingGifs: false
-        search
+        search.map (results) -> _shuffle results?.data
       else
         Rx.Observable.just null
 
@@ -65,7 +66,7 @@ module.exports = class ConversationInputGifs
         if isLoadingGifs
           z @$spinner, {hasTopMargin: false}
         else
-          _map gifs?.data, (gif) =>
+          _map gifs, (gif) =>
             fixedHeightImg = gif.images.fixed_height
             height = 100
             width = fixedHeightImg.width / fixedHeightImg.height * height

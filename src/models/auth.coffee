@@ -37,6 +37,12 @@ module.exports = class Auth
         "#{config.AUTH_COOKIE}": accessToken
       }, currentCookies
 
+  logout: =>
+    @setAccessToken ''
+    @exoid.call 'auth.login'
+    .then ({accessToken}) =>
+      @setAccessToken accessToken
+
   join: ({email, username, password} = {}) =>
     @exoid.call 'auth.join', {email, username, password}
     .then ({username, accessToken}) =>
@@ -73,6 +79,7 @@ module.exports = class Auth
   stream: (path, body, options = {}) =>
     options = _pick options, [
       'isErrorable', 'clientChangesStream', 'ignoreCache', 'initialSortFn'
+      'isStreamed'
     ]
     @waitValidAuthCookie
     .flatMapLatest =>

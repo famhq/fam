@@ -12,13 +12,19 @@
     width: 100%
     box-sizing: border-box
     background-color: getColor('$tertiary700')
-    padding: 16px
+
+    > .divider
+      width: 100%
+      height: 1px
+      background: getColor('$white12')
+      margin: 0
 
     > .g-grid
       > .info
         display: flex
         align-items: flex-end
         margin-bottom: 8px
+        padding: 16px
 
         > .left
           > .name
@@ -46,6 +52,20 @@
             font-title()
             text-align: center
 
+      > .last-updated
+        padding: 8px 16px
+        display: flex
+        align-items: center
+
+        > .time
+          font-caption2()
+
+        > .refresh
+          margin-left: auto
+
+      > .claim-button
+        padding: 0 16px 16px 16px
+
   > .content
     padding: 0 16px
 
@@ -60,6 +80,7 @@
 
     > .block
       > .g-grid
+
         > .description
           font-body1()
           margin: 16px 0

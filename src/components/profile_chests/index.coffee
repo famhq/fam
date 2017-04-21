@@ -19,7 +19,6 @@ module.exports = class ProfileChests
   render: =>
     {player, me} = @state.getValue()
 
-    console.log player
     z '.z-profile-chests',
       z '.g-grid',
         z '.title', 'Upcoming chests'
@@ -28,11 +27,14 @@ module.exports = class ProfileChests
             console.log 'ts'
             e?.stopPropagation()
         },
-          _map player?.data.chestCycle.chests, (chest) ->
-            z 'img.chest',
-              src: "#{config.CDN_URL}/chests/#{chest}_chest.png"
-              width: 90
-              height: 90
+          _map player?.data.chestCycle.chests, (chest, i) ->
+            z '.chest',
+              z 'img',
+                src: "#{config.CDN_URL}/chests/#{chest}_chest.png"
+                width: 90
+                height: 90
+              z '.count',
+                if i is 0 then 'Next' else "+#{i + 1}"
         z '.title', 'Chests until'
         z '.chests-until',
           z '.chest',
@@ -45,22 +47,24 @@ module.exports = class ProfileChests
               z '.count',
                 "+#{player?.data.chestCycle.countUntil.superMagical}"
 
-          z '.chest',
-            z '.image',
-              style:
-                backgroundImage:
-                  "url(#{config.CDN_URL}/chests/legendary_chest.png)"
-            z '.info',
-              z '.name', 'Legendary'
-              z '.count',
-                "+#{player?.data.chestCycle.countUntil.legendary}"
+          if player?.data.chestCycle.countUntil.legendary
+            z '.chest',
+              z '.image',
+                style:
+                  backgroundImage:
+                    "url(#{config.CDN_URL}/chests/legendary_chest.png)"
+              z '.info',
+                z '.name', 'Legendary'
+                z '.count',
+                  "+#{player?.data.chestCycle.countUntil.legendary}"
 
-          z '.chest',
-            z '.image',
-              style:
-                backgroundImage:
-                  "url(#{config.CDN_URL}/chests/epic_chest.png)"
-            z '.info',
-              z '.name', 'Epic'
-              z '.count',
-                "+#{player?.data.chestCycle.countUntil.epic}"
+          if player?.data.chestCycle.countUntil.epic
+            z '.chest',
+              z '.image',
+                style:
+                  backgroundImage:
+                    "url(#{config.CDN_URL}/chests/epic_chest.png)"
+              z '.info',
+                z '.name', 'Epic'
+                z '.count',
+                  "+#{player?.data.chestCycle.countUntil.epic}"

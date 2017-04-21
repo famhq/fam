@@ -1174,14 +1174,18 @@
       }
     },
     "engine.io-client": {
-      "version": "1.8.2",
-      "from": "engine.io-client@1.8.2",
-      "resolved": "https://registry.npmjs.org/engine.io-client/-/engine.io-client-1.8.2.tgz",
+      "version": "1.8.3",
+      "from": "engine.io-client@1.8.3",
+      "resolved": "https://registry.npmjs.org/engine.io-client/-/engine.io-client-1.8.3.tgz",
       "dependencies": {
         "debug": {
           "version": "2.3.3",
-          "from": "debug@2.3.3",
-          "resolved": "https://registry.npmjs.org/debug/-/debug-2.3.3.tgz"
+          "from": "debug@2.3.3"
+        },
+        "ws": {
+          "version": "1.1.2",
+          "from": "ws@1.1.2",
+          "resolved": "https://registry.npmjs.org/ws/-/ws-1.1.2.tgz"
         }
       }
     },
@@ -1285,7 +1289,7 @@
     "exoid": {
       "version": "0.1.7",
       "from": "git://github.com/claydotio/exoid.git",
-      "resolved": "git://github.com/claydotio/exoid.git#67306a1c613e42cce271d2e5c5860551d9e7481e",
+      "resolved": "git://github.com/claydotio/exoid.git#4096ab7d92a032f4fdad4d3d3d4ceca9fa26ca35",
       "dependencies": {
         "bluebird": {
           "version": "2.11.0",
@@ -4027,10 +4031,20 @@
           "from": "debug@2.3.3",
           "resolved": "https://registry.npmjs.org/debug/-/debug-2.3.3.tgz"
         },
+        "engine.io-client": {
+          "version": "1.8.2",
+          "from": "engine.io-client@1.8.2",
+          "resolved": "https://registry.npmjs.org/engine.io-client/-/engine.io-client-1.8.2.tgz"
+        },
         "object-assign": {
           "version": "4.1.0",
           "from": "object-assign@4.1.0",
           "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.0.tgz"
+        },
+        "socket.io-client": {
+          "version": "1.7.2",
+          "from": "socket.io-client@1.7.2",
+          "resolved": "https://registry.npmjs.org/socket.io-client/-/socket.io-client-1.7.2.tgz"
         }
       }
     },
@@ -4047,9 +4061,9 @@
       }
     },
     "socket.io-client": {
-      "version": "1.7.2",
-      "from": "socket.io-client@>=1.5.1 <2.0.0",
-      "resolved": "https://registry.npmjs.org/socket.io-client/-/socket.io-client-1.7.2.tgz",
+      "version": "1.7.3",
+      "from": "socket.io-client@latest",
+      "resolved": "https://registry.npmjs.org/socket.io-client/-/socket.io-client-1.7.3.tgz",
       "dependencies": {
         "debug": {
           "version": "2.3.3",

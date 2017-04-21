@@ -12,5 +12,15 @@ module.exports = class Clan
   # getMeFollowing: =>
   #   @auth.stream "#{@namespace}.getMeFollowing", {}
   #
-  # search: (playerId) =>
-  #   @auth.call "#{@namespace}.search", {playerId}
+  claimById: (id) =>
+    @auth.call "#{@namespace}.claimById", {id}
+
+  createGroupById: (id, {groupName, clanPassword}) =>
+    @auth.call "#{@namespace}.createGroupById", {id, groupName, clanPassword}, {
+      invalidateAll: true
+    }
+
+  joinById: (id, {clanPassword}) =>
+    @auth.call "#{@namespace}.joinById", {id, clanPassword}, {
+      invalidateAll: true
+    }

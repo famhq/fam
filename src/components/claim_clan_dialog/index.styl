@@ -1,0 +1,33 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-claim-clan-dialog_dialog
+  display: block
+
+  > .content
+
+    > .error
+      font-title()
+      color: getColor('$primary500')
+      margin-bottom: 16px
+
+    > .text
+      font-body1()
+
+    > .code
+      font-h1()
+      background: getColor('$tertiary900')
+      color: getColor('$white')
+      text-align: center
+      padding: 14px
+      margin: 16px 0
+
+    > .unlock
+      font-body1()
+      display: flex
+      align-items: center
+      margin-top: 16px
+
+      > .icon
+        margin-right: 16px

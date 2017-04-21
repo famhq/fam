@@ -3,7 +3,12 @@ module.exports = class ClashRoyaleAPI
 
   constructor: ({@auth}) -> null
 
-  refreshByPlayerTag: (playerTag) =>
-    @auth.call "#{@namespace}.refreshByPlayerTag", {playerTag}, {
+  refreshByPlayerTag: (playerTag, {isUpdate} = {}) =>
+    @auth.call "#{@namespace}.refreshByPlayerTag", {playerTag, isUpdate}, {
+      invalidateAll: true
+    }
+
+  refreshByClanId: (clanId, {isUpdate} = {}) =>
+    @auth.call "#{@namespace}.refreshByClanId", {clanId, isUpdate}, {
       invalidateAll: true
     }

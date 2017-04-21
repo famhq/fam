@@ -22,7 +22,7 @@ module.exports = class ProfileHistory
     @state = z.state {
       currentDeck: userDecks.map (userDecks) ->
         # userDeck = _find userDecks, {isCurrentDeck: true}
-        userDeck = userDecks[0]
+        userDeck = userDecks?[0]
         if userDeck?.deck
           {
             userDeck: userDeck

@@ -4,19 +4,20 @@ config = require '../config'
 
 class PushService
   init: ({model}) ->
-    model.portal.call 'push.registerAction', {
-      action: 'reply'
-    }, (reply) ->
+    onReply = (reply) ->
       model.chatMessage.create {
         body: reply.additionalData.inlineReply
         conversationId: reply.additionalData.data.conversationId
       }
+    model.portal.call 'push.registerAction', {
+      action: 'reply'
+    }, onReply
 
   register: ({model, isAlwaysCalled}) ->
     model.portal.call 'push.register'
     .then ({token, sourceType} = {}) ->
       if token?
-        if not isAlwaysCalled or localStorage?['isPushTokenStored']
+        if not isAlwaysCalled or not localStorage?['isPushTokenStored']
           sourceType ?= if Environment.isAndroid() then 'android' else 'ios'
           model.pushToken.create {token, sourceType}
           localStorage?['isPushTokenStored'] = 1

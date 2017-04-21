@@ -6,6 +6,7 @@ Icon = require '../icon'
 ActionBar = require '../action_bar'
 UploadOverlay = require '../upload_overlay'
 PrimaryButton = require '../primary_button'
+SecondaryButton = require '../secondary_button'
 PrimaryInput = require '../primary_input'
 colors = require '../../colors'
 config = require '../../config'
@@ -36,7 +37,8 @@ module.exports = class EditProfile
     @$avatarButton = new PrimaryButton()
     @$uploadOverlay = new UploadOverlay {@model}
 
-    @$forumSigButton = new PrimaryButton()
+    @$forumSigButton = new SecondaryButton()
+    @$logoutButton = new SecondaryButton()
 
     @$usernameInput = new PrimaryInput
       valueStreams: @usernameValueStreams
@@ -73,7 +75,7 @@ module.exports = class EditProfile
       Promise.resolve null)
     .then =>
       if playerTag isnt currentPlayerTag
-        @model.clashRoyaleAPI.refreshByPlayerTag playerTag
+        @model.clashRoyaleAPI.refreshByPlayerTag playerTag, {isUpdate: true}
     .then =>
       if avatarImage
         @upload avatarImage
@@ -135,3 +137,9 @@ module.exports = class EditProfile
           text: 'Create forum signature'
           onclick: =>
             @router.go '/forumSignature'
+
+        z @$logoutButton,
+          text: 'Logout'
+          onclick: =>
+            @model.auth.logout()
+            @router.go '/'

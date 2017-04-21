@@ -87,7 +87,7 @@
     "rx-lite": "^4.0.8",
     "setimmediate": "^1.0.5",
     "smoothscroll-polyfill": "^0.3.4",
-    "socket.io-client": "^1.5.1",
+    "socket.io-client": "^1.7.3",
     "stacktrace-js": "^1.0.1",
     "supports-webp": "^1.0.3",
     "transition-event": "^1.0.0",

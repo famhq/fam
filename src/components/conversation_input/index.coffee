@@ -53,6 +53,7 @@ module.exports = class ConversationInput
       stickers: {
         $icon: new Icon {hasRipple: true}
         icon: 'stickers'
+        requireVerified: true
         $el: new ConversationInputStickers {
           onPost: @post
           @message
@@ -61,12 +62,14 @@ module.exports = class ConversationInput
       image: {
         $icon: new Icon {hasRipple: true}
         icon: 'image'
+        requireVerified: true
         onclick: -> null
         $uploadOverlay: new UploadOverlay {@model}
       }
       gifs: {
         $icon: new Icon {hasRipple: true}
         icon: 'gifs'
+        requireVerified: true
         $el: new ConversationInputGifs {
           onPost: @post
           @message
@@ -75,26 +78,34 @@ module.exports = class ConversationInput
         }
       }
 
+    me = @model.user.getMe()
+
     @state = z.state
       currentPanel: @currentPanel
-      me: @model.user.getMe()
+      me: me
+      mePlayer: me.flatMapLatest ({id}) =>
+        @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
   post: =>
     {me} = @state.getValue()
 
-    @model.signInDialog.openIfGuest me
-    .then =>
-      # SUPER HACK:
-      # stream doesn't update while cache is being invalidated, for whatever
-      # reason, so this waits until invalidation for login is ~done
-      setTimeout =>
-        @onPost()
-        @message.onNext ''
-        @hasText.onNext false
-      , 500
+    post = =>
+      @onPost()
+      @message.onNext ''
+      @hasText.onNext false
+
+    if me?.isMember
+      post()
+    else
+      @model.signInDialog.openIfGuest me
+      .then ->
+        # SUPER HACK:
+        # stream doesn't update while cache is being invalidated, for whatever
+        # reason, so this waits until invalidation for login is ~done
+        setTimeout post, 500
 
   render: =>
-    {currentPanel} = @state.getValue()
+    {currentPanel, mePlayer} = @state.getValue()
 
     z '.z-conversation-input', {
       className: z.classKebab {"is-#{currentPanel}-panel": true}
@@ -112,7 +123,8 @@ module.exports = class ConversationInput
           className: z.classKebab {isVisible: true}
         },
           [
-            _map @panels, ({$icon, icon, onclick, $uploadOverlay}, panel) =>
+            _map @panels, (options, panel) =>
+              {$icon, icon, onclick, $uploadOverlay, requireVerified} = options
               z '.icon',
                 z $icon, {
                   onclick: onclick or =>

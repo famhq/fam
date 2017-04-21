@@ -38,4 +38,4 @@ while read -d $'\0' -r file; do
   done < <(grep -o "process\.env\.[A-Z0-9_]\+" $file | uniq)
 done < <(find $paths_dist -maxdepth 1 -iname '*.js' -print0)
 
-./node_modules/coffee-script/bin/coffee ./bin/server.coffee
+./node_modules/coffee-script/bin/coffee ./bin/starfire_server.coffee

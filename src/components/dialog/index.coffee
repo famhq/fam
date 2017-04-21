@@ -14,7 +14,8 @@ module.exports = class Dialog
     @$cancelButton = new FlatButton()
     @$submitButton = new FlatButton()
 
-  render: ({$content, cancelButton, submitButton, isVanilla, onLeave}) =>
+  render: (props) =>
+    {$content, $title, cancelButton, submitButton, isVanilla, onLeave} = props
     $content ?= ''
     onLeave ?= (-> null)
 
@@ -24,6 +25,9 @@ module.exports = class Dialog
 
       z '.dialog',
         z '.content',
+          if $title
+            z '.title',
+              $title
           $content
         if cancelButton or submitButton
           z '.actions',

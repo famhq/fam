@@ -17,6 +17,7 @@ module.exports = class PlayerList
           {
             $avatar: new Avatar()
             $trophyIcon: new Icon()
+            $verifiedIcon: new Icon()
             player: player
           }
 
@@ -24,13 +25,13 @@ module.exports = class PlayerList
     {players} = @state.getValue()
 
     z '.z-player-list',
-      _map players, ({$avatar, $trophyIcon, player}) =>
+      _map players, ({$avatar, $trophyIcon, $verifiedIcon, player}) =>
         z '.player', {
           onclick: =>
             if onclick
               onclick player
-            else if player?.user
-              @selectedProfileDialogUser.onNext player?.user
+            else if player.player?.verifiedUser
+              @selectedProfileDialogUser.onNext player.player?.verifiedUser
         },
           if player.rank
             z '.rank', "##{player.rank}"
@@ -40,7 +41,15 @@ module.exports = class PlayerList
                 user: player.user
                 bgColor: colors.$grey200
           z '.content',
-            z '.name', player.player?.data?.name
+            z '.name',
+              player.player?.data?.name
+              if player.player?.verifiedUserId
+                z '.verified',
+                  z $verifiedIcon,
+                    icon: 'verified'
+                    color: colors.$secondary500
+                    isTouchTarget: false
+                    size: '14px'
             z '.details',
               z '.clan', player.player?.data?.clan?.name
               z '.trophies',

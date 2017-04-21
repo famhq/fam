@@ -205,7 +205,7 @@ init = ->
   model.portal.call 'orientation.onChange', app.onResize
 
   PushService.init {model}
-  (if Environment.isGameApp config.GAME_KEY
+  (if Environment.isGameApp(config.GAME_KEY)
     PushService.register {model, isAlwaysCalled: true}
   else
     Promise.resolve null)
