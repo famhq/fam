@@ -41,8 +41,8 @@ module.exports = class ProfileLanding
     .then =>
       @state.set isLoading: false
     .catch (err) =>
-      console.log err
-      @playerTagError.onNext 'Hmmm, we can\'t find that tag!'
+      console.log err?.info
+      @playerTagError.onNext  err?.info or 'Hmmm, we can\'t find that tag!'
       @state.set isLoading: false
 
   render: =>
@@ -52,6 +52,8 @@ module.exports = class ProfileLanding
       z '.g-grid',
         z '.image'
         z '.description',
+          z 'p',
+            z 'strong', 'The amazing WithZack posted a video about us, so our servers are getting pounded. Sorry if it\'s slow for you now - check back soon!'
           'Enter your player ID tag to start automatically tracking your wins,
           losses, donations, and more'
         z 'form.form',

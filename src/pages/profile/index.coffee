@@ -152,7 +152,10 @@ module.exports = class ProfilePage
       else if clashRoyaleData
         @$profileLanding
       else
-        @$spinner
+        z 'div', {key: 'ignore-this1', style: 'margin: auto'},
+          z 'p', {key: 'ignore-this2', style: 'text-align': 'center', padding: '0 16px'},
+            'The amazing WithZack posted a video about us, so our servers are getting pounded. Sorry if it\'s slow for you now - check back soon!'
+          @$spinner
 
       @$bottomBar
 
