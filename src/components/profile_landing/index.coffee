@@ -52,8 +52,6 @@ module.exports = class ProfileLanding
       z '.g-grid',
         z '.image'
         z '.description',
-          z 'p',
-            z 'strong', 'The amazing WithZack posted a video about us, so our servers are getting pounded. Sorry if it\'s slow for you now - check back soon!'
           'Enter your player ID tag to start automatically tracking your wins,
           losses, donations, and more'
         z 'form.form',

@@ -8,6 +8,7 @@ _isEmpty = require 'lodash/isEmpty'
 FormatService = require '../../services/format'
 DeckCards = require '../deck_cards'
 UserDeckStats = require '../user_deck_stats'
+UiCard = require '../ui_card'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -19,7 +20,11 @@ module.exports = class ProfileHistory
     userDecks = user.flatMapLatest ({id}) =>
       @model.clashRoyaleUserDeck.getAllByUserId id
 
+    @$migrateCard = new UiCard()
+
     @state = z.state {
+      isImporting: false
+      me: @model.user.getMe()
       currentDeck: userDecks.map (userDecks) ->
         # userDeck = _find userDecks, {isCurrentDeck: true}
         userDeck = userDecks?[0]
@@ -47,7 +52,7 @@ module.exports = class ProfileHistory
     }
 
   render: =>
-    {currentDeck, otherDecks} = @state.getValue()
+    {me, currentDeck, otherDecks, isImporting} = @state.getValue()
 
     z '.z-profile-history',
       z '.g-grid',
@@ -56,7 +61,6 @@ module.exports = class ProfileHistory
         z '.deck',
           z currentDeck?.$deck
           z currentDeck?.$stats
-
 
         z '.divider'
 
@@ -69,3 +73,18 @@ module.exports = class ProfileHistory
             z '.deck',
               z $deck
               z $stats
+
+        # TODO: rm whenever
+        if not localStorage?['hasImported'] and new Date(me?.joinTime) < Date.now() - 3600 * 24
+          z '.migrate',
+            z @$migrateCard,
+              text: 'We moved decks to a new database to improve server performance.
+                    Do you want to import your old decks?'
+              submit:
+                text: if isImporting then 'importing...' else 'import'
+                onclick: =>
+                  @state.set isImporting: true
+                  @model.clashRoyaleUserDeck.import()
+                  .then =>
+                    localStorage?['hasImported'] = '1'
+                    @state.set isImporting: false

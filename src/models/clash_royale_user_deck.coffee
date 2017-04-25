@@ -3,6 +3,10 @@ module.exports = class ClashRoyaleUserDeck
 
   constructor: ({@auth}) -> null
 
+  # TODO: rm
+  import: =>
+    @auth.call "#{@namespace}.importAll", {invalidateAll: true}
+
   getAll: ({sort, filter} = {}) =>
     @auth.stream "#{@namespace}.getAll", {sort, filter}
 
