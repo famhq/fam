@@ -118,7 +118,9 @@ module.exports = class ProfilePage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: if not isMe then clashRoyaleData?.data?.name else 'Profile'
+        title: if not isMe \
+               then clashRoyaleData?.data?.name
+               else @model.l.get 'profilePage.title'
         bgColor: if isOtherProfile \
                  then colors.$tertiary700
                  else colors.$primary500

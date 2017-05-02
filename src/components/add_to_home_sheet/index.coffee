@@ -13,9 +13,8 @@ module.exports = class AddToHomeSheet
         message: message
         icon: 'home'
         submitButton:
-          text: 'Add to home'
+          text: @model.l.get 'addToHomeSheet.submitButton'
           onclick: =>
-            console.log '123', @model.portal.call
             @model.portal.call 'app.install'
             @isVisible.onNext false
       }

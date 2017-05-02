@@ -14,34 +14,34 @@ if window?
 module.exports = class GroupManageMemberPage
   hideDrawer: true
 
-  constructor: ({model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) ->
-      model.group.getById route.params.id
+  constructor: ({@model, requests, @router, serverData}) ->
+    group = requests.flatMapLatest ({route}) =>
+      @model.group.getById route.params.id
 
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Group Members'
-        description: 'Group Members'
+        title: @model.l.get 'groupMembersPage.title'
+        description: @model.l.get 'groupMembersPage.title'
       }
     })
 
     selectedProfileDialogUser = new Rx.BehaviorSubject null
 
-    @$appBar = new AppBar {model}
-    @$buttonBack = new ButtonBack {model, @router}
+    @$appBar = new AppBar {@model}
+    @$buttonBack = new ButtonBack {@model, @router}
     @$groupMembers = new GroupMembers {
-      model, @router, serverData, group, selectedProfileDialogUser
+      @model, @router, serverData, group, selectedProfileDialogUser
     }
 
     @$profileDialog = new ProfileDialog {
-      model, @router, group, selectedProfileDialogUser
+      @model, @router, group, selectedProfileDialogUser
     }
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
       selectedProfileDialogUser: selectedProfileDialogUser
 
   renderHead: => @$head
@@ -54,7 +54,7 @@ module.exports = class GroupManageMemberPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Group Members'
+        title: @model.l.get 'groupMembersPage.title'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}

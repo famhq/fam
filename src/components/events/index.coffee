@@ -50,9 +50,9 @@ module.exports = class Events extends Base
                 isTouchTarget: false
 
             if filter is 'mine'
-              'You haven\'t joined any events.'
+              @model.l.get 'events.noEventsMine'
             else
-              'There are currently no public events scheduled. Check back soon!'
+              @model.l.get 'events.noEvents'
         else if eventsByDate
           _map eventsByDate, (events, dateStr) =>
             date = moment(dateStr)

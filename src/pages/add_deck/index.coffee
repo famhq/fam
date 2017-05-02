@@ -14,8 +14,8 @@ module.exports = class AddDeckPage
       requests
       serverData
       meta: {
-        title: 'New Deck'
-        description: 'New Deck'
+        title: model.l.get 'addDeckPage.title'
+        description: model.l.get 'addDeckPage.title'
       }
     })
     @$addDeck = new AddDeck {model, @router}

@@ -14,39 +14,39 @@ if window?
   require './index.styl'
 
 module.exports = class PlayersPage
-  constructor: ({model, requests, router, serverData}) ->
-    me = model.user.getMe()
+  constructor: ({@model, requests, router, serverData}) ->
+    me = @model.user.getMe()
     selectedProfileDialogUser = new Rx.BehaviorSubject null
 
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Players'
-        description: 'Players'
+        title: @model.l.get 'playersPage.title'
+        description: @model.l.get 'playersPage.title'
       }
     })
-    @$appBar = new AppBar {model}
-    @$buttonMenu = new ButtonMenu {router, model}
+    @$appBar = new AppBar {@model}
+    @$buttonMenu = new ButtonMenu {router, @model}
 
-    @$tabs = new Tabs {model}
+    @$tabs = new Tabs {@model}
     @$profileDialog = new ProfileDialog {
-      model
+      @model
       router
       selectedProfileDialogUser: selectedProfileDialogUser
     }
 
     @$playersTop = new PlayersTop {
-      model, router, selectedProfileDialogUser
+      @model, router, selectedProfileDialogUser
     }
     @$playersFollowing = new PlayersFollowing {
-      model, router, selectedProfileDialogUser
+      @model, router, selectedProfileDialogUser
     }
 
     @state = z.state
       me: me
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
@@ -60,16 +60,16 @@ module.exports = class PlayersPage
       z @$appBar,
         isFlat: true
         $topLeftButton: @$buttonMenu
-        title: 'Players'
+        title: @model.l.get 'playersPage.title'
       z @$tabs,
         isBarFixed: false
         tabs: [
           {
-            $menuText: 'Top players'
+            $menuText: @model.l.get 'playersPage.playersTop'
             $el: @$playersTop
           }
           {
-            $menuText: 'Following'
+            $menuText: @model.l.get 'playersPage.playersFollowing'
             $el: @$playersFollowing
           }
         ]

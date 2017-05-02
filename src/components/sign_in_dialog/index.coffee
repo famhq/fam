@@ -143,5 +143,5 @@ module.exports = class SignInDialog
                     type: 'submit'
                 z '.button',
                   z @$cancelButton,
-                    text: 'Cancel'
+                    text: @model.l.get 'general.cancel'
                     onclick: @cancel

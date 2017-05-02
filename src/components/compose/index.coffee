@@ -11,7 +11,7 @@ module.exports = class Compose
   constructor: ({@model, @router, @titleValue, @bodyValue}) ->
     me = @model.user.getMe()
 
-    @$actionBar = new ActionBar()
+    @$actionBar = new ActionBar {@model}
 
     @state = z.state
       me: me
@@ -49,7 +49,7 @@ module.exports = class Compose
                 type: 'text'
                 onkeyup: @setTitle
                 onchange: @setTitle
-                placeholder: 'Title...'
+                placeholder: @model.l.get 'compose.titleHintText'
 
               z '.divider'
             ]
@@ -59,8 +59,8 @@ module.exports = class Compose
               setImmediate ->
                 e?.target?.focus()
             placeholder: if isReply \
-                        then 'Write a response'
-                        else 'Write a post...'
+                        then @model.l.get 'compose.responseHintText'
+                        else @model.l.get 'compose.postHintText'
             onkeyup: @setBody
             onchange: @setBody
         ]

@@ -10,7 +10,7 @@ if window?
   require './index.styl'
 
 module.exports = class Sheet
-  constructor: ({@router, @isVisible}) ->
+  constructor: ({@model, @router, @isVisible}) ->
     @$icon = new Icon()
     @$closeButton = new FlatButton()
     @$submitButton = new FlatButton()
@@ -42,7 +42,7 @@ module.exports = class Sheet
                 z '.message', message
               z '.actions',
                 z @$closeButton,
-                  text: 'Not now'
+                  text: @model.l.get 'sheet.closeButtonText'
                   isFullWidth: false
                   onclick: =>
                     @isVisible.onNext false

@@ -54,7 +54,7 @@ module.exports = class Conversations
                     moment(conversation.lastUpdateTime).fromNowModified()
                 z '.last-message',
                   if isLastMessageFromMe
-                    'Me: '
+                    @model.l.get 'conversations.me'
                   else if conversation.lastMessage
                     "#{@model.user.getDisplayName otherUser}: "
 

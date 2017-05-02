@@ -12,11 +12,10 @@ module.exports = class PushNotificationsSheet
   render: =>
     z '.z-push-notifications-sheet',
       z @$sheet, {
-        message: 'Turn on notifications so you don’t miss any
-                  events or messages'
+        message: @model.l.get 'pushNotificationsSheet.message'
         icon: 'notifications'
         submitButton:
-          text: 'Turn on'
+          text: @model.l.get 'pushNotificationsSheet.submitButtonText'
           onclick: =>
             PushService.register {@model}
             @model.pushNotificationSheet.close()

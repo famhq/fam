@@ -12,7 +12,7 @@ module.exports = class GroupInvitePage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) ->
+    group = requests.flatMapLatest ({route}) =>
       @model.group.getById route.params.id
 
     @$head = new Head({
@@ -20,8 +20,8 @@ module.exports = class GroupInvitePage
       requests
       serverData
       meta: {
-        title: 'Group Invites'
-        description: 'Group Invites'
+        title: @model.l.get 'groupInvitesPage.title'
+        description: @model.l.get 'groupInvitesPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -47,7 +47,7 @@ module.exports = class GroupInvitePage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Group Invites'
+        title: @model.l.get 'groupInvitesPage.title'
         isFlat: true
         $topLeftButton: z @$buttonBack
       }

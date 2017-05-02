@@ -24,7 +24,7 @@ module.exports = class GroupUpdateRecordDialog
             hintText: "#{recordType.name} / #{recordType.timeScale}"
           }
         cancelButton:
-          text: 'cancel'
+          text: @model.l.get 'general.cancel'
           onclick: =>
             @overlay$.onNext null
         submitButton:

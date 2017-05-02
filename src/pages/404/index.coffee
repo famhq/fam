@@ -4,9 +4,9 @@ config = require '../../config'
 Head = require '../../components/head'
 
 module.exports = class FourOhFourPage
-  constructor: ({model, serverData}) ->
+  constructor: ({@model, serverData}) ->
     @$head = new Head({
-      model
+      @model
       serverData
       meta:
         title: 'Starfire - 404'
@@ -16,8 +16,8 @@ module.exports = class FourOhFourPage
 
   renderHead: => @$head
 
-  render: ->
+  render: =>
     z '.p-404',
-      '404 page not found'
+      @model.l.get '404Page'
       z 'br'
       '(╯°□°)╯︵ ┻━┻'

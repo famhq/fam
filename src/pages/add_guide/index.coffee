@@ -20,8 +20,8 @@ module.exports = class AddGuidePage
       requests
       serverData
       meta: {
-        title: 'Add Guide'
-        description: 'Add Guide'
+        title: @model.l.get 'addGuidePage.title'
+        description: @model.l.get 'addGuidePage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -44,7 +44,7 @@ module.exports = class AddGuidePage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Add Guide'
+        title: @model.l.get 'addGuidePage.title'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$closeIcon, {

@@ -16,8 +16,8 @@ module.exports = class FacebookLoginPage
       requests
       serverData
       meta: {
-        title: 'Facebook login'
-        description: 'Redirecting...'
+        title: @model.l.get 'facebookLoginPage.title'
+        description: @model.l.get 'facebookLoginPage.contentTitle'
       }
     })
     @$spinner = new Spinner()
@@ -56,5 +56,5 @@ module.exports = class FacebookLoginPage
     },
       z '.content',
         z '.spinner', @$spinner
-        z '.title', 'Redirecting...'
-        z '.description', 'Just a moment'
+        z '.title', @model.l.get 'facebookLoginPage.contentTitle'
+        z '.description', @model.l.get 'facebookLoginPage.contentDescription'

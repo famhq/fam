@@ -118,13 +118,13 @@ module.exports = class GroupPage
             {
               $menuIcon: @$groupInfoIcon
               menuIconName: 'info'
-              $menuText: 'Info'
+              $menuText: @model.l.get 'general.info'
               $el: @$groupInfo
             }
             {
               $menuIcon: @$groupMembersIcon
               menuIconName: 'friends'
-              $menuText: 'Members'
+              $menuText: @model.l.get 'general.members'
               $el: @$groupMembers
             }
           ]

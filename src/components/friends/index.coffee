@@ -45,13 +45,13 @@ module.exports = class Friends
       else if users
         z '.g-grid',
           z 'h2.title',
-            'Online'
+            @model.l.get 'friends.usersOnline'
             z 'span', innerHTML: ' &middot; '
             onlineUsersCount
           @$onlineUsersList
 
           z 'h2.title',
-            'All'
+            @model.l.get 'friends.usersAll'
             z 'span', innerHTML: ' &middot; '
             usersCount
           @$allUsersList

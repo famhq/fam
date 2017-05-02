@@ -16,8 +16,6 @@ config = require './config'
 
 Pages =
   HomePage: require './pages/home'
-  SignInPage: require './pages/sign_in'
-  JoinPage: require './pages/join'
   FriendsPage: require './pages/friends'
   VideosPage: require './pages/videos'
   ClanPage: require './pages/clan'
@@ -207,8 +205,6 @@ module.exports = class App
     route '/policies', 'PoliciesPage'
     route '/tos', 'TosPage'
     route '/privacy', 'PrivacyPage'
-    route '/signIn', 'SignInPage'
-    route '/join', 'JoinPage'
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'
     ], 'ProfilePage'

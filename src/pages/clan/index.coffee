@@ -39,8 +39,8 @@ module.exports = class ClanPage
       requests
       serverData
       meta: {
-        title: 'Clan'
-        description: 'Clan'
+        title: @model.l.get 'general.clan'
+        description: @model.l.get 'general.clan'
       }
     })
     @$appBar = new AppBar {@model}
@@ -64,14 +64,14 @@ module.exports = class ClanPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Clan'
+        title: @model.l.get 'general.clan'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }
       if clan
         @$clan
       else if clan is false
-        z '.empty', 'Looks like you\'re not in a clan'
+        z '.empty', @model.l.get 'clanPage.empty'
       else
         @$spinner
       @$bottomBar

@@ -18,7 +18,7 @@ if window?
 module.exports = class ProfileHistory
   constructor: ({@model, @router, user}) ->
     userDecks = user.flatMapLatest ({id}) =>
-      @model.clashRoyaleUserDeck.getAllByUserId id
+      @model.clashRoyaleUserDeck.getAllByUserId id, {sort: 'recent'}
 
     @$migrateCard = new UiCard()
 
@@ -57,7 +57,7 @@ module.exports = class ProfileHistory
     z '.z-profile-history',
       z '.g-grid',
         z '.title',
-          'Current deck'
+          @model.l.get 'profileHistory.currentTitle'
         z '.deck',
           z currentDeck?.$deck
           z currentDeck?.$stats
@@ -65,9 +65,9 @@ module.exports = class ProfileHistory
         z '.divider'
 
         z '.title',
-          'Other decks'
+          @model.l.get 'profileHistory.otherDecksTitle'
         if _isEmpty otherDecks
-          'No other decks found'
+          @model.l.get 'profileHistory.otherDecksEmpty'
         else
           _map otherDecks, ({$deck, $stats}) ->
             z '.deck',

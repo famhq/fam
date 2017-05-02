@@ -18,8 +18,8 @@ module.exports = class NewConversationPage
       requests
       serverData
       meta: {
-        title: 'New Conversation'
-        description: 'New Conversation'
+        title: model.l.get 'newConversationPage.title'
+        description: model.l.get 'newConversationPage.title'
       }
     })
     @$newConversation = new NewConversation {model, @router, serverData, group}

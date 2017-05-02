@@ -90,6 +90,8 @@ init = ->
 
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
+    # we could limit transports to just websockets and get rid of
+    # sticky session in backend, but some firewalls block websockets...
   }
   model = new Model({cookieSubject, io, portal})
   model.portal.listen()
@@ -126,6 +128,8 @@ init = ->
 
   model.portal.call 'networkInformation.onOffline', onOffline
   model.portal.call 'networkInformation.onOnline', onOnline
+
+  model.portal.call 'heyzap.init', {publisherKey: config.HEYZAP_PUBLISHER_KEY}
 
   model.portal.call 'app.onBack', ->
     router.back({fromNative: true})

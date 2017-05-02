@@ -59,7 +59,7 @@ module.exports = class EventPage
   share: =>
     {event} = @state.getValue()
     @model.portal.call 'share.any', {
-      text: 'Come join my tournament'
+      text: @model.l.get 'eventPage.shareText'
       path: "/event/#{event.id}"
     }
 
@@ -78,7 +78,7 @@ module.exports = class EventPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Event'
+        title: @model.l.get 'eventPage.title'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
@@ -109,10 +109,10 @@ module.exports = class EventPage
           onLeave: =>
             @state.set isLeaveDialogVisible: true
           cancelButton:
-            text: 'Cancel'
+            text: @model.l.get 'general.cancel'
             onclick: =>
               @state.set isLeaveDialogVisible: false
           submitButton:
-            text: 'Yes'
+            text: @model.l.get 'general.yes'
             onclick: @leave
-          $content: 'Are you sure you want to leave this group?'
+          $content: @model.l.get 'eventPage.leave'

@@ -18,8 +18,8 @@ module.exports = class GroupAddChannelPage
       requests
       serverData
       meta: {
-        title: 'Add Channel'
-        description: 'Add Channel'
+        title: model.l.get 'groupAddChannelPage.title'
+        description: model.l.get 'groupAddChannelPage.title'
       }
     })
     @$groupEditChannel = new GroupEditChannel {

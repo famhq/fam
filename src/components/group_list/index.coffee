@@ -22,7 +22,7 @@ module.exports = class GroupList
       if groups and _isEmpty groups
         z '.no-groups',
           z '.g-grid',
-            'No groups found'
+            @model.l.get 'groupList.empty'
       else if groups
         z '.groups',
           z '.g-grid',

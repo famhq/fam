@@ -163,12 +163,13 @@ module.exports = class Thread
           z '.score',
             "#{FormatService.number thread?.score} points"
             z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
-            "#{FormatService.number thread?.commentCount} comments"
+            "#{FormatService.number thread?.commentCount} "
+            @model.l.get 'thread.score'
       z '.divider.no-margin-bottom'
 
       z '.comments',
         if threadComments and _isEmpty threadComments
-          z '.no-comments', 'No comments found'
+          z '.no-comments', @model.l.get 'thread.noComments'
         else if threadComments
           _map threadComments, ($threadComment) ->
             [

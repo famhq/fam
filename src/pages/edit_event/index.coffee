@@ -26,8 +26,8 @@ module.exports = class EditEventPage
       requests
       serverData
       meta: {
-        title: 'Edit Event'
-        description: 'Edit Event'
+        title: @model.l.get 'editEventPage.title'
+        description: @model.l.get 'editEventPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -59,7 +59,7 @@ module.exports = class EditEventPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Edit Event'
+        title: @model.l.get 'editEventPage.title'
         isFlat: true
         $topLeftButton: z @$buttonBack
         $topRightButton:

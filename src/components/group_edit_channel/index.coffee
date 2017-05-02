@@ -26,7 +26,7 @@ module.exports = class GroupEditChannel
       conversation.description) or Rx.Observable.just null
     @descriptionError = new Rx.BehaviorSubject null
 
-    @$actionBar = new ActionBar()
+    @$actionBar = new ActionBar {@model}
 
     @$nameInput = new PrimaryInput
       valueStreams: @nameValueStreams
@@ -80,15 +80,17 @@ module.exports = class GroupEditChannel
           onclick: =>
             @router.back()
         save:
-          text: if isNewChannel then 'Create' else 'Save'
+          text: if isNewChannel \
+                then @model.l.get 'general.create'
+                else @model.l.get 'general.save'
           onclick: =>
             @save isNewChannel
       }
       z '.content',
         z '.input',
           z @$nameInput,
-            hintText: 'Channel name'
+            hintText: @model.l.get 'groupEditChannel.nameInputHintText'
 
         z '.input',
           z @$descriptionTextarea,
-            hintText: 'Description'
+            hintText: @model.l.get 'general.description'

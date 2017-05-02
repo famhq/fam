@@ -16,8 +16,8 @@ module.exports = class CardsPage
       requests
       serverData
       meta: {
-        title: 'Battle Cards'
-        description: 'Battle Cards'
+        title: @model.l.get 'cardsPage.title'
+        description: @model.l.get 'cardsPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -38,7 +38,7 @@ module.exports = class CardsPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Battle Cards'
+        title: @model.l.get 'cardsPage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }

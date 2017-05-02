@@ -12,19 +12,19 @@ if window?
 module.exports = class ForumSignaturePage
   hideDrawer: true
 
-  constructor: ({model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData}) ->
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Forum Signature'
-        description: 'Forum Signature'
+        title: @model.l.get 'forumSignaturePage.title'
+        description: @model.l.get 'forumSignaturePage.title'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$forumSignature = new ForumSignature {model, @router, serverData}
+    @$forumSignature = new ForumSignature {@model, @router, serverData}
 
     @state = z.state
       windowSize: model.window.getSize()
@@ -39,7 +39,7 @@ module.exports = class ForumSignaturePage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Forum Signature'
+        title: @model.l.get 'forumSignaturePage.title'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}

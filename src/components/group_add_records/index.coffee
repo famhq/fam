@@ -26,7 +26,7 @@ module.exports = class GroupAddRecords
       (vals...) -> vals
     )
 
-    @$actionBar = new ActionBar()
+    @$actionBar = new ActionBar {@model}
 
     @state = z.state
       group: group

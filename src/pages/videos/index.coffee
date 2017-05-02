@@ -16,8 +16,8 @@ module.exports = class VideosPage
       requests
       serverData
       meta: {
-        title: 'Videos'
-        description: 'Videos'
+        title: @model.l.get 'videosPage.title'
+        description: @model.l.get 'videosPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -38,7 +38,7 @@ module.exports = class VideosPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Videos'
+        title: @model.l.get 'videosPage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }

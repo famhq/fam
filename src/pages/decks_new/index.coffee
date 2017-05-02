@@ -30,8 +30,8 @@ module.exports = class DecksPage
       requests
       serverData
       meta: {
-        title: 'Decks'
-        description: 'Decks'
+        title: @model.l.get 'general.decks'
+        description: @model.l.get 'general.decks'
       }
     })
     @$bottomBar = new BottomBar {@model, @router, requests}

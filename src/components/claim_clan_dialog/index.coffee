@@ -71,7 +71,7 @@ module.exports = class ClaimClanDialog
         onLeave: =>
           @isVisible.onNext false
         isVanilla: true
-        $title: 'Claim clan'
+        $title: @model.l.get 'claimClanDialog.title'
         $content:
           z '.z-claim-clan-dialog_dialog',
             if step is 'createGroup'
@@ -82,34 +82,34 @@ module.exports = class ClaimClanDialog
                   z '.error', error
                 z '.input',
                   z @$groupNameInput, {
-                    hintText: 'Group name'
+                    hintText: @model.l.get 'claimClanDialog.groupNameHintText'
                   }
                 z '.input',
                   z @$clanPasswordInput, {
                     type: 'text'
-                    hintText: 'Password'
+                    hintText: @model.l.get 'general.password'
                   }
             else
               z '.content',
                 if error
                   z '.error', error
                 z '.text',
-                  'Add this code to your clan description in the game to verify
-                  your ownership'
+                  @model.l.get 'claimClanDialog.text1'
                 z '.code', clan?.code
-                z '.text', 'Claiming ownership will unlock:'
+                z '.text', @model.l.get 'claimClanDialog.text2'
                 z '.unlock',
                   z '.icon',
                     z @$chatIcon,
                       icon: 'chat'
                       isTouchTarget: false
                       color: colors.$primary500
-                  'Private clan chat'
+                  @model.l.get 'claimClanDialog.text3'
         cancelButton:
-          text: 'cancel'
+          text: @model.l.get 'general.cancel'
           onclick: @cancel
         submitButton:
           text: if isLoading then 'loading...' \
-                else if step is 'createGroup' then 'finish'
+                else if step is 'createGroup'
+                then @model.l.get 'claimClanDialog.submitButton'
                 else 'claim'
           onclick: if step is 'createGroup' then @createGroup else @claim

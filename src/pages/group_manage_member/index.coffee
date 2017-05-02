@@ -24,8 +24,8 @@ module.exports = class GroupManageMemberPage
       requests
       serverData
       meta: {
-        title: 'Manage Member'
-        description: 'Manage Member'
+        title: @model.l.get 'groupManageMemberPage.title'
+        description: @model.l.get 'groupManageMemberPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -47,7 +47,7 @@ module.exports = class GroupManageMemberPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Manage Member'
+        title: @model.l.get 'groupManageMemberPage.title'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}

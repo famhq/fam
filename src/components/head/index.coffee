@@ -70,17 +70,17 @@ module.exports = class Head
       z 'title', "#{meta.title}"
       z 'meta', {name: 'description', content: "#{meta.description}"}
 
-      z 'script',
-        attributes:
-          async: true
-        src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-      z 'script',
-        innerHTML: '
-          (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-9043203456638369",
-            enable_page_level_ads: true
-          });
-        '
+      # z 'script',
+      #   attributes:
+      #     async: true
+      #   src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+      # z 'script',
+      #   innerHTML: '
+      #     (adsbygoogle = window.adsbygoogle || []).push({
+      #       google_ad_client: "ca-pub-9043203456638369",
+      #       enable_page_level_ads: true
+      #     });
+      #   '
       # Appcache
       # TODO: re-enable
       # if config.ENV is config.ENVS.PROD
@@ -147,6 +147,8 @@ module.exports = class Head
         innerHTML: modelSerialization or ''
 
 
+      # GA limits us to 10M hits per month, which we exceed by a lot...
+      # so we'll sample it (10%)
       z 'script',
         innerHTML: "
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||
@@ -154,7 +156,9 @@ module.exports = class Head
           a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;
           a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script',
           '//www.google-analytics.com/analytics.js','ga');
-          ga('create', '#{config.GOOGLE_ANALYTICS_ID}', 'auto');
+          ga('create', '#{config.GOOGLE_ANALYTICS_ID}', 'auto', {
+            sampleRate: 10
+          });
         "
 
       unless Environment.isGameApp(config.GAME_KEY, {userAgent})

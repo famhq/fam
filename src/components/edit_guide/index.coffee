@@ -17,7 +17,7 @@ if window?
 module.exports = class EditGuide
   constructor: ({@model, @router, guide}) ->
     step = new Rx.BehaviorSubject 1
-    @$stepBar = new StepBar {step}
+    @$stepBar = new StepBar {@model, step}
 
     selectedCards = new Rx.BehaviorSubject []
     selectedCardsStreams = new Rx.ReplaySubject 1
@@ -33,13 +33,13 @@ module.exports = class EditGuide
       data: guide
       fields: [
         {
-          hintText: 'Deck name'
+          hintText: @model.l.get 'editGuide.titleHintText'
           icon: 'info'
           type: 'text'
           field: 'title'
         }
         {
-          hintText: 'YouTube URL (optional)'
+          hintText: @model.l.get 'editGuide.videoUrlHintText'
           icon: 'video'
           type: 'text'
           field: 'data.videoUrl'
@@ -47,7 +47,7 @@ module.exports = class EditGuide
           isOptional: true
         }
         {
-          hintText: 'Brief summary'
+          hintText: @model.l.get 'editGuide.summaryHintText'
           icon: 'ellipsis'
           type: 'text'
           field: 'summary'
@@ -101,14 +101,17 @@ module.exports = class EditGuide
           if step is 1
             @$step1Form
           else
-            z @$markdownEditor, {hintText: 'Full guide writeup...'}
+            z @$markdownEditor,
+              hintText: @model.l.get 'editGuide.markdownEditorHintText'
       z @$stepBar, {
         isLoading: isLoading
         isStepCompleted: if step is 1 \
                           then @$step1Form.isCompleted()
                           else true
         save:
-          text: if isNewGuide then 'Create' else 'Save'
+          text: if isNewGuide \
+                then @model.l.get 'general.create'
+                else @model.l.get 'general.save'
           onclick: =>
             @save isNewGuide
         steps: 2

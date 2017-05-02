@@ -21,8 +21,8 @@ module.exports = class DeckPage
       requests
       serverData
       meta: {
-        title: 'Deck'
-        description: 'Deck'
+        title: @model.l.get 'general.decks'
+        description: @model.l.get 'general.decks'
       }
     })
     @$appBar = new AppBar {@model}

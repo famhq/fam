@@ -28,8 +28,8 @@ module.exports = class GroupInvite
           @router.back()
         onclick: (user) =>
           @headsUpNotification.onNext {
-            title: 'User invited!'
-            details: 'They have been notified'
+            title: @model.l.get 'groupInvite.headsUpNotificationTitle'
+            details: @model.l.get 'groupInvite.headsUpNotificationDetails'
             ttlMs: HEADS_UP_TTL_MS
           }
           @model.group.inviteById group?.id, {

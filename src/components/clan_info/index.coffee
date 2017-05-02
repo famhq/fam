@@ -70,15 +70,15 @@ module.exports = class ClanInfo
         #   value: FormatService.number clan?.data?.donation
         # }
         {
-          name: 'Type'
+          name: @model.l.get 'clanInfo.type'
           value: _startCase clan?.data?.type
         }
         {
-          name: 'Required trophies'
+          name: @model.l.get 'clanInfo.minTrophies'
           value: FormatService.number clan?.data?.minTrophies
         }
         {
-          name: 'Location'
+          name: @model.l.get 'clanInfo.region'
           value: clan?.data?.region
         }
       ]
@@ -122,7 +122,7 @@ module.exports = class ClanInfo
         z '.g-grid',
           z '.last-updated',
             z '.time',
-              'Last updated '
+              @model.l.get 'clanInfo.lastUpdateTime'
               moment(clan?.lastUpdateTime).fromNowModified()
             if clan?.isUpdatable and not hasUpdatedClan and isLeader
               z '.refresh',
@@ -143,7 +143,7 @@ module.exports = class ClanInfo
           if isLeader and not isClaimed
             z '.claim-button',
               z @$claimButton,
-                text: 'Claim clan'
+                text: @model.l.get 'clanInfo.claimClan'
                 onclick: =>
                   @model.signInDialog.openIfGuest me
                   .then =>
@@ -151,13 +151,13 @@ module.exports = class ClanInfo
           else if mePlayerIsVerified and clanPlayer and isClaimed
             z '.claim-button',
               z @$claimButton,
-                text: 'Clan chat'
+                text: @model.l.get 'clanInfo.clanChat'
                 onclick: =>
                   @router.go "/group/#{clan.groupId}/chat"
           else if clanPlayer and isClaimed
             z '.claim-button',
               z @$claimButton,
-                text: 'Verify self'
+                text: @model.l.get 'clanInfo.verifyMe'
                 onclick: =>
                   @model.signInDialog.openIfGuest me
                   .then =>

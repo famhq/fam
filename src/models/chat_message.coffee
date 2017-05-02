@@ -7,6 +7,8 @@ _defaults = require 'lodash/defaults'
 
 config = require '../config'
 
+CHAT_MESSAGES_LIMIT = 50
+
 module.exports = class ChatMessage
   namespace: 'chatMessages'
 
@@ -36,6 +38,7 @@ module.exports = class ChatMessage
 
     options = {
       initialSortFn: ((items) -> _sortBy items, 'time')
+      limit: CHAT_MESSAGES_LIMIT
       clientChangesStream: @clientChangesStream[conversationId]
       isStreamed: true
     }

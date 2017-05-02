@@ -13,8 +13,8 @@ module.exports = class NewThreadPage
       requests
       serverData
       meta: {
-        title: 'New Thread'
-        description: 'New Thread'
+        title: model.l.get 'newThreadPage.title'
+        description: model.l.get 'newThreadPage.title'
       }
     })
     @$newThread = new NewThread {model, @router}

@@ -42,7 +42,7 @@ module.exports = class EditGroup
 
     @$isPrivateToggle = new Toggle {isSelectedStreams: @isPrivateStreams}
 
-    @$actionBar = new ActionBar()
+    @$actionBar = new ActionBar {@model}
     @$groupHeader = new GroupHeader {@group}
 
     @$editGroupChangeBadge = new EditGroupChangeBadge {
@@ -126,7 +126,9 @@ module.exports = class EditGroup
             onclick: =>
               @router.back()
           save:
-            text: if isNewGroup then 'Create' else 'Save'
+            text: if isNewGroup \
+                  then @model.l.get 'general.create'
+                  else @model.l.get 'general.save'
             onclick: =>
               @save isNewGroup
         }

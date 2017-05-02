@@ -17,19 +17,19 @@ module.exports = class BottomBar
         $icon: new Icon()
         icon: 'profile'
         route: '/profile'
-        text: 'Profile'
+        text: @model.l.get 'general.profile'
       }
       {
         $icon: new Icon()
         icon: 'clan'
         route: '/clan'
-        text: 'Clan'
+        text: @model.l.get 'general.clan'
       }
       {
         $icon: new Icon()
         icon: 'decks'
         route: '/decks'
-        text: 'Decks'
+        text: @model.l.get 'general.decks'
       }
       # {
       #   $icon: new Icon()
@@ -41,7 +41,7 @@ module.exports = class BottomBar
         $icon: new Icon()
         icon: 'chat'
         route: '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
-        text: 'Chat'
+        text: @model.l.get 'general.chat'
       }
     ]
 

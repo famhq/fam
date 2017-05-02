@@ -27,10 +27,9 @@ module.exports = class PlayersFollowing
         if players and _isEmpty players
           z '.empty-state',
             z '.image'
-            z 'div', 'Keep track of your friends or favorite players!'
+            z 'div', @model.l.get 'playersFollowing.emptyDiv1'
             z 'div',
-              'Find players players to follow through chat or the
-              players\' list'
+              @model.l.get 'playersFollowing.emptyDiv2'
         else
           z @$playerList, {
             onclick: ({player}) =>

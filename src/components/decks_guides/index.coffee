@@ -17,17 +17,16 @@ CARDS_PER_ROW = 4
 PADDING = 16
 
 module.exports = class DecksGuides extends Base
-  constructor: ({@model, @router, sort, filter}) ->
+  constructor: ({@model, @router, sort}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
-    guides = @model.thread.getAll({type: 'deckGuide', sort, filter})
+    guides = @model.thread.getAll({type: 'deckGuide', sort})
     .map (guides) ->
       guides
 
     @state = z.state
       me: @model.user.getMe()
-      filter: filter
       windowSize: @model.window.getSize()
       guides: guides.map (guides) =>
         _map guides, (guide) =>
@@ -45,7 +44,7 @@ module.exports = class DecksGuides extends Base
   afterMount: (@$$el) => null
 
   render: =>
-    {me, guides, filter, windowSize} = @state.getValue()
+    {me, guides, windowSize} = @state.getValue()
 
     cardWidth = (@$$el?.children?[0]?.offsetWidth - (PADDING * 2)) /
                   CARDS_PER_ROW
@@ -58,10 +57,7 @@ module.exports = class DecksGuides extends Base
       },
         if guides and _isEmpty guides
           z '.no-guides',
-            'No guides found, we\'re brand spankin\' new! Tap the plus icon to
-            the bottom right to write the first one :)'
-            if filter is 'mine'
-              'Select a popular deck to add it, or create a new deck.'
+            @model.l.get 'deckGuides.noGuides'
         else if guides
           _map guides, ({guide, $deck, $avatar}) =>
             [

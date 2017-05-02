@@ -10,7 +10,7 @@ if window?
 
 module.exports = class PlayersTop
   constructor: ({@model, @router, @selectedProfileDialogUser}) ->
-    @$searchInput = new SearchInput {}
+    @$searchInput = new SearchInput {@model}
 
     @$playerList = new PlayerList {
       @model

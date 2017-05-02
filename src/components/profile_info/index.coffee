@@ -2,6 +2,8 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _take = require 'lodash/take'
 _startCase = require 'lodash/startCase'
+_upperFirst = require 'lodash/upperFirst'
+_camelCase = require 'lodash/camelCase'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 moment = require 'moment'
@@ -17,57 +19,6 @@ colors = require '../../colors'
 
 if window?
   require './index.styl'
-
-getWinRateFromStats = (stats) ->
-  winsAndLosses = stats?.wins + stats?.losses
-  winRate = FormatService.percentage(
-    if winsAndLosses and not isNaN winsAndLosses
-    then stats?.wins / winsAndLosses
-    else 0
-  )
-
-getTypeStats = (stats) ->[
-  {
-    name: 'Wins'
-    value: FormatService.number stats?.wins
-  }
-  {
-    name: 'Losses'
-    value: FormatService.number stats?.losses
-  }
-  {
-    name: 'Draws'
-    value: FormatService.number stats?.draws
-  }
-  {
-    name: 'Win rate'
-    value: getWinRateFromStats stats
-  }
-  {
-    name: 'Crowns earned'
-    value: FormatService.number stats?.crownsEarned
-  }
-  {
-    name: 'Crowns lost'
-    value: FormatService.number stats?.crownsLost
-  }
-  {
-    name: 'Current win streak'
-    value: FormatService.number stats?.currentWinStreak
-  }
-  {
-    name: 'Current loss streak'
-    value: FormatService.number stats?.currentLossStreak
-  }
-  {
-    name: 'Max win streak'
-    value: FormatService.number stats?.maxWinStreak
-  }
-  {
-    name: 'Max loss streak'
-    value: FormatService.number stats?.maxLossStreak
-  }
-]
 
 module.exports = class ProfileInfo
   constructor: ({@model, @router, user}) ->
@@ -99,6 +50,58 @@ module.exports = class ProfileInfo
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
     }
 
+  getWinRateFromStats: (stats) ->
+    winsAndLosses = stats?.wins + stats?.losses
+    winRate = FormatService.percentage(
+      if winsAndLosses and not isNaN winsAndLosses
+      then stats?.wins / winsAndLosses
+      else 0
+    )
+
+  getTypeStats: (stats) =>
+    [
+      {
+        name: @model.l.get 'profileInfo.statWins'
+        value: FormatService.number stats?.wins
+      }
+      {
+        name: @model.l.get 'profileInfo.statLosses'
+        value: FormatService.number stats?.losses
+      }
+      {
+        name: @model.l.get 'profileInfo.statDraws'
+        value: FormatService.number stats?.draws
+      }
+      {
+        name: @model.l.get 'profileInfo.statWinRate'
+        value: @getWinRateFromStats stats
+      }
+      {
+        name: @model.l.get 'profileInfo.statCrownsEarned'
+        value: FormatService.number stats?.crownsEarned
+      }
+      {
+        name: @model.l.get 'profileInfo.statCrownsLost'
+        value: FormatService.number stats?.crownsLost
+      }
+      {
+        name: @model.l.get 'profileInfo.statCurrentWinStreak'
+        value: FormatService.number stats?.currentWinStreak
+      }
+      {
+        name: @model.l.get 'profileInfo.statCurrentLossStreak'
+        value: FormatService.number stats?.currentLossStreak
+      }
+      {
+        name: @model.l.get 'profileInfo.statMaxWinStreak'
+        value: FormatService.number stats?.maxWinStreak
+      }
+      {
+        name: @model.l.get 'profileInfo.statMaxLossStreak'
+        value: FormatService.number stats?.maxLossStreak
+      }
+    ]
+
   render: =>
     {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing
       isSplitsInfoCardVisible, user, me} = @state.getValue()
@@ -109,41 +112,41 @@ module.exports = class ProfileInfo
     metrics =
       stats: [
         {
-          name: 'Wins'
+          name: @model.l.get 'profileInfo.statWins'
           value: FormatService.number player?.data?.stats.wins
         }
         {
-          name: 'Losses'
+          name: @model.l.get 'profileInfo.statLosses'
           value: FormatService.number player?.data?.stats.losses
         }
         {
-          name: 'Win rate'
-          value: getWinRateFromStats player?.data?.stats
+          name: @model.l.get 'profileInfo.statWinRate'
+          value: @getWinRateFromStats player?.data?.stats
         }
         {
-          name: 'Current favorite card'
+          name: @model.l.get 'profileInfo.statFavoriteCard'
           value: _startCase player?.data?.stats.favoriteCard
         }
         {
-          name: 'Three crown wins'
+          name: @model.l.get 'profileInfo.statThreeCrowns'
           value: FormatService.number player?.data?.stats.threeCrowns
         }
         {
-          name: 'Cards found'
+          name: @model.l.get 'profileInfo.statCardsFound'
           value: FormatService.number player?.data?.stats.cardsFound
         }
         {
-          name: 'Highest trophies'
+          name: @model.l.get 'profileInfo.statMaxTrophies'
           value: FormatService.number player?.data?.stats.maxTrophies
         }
         {
-          name: 'Total donations'
+          name: @model.l.get 'profileInfo.statTotalDonations'
           value: FormatService.number player?.data?.stats.totalDonations
         }
       ]
-      ladder: getTypeStats player?.data?.splits?.ladder
-      grandChallenge: getTypeStats player?.data?.splits?.grandChallenge
-      classicChallenge: getTypeStats player?.data?.splits?.classicChallenge
+      ladder: @getTypeStats player?.data?.splits?.ladder
+      grandChallenge: @getTypeStats player?.data?.splits?.grandChallenge
+      classicChallenge: @getTypeStats player?.data?.splits?.classicChallenge
 
     lastUpdateTime = if player?.lastUpdateTime > player?.lastMatchesUpdateTime \
                      then player?.lastUpdateTime
@@ -185,7 +188,8 @@ module.exports = class ProfileInfo
         z '.g-grid',
           z '.last-updated',
             z '.time',
-              'Last updated '
+              @model.l.get 'profileInfo.lastUpdatedTime'
+              ' '
               moment(lastUpdateTime).fromNowModified()
             if player?.isUpdatable and not hasUpdatedPlayer and isMe
               z '.refresh',
@@ -206,7 +210,9 @@ module.exports = class ProfileInfo
           unless isMe
             z '.follow-button',
               z @$followButton,
-                text: if isFollowing then 'Unfollow' else 'Follow'
+                text: if isFollowing \
+                    then @model.l.get 'profileInfo.followButtonIsFollowingText'
+                    else @model.l.get 'profileInfo.followButtonText'
                 onclick: =>
                   if isFollowing
                     @model.userData.unfollowByUserId user?.id
@@ -221,7 +227,7 @@ module.exports = class ProfileInfo
         if player?.data?.chestCycle
           z '.block',
             z '.g-grid',
-              z '.title', 'Upcoming chests'
+              z '.title', @model.l.get 'profileChests.chestsTitle'
               z '.chests', {
                 ontouchstart: (e) ->
                   e?.stopPropagation()
@@ -233,7 +239,7 @@ module.exports = class ProfileInfo
                     height: 90
               z '.chests-button',
                 z @$moreDetailsButton,
-                  text: 'More details'
+                  text: @model.l.get 'profileInfo.moreDetailsButtonText'
                   onclick: =>
                     @router.go "/user/id/#{user?.id}/chests"
 
@@ -243,16 +249,14 @@ module.exports = class ProfileInfo
               if key is 'ladder' and isSplitsInfoCardVisible
                 z '.splits-info-card',
                   z @$splitsInfoCard,
-                    text: 'Note: The stats below will only account for your
-                          previous 25 games initially. All future stats will
-                          be tracked.'
+                    text: @model.l.get 'profileInfo.splitsInfoCardText'
                     submit:
-                      text: 'got it'
+                      text: @model.l.get 'installOverlay.closeButtonText'
                       onclick: =>
                         @state.set isSplitsInfoCardVisible: false
                         localStorage?['hideSplitsInfo'] = '1'
               z '.title',
-                _startCase key
+                @model.l.get 'profileInfo.subhead' + _upperFirst _camelCase key
               z '.g-cols',
                 _map stats, ({name, value}) ->
                   z '.g-col.g-xs-6',

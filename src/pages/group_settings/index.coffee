@@ -12,25 +12,25 @@ if window?
 module.exports = class GroupSettingsPage
   hideDrawer: true
 
-  constructor: ({model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) ->
-      model.group.getById route.params.id
+  constructor: ({@model, requests, @router, serverData}) ->
+    group = requests.flatMapLatest ({route}) =>
+      @model.group.getById route.params.id
 
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Group Settings'
-        description: 'Group Settings'
+        title: @model.l.get 'groupSettingsPage.title'
+        description: @model.l.get 'groupSettingsPage.title'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$groupSettings = new GroupSettings {model, @router, serverData, group}
+    @$groupSettings = new GroupSettings {@model, @router, serverData, group}
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
@@ -42,7 +42,7 @@ module.exports = class GroupSettingsPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Group Settings'
+        title: @model.l.get 'groupSettingsPage.title'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}

@@ -26,8 +26,8 @@ module.exports = class EditGuidePage
       requests
       serverData
       meta: {
-        title: 'Edit Guide'
-        description: 'Edit Guide'
+        title: @model.l.get 'editGuidePage.title'
+        description: @model.l.get 'editGuidePage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -59,7 +59,7 @@ module.exports = class EditGuidePage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Edit Guide'
+        title: @model.l.get 'editGuidePage.title'
         isFlat: true
         $topLeftButton: z @$buttonBack
         $topRightButton:

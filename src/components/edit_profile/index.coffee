@@ -31,7 +31,7 @@ module.exports = class EditProfile
     @playerTagValueStreams.onNext currentPlayerTag
     @playerTagError = new Rx.BehaviorSubject null
 
-    @$actionBar = new ActionBar()
+    @$actionBar = new ActionBar {@model}
 
     @$avatar = new Avatar()
     @$avatarButton = new PrimaryButton()
@@ -109,11 +109,11 @@ module.exports = class EditProfile
       z '.section',
         z '.input',
           z @$usernameInput,
-            hintText: 'Username'
+            hintText: @model.l.get 'general.username'
 
         z '.input',
           z @$playerTagInput,
-            hintText: 'Player tag'
+            hintText: @model.l.get 'editProfile.playerTagInputHintText'
 
       z '.section',
         z '.title', 'Change avatar'
@@ -124,7 +124,7 @@ module.exports = class EditProfile
             z @$avatar, {src: avatarDataUrl, user: me, size: '64px'}
           z '.button',
             z @$avatarButton,
-              text: 'Upload photo'
+              text: @model.l.get 'editProfile.avatarButtonText'
               isFullWidth: false
               onclick: null
             z '.upload-overlay',
@@ -134,12 +134,12 @@ module.exports = class EditProfile
 
       z '.section',
         z @$forumSigButton,
-          text: 'Create forum signature'
+          text: @model.l.get 'editProfile.forumSigButtonText'
           onclick: =>
             @router.go '/forumSignature'
 
         z @$logoutButton,
-          text: 'Logout'
+          text: @model.l.get 'editProfile.logoutButtonText'
           onclick: =>
             @model.auth.logout()
             @router.go '/'

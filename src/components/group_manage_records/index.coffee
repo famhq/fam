@@ -140,7 +140,7 @@ module.exports = class GroupManageRecords
               z 'div', {style: marginTop: '16px'},
                 'All associated member records will be deleted as well.'
           cancelButton:
-            text: 'cancel'
+            text: @model.l.get 'general.cancel'
             onclick: =>
               @state.set isConfirmDeleteDialogVisible: false
           submitButton:

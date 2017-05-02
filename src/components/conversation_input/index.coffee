@@ -39,6 +39,7 @@ module.exports = class ConversationInput
       text: {
         $icon: new Icon {hasRipple: true}
         icon: 'text'
+        name: 'text'
         $el: new ConversationInputTextarea {
           onPost: @post
           @onResize
@@ -53,6 +54,7 @@ module.exports = class ConversationInput
       stickers: {
         $icon: new Icon {hasRipple: true}
         icon: 'stickers'
+        name: 'stickers'
         requireVerified: true
         $el: new ConversationInputStickers {
           onPost: @post
@@ -62,6 +64,7 @@ module.exports = class ConversationInput
       image: {
         $icon: new Icon {hasRipple: true}
         icon: 'image'
+        name: 'images'
         requireVerified: true
         onclick: -> null
         $uploadOverlay: new UploadOverlay {@model}
@@ -69,6 +72,7 @@ module.exports = class ConversationInput
       gifs: {
         $icon: new Icon {hasRipple: true}
         icon: 'gifs'
+        name: 'gifs'
         requireVerified: true
         $el: new ConversationInputGifs {
           onPost: @post
@@ -105,7 +109,9 @@ module.exports = class ConversationInput
         setTimeout post, 500
 
   render: =>
-    {currentPanel, mePlayer} = @state.getValue()
+    {currentPanel, mePlayer, me} = @state.getValue()
+
+    isVerified = mePlayer?.verifiedUserId is me?.id
 
     z '.z-conversation-input', {
       className: z.classKebab {"is-#{currentPanel}-panel": true}
@@ -117,6 +123,12 @@ module.exports = class ConversationInput
           style:
             height: "#{@panels[currentPanel].$el?.getHeightPx?()}px"
         },
+          if @panels[currentPanel].requireVerified and not isVerified
+            z '.require-verified',
+                z '.title',
+                  'Verify your account to unlock ' + @panels[currentPanel].name
+                z '.description',
+                  '(Claim a clan, or have your clan leader do it)'
           @panels[currentPanel].$el
 
         z '.bottom-icons',  {
@@ -125,6 +137,8 @@ module.exports = class ConversationInput
           [
             _map @panels, (options, panel) =>
               {$icon, icon, onclick, $uploadOverlay, requireVerified} = options
+              if requireVerified and $uploadOverlay and not isVerified
+                return
               z '.icon',
                 z $icon, {
                   onclick: onclick or =>

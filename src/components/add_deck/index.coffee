@@ -57,7 +57,7 @@ module.exports = class AddDeck
             onclick: =>
               @router.back()
         z '.name',
-          z @$nameInput, {hintText: 'Enter a name...'}
+          z @$nameInput, {hintText: @model.l.get('addDeck.nameHintText')}
         z '.icon',
           z @$saveIcon,
             icon: if isLoading then 'ellipsis' else 'check'

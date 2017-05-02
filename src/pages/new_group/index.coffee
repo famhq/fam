@@ -15,8 +15,8 @@ module.exports = class NewGroupPage
       requests
       serverData
       meta: {
-        title: 'New Group'
-        description: 'New Group'
+        title: model.l.get 'newGroupPage.title'
+        description: model.l.get 'newGroupPage.title'
       }
     })
     @$editGroup = new EditGroup {model, @router, serverData}

@@ -79,7 +79,7 @@ module.exports = class EventInfo
           z '.icon'
           z '.info'
             z @$tournamentIdInput, {
-              hintText: 'ID tag'
+              hintText: @model.l.get 'eventInfo.tournamentIdHintText'
               isDisabled: true
             }
           z '.copy',
@@ -102,7 +102,7 @@ module.exports = class EventInfo
             z '.icon'
             z '.info'
               z @$passwordInput, {
-                hintText: 'Password'
+                hintText: @model.l.get 'general.password'
                 isDisabled: true
               }
             z '.copy',

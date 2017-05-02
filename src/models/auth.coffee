@@ -79,7 +79,7 @@ module.exports = class Auth
   stream: (path, body, options = {}) =>
     options = _pick options, [
       'isErrorable', 'clientChangesStream', 'ignoreCache', 'initialSortFn'
-      'isStreamed'
+      'isStreamed', 'limit'
     ]
     @waitValidAuthCookie
     .flatMapLatest =>

@@ -25,8 +25,8 @@ module.exports = class AddEventPage
       requests
       serverData
       meta: {
-        title: 'Add Event'
-        description: 'Add Event'
+        title: @model.l.get 'addEventPage.title'
+        description: @model.l.get 'addEventPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -50,7 +50,7 @@ module.exports = class AddEventPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Add Event'
+        title: @model.l.get 'addEventPage.title'
         isFlat: true
         $topLeftButton: z @$buttonBack
       }

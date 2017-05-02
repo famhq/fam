@@ -9,22 +9,22 @@ if window?
   require './index.styl'
 
 module.exports = class ConversationsPage
-  constructor: ({model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData}) ->
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Conversations'
-        description: 'Conversations'
+        title: @model.l.get 'general.conversations'
+        description: @model.l.get 'general.conversations'
       }
     })
-    @$appBar = new AppBar {model}
-    @$buttonMenu = new ButtonMenu {model, @router}
-    @$conversations = new Conversations {model, @router}
+    @$appBar = new AppBar {@model}
+    @$buttonMenu = new ButtonMenu {@model, @router}
+    @$conversations = new Conversations {@model, @router}
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
@@ -38,5 +38,5 @@ module.exports = class ConversationsPage
       z @$appBar,
         isFlat: true
         $topLeftButton: @$buttonMenu
-        title: 'Conversations'
+        title: @model.l.get 'general.conversations'
       @$conversations

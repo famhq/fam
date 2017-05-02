@@ -19,8 +19,8 @@ module.exports = class EventsPage
       requests
       serverData
       meta: {
-        title: 'Events'
-        description: 'Events'
+        title: @model.l.get 'eventsPage.title'
+        description: @model.l.get 'eventsPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -47,7 +47,7 @@ module.exports = class EventsPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Events'
+        title: @model.l.get 'eventsPage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }
@@ -56,11 +56,11 @@ module.exports = class EventsPage
         isBarFixed: false
         tabs: [
           {
-            $menuText: 'Available'
+            $menuText: @model.l.get 'eventsPage.menuTextAvailable'
             $el: @$allEvents
           }
           {
-            $menuText: 'My Events'
+            $menuText: @model.l.get 'eventsPage.menuTextMine'
             $el: @$myEvents
           }
         ]

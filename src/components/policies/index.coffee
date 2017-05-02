@@ -54,10 +54,9 @@ module.exports = class Policies
     {$dropdowns} = @state.getValue()
 
     z '.z-policies',
-      z '.title', 'Privacy & Content'
+      z '.title', @model.l.get 'policies.title'
       z '.description',
-        'By registering, you agree to Starfire\'s Privacy Policy, TOS,
-        and Supercell\'s Fan Content Policy'
+        @model.l.get 'policies.description'
 
       _map $dropdowns, ($dropdown, i) =>
         {$content, $title, $icon, isVisible} = $dropdown

@@ -17,7 +17,7 @@ TWITTER_BLUE = '#4099FF'
 
 module.exports = class ShareSheet
   constructor: ({@model, @router, @isVisible}) ->
-    @$sheet = new Sheet {@router, @isVisible}
+    @$sheet = new Sheet {@model, @router, @isVisible}
     @$twitterIcon = new Icon()
     @$facebookIcon = new Icon()
     @$shareAnyIcon = new Icon()

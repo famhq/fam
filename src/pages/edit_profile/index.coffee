@@ -10,8 +10,8 @@ module.exports = class EditProfilePage
       requests
       serverData
       meta: {
-        title: 'Edit Profile'
-        description: 'Edit your Clay profile'
+        title: model.l.get 'editProfilePage.title'
+        description: model.l.get 'editProfilePage.title'
       }
     })
     @$editProfile = new EditProfile {model, router}

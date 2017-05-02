@@ -9,15 +9,14 @@ if window?
   require './index.styl'
 
 module.exports = class DecksPage
-  installMessage: 'Add Starfi.re to your homescreen to quickly access
-                  these guides anytime'
-
   constructor: ({@model, requests, @router, serverData}) ->
     thread = requests.flatMapLatest ({route}) =>
       if route.params.id
         @model.thread.getById route.params.id
       else
         Rx.Observable.just null
+
+    @installMessage = @model.l.get 'decksPage.installMessage'
 
     @$decks = new Decks {@model, @router, thread}
 
@@ -26,8 +25,8 @@ module.exports = class DecksPage
       requests
       serverData
       meta: {
-        title: 'Decks'
-        description: 'Decks'
+        title: @model.l.get 'general.decks'
+        description: @model.l.get 'general.decks'
       }
     })
     @$bottomBar = new BottomBar {@model, @router, requests}

@@ -33,9 +33,8 @@ module.exports = class GetAppDialog
                   target: '_system'
             }
             z '.text',
-              'Take your stats on the go with the Starfire app
-              for Android and iOS!'
+              @model.l.get 'getAppDialog.text'
         cancelButton:
-          text: 'cancel'
+          text: @model.l.get 'general.cancel'
           onclick: =>
             @model.getAppDialog.close()

@@ -8,19 +8,19 @@ if window?
   require './index.styl'
 
 module.exports = class ActionBar
-  constructor: ->
+  constructor: ({@model}) ->
     @$cancelIcon = new Icon()
     @$saveIcon = new Icon()
 
   render: ({cancel, save, isSaving}) =>
     cancel = _defaults cancel, {
       icon: 'close'
-      text: 'Cancel'
+      text: @model.l.get 'general.cancel'
       onclick: -> null
     }
     save = _defaults save, {
       icon: 'check'
-      text: 'Save'
+      text: @model.l.get 'general.save'
       onclick: -> null
     }
 

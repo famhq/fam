@@ -44,7 +44,7 @@ module.exports = class PlayersSearch
       @state.set isLoading: false
     .catch (err) =>
       console.log err
-      @playerTagError.onNext 'Hmmm, we can\'t find that tag!'
+      @playerTagError.onNext @model.l.get 'playersSearch.playerTagError'
       @state.set isLoading: false
 
   render: =>
@@ -54,26 +54,28 @@ module.exports = class PlayersSearch
       z '.g-grid',
         z '.image'
         z '.description',
-          'Find any player\'s stats, then follow them to stay up to date'
+          @model.l.get 'playersSearch.description'
         z 'form.form',
           onsubmit: @onSearch
           z '.input',
             z @$playerTagInput,
-              hintText: 'Player ID tag #'
+              hintText: @model.l.get 'playersSearch.playerTagInputHintText'
               isCentered: true
           z '.button',
             z @$trackButton,
-              text: if isLoading then 'Loading...' else 'Find player'
+              text: if isLoading \
+                    then @model.l.get 'general.loading'
+                    else @model.l.get 'playersSearch.trackButtonText'
               type: 'submit'
       if isLoading
         z @$dialog,
           isVanilla: true
           $content:
             z '.z-players-search_dialog',
-              z '.description', 'Searching...'
+              z '.description', @model.l.get 'playersSearch.dialogDescription'
               z '.elixir-collector'
           cancelButton:
-            text: 'Cancel'
+            text: @model.l.get 'general.cancel'
             isFullWidth: true
             onclick: =>
               @state.set isLoading: false

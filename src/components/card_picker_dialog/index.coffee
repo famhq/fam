@@ -35,7 +35,7 @@ module.exports = class CardPickerDialog
           @overlay$.onNext null
         $content:
           z '.z-card-picker-dialog_dialog',
-            z '.title', 'Insert card'
+            z '.title', @model.l.get 'cardPickerDialog.title'
             z '.cards',
               _map cards, ({card, $card}) =>
                 z '.card', {
@@ -45,6 +45,6 @@ module.exports = class CardPickerDialog
                 },
                   z '.image', z $card, {width: 50}
         cancelButton:
-          text: 'cancel'
+          text: @model.l.get 'general.cancel'
           onclick: =>
             @overlay$.onNext null

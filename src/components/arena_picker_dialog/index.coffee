@@ -28,7 +28,7 @@ module.exports = class ArenaPickerDialog
           @overlay$.onNext null
         $content:
           z '.z-arena-picker-dialog_dialog',
-            z '.title', 'Max Arena'
+            z '.title', @model.l.get 'arenaPickerDialog.title'
             z '.arenas',
               _map config.ARENAS, (arenaName, arenaNumber) =>
                 z '.arena', {
@@ -38,6 +38,6 @@ module.exports = class ArenaPickerDialog
                 },
                   arenaName
         cancelButton:
-          text: 'cancel'
+          text: @model.l.get 'general.cancel'
           onclick: =>
             @overlay$.onNext null

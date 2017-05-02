@@ -75,11 +75,11 @@ module.exports = class ForumSignature
                     height: imageHeight
             z '.g-col.g-xs-12.g-md-6',
               z '.labels',
-                z '.label', 'Signature URL'
+                z '.label', @model.l.get 'forumSignature.label'
                 @router.link z 'a.help', {
                   href:
                     'https://forum.supercell.com/profile.php?do=editsignature'
-                }, 'Where do I paste this?'
+                }, @model.l.get 'forumSignature.help'
               z '.input-wrapper',
                 z 'input.input#image-url',
                   value: imageSrc
@@ -99,7 +99,7 @@ module.exports = class ForumSignature
                         null
       z '.options',
         z '.g-grid',
-          z '.subhead', 'Favorite Card'
+          z '.subhead', @model.l.get 'forumSignature.subheadColors'
           z '.g-cols',
             _map COLORS, (color) =>
               z '.g-col.g-xs-3.g-md-1',
@@ -126,7 +126,7 @@ module.exports = class ForumSignature
                         color: colors.$white
 
         z '.g-grid.cards',
-          z '.subhead', 'Cards'
+          z '.subhead', @model.l.get 'forumSignature.subheadFavoriteCard'
           z @$cardList,
             onCardClick: (card) =>
               @state.set isImageVisible: false

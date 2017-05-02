@@ -27,8 +27,8 @@ module.exports = class ConversationPage
       requests
       serverData
       meta: {
-        title: 'Chat'
-        description: 'Chat'
+        title: @model.l.get 'general.chat'
+        description: @model.l.get 'general.chat'
       }
     })
     @$appBar = new AppBar {@model}

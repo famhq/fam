@@ -17,4 +17,4 @@ module.exports = class DeckGuides
     {me, deck} = @state.getValue()
 
     z '.z-deck-guides',
-      'guides'
+      'Guides coming soon...'

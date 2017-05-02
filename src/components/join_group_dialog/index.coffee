@@ -42,7 +42,9 @@ module.exports = class JoinGroupDialog
       @state.set isLoading: false, error: null
       @isVisible.onNext false
     .catch (err) =>
-      @state.set error: 'Incorrect password', isLoading: false
+      @state.set
+        error: @model.l.get 'joinGroupDialog.error'
+        isLoading: false
 
   render: =>
     {step, isLoading, clan, error} = @state.getValue()
@@ -62,11 +64,11 @@ module.exports = class JoinGroupDialog
               z '.input',
                 z @$clanPasswordInput, {
                   type: 'text'
-                  hintText: 'Password'
+                  hintText: @model.l.get 'general.password'
                 }
-              z '.text', 'Ask your clan leader for the group password to join'
+              z '.text', @model.l.get 'joinGroupDialog.text'
         cancelButton:
-          text: 'cancel'
+          text: @model.l.get 'general.cancel'
           onclick: @cancel
         submitButton:
           text: if isLoading then 'loading...' \

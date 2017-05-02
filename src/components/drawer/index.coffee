@@ -9,7 +9,6 @@ Environment = require 'clay-environment'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
-DeckCards = require '../deck_cards'
 FlatButton = require '../flat_button'
 GroupBadge = require '../group_badge'
 Ripple = require '../ripple'
@@ -34,20 +33,7 @@ module.exports = class Drawer
       (vals...) -> vals
     )
 
-    userDeck = me.flatMapLatest (me) =>
-      if me?.data?.clashRoyaleDeckId
-        @model.clashRoyaleUserDeck.getByDeckId me?.data?.clashRoyaleDeckId
-      else
-        Rx.Observable.just null
-
     myGroups = @model.group.getAll({filter: 'mine'})
-
-    @$deckCards = new DeckCards {
-      @model, @router
-      cardsPerRow: 4
-      deck: userDeck.map (userDeck) ->
-        userDeck?.deck
-    }
 
     userAgent = navigator?.userAgent
     needsApp = userAgent and
@@ -69,7 +55,6 @@ module.exports = class Drawer
             $badge: new GroupBadge {@model, group}
             $ripple: new Ripple()
           }
-      userDeck: userDeck
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
@@ -78,21 +63,21 @@ module.exports = class Drawer
         _filter([
           {
             path: '/profile'
-            title: 'Profile'
+            title: @model.l.get 'drawer.menuItemProfile'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'profile'
           }
           {
             path: '/clan'
-            title: 'Clan'
+            title: @model.l.get 'drawer.menuItemClan'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'clan'
           }
           {
             path: '/decks'
-            title: 'Decks'
+            title: @model.l.get 'drawer.menuItemDecks'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'decks'
@@ -106,7 +91,7 @@ module.exports = class Drawer
           # }
           {
             path: '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
-            title: 'Community'
+            title: @model.l.get 'drawer.menuItemCommunity'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'chat'
@@ -114,7 +99,7 @@ module.exports = class Drawer
           if hasConversations
             {
               path: '/conversations'
-              title: 'Conversations'
+              title: @model.l.get 'drawer.menuItemConversations'
               $icon: new Icon()
               $ripple: new Ripple()
               iconName: 'chat-bubble'
@@ -124,7 +109,7 @@ module.exports = class Drawer
           }
           {
             path: '/players'
-            title: 'Players'
+            title: @model.l.get 'drawer.menuItemPlayers'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'friends'
@@ -160,7 +145,7 @@ module.exports = class Drawer
             {
               onclick: =>
                 @model.portal.call 'app.install'
-              title: 'Get the app'
+              title: @model.l.get 'drawer.menuItemNeedsApp'
               $icon: new Icon()
               $ripple: new Ripple()
               iconName: 'get'
@@ -189,9 +174,8 @@ module.exports = class Drawer
 
 
   render: ({currentPath}) =>
-    {isOpen, me, menuItems, userDeck, myGroups, drawerWidth, breakpoint,
+    {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint,
       windowSize} = @state.getValue()
-    deck = userDeck?.deck
 
     translateX = if isOpen then '0' else "-#{drawerWidth}px"
     buttonColors =
@@ -237,11 +221,11 @@ module.exports = class Drawer
                       z '.button', {
                         onclick: =>
                           @model.signInDialog.open 'signIn'
-                      }, 'Sign in'
+                      }, @model.l.get 'general.signIn'
                       z '.button', {
                         onclick: =>
                           @model.signInDialog.open()
-                      }, 'Join'
+                      }, @model.l.get 'general.signUp'
                     z '.divider'
                   ]
                 _map myGroups, ({$badge, $ripple, group}) =>

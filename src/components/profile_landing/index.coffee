@@ -42,7 +42,9 @@ module.exports = class ProfileLanding
       @state.set isLoading: false
     .catch (err) =>
       console.log err?.info
-      @playerTagError.onNext  err?.info or 'Hmmm, we can\'t find that tag!'
+      @playerTagError.onNext(
+        err?.info or @model.l.get 'playersSearch.playerTagError'
+      )
       @state.set isLoading: false
 
   render: =>
@@ -52,36 +54,33 @@ module.exports = class ProfileLanding
       z '.g-grid',
         z '.image'
         z '.description',
-          'Enter your player ID tag to start automatically tracking your wins,
-          losses, donations, and more'
+          @model.l.get 'profileLanding.description'
         z 'form.form',
           onsubmit: @onTrack
           z '.input',
             z @$playerTagInput,
-              hintText: 'Player ID tag #'
+              hintText: @model.l.get 'playersSearch.playerTagInputHintText'
               isCentered: true
           z '.button',
             z @$trackButton,
-              text: if isLoading then 'Loading...' else 'Track my stats'
+              text: if isLoading \
+                    then @model.l.get 'general.loading'
+                    else @model.l.get 'profileLanding.trackButtonText'
               type: 'submit'
         z '.terms',
           z 'p',
-            'You can find your player tag by tapping on your username in
-            Clash Royale to open your profile. It\'s right below your username
-            in the profile.'
+            @model.l.get 'profileLanding.terms'
           z 'p',
-            'This content is not affiliated with, endorsed, sponsored, or
-            specifically approved by Supercell and Supercell is
-            not responsible for it.'
+            @model.l.get 'profileLanding.terms2'
       if isLoading
         z @$dialog,
           isVanilla: true
           $content:
             z '.z-profile-landing_dialog',
-              z '.description', 'Collecting your stats...'
+              z '.description', @model.l.get 'profileLanding.dialogDescription'
               z '.elixir-collector'
           cancelButton:
-            text: 'Cancel'
+            text: @model.l.get 'general.cancel'
             isFullWidth: true
             onclick: =>
               @state.set isLoading: false

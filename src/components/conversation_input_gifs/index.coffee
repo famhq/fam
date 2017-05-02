@@ -18,7 +18,7 @@ module.exports = class ConversationInputGifs
     @searchValue = new Rx.BehaviorSubject null
     debouncedSearchValue = @searchValue.debounce(SEARCH_DEBOUNCE)
 
-    @$searchInput = new SearchInput {@searchValue}
+    @$searchInput = new SearchInput {@model, @searchValue}
     @$spinner = new Spinner()
 
     currentPanelAndSearchValue = Rx.Observable.combineLatest(
@@ -56,7 +56,7 @@ module.exports = class ConversationInputGifs
         isSearchIconRight: true
         height: '36px'
         bgColor: colors.$tertiary500
-        placeholder: 'Search gifs...'
+        placeholder: @model.l.get 'conversationInputGifs.placeholder'
       }
       z '.gifs', {
         # style: width: "#{windowSize.width - drawerWidth}px"

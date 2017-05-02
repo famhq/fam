@@ -63,8 +63,8 @@ module.exports = class GroupChatPage
       requests
       serverData
       meta: {
-        title: 'Group Chat'
-        description: 'Group Chat'
+        title: @model.l.get 'groupChatPage.title'
+        description: @model.l.get 'groupChatPage.title'
       }
     })
     @$appBar = new AppBar {@model}

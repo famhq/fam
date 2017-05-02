@@ -27,8 +27,8 @@ module.exports = class ProfileChestsPage
       requests
       serverData
       meta: {
-        title: 'Chest cycle'
-        description: 'Chest cycle'
+        title: @model.l.get 'profileChestsPage.title'
+        description: @model.l.get 'profileChestsPage.title'
       }
     })
     @$appBar = new AppBar {@model}
@@ -48,7 +48,7 @@ module.exports = class ProfileChestsPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Chest cycle'
+        title: @model.l.get 'profileChestsPage.title'
         style: 'secondary'
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }

@@ -18,8 +18,8 @@ module.exports = class GroupInvitePage
       requests
       serverData
       meta: {
-        title: 'Group Invite'
-        description: 'Group Invite'
+        title: model.l.get 'groupInvitePage.title'
+        description: model.l.get 'groupInvitePage.title'
       }
     })
     @$groupInvite = new GroupInvite {model, @router, serverData, group}

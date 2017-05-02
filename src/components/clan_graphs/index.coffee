@@ -39,5 +39,4 @@ module.exports = class ClanGraphs
     z '.z-clan-graphs',
       z '.g-grid',
         z '.empty',
-          'Clan graphs coming soon, we just need to collect more than 1 week
-          of data :)'
+          @model.l.get 'clanGraphs.empty'

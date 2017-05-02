@@ -18,7 +18,7 @@ module.exports = class FindFriends
     @isFindFriendsVisible ?= new Rx.BehaviorSubject true
     @searchValue = new Rx.BehaviorSubject ''
 
-    @$searchInput = new SearchInput({@searchValue})
+    @$searchInput = new SearchInput({@model, @searchValue})
 
     # TODO: add infinite scroll
     # tried comblineLatest w/ debounce stream and onscrollbottom stream,
@@ -64,7 +64,7 @@ module.exports = class FindFriends
         z @$searchInput, {
           onBack: onBack
           alwaysShowBack: true
-          placeholder: 'Search by username'
+          placeholder: @model.l.get 'findFriends.searchPlaceholder'
         }
       z '.results',
         z '.g-grid',

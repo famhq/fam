@@ -11,18 +11,19 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-NOTIFICATION_TYPES = [
-  {
-    name: 'New chat messages'
-    key: 'chatMessage'
-  }
-  # {
-  #   name: 'New announcments'
-  #   key: 'announcement'
-  # }
-]
 module.exports = class Settings
   constructor: ({@model, @portal, @router, group}) ->
+    notificationTypes = [
+      {
+        name: @model.l.get 'groupSettings.chatMessgae'
+        key: 'chatMessage'
+      }
+      # {
+      #   name: 'New announcments'
+      #   key: 'announcement'
+      # }
+    ]
+
     me = @model.user.getMe()
 
     @$leaveIcon = new Icon()
@@ -34,7 +35,7 @@ module.exports = class Settings
       isLeaveGroupLoading: false
       notificationTypes: group.flatMapLatest (group) =>
         @model.userGroupData.getMeByGroupId(group.id).map (data) ->
-          _map NOTIFICATION_TYPES, (type) ->
+          _map notificationTypes, (type) ->
             isSelected = new Rx.BehaviorSubject(
               not data.globalBlockedNotifications?[type.key]
             )
@@ -62,8 +63,8 @@ module.exports = class Settings
         $icon: @$leaveIcon
         icon: 'subtract-circle'
         text: if isLeaveGroupLoading \
-              then 'Loading'
-              else 'Leave group'
+              then @model.l.get 'general.loading'
+              else @model.l.get 'groupSettings.leaveGroup'
         onclick: @leaveGroup
       }
     ]
@@ -82,7 +83,7 @@ module.exports = class Settings
 
     z '.z-group-settings',
       z '.g-grid',
-        z '.title', 'General'
+        z '.title', @model.l.get 'general.general'
         z 'ul.list',
           _map items, ({$icon, icon, text, onclick}) ->
             z 'li.item', {onclick},
@@ -92,7 +93,7 @@ module.exports = class Settings
                   isTouchTarget: false
                   color: colors.$primary500
               z '.text', text
-        z '.title', 'Notifications'
+        z '.title', @model.l.get 'general.notifications'
         z 'ul.list',
           _map notificationTypes, ({name, key, $toggle, isSelected}) =>
             z 'li.item',

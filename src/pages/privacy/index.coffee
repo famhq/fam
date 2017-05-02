@@ -10,23 +10,23 @@ if window?
   require './index.styl'
 
 module.exports = class PrivacyPage
-  constructor: ({model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData}) ->
     @$editButton = new Button()
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Privacy'
-        description: 'Privacy'
+        title: @model.l.get 'privacyPage.title'
+        description: @model.l.get 'privacyPage.title'
       }
     })
-    @$appBar = new AppBar {model}
-    @$backButton = new ButtonBack {model, @router}
-    @$privacy = new Privacy {model, @router}
+    @$appBar = new AppBar {@model}
+    @$backButton = new ButtonBack {@model, @router}
+    @$privacy = new Privacy {@model, @router}
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
@@ -38,7 +38,7 @@ module.exports = class PrivacyPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Privacy'
+        title: @model.l.get 'privacyPage.title'
         $topLeftButton: z @$backButton, {color: colors.$tertiary900}
       }
       @$privacy

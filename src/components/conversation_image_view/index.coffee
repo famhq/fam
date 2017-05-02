@@ -45,7 +45,7 @@ module.exports = class ConversationImageView
 
     z '.z-conversation-image-view',
       z @$appBar, {
-        title: 'Image'
+        title: @model.l.get 'conversationImageView.title'
         $topLeftButton: z @$buttonBack, {
           onclick: =>
             @model.imageViewOverlay.setImageData null

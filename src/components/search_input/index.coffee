@@ -8,7 +8,7 @@ if window?
 Icon = require '../icon'
 
 module.exports = class SearchInput
-  constructor: ({@searchValue, @router}) ->
+  constructor: ({@model, @searchValue, @router}) ->
     @$backIcon = new Icon()
     @$clearIcon = new Icon()
 
@@ -38,7 +38,7 @@ module.exports = class SearchInput
     height ?= '56px'
     isFocused ?= _isFocused
     bgColor ?= colors.$tertiary700
-    placeholder ?= 'Search...'
+    placeholder ?= @model.l.get 'searchInput.placeholder'
     hasOnClick = Boolean onclick
 
     z '.z-search-input', {

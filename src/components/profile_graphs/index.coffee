@@ -38,9 +38,9 @@ module.exports = class ProfileGraphs
 
     z '.z-profile-graphs',
       z '.g-grid',
-        _map recordTypes, ({recordType, graphSeries, $graph}) ->
+        _map recordTypes, ({recordType, graphSeries, $graph}) =>
           z '.record-type',
-            z '.title', 'Trophies'
+            z '.title', @model.l.get 'profileGraphs.trophies'
             z $graph, {
               labels: [recordType.name]
               series: [graphSeries]

@@ -11,10 +11,10 @@ module.exports = class OfflineOverlay
 
   render: =>
     z '.z-offline-overlay',
-      'Looks like you\'re offline. Reconnect to the internet to resume'
+      @model.l.get 'offlineOverlay.text'
       z '.close-button',
         z @$closeButton,
-          text: 'Close this message'
+          text: @model.l.get 'offlineOverlay.closeButtonText'
           isFullWidth: false
           onclick: =>
             @isOffline.onNext false

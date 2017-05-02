@@ -20,6 +20,8 @@ $zIndexTextarea = 2
       overflow-y: auto
       overflow-x: hidden
       -webkit-overflow-scrolling: touch
+      // use gpu
+      transform: translateZ(0)
       // margin-bottom: 64px
       width: 100%
       min-width: 0 // fix
@@ -36,7 +38,7 @@ $zIndexTextarea = 2
         margin: 0
 
   > .bottom
-    margin: 16px
+    margin: 0 16px 16px 16px
 
   @media (min-width: $breakPointMedium)
     > .textarea-container

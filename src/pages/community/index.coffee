@@ -24,8 +24,8 @@ module.exports = class CommunityPage
       requests
       serverData
       meta: {
-        title: 'Community'
-        description: 'Community'
+        title: @model.l.get 'general.community'
+        description: @model.l.get 'general.community'
       }
     })
 
@@ -57,7 +57,7 @@ module.exports = class CommunityPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Community'
+        title: @model.l.get 'general.community'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }
@@ -73,13 +73,13 @@ module.exports = class CommunityPage
           {
             $menuIcon: @$groupsIcon
             menuIconName: 'grid'
-            $menuText: 'Groups'
+            $menuText: @model.l.get 'communityPage.menuText'
             $el: @$groups
           }
           {
             $menuIcon: @$conversationsIcon
             menuIconName: 'inbox'
-            $menuText: 'Conversations'
+            $menuText: @model.l.get 'general.conversations'
             $el: @$conversations
           }
         ]

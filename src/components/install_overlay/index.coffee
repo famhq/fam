@@ -24,19 +24,19 @@ module.exports = class InstallOverlay
     z '.z-install-overlay',
       z '.container',
         z '.content',
-          z '.title', 'Add Starfi.re to homescreen'
+          z '.title', @model.l.get 'installOverlay.title'
           z '.action',
-            z '.text', 'Tap'
+            z '.text', @model.l.get 'installOverlay.text'
             z '.icon',
               z @$overflowIcon,
                 icon: 'overflow'
                 color: colors.$white
                 isTouchTarget: false
           z '.instructions',
-            'Select \'Add to homescreen\' to pin the Starfi.re web app'
+            @model.l.get 'installOverlay.instructions'
           z '.button',
             z @$closeButton, {
-              text: 'Got it'
+              text: @model.l.get 'installOverlay.closeButtonText'
               isFullWidth: false
               colors:
                 cText: colors.$tertiary700Text

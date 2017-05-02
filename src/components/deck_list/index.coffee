@@ -63,9 +63,9 @@ module.exports = class DeckList extends Base
       },
         if decks and _isEmpty decks
           z '.no-decks',
-            'No decks found. '
+            @model.l.get 'deckList.noDecks'
             if filter is 'mine'
-              'Select a popular deck to add it, or create a new deck.'
+              @model.l.get 'deckList.noDecksMine'
         else if decks
           _map decks, ({deck, hasDeck, $deck, $starIcon, $chevronIcon}) =>
             [

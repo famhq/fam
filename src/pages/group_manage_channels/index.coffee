@@ -14,30 +14,30 @@ if window?
 module.exports = class GroupManageChannelsPage
   hideDrawer: true
 
-  constructor: ({model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) ->
-      model.group.getById route.params.id
+  constructor: ({@model, requests, @router, serverData}) ->
+    group = requests.flatMapLatest ({route}) =>
+      @model.group.getById route.params.id
 
-    user = requests.flatMapLatest ({route}) ->
-      model.user.getById route.params.userId
+    user = requests.flatMapLatest ({route}) =>
+      @model.user.getById route.params.userId
 
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Manage Channels'
-        description: 'Manage Channels'
+        title: @model.l.get 'groupManageChannelsPage.title'
+        description: @model.l.get 'groupManageChannelsPage.title'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupManageChannels = new GroupManageChannels {
-      model, @router, serverData, group, user
+      @model, @router, serverData, group, user
     }
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
@@ -49,7 +49,7 @@ module.exports = class GroupManageChannelsPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Manage Channels'
+        title: @model.l.get 'groupManageChannelsPage.title'
         style: 'secondary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}

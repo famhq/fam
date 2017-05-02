@@ -22,24 +22,23 @@ module.exports = class RequestNotificationsCard
         isHighlighted: state is 'ask'
         text:
           if state is 'turnedOn'
-            'Notifications have been enabled! You can always adjust
-            them from the settings'
+            @model.l.get 'requestNotificationsCard.turnedOn'
           else if state is 'noThanks'
-            'If you change your mind, notifications can be toggled on
-            from the settings'
+            @model.l.get 'requestNotificationsCard.noThanks'
           else
-            'Would you like to turn on notifications?
-            You\'ll receive a daily recap of your progress'
+            @model.l.get 'requestNotificationsCard.request'
         cancel:
           if state is 'ask'
             {
-              text: 'no thanks'
+              text: @model.l.get 'requestNotificationsCard.cancelText'
               onclick: =>
                 @state.set state: 'noThanks'
                 localStorage?['hideNotificationCard'] = '1'
             }
         submit:
-          text: if state is 'ask' then 'yes, turn on' else 'got it'
+          text: if state is 'ask' \
+                then @model.l.get 'requestNotificationsCard.submit'
+                else @model.l.get 'installOverlay.closeButtonText'
           onclick: =>
             if state is 'ask'
               PushService.register {@model}

@@ -41,6 +41,7 @@ module.exports = class Decks
       selectedIndex: selectedIndex
       me: @model.user.getMe()
       $sideEl: thread?.map (threadVal) =>
+        console.log 'tval', threadVal
         if threadVal
           unless @$cachedThread
             @$cachedThread = new Thread {

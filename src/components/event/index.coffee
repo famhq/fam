@@ -84,20 +84,20 @@ module.exports = class Event
               {
                 $menuIcon: @$infoIcon
                 menuIconName: 'info'
-                $menuText: 'Info'
+                $menuText: @model.l.get 'general.info'
                 $el: @$info
               }
               {
                 $menuIcon: @$membersIcon
                 menuIconName: 'friends'
-                $menuText: 'Members'
+                $menuText: @model.l.get 'general.members'
                 $el: @$members
               }
               if hasMemberPermission
                 {
                   $menuIcon: @$chatIcon
                   menuIconName: 'hashtag'
-                  $menuText: 'Chat'
+                  $menuText: @model.l.get 'general.chat'
                   $el: @$conversation
                 }
             ]
@@ -106,7 +106,9 @@ module.exports = class Event
             z '.join',
               z '.g-grid',
                 z @$joinButton,
-                  text: if isJoinLoading then 'Loading...' else 'Join event'
+                  text: if isJoinLoading \
+                        then @model.l.get 'general.loading'
+                        else @model.l.get 'event.joinButtonText'
                   onclick: @join
         ]
       else

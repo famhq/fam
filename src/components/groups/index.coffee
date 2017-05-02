@@ -32,11 +32,11 @@ module.exports = class Groups
 
     groupTypes = [
       {
-        title: 'My groups'
+        title: @model.l.get 'groups.myGroupList'
         $groupList: @$myGroupList
       }
       {
-        title: 'Open groups'
+        title: @model.l.get 'groups.openGroupsList'
         $groupList: @$openGroupList
       }
     ]

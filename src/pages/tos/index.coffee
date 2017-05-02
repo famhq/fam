@@ -10,22 +10,22 @@ if window?
   require './index.styl'
 
 module.exports = class TosPage
-  constructor: ({model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData}) ->
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: 'Terms of Service'
-        description: 'Terms of Service'
+        title: @model.l.get 'tosPage.title'
+        description: @model.l.get 'tosPage.title'
       }
     })
-    @$appBar = new AppBar {model}
-    @$backButton = new ButtonBack {model, @router}
-    @$tos = new Tos {model, @router}
+    @$appBar = new AppBar {@model}
+    @$backButton = new ButtonBack {@model, @router}
+    @$tos = new Tos {@model, @router}
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 
@@ -37,7 +37,7 @@ module.exports = class TosPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Terms of Service'
+        title: @model.l.get 'tosPage.title'
         $topLeftButton: z @$backButton, {color: colors.$tertiary900}
       }
       @$tos

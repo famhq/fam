@@ -15,8 +15,8 @@ module.exports = class PoliciesPage
       requests
       serverData
       meta: {
-        title: 'Policies'
-        description: 'Policies'
+        title: model.l.get 'policiesPage.title'
+        description: model.l.get 'policiesPage.title'
       }
     })
     @$policies = new Policies {model, @router}

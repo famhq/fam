@@ -34,6 +34,6 @@ module.exports = class DeckDialog
             z '.deck',
               z @$deckCards, {cardWidth: 65}
         cancelButton:
-          text: 'cancel'
+          text: @model.l.get 'general.cancel'
           onclick: =>
             @overlay$.onNext null

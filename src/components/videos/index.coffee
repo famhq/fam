@@ -40,7 +40,7 @@ module.exports = class Videos extends Base
     {me, videos} = @state.getValue()
 
     z '.z-videos',
-      z 'h2.title', 'Popular videos'
+      z 'h2.title', @model.l.get 'videos.title'
       z '.videos',
         if videos and _isEmpty videos
           'No videos found'

@@ -26,6 +26,7 @@ Group = require './group'
 GroupRecord = require './group_record'
 GroupRecordType = require './group_record_type'
 GameRecordType = require './game_record_type'
+Language = require './language'
 Product = require './product'
 PushToken = require './push_token'
 Stream = require './stream'
@@ -128,6 +129,33 @@ module.exports = class Model
     @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {@user, @game, @modal, @installOverlay, @getAppDialog}
     @window = new Window {cookieSubject}
+
+
+    # expNativeLanguageGroup = localStorage?['exp:nativeLanguage']
+    # unless expNativeLanguageGroup
+    #   expNativeLanguageGroup = if Math.random() > 0.5 \
+    #                            then 'native'
+    #                            else 'control'
+    #   localStorage?['exp:nativeLanguage'] = expNativeLanguageGroup
+    # ga? 'send', 'event', 'exp', 'nativeLanguage', expNativeLanguageGroup
+
+    language = window?.navigator?.languages?[0] or window?.navigator?.language
+    browserLanugage = language?.split?('-')[0]
+    if browserLanugage is 'es' # and expNativeLanguageGroup is 'native'
+      language = browserLanugage
+    else
+      language = 'en'
+
+    @l = new Language {language}
+
+    # if expNativeLanguageGroup is 'native'
+    @user.getMe().take(1).toPromise()
+    .then (me) =>
+      if me.country in [
+        'AR', 'BO', 'CR', 'CU', 'DM', 'EC', 'SV', 'GQ', 'GT', 'HN', 'MX'
+        'NI', 'PA', 'PE', 'ES', 'UY', 'VE'
+      ]
+        @l.setLanguage 'es'
 
   wasCached: => @isFromCache
 

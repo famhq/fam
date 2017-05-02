@@ -93,7 +93,7 @@ module.exports = class ProfileDialog
                       icon: 'profile'
                       color: colors.$primary500
                       isTouchTarget: false
-                  z '.text', 'Profile'
+                  z '.text', @model.l.get 'general.profile'
 
               unless isMe
                 z 'li.menu-item', {
@@ -115,8 +115,8 @@ module.exports = class ProfileDialog
                       isTouchTarget: false
                   z '.text',
                     if isConversationLoading
-                    then 'Loading'
-                    else 'Message'
+                    then @model.l.get 'general.loading'
+                    else @model.l.get 'profileDialog.message'
 
               unless isMe
                 z 'li.menu-item', {
@@ -133,28 +133,30 @@ module.exports = class ProfileDialog
                       color: colors.$primary500
                       isTouchTarget: false
                   z '.text',
-                    if isBlocked then 'Unblock' else 'Block'
+                    if isBlocked \
+                    then @model.l.get 'profileDialog.unblock'
+                    else @model.l.get 'profileDialog.block'
 
-              if not isMe #and user?.chatMessageId and not me?.flags.isModerator
-                z 'li.menu-item', {
-                  onclick: =>
-                    @selectedProfileDialogUser.onNext null
-                    # @state.set isFlagLoading: true
-                    # @model.threadComment.flag user?.chatMessageId
-                    # .then =>
-                    #   @state.set isFlagLoading: false, isFlagged: true
-                },
-                  z '.icon',
-                    z @$flagIcon,
-                      icon: 'warning'
-                      color: colors.$primary500
-                      isTouchTarget: false
-                  z '.text',
-                    if isFlagLoading \
-                    then 'Loading'
-                    else if isFlagged
-                    then 'Reported'
-                    else 'Report'
+              # if not isMe #and user?.chatMessageId and not me?.flags.isModerator
+              #   z 'li.menu-item', {
+              #     onclick: =>
+              #       @selectedProfileDialogUser.onNext null
+              #       # @state.set isFlagLoading: true
+              #       # @model.threadComment.flag user?.chatMessageId
+              #       # .then =>
+              #       #   @state.set isFlagLoading: false, isFlagged: true
+              #   },
+              #     z '.icon',
+              #       z @$flagIcon,
+              #         icon: 'warning'
+              #         color: colors.$primary500
+              #         isTouchTarget: false
+              #     z '.text',
+              #       if isFlagLoading \
+              #       then @model.l.get 'general.loading'
+              #       else if isFlagged
+              #       then @model.l.get 'profileDialog.reported'
+              #       else @model.l.get 'profileDialog.report'
 
               if me?.flags?.isModerator
                 z '.divider'
@@ -174,9 +176,9 @@ module.exports = class ProfileDialog
                       isTouchTarget: false
                   z '.text',
                     if user?.flags?.isChatBanned
-                      'Banned'
+                      @model.l.get 'profileDialog.chatBanned'
                     else
-                      'Ban'
+                      @model.l.get 'profileDialog.ban'
 
               if me?.flags?.isModerator and user?.chatMessageId
                 z 'li.menu-item', {
@@ -190,7 +192,7 @@ module.exports = class ProfileDialog
                       color: colors.$primary500
                       isTouchTarget: false
                   z '.text',
-                    'Delete'
+                    @model.l.get 'profileDialog.delete'
 
               if group and hasAdminPermission
                 [
