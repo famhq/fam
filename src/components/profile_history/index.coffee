@@ -75,16 +75,16 @@ module.exports = class ProfileHistory
               z $stats
 
         # TODO: rm whenever
-        if not localStorage?['hasImported'] and new Date(me?.joinTime) < Date.now() - 3600 * 24
-          z '.migrate',
-            z @$migrateCard,
-              text: 'We moved decks to a new database to improve server performance.
-                    Do you want to import your old decks?'
-              submit:
-                text: if isImporting then 'importing...' else 'import'
-                onclick: =>
-                  @state.set isImporting: true
-                  @model.clashRoyaleUserDeck.import()
-                  .then =>
-                    localStorage?['hasImported'] = '1'
-                    @state.set isImporting: false
+        # if not localStorage?['hasImported'] and new Date(me?.joinTime) < Date.now() - 3600 * 24
+        #   z '.migrate',
+        #     z @$migrateCard,
+        #       text: 'We moved decks to a new database to improve server performance.
+        #             Do you want to import your old decks?'
+        #       submit:
+        #         text: if isImporting then 'importing...' else 'import'
+        #         onclick: =>
+        #           @state.set isImporting: true
+        #           @model.clashRoyaleUserDeck.import()
+        #           .then =>
+        #             localStorage?['hasImported'] = '1'
+        #             @state.set isImporting: false

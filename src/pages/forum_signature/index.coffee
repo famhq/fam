@@ -27,7 +27,7 @@ module.exports = class ForumSignaturePage
     @$forumSignature = new ForumSignature {@model, @router, serverData}
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 

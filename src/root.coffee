@@ -90,8 +90,17 @@ init = ->
 
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
-    # we could limit transports to just websockets and get rid of
-    # sticky session in backend, but some firewalls block websockets...
+    # this potentially has negative side effects. firewalls could
+    # potentially block websockets, but not long polling.
+    # unfortunately, session affinity on kubernetes is a complete pain.
+    # behind cloudflare, it seems to unevenly distribute load.
+    # the libraries for sticky websocket sessions between cpus
+    # also aren't great - it's hard to get the real ip sent to
+    # the backend (easy as http-forwarded-for, hard as remote address)
+    # and the only library that uses forwarded-for isn't great....
+    # see kaiser experiments for how to pass source ip in gke, but
+    # it doesn't keep session affinity (for now?) if adding polling
+    transports: ['websocket']
   }
   model = new Model({cookieSubject, io, portal})
   model.portal.listen()
