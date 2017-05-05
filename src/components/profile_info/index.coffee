@@ -191,7 +191,7 @@ module.exports = class ProfileInfo
               @model.l.get 'profileInfo.lastUpdatedTime'
               ' '
               moment(lastUpdateTime).fromNowModified()
-            if player?.isUpdatable and not hasUpdatedPlayer and isMe
+            if player?.isUpdatable and not hasUpdatedPlayer
               z '.refresh',
                 if isRefreshing
                   '...'

@@ -2,6 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
 _find = require 'lodash/find'
+_filter = require 'lodash/filter'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 moment = require 'moment'
@@ -64,7 +65,7 @@ module.exports = class ClanInfo
     isClaimed = clan?.groupId
 
     metrics =
-      stats: [
+      info: _filter [
         # {
         #   name: 'Donations this wk'
         #   value: FormatService.number clan?.data?.donation
@@ -81,6 +82,11 @@ module.exports = class ClanInfo
           name: @model.l.get 'clanInfo.region'
           value: clan?.data?.region
         }
+        if clan?.password
+          {
+            name: @model.l.get 'general.password'
+            value: clan?.password
+          }
       ]
 
     memberCount = clan?.players?.length
@@ -157,7 +163,7 @@ module.exports = class ClanInfo
           else if clanPlayer and isClaimed
             z '.claim-button',
               z @$claimButton,
-                text: @model.l.get 'clanInfo.verifyMe'
+                text: @model.l.get 'clanInfo.verifySelf'
                 onclick: =>
                   @model.signInDialog.openIfGuest me
                   .then =>

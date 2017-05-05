@@ -502,7 +502,7 @@ strings =
     es: 'Encuentra cualquiera estadisticas De jugador, entonces siguelos para mantenerte al tanto de todo'
   },
   'playersSearch.playerTagInputHintText': {
-    en: 'Plager ID tag #',
+    en: 'Player ID tag #',
     es: 'Tag de identificación'
   },
   'playersSearch.trackButtonText': {
