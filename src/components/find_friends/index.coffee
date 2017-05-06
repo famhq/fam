@@ -14,7 +14,7 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class FindFriends
-  constructor: ({model, @isFindFriendsVisible, selectedProfileDialogUser}) ->
+  constructor: ({@model, @isFindFriendsVisible, selectedProfileDialogUser}) ->
     @isFindFriendsVisible ?= new Rx.BehaviorSubject true
     @searchValue = new Rx.BehaviorSubject ''
 
@@ -23,9 +23,9 @@ module.exports = class FindFriends
     # TODO: add infinite scroll
     # tried comblineLatest w/ debounce stream and onscrollbottom stream,
     # couldn't get it working
-    users = @searchValue.debounce(SEARCH_DEBOUNCE).flatMapLatest (query) ->
+    users = @searchValue.debounce(SEARCH_DEBOUNCE).flatMapLatest (query) =>
       if query
-        model.user.searchByUsername query
+        @model.user.searchByUsername query
       else
         Rx.Observable.just []
 
@@ -33,14 +33,14 @@ module.exports = class FindFriends
     @$clear = new Icon()
 
     @$userList = new UserList {
-      model, users, selectedProfileDialogUser
+      @model, users, selectedProfileDialogUser
     }
-    @$topFriends = new TopFriends {model, selectedProfileDialogUser}
+    @$topFriends = new TopFriends {@model, selectedProfileDialogUser}
 
     @state = z.state
       searchValue: @searchValue
       users: users
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   afterMount: (@$$el) =>
     @$$el.querySelector('.input').focus()

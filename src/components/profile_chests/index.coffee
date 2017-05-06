@@ -4,6 +4,7 @@ _startCase = require 'lodash/startCase'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
+UiCard = require '../ui_card'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -12,16 +13,29 @@ if window?
 
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
+    @$adsCard = new UiCard()
+
     @state = z.state {
       me: @model.user.getMe()
       player: player
+      isAdsCardVisible: not localStorage?['hideAdsCard']
     }
 
   afterMount: =>
-    @model.portal.call 'facebook.showBanner', {
-      placementId: '305278286509542_418535418517161'
-      position: 'bottom'
-    }
+    if visits = localStorage?['profileChestsVisits']
+      localStorage['profileChestsVisits'] = parseInt(visits) + 1
+    else
+      localStorage?['profileChestsVisits'] = 1
+
+    if localStorage?['profileChestsVisits'] > 2 and
+        localStorage?['profileChestsVisits'] % 2
+      {player, me} = @state.getValue()
+      unless player?.verifiedUserId is me?.id
+        @model.portal.call 'facebook.showBanner', {
+          placementId: '305278286509542_418535418517161'
+          position: 'bottom'
+        }
+        @model.portal.call 'heyzap.showInterstitial'
     # @model.portal.call 'heyzap.showBanner', {
     #   position: 'bottom'
     #   size: 'large'
@@ -33,39 +47,49 @@ module.exports = class ProfileChests
   #
   beforeUnmount: =>
     @model.portal.call 'facebook.destroyBanner'
+    @model.portal.call 'heyzap.destroyBanner'
     # @destroyFbAd()
 
   # ugly, but works
   # https://github.com/fbsamples/audience-network/blob/master/samples/mobile_web/mweb_dynamic.html
   # FIXME FIXME: move into portal-gun, have the iframe be in app.coffee
-  addFbAd: ->
-    placementId = '305278286509542_418535418517161'
-    txt1 = '<script id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk/xfbml.ad.js#xfbml=1&version=v2.5&appId=' + config.FB_ID + '">' + '</scr' + 'ipt>'
-    txt3 = '<script>' + 'window.fbAsyncInit = function() {' + 'FB.Event.subscribe(' + '\'ad.loaded\',' + 'function(placementID) {' + 'console.log(\'ad loaded\');' + '});' + 'FB.Event.subscribe(' + '\'ad.error\',' + 'function(errorCode, errorMessage, placementID) {' + 'console.log(\'ad error \' + errorCode + \': \' + errorMessage);' + '});' + '};' + '</scr' + 'ipt>'
-    txt2 = '<div id="fb-root">' + '</div>' + '<fb:' + 'ad placementid="' + placementId + '" format="320x50" testmode="false">' + '</fb:' + 'ad>'
-    $fbAd = document.getElementById 'fb-ad'
-    if $fbAd
-      docMWeb = $fbAd.contentWindow.document
-      docMWeb.open()
-      docMWeb.write '<html><head>' + txt1 + '</head><body>' + txt3 + txt2 + '</body></html>'
-      docMWeb.close()
-
-  destroyFbAd: ->
-    $fbAd = document.getElementById('fb-ad')
-    if $fbAd
-      $fbAd.contentWindow.location.reload()
+  # addFbAd: ->
+  #   placementId = '305278286509542_418535418517161'
+  #   txt1 = '<script id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk/xfbml.ad.js#xfbml=1&version=v2.5&appId=' + config.FB_ID + '">' + '</scr' + 'ipt>'
+  #   txt3 = '<script>' + 'window.fbAsyncInit = function() {' + 'FB.Event.subscribe(' + '\'ad.loaded\',' + 'function(placementID) {' + 'console.log(\'ad loaded\');' + '});' + 'FB.Event.subscribe(' + '\'ad.error\',' + 'function(errorCode, errorMessage, placementID) {' + 'console.log(\'ad error \' + errorCode + \': \' + errorMessage);' + '});' + '};' + '</scr' + 'ipt>'
+  #   txt2 = '<div id="fb-root">' + '</div>' + '<fb:' + 'ad placementid="' + placementId + '" format="320x50" testmode="false">' + '</fb:' + 'ad>'
+  #   $fbAd = document.getElementById 'fb-ad'
+  #   if $fbAd
+  #     docMWeb = $fbAd.contentWindow.document
+  #     docMWeb.open()
+  #     docMWeb.write '<html><head>' + txt1 + '</head><body>' + txt3 + txt2 + '</body></html>'
+  #     docMWeb.close()
+  #
+  # destroyFbAd: ->
+  #   $fbAd = document.getElementById('fb-ad')
+  #   if $fbAd
+  #     $fbAd.contentWindow.location.reload()
 
   render: =>
-    {player, me} = @state.getValue()
+    {player, me, isAdsCardVisible} = @state.getValue()
 
     isNative = Environment.isGameApp config.GAME_KEY
+    isVerified = player?.verifiedUserId is me?.id
 
     z '.z-profile-chests',
       z '.g-grid',
+        if not isVerified and isAdsCardVisible
+          z @$adsCard,
+            text: @model.l.get 'profileChests.adsCard'
+            submit:
+              text: @model.l.get 'installOverlay.closeButtonText'
+              onclick: =>
+                @state.set isAdsCardVisible: false
+                localStorage?['hideAdsCard'] = '1'
+
         z '.title', @model.l.get 'profileChests.chestsTitle'
         z '.chests', {
           ontouchstart: (e) ->
-            console.log 'ts'
             e?.stopPropagation()
         },
           _map player?.data.chestCycle.chests, (chest, i) ->

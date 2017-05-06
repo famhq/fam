@@ -87,7 +87,7 @@ module.exports = class App
 
     addToHomeSheetIsVisible = new Rx.BehaviorSubject false
 
-    @$offlineOverlay = new OfflineOverlay {isOffline}
+    @$offlineOverlay = new OfflineOverlay {@model, isOffline}
     @$drawer = new Drawer {@model, @router}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router}

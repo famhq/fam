@@ -8,7 +8,6 @@ Environment = require 'clay-environment'
 moment = require 'moment'
 
 Icon = require '../icon'
-UiCard = require '../ui_card'
 RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
@@ -26,7 +25,6 @@ module.exports = class ClanInfo
     @$donationsIcon = new Icon()
     @$membersIcon = new Icon()
     @$refreshIcon = new Icon()
-    @$splitsInfoCard = new UiCard()
     @$claimButton = new PrimaryButton()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
@@ -130,7 +128,7 @@ module.exports = class ClanInfo
             z '.time',
               @model.l.get 'clanInfo.lastUpdateTime'
               moment(clan?.lastUpdateTime).fromNowModified()
-            if clan?.isUpdatable and not hasUpdatedClan and isLeader
+            if clan?.isUpdatable and not hasUpdatedClan
               z '.refresh',
                 if isRefreshing
                   '...'
@@ -160,7 +158,7 @@ module.exports = class ClanInfo
                 text: @model.l.get 'clanInfo.clanChat'
                 onclick: =>
                   @router.go "/group/#{clan.groupId}/chat"
-          else if clanPlayer and isClaimed
+          else if clanPlayer
             z '.claim-button',
               z @$claimButton,
                 text: @model.l.get 'clanInfo.verifySelf'
@@ -176,17 +174,6 @@ module.exports = class ClanInfo
         z '.block',
           _map metrics, (stats, key) ->
             z '.g-grid',
-              # if key is 'ladder' and isSplitsInfoCardVisible
-              #   z '.splits-info-card',
-              #     z @$splitsInfoCard,
-              #       text: 'Note: The stats below will only account for your
-              #             previous 25 games initially. All future stats will
-              #             be tracked.'
-              #       submit:
-              #         text: 'got it'
-              #         onclick: =>
-              #           @state.set isSplitsInfoCardVisible: false
-              #           localStorage?['hideClanSplitsInfo'] = '1'
               z '.title',
                 _startCase key
               z '.g-cols',

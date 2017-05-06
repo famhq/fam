@@ -49,6 +49,13 @@ module.exports = class GroupChatPage
           conversationId = _find(group.conversations, {name: 'español'})?.id
         else if me.country is 'FR'
           conversationId = _find(group.conversations, {name: 'francais'})?.id
+        else if me.country is 'IT'
+          conversationId = _find(group.conversations, {name: 'italiano'})?.id
+        else if me.country in [
+          'AE', 'EG', 'IQ', 'IL', 'SA', 'JO', 'SY',
+          'YE', 'KW', 'OM', 'LY', 'MA', 'DZ', 'SD'
+        ] or window?.navigator?.language?.split?('-')[0] is 'ar'
+          conversationId = _find(group.conversations, {name: 'عربى'})?.id
         else
           conversationId = _find(group.conversations, {name: 'general'})?.id
 

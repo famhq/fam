@@ -214,8 +214,8 @@ init = ->
       $$root = document.getElementById 'zorium-root'
       $$root.parentNode.replaceChild root, $$root
 
-  window.addEventListener 'resize', app.onResize
-  model.portal.call 'orientation.onChange', app.onResize
+  # window.addEventListener 'resize', app.onResize
+  # model.portal.call 'orientation.onChange', app.onResize
 
   PushService.init {model}
   (if Environment.isGameApp(config.GAME_KEY)

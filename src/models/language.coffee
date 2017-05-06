@@ -521,6 +521,10 @@ strings =
     en: 'By registering, you agree to Starfire\'s Privacy Policy, Terms of Service, and Supercell\'s Fan Content Policy',
     es: 'Al registrarse, acepta la Política de privacidad de Starfire, los Términos de servicio y la Política de contenido de fans de Supercell'
   },
+  'profileChests.adsCard': {
+    en: 'We hate ads too, but we have a few to help us pay the bills. If you verify your account (on the clan page), ads won\'t be shown anymore.',
+    es: 'También odiamos anuncios, pero tenemos algunos que nos ayudan a pagar las facturas. Si verifica su cuenta (en la página del clan), los anuncios no se mostrarán más.'
+  },
   'profileChests.chestsTitle': {
     en: 'Upcoming chests',
     es: 'Próximos cofres'

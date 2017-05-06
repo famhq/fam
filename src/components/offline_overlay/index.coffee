@@ -6,7 +6,7 @@ if window?
   require './index.styl'
 
 module.exports = class OfflineOverlay
-  constructor: ({@isOffline}) ->
+  constructor: ({@model, @isOffline}) ->
     @$closeButton = new PrimaryButton()
 
   render: =>
