@@ -25,13 +25,6 @@ module.exports = class ProfileChests
     {player, me} = @state.getValue()
 
     unless player?.isVerified
-      if visits = localStorage?['profileChestsVisits']
-        localStorage['profileChestsVisits'] = parseInt(visits) + 1
-      else
-        localStorage?['profileChestsVisits'] = 1
-      if localStorage?['profileChestsVisits'] > 2
-        @model.portal.call 'heyzap.showInterstitial'
-
       @model.portal.call 'heyzap.showBanner', {
         position: 'bottom'
         # size: 'large'
