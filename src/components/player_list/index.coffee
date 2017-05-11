@@ -42,8 +42,8 @@ module.exports = class PlayerList
                 bgColor: colors.$grey200
           z '.content',
             z '.name',
-              player.player?.data?.name
-              if player.player?.verifiedUserId
+              player.player?.data?.name or player?.name
+              if player.player?.isVerified
                 z '.verified',
                   z $verifiedIcon,
                     icon: 'verified'
@@ -53,7 +53,9 @@ module.exports = class PlayerList
             z '.details',
               z '.clan', player.player?.data?.clan?.name
               z '.trophies',
-                FormatService.number player.player?.data?.trophies
+                FormatService.number(
+                  player.player?.data?.trophies or player?.trophies
+                )
                 z '.icon',
                   z $trophyIcon,
                     icon: 'trophy'

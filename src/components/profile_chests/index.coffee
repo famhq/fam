@@ -22,24 +22,24 @@ module.exports = class ProfileChests
     }
 
   afterMount: =>
-    if visits = localStorage?['profileChestsVisits']
-      localStorage['profileChestsVisits'] = parseInt(visits) + 1
-    else
-      localStorage?['profileChestsVisits'] = 1
+    {player, me} = @state.getValue()
 
-    if localStorage?['profileChestsVisits'] > 2 and
-        localStorage?['profileChestsVisits'] % 2
-      {player, me} = @state.getValue()
-      unless player?.verifiedUserId is me?.id
-        @model.portal.call 'facebook.showBanner', {
-          placementId: '305278286509542_418535418517161'
-          position: 'bottom'
-        }
+    unless player?.isVerified
+      if visits = localStorage?['profileChestsVisits']
+        localStorage['profileChestsVisits'] = parseInt(visits) + 1
+      else
+        localStorage?['profileChestsVisits'] = 1
+      if localStorage?['profileChestsVisits'] > 2
         @model.portal.call 'heyzap.showInterstitial'
-    # @model.portal.call 'heyzap.showBanner', {
-    #   position: 'bottom'
-    #   size: 'large'
-    # }
+
+      @model.portal.call 'heyzap.showBanner', {
+        position: 'bottom'
+        # size: 'large'
+      }
+      @model.portal.call 'facebook.showBanner', {
+        placementId: '305278286509542_418535418517161'
+        position: 'bottom'
+      }
 
   #   setTimeout =>
   #     @addFbAd()
@@ -74,7 +74,7 @@ module.exports = class ProfileChests
     {player, me, isAdsCardVisible} = @state.getValue()
 
     isNative = Environment.isGameApp config.GAME_KEY
-    isVerified = player?.verifiedUserId is me?.id
+    isVerified = player?.isVerified
 
     z '.z-profile-chests',
       z '.g-grid',

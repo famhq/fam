@@ -57,7 +57,7 @@ module.exports = class ProfilePage
       meta: clashRoyaleData.map (clashRoyaleData) ->
         playerName = clashRoyaleData?.data?.name
         {
-          title: if clashRoyaleData?.playerId \
+          title: if clashRoyaleData?.id \
                  then "#{playerName}'s Clash Royale stats - Starfire"
                  else 'Starfire - track wins, losses and more in Clash Royale'
 
@@ -94,7 +94,7 @@ module.exports = class ProfilePage
     {windowSize, clashRoyaleData, me, routeUsername, routeId, user,
       isShareSheetVisible} = @state.getValue()
 
-    isTagSet = clashRoyaleData?.playerId
+    isTagSet = clashRoyaleData?.id
     isOtherProfile = routeId or routeUsername
     isMe = me?.id is user?.id or not user
     playerName = clashRoyaleData?.data?.name

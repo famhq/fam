@@ -111,7 +111,7 @@ module.exports = class ConversationInput
   render: =>
     {currentPanel, mePlayer, me} = @state.getValue()
 
-    isVerified = mePlayer?.verifiedUserId is me?.id
+    isVerified = mePlayer?.isVerified
 
     z '.z-conversation-input', {
       className: z.classKebab {"is-#{currentPanel}-panel": true}

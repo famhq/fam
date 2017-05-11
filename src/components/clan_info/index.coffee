@@ -56,8 +56,8 @@ module.exports = class ClanInfo
 
     isMe = clan?.id and clan?.id is me?.id
 
-    mePlayerIsVerified = mePlayer?.verifiedUserId is me?.id
-    clanPlayer = _find clan?.players, {playerId: mePlayer?.playerId}
+    mePlayerIsVerified = mePlayer?.isVerified
+    clanPlayer = _find clan?.players, {playerId: mePlayer?.id}
     isLeader = clanPlayer?.role in ['coLeader', 'leader']
 
     isClaimed = clan?.groupId

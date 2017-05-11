@@ -18,6 +18,6 @@ module.exports = class FourOhFourPage
 
   render: =>
     z '.p-404',
-      @model.l.get '404Page'
+      @model.l.get '404Page.text'
       z 'br'
       '(╯°□°)╯︵ ┻━┻'

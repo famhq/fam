@@ -148,8 +148,8 @@ module.exports = class ProfileInfo
       grandChallenge: @getTypeStats player?.data?.splits?.grandChallenge
       classicChallenge: @getTypeStats player?.data?.splits?.classicChallenge
 
-    lastUpdateTime = if player?.lastUpdateTime > player?.lastMatchesUpdateTime \
-                     then player?.lastUpdateTime
+    lastUpdateTime = if player?.lastDataUpdateTime > player?.lastMatchesUpdateTime \
+                     then player?.lastDataUpdateTime
                      else player?.lastMatchesUpdateTime
 
     z '.z-profile-info',
@@ -158,7 +158,7 @@ module.exports = class ProfileInfo
           z '.info',
             z '.left',
               z '.name', player?.data?.name
-              z '.tag', "##{player?.playerId}"
+              z '.tag', "##{player?.id}"
             if player?.data?.clan
               z '.right',
                 z '.clan-name', player?.data?.clan.name
@@ -201,7 +201,7 @@ module.exports = class ProfileInfo
                     isTouchTarget: false
                     color: colors.$primary500
                     onclick: =>
-                      tag = player?.playerId
+                      tag = player?.id
                       @state.set isRefreshing: true
                       @model.clashRoyaleAPI.refreshByPlayerTag tag
                       .then =>

@@ -141,7 +141,7 @@ module.exports = class Model
 
     language = window?.navigator?.languages?[0] or window?.navigator?.language
     browserLanugage = language?.split?('-')[0]
-    if browserLanugage is 'es' # and expNativeLanguageGroup is 'native'
+    if browserLanugage in ['es', 'it', 'fr'] # and expNativeLanguageGroup is 'native'
       language = browserLanugage
     else
       language = 'en'
@@ -156,6 +156,10 @@ module.exports = class Model
         'NI', 'PA', 'PE', 'ES', 'UY', 'VE'
       ]
         @l.setLanguage 'es'
+      else if me.country is 'IT'
+        @l.setLanguage 'it'
+      else if me.country is 'FR'
+        @l.setLanguage 'fr'
 
   wasCached: => @isFromCache
 

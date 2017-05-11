@@ -28,8 +28,8 @@ module.exports = class ClanPage
       if id
         @model.clan.getById id
         .map (clan) -> clan or false
-      else if gameData?.clanId
-        @model.clan.getById gameData?.clanId
+      else if gameData?.data?.clan?.tag
+        @model.clan.getById gameData?.data?.clan?.tag
         .map (clan) -> clan or false
       else
         Rx.Observable.just false

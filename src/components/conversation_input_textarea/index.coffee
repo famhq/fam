@@ -80,7 +80,7 @@ module.exports = class ConversationInputTextarea
           #   , 0
           style:
             height: "#{textareaHeight}px"
-          placeholder: @model.l.get 'conversationInputTextarea.hintText'
+          placeholder: @model.l.get 'conversationInputTextArea.hintText'
           onkeydown: (e) ->
             if e.keyCode is 13 and not e.shiftKey
               e.preventDefault()

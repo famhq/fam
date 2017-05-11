@@ -74,7 +74,7 @@ module.exports = class ConversationMessage
         chatMessageId: id
       }, user
 
-    isVerified = user and user.gameData?.verifiedUserId is user.id
+    isVerified = user and user.gameData?.isVerified
 
     z '.z-conversation-message', {
       # re-use elements in v-dom

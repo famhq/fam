@@ -33,6 +33,6 @@ module.exports = class PlayersFollowing
         else
           z @$playerList, {
             onclick: ({player}) =>
-              userId = player?.verifiedUserId or player?.userIds?[0]
+              userId = player?.userIds?[0]
               @router.go "/user/id/#{userId}"
           }
