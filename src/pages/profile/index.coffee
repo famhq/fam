@@ -120,7 +120,9 @@ module.exports = class ProfilePage
       z @$appBar, {
         title: if not isMe \
                then clashRoyaleData?.data?.name
-               else @model.l.get 'profilePage.title'
+               else if clashRoyaleData?.id
+               then @model.l.get 'profilePage.title'
+               else ''
         bgColor: if isOtherProfile \
                  then colors.$tertiary700
                  else colors.$primary500
@@ -147,12 +149,12 @@ module.exports = class ProfilePage
               onclick: =>
                 @router.go '/editProfile'
               }
-        isFlat: isTagSet
+        isFlat: true
       }
       if clashRoyaleData and isTagSet
         z @$profile, {isOtherProfile}
       else if clashRoyaleData
-        @$profileLanding
+        z @$profileLanding, {isHome: not routeId}
       else
         @$spinner
 

@@ -166,6 +166,8 @@
   "profileInfo.subheadGrandChallenge":"Gran desafío",
   "profileInfo.subheadClassicChallenge":"Desafío clásico",
   "profileGraphs.trophies":"Trofeos",
+  "profileGraphs.donations": "Donaciones",
+  "profileGraphs.clanChestCrowns": "Coronas",
   "profileLanding.description":"Introduce tu tag de identificación para recopilar automáticamente tus victorias, derrotas, donaciones y más",
   "profileLanding.trackButtonText":"Encuentra mis estadísticas",
   "profileLanding.terms":"Puedes encontrar tu etiqueta de jugador pulsando en tu nombre de usuario en Clash Royale para abrir tu perfil. Esta ubicado justo debajo de tu nombre de usuario",

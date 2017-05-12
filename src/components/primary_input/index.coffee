@@ -43,3 +43,11 @@ module.exports = class PrimaryInput extends Input
           z @$eyeIcon,
             icon: 'eye'
             color: colors.$white
+      else if opts.onInfo
+        z '.make-visible', {
+          onclick: ->
+            opts.onInfo()
+        },
+          z @$eyeIcon,
+            icon: 'help'
+            color: colors.$white

@@ -4,7 +4,6 @@ _startCase = require 'lodash/startCase'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
-UiCard = require '../ui_card'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -13,12 +12,9 @@ if window?
 
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
-    @$adsCard = new UiCard()
-
     @state = z.state {
       me: @model.user.getMe()
       player: player
-      isAdsCardVisible: not localStorage?['hideAdsCard']
     }
 
   afterMount: =>
@@ -64,22 +60,13 @@ module.exports = class ProfileChests
   #     $fbAd.contentWindow.location.reload()
 
   render: =>
-    {player, me, isAdsCardVisible} = @state.getValue()
+    {player, me} = @state.getValue()
 
     isNative = Environment.isGameApp config.GAME_KEY
     isVerified = player?.isVerified
 
     z '.z-profile-chests',
       z '.g-grid',
-        if not isVerified and isAdsCardVisible
-          z @$adsCard,
-            text: @model.l.get 'profileChests.adsCard'
-            submit:
-              text: @model.l.get 'installOverlay.closeButtonText'
-              onclick: =>
-                @state.set isAdsCardVisible: false
-                localStorage?['hideAdsCard'] = '1'
-
         z '.title', @model.l.get 'profileChests.chestsTitle'
         z '.chests', {
           ontouchstart: (e) ->

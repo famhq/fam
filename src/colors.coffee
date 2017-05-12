@@ -5,11 +5,11 @@ module.exports = _defaults {
   '$primary100': paperColors.$red100
   '$primary200': paperColors.$red200
   '$primary300': paperColors.$red300
-  '$primary400': '#f85f65'
-  '$primary500': '#fa464e'
-  '$primary50096': 'rgba(252, 67, 73, 0.96)'
-  '$primary600': '#e33f47'
-  '$primary700': '#cd3a3e'
+  '$primary400': '#fc5b61'
+  '$primary500': '#fc373e'
+  '$primary50096': 'rgba(252, 55, 62, 0.96)'
+  '$primary600': '#e63239'
+  '$primary700': '#cf2e33'
   '$primary800': paperColors.$red800
   '$primary900': paperColors.$red900
   '$primary100Text': paperColors.$red900Text
@@ -26,7 +26,7 @@ module.exports = _defaults {
   '$secondary200': paperColors.$white
   '$secondary300': paperColors.$white
   '$secondary400': paperColors.$white
-  '$secondary500': '#ffab18'
+  '$secondary500': '#ffc800'
   '$secondary600': paperColors.$white
   '$secondary700': paperColors.$white
   '$secondary800': paperColors.$white
@@ -43,13 +43,13 @@ module.exports = _defaults {
 
   '$tertiary100': paperColors.$grey100
   '$tertiary200': paperColors.$grey200
-  '$tertiary300': paperColors.$grey300
+  '$tertiary300': '#696f71'
   '$tertiary400': paperColors.$grey400
-  '$tertiary500': '#383838'
+  '$tertiary500': '#202527'
   '$tertiary600': '#282828'
-  '$tertiary700': '#212121'
+  '$tertiary700': '#171a1c'
   '$tertiary800': paperColors.$grey800
-  '$tertiary900': '#1a1a1a'
+  '$tertiary900': '#0e1011'
   '$tertiary100Text': paperColors.$white
   '$tertiary200Text': paperColors.$white
   '$tertiary300Text': paperColors.$white

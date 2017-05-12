@@ -22,7 +22,8 @@ class Language
   setLanguage: (@language) => null
 
   get: (strKey, replacements) =>
-    baseResponse = languages[@language]?[strKey] or ''
+    baseResponse = languages[@language]?[strKey] or
+                    languages['en']?[strKey] or ''
 
     unless baseResponse
       console.log 'missing', strKey

@@ -7,7 +7,7 @@ allColors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class Input
+module.exports = class Textarea
   constructor: ({@value, @valueStreams, @error, @isFocused} = {}) ->
     @value ?= new Rx.BehaviorSubject ''
     @error ?= new Rx.BehaviorSubject null
@@ -36,7 +36,7 @@ module.exports = class Input
     isFloating ?= false
     isDisabled ?= false
 
-    z '.z-input',
+    z '.z-textarea',
       className: z.classKebab {
         isDark
         isFloating
@@ -54,7 +54,7 @@ module.exports = class Input
                  then colors.c500 else null
       },
         hintText
-      z 'input.input',
+      z 'textarea.textarea',
         attributes:
           disabled: if isDisabled then true else undefined
           type: type

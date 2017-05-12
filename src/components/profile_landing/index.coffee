@@ -1,10 +1,15 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+_take = require 'lodash/take'
 
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
+SecondaryButton = require '../secondary_button'
 Dialog = require '../dialog'
+PlayerList = require '../player_list'
 config = require '../../config'
+
+TOP_PLAYER_COUNT = 20
 
 if window?
   require './index.styl'
@@ -20,11 +25,21 @@ module.exports = class ProfileLanding
       error: @playerTagError
     }
     @$trackButton = new PrimaryButton()
+    @$findPlayerButton = new SecondaryButton()
+    @$loginButton = new SecondaryButton()
     @$dialog = new Dialog()
+
+    @$playerList = new PlayerList {
+      @model
+      @selectedProfileDialogUser
+      players: @model.player.getTop().map (players) ->
+        _take players, TOP_PLAYER_COUNT
+    }
 
     @state = z.state
       me: me
       isLoading: false
+      isInfoDialogVisible: false
 
   onTrack: (e) =>
     e?.preventDefault()
@@ -48,30 +63,58 @@ module.exports = class ProfileLanding
       @state.set isLoading: false
 
   render: =>
-    {me, isLoading} = @state.getValue()
+    {me, isLoading, isInfoDialogVisible} = @state.getValue()
 
     z '.z-profile-landing',
+      z '.header-background'
+      z '.content',
+        z '.g-grid',
+          z '.header',
+            z '.title',
+              @model.l.get 'profileLanding.title'
+            z '.description',
+              @model.l.get 'profileLanding.description'
+          z 'form.form',
+            onsubmit: @onTrack
+            z '.input',
+              z @$playerTagInput,
+                hintText: @model.l.get 'playersSearch.playerTagInputHintText'
+                onInfo: =>
+                  @state.set isInfoDialogVisible: true
+            z '.button',
+              z @$trackButton,
+                text: if isLoading \
+                      then @model.l.get 'general.loading'
+                      else @model.l.get 'profileLanding.trackButtonText'
+                type: 'submit'
+
       z '.g-grid',
-        z '.image'
-        z '.description',
-          @model.l.get 'profileLanding.description'
-        z 'form.form',
-          onsubmit: @onTrack
-          z '.input',
-            z @$playerTagInput,
-              hintText: @model.l.get 'playersSearch.playerTagInputHintText'
-              isCentered: true
+        z '.actions',
           z '.button',
-            z @$trackButton,
-              text: if isLoading \
-                    then @model.l.get 'general.loading'
-                    else @model.l.get 'profileLanding.trackButtonText'
-              type: 'submit'
+            z @$findPlayerButton,
+              text: @model.l.get 'playersSearch.trackButtonText'
+              isFullWidth: true
+              onclick: =>
+                @router.go '/players/search'
+          z '.button',
+            z @$loginButton,
+              text: @model.l.get 'general.signIn'
+              isFullWidth: true
+              onclick: =>
+                @model.signInDialog.open 'signIn'
+
+        z '.subhead', @model.l.get 'playersPage.playersTop'
+
+        z @$playerList, {
+          onclick: ({player}) =>
+            userId = player?.userIds?[0]
+            @router.go "/user/id/#{userId}"
+        }
+
         z '.terms',
           z 'p',
-            @model.l.get 'profileLanding.terms'
-          z 'p',
             @model.l.get 'profileLanding.terms2'
+
       if isLoading
         z @$dialog,
           isVanilla: true
@@ -86,3 +129,16 @@ module.exports = class ProfileLanding
               @state.set isLoading: false
           onLeave: =>
             @state.set isLoading: false
+      else if isInfoDialogVisible
+        z @$dialog,
+          isVanilla: true
+          $content:
+            z '.z-profile-landing_dialog',
+              @model.l.get 'profileLanding.terms'
+          cancelButton:
+            text: @model.l.get 'general.done'
+            isFullWidth: true
+            onclick: =>
+              @state.set isInfoDialogVisible: false
+          onLeave: =>
+            @state.set isInfoDialogVisible: false

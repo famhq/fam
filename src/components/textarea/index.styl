@@ -2,7 +2,7 @@
 
 @require '../../vars'
 
-.z-input
+.z-textarea
   font-input()
   min-height: 48px
   display: block
@@ -23,7 +23,7 @@
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
                 font-size 0.2s cubic-bezier(0.4, 0, 0.2, 1)
 
-  > .input
+  > .textarea
     padding: 8px 0 8px 0
     width: 100%
     height: 48px
@@ -51,14 +51,14 @@
   > .error
     zp-font-caption()
     color: $red500
-    margin-top: 2px
+    margin-top: 8px
     position: absolute
     pointer-events: none
     background: transparent
     width: 100%
 
   &.is-centered
-    > .input
+    > .textarea
       text-align: center
 
   &.is-centered&.is-floating&.is-focused, &.is-centered&.is-floating&.has-value
@@ -75,9 +75,10 @@
       transform: translate(16px, 20px)
       font-size: 16px
 
-    > .input
-      padding: 20px 16px 0 16px
-      height: 56px
+    > .textarea
+      margin: 24px 16px 0 16px
+      height: 72px
+      box-sizing: border-box
 
     > .underline-wrapper
       padding: 0 1px

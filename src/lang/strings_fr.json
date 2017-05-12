@@ -166,6 +166,8 @@
   "profileInfo.subheadGrandChallenge":"Super défi",
   "profileInfo.subheadClassicChallenge":"Défi classique",
   "profileGraphs.trophies":"Trophées",
+  "profileGraphs.donations": "Dons",
+  "profileGraphs.clanChestCrowns": "Couronnes",
   "profileLanding.description":"Entrez votre ID de joueur pour commencer le suivit automatique de vos victoires, défaites, égalités, etc",
   "profileLanding.trackButtonText":"Suivre mes statistiques",
   "profileLanding.terms":"Vous pouvez trouver votre ID de joueur en cliquant sur votre pseudo dans Clash Royale pour ouvrir votre profil. L'ID se situe juste en dessous de votre pseudo",

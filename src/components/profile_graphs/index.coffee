@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _clone = require 'lodash/clone'
+_camelCase = require 'lodash/camelCase'
 
 FormatService = require '../../services/format'
 GraphWidget = require '../graph_widget'
@@ -15,7 +16,6 @@ module.exports = class ProfileGraphs
   constructor: ({@model, @router, user}) ->
     @$communityButton = new PrimaryButton()
 
-    @$trophiesGraph = new GraphWidget()
     recordTypes = user.flatMapLatest ({id}) =>
       @model.gameRecordType.getAllByUserIdAndGameId(
         id
@@ -39,8 +39,9 @@ module.exports = class ProfileGraphs
     z '.z-profile-graphs',
       z '.g-grid',
         _map recordTypes, ({recordType, graphSeries, $graph}) =>
+          recordTypeKey = _camelCase(recordType.name)
           z '.record-type',
-            z '.title', @model.l.get 'profileGraphs.trophies'
+            z '.title', @model.l.get "profileGraphs.#{recordTypeKey}"
             z $graph, {
               labels: [recordType.name]
               series: [graphSeries]

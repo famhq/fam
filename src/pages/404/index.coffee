@@ -11,7 +11,6 @@ module.exports = class FourOhFourPage
       meta:
         title: 'Starfire - 404'
         description: 'Page not found'
-        canonical: "http://#{config.HOST}/404"
     })
 
   renderHead: => @$head

@@ -56,7 +56,7 @@ module.exports = class ConversationInputGifs
         isSearchIconRight: true
         height: '36px'
         bgColor: colors.$tertiary500
-        placeholder: @model.l.get 'conversationInputGifs.placeholder'
+        placeholder: @model.l.get 'conversationInputGifs.hintText'
       }
       z '.gifs', {
         # style: width: "#{windowSize.width - drawerWidth}px"
