@@ -15,8 +15,8 @@ module.exports = class ConversationsPage
       requests
       serverData
       meta: {
-        title: @model.l.get 'general.conversations'
-        description: @model.l.get 'general.conversations'
+        title: @model.l.get 'drawer.menuItemConversations'
+        description: @model.l.get 'drawer.menuItemConversations'
       }
     })
     @$appBar = new AppBar {@model}
@@ -38,5 +38,5 @@ module.exports = class ConversationsPage
       z @$appBar,
         isFlat: true
         $topLeftButton: @$buttonMenu
-        title: @model.l.get 'general.conversations'
+        title: @model.l.get 'drawer.menuItemConversations'
       @$conversations

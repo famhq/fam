@@ -4,6 +4,7 @@ _startCase = require 'lodash/startCase'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
+AdsenseAd = require '../adsense_ad'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -12,32 +13,12 @@ if window?
 
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
+    @$adsenseAd = new AdsenseAd()
+
     @state = z.state {
       me: @model.user.getMe()
       player: player
     }
-
-  afterMount: =>
-    {player, me} = @state.getValue()
-
-    unless player?.isVerified
-      @model.portal.call 'heyzap.showBanner', {
-        position: 'bottom'
-        # size: 'large'
-      }
-      @model.portal.call 'facebook.showBanner', {
-        placementId: '305278286509542_418535418517161'
-        position: 'bottom'
-      }
-
-  #   setTimeout =>
-  #     @addFbAd()
-  #   , 100
-  #
-  beforeUnmount: =>
-    @model.portal.call 'facebook.destroyBanner'
-    @model.portal.call 'heyzap.destroyBanner'
-    # @destroyFbAd()
 
   # ugly, but works
   # https://github.com/fbsamples/audience-network/blob/master/samples/mobile_web/mweb_dynamic.html
@@ -133,3 +114,11 @@ module.exports = class ProfileChests
         #         "&scr_h=#{window.screen.height}" +
         #         "&referer=#{encodeURIComponent(referer)}"
         #     scrolling: 'no'
+
+
+
+      # z '.ad',
+      #   z @$adsenseAd, {
+      #     client: 'ca-pub-1232978630423169'
+      #     slot: '3223030936'
+      #   }

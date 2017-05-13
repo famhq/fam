@@ -34,10 +34,13 @@ module.exports = class ProfilePage
     me = @model.user.getMe()
     user = usernameAndId.flatMapLatest ([username, id]) =>
       if username
+        @hasBottomBanner = true
         @model.user.getByUsername username
       else if id
+        @hasBottomBanner = true
         @model.user.getById id
       else
+        @hasBottomBanner = false
         @model.user.getMe()
 
     @hideDrawer = usernameAndId.map ([username, id]) ->
@@ -158,7 +161,8 @@ module.exports = class ProfilePage
       else
         @$spinner
 
-      @$bottomBar
+      unless isOtherProfile
+        @$bottomBar
 
       if isShareSheetVisible
         z @$shareSheet, {text, path}

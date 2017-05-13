@@ -79,7 +79,7 @@ module.exports = class CommunityPage
           {
             $menuIcon: @$conversationsIcon
             menuIconName: 'inbox'
-            $menuText: @model.l.get 'general.conversations'
+            $menuText: @model.l.get 'drawer.menuItemConversations'
             $el: @$conversations
           }
         ]

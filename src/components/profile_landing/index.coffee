@@ -1,12 +1,14 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _take = require 'lodash/take'
+Environment = require 'clay-environment'
 
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 Dialog = require '../dialog'
 PlayerList = require '../player_list'
+DecksGuides = require '../decks_guides'
 config = require '../../config'
 
 TOP_PLAYER_COUNT = 20
@@ -35,6 +37,9 @@ module.exports = class ProfileLanding
       players: @model.player.getTop().map (players) ->
         _take players, TOP_PLAYER_COUNT
     }
+
+
+    @$decksGuides = new DecksGuides {@model, @router, sort: 'popular'}
 
     @state = z.state
       me: me
@@ -103,13 +108,22 @@ module.exports = class ProfileLanding
               onclick: =>
                 @model.signInDialog.open 'signIn'
 
-        z '.subhead', @model.l.get 'playersPage.playersTop'
 
-        z @$playerList, {
-          onclick: ({player}) =>
-            userId = player?.userIds?[0]
-            @router.go "/user/id/#{userId}"
-        }
+        # FIXME FIXME: rm when approved for adsense
+        if not Environment.isMobile()
+          [
+            z '.subhead', 'Deck guides'
+            z @$decksGuides
+          ]
+        else
+          [
+            z '.subhead', @model.l.get 'playersPage.playersTop'
+            z @$playerList, {
+              onclick: ({player}) =>
+                userId = player?.userIds?[0]
+                @router.go "/user/id/#{userId}"
+            }
+          ]
 
         z '.terms',
           z 'p',

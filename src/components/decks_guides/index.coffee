@@ -49,7 +49,7 @@ module.exports = class DecksGuides extends Base
     cardWidth = (@$$el?.children?[0]?.offsetWidth - (PADDING * 2)) /
                   CARDS_PER_ROW
 
-    z '.z-deck-guides',
+    z '.z-decks-guides',
       z '.guides', {
         # force scrollbar initially
         style:

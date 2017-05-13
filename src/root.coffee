@@ -200,7 +200,9 @@ init = ->
     # timeout (200ms) doesn't actually work
     if model.wasCached()
       new Promise (resolve) ->
-        setTimeout resolve, 150
+        # give time for exoid combinedStreams to resolve
+        # (dataStreams are cached, combinedStreams are technically async)
+        setTimeout resolve, 300
         # z.untilStable $app, {timeout: 200} # arbitrary
     else
       null

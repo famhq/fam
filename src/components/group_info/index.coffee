@@ -48,7 +48,7 @@ module.exports = class GroupInfo
             z @$joinButton,
               text: if isJoinLoading \
                     then @model.l.get 'general.loading'
-                    else @model.l.get 'joinButtonText'
+                    else @model.l.get 'groupInfo.joinButtonText'
               onclick: =>
                 unless isJoinLoading
                   @join group

@@ -12,6 +12,7 @@ if window?
 
 module.exports = class ProfileChestsPage
   hideDrawer: true
+  hasBottomBanner: true
 
   constructor: ({@model, requests, @router, serverData}) ->
     id = requests.map ({route}) ->

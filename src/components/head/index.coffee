@@ -70,19 +70,19 @@ module.exports = class Head
       z 'title', "#{meta.title}"
       z 'meta', {name: 'description', content: "#{meta.description}"}
 
-      # z 'script',
-      #   attributes:
-      #     async: true
-      #   src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-      # z 'script',
-      #   innerHTML: '
-      #     (adsbygoogle = window.adsbygoogle || []).push({
-      #       google_ad_client: "ca-pub-9043203456638369",
-      #       enable_page_level_ads: true
-      #     });
-      #   '
+      z 'script',
+        attributes:
+          async: true
+        src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+      z 'script',
+        innerHTML: '
+          (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-1232978630423169",
+            enable_page_level_ads: true
+          });
+        '
       # Appcache
-      # TODO: re-enable
+      # TODO: re-enable?
       # if config.ENV is config.ENVS.PROD
       #   z 'iframe',
       #     src: '/manifest.html'

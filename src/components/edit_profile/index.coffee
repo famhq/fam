@@ -15,6 +15,8 @@ if window?
   require './index.styl'
 
 module.exports = class EditProfile
+  hasBottomBanner: true
+
   constructor: ({@model, @router}) ->
     me = @model.user.getMe()
 

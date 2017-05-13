@@ -167,29 +167,29 @@ module.exports = class Thread
             @model.l.get 'thread.score'
       z '.divider.no-margin-bottom'
 
-      z '.comments',
-        if threadComments and _isEmpty threadComments
-          z '.no-comments', @model.l.get 'thread.noComments'
-        else if threadComments
-          _map threadComments, ($threadComment) ->
-            [
-              z $threadComment
-              z '.divider'
-            ]
-        else
-          @$spinner
+      # z '.comments',
+      #   if threadComments and _isEmpty threadComments
+      #     z '.no-comments', @model.l.get 'thread.noComments'
+      #   else if threadComments
+      #     _map threadComments, ($threadComment) ->
+      #       [
+      #         z $threadComment
+      #         z '.divider'
+      #       ]
+      #   else
+      #     @$spinner
 
-      z '.fab',
-        z @$fab,
-          colors:
-            c500: colors.$primary500
-          $icon: z @$replyIcon, {
-            icon: 'reply'
-            isTouchTarget: false
-            color: colors.$white
-          }
-          onclick: =>
-            @router.go "/thread/#{thread.id}/reply"
+      # z '.fab',
+      #   z @$fab,
+      #     colors:
+      #       c500: colors.$primary500
+      #     $icon: z @$replyIcon, {
+      #       icon: 'reply'
+      #       isTouchTarget: false
+      #       color: colors.$white
+      #     }
+      #     onclick: =>
+      #       @router.go "/thread/#{thread.id}/reply"
 
       if selectedProfileDialogUser
         z @$profileDialog

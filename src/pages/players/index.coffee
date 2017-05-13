@@ -14,6 +14,8 @@ if window?
   require './index.styl'
 
 module.exports = class PlayersPage
+  hasBottomBanner: true
+
   constructor: ({@model, requests, router, serverData}) ->
     me = @model.user.getMe()
     selectedProfileDialogUser = new Rx.BehaviorSubject null

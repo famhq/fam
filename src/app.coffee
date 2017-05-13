@@ -75,9 +75,26 @@ module.exports = class App
       requests, routes, (vals...) -> vals
     )
 
-    @requests = requestsAndRoutes.map ([req, routes]) ->
+    @requests = requestsAndRoutes.map ([req, routes]) =>
       route = routes.get req.path
-      {req, route, $page: route.handler?()}
+      $page = route.handler?()
+
+      {isBottomBannerVisible} = @state.getValue()
+      if $page.hasBottomBanner and not isBottomBannerVisible
+        @state.set isBottomBannerVisible: true
+        @model.portal.call 'heyzap.showBanner', {
+          position: 'bottom'
+        }
+        @model.portal.call 'facebook.showBanner', { # legacy
+          placementId: '305278286509542_418535418517161'
+          position: 'bottom'
+        }
+      else if not $page.hasBottomBanner and isBottomBannerVisible
+        @state.set isBottomBannerVisible: false
+        @model.portal.call 'heyzap.hideBanner'
+        @model.portal.call 'facebook.destroyBanner' # legacy
+
+      {req, route, $page: $page}
 
     # used if state / requests fails to work
     $backupPage = if @serverData?
@@ -113,6 +130,7 @@ module.exports = class App
     @state = z.state {
       $backupPage: $backupPage
       me: me
+      isBottomBannerVisible: false
       isOffline: isOffline
       addToHomeSheetIsVisible: addToHomeSheetIsVisible
       signInDialogIsOpen: @model.signInDialog.isOpen()
@@ -216,12 +234,13 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
       installOverlayIsOpen, signInDialogIsOpen, pushNotificationSheetIsOpen
-      getAppDialogIsOpen, addToHomeSheetIsVisible,
+      getAppDialogIsOpen, addToHomeSheetIsVisible, isBottomBannerVisible,
       isOffline} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
     isIos = /iPad|iPhone|iPod/.test userAgent
+    isNative = Environment.isGameApp(config.GAME_KEY)
     isPageAvailable = (me?.isMember or not request?.$page?.isPrivate)
     defaultInstallMessage = 'Add Starfi.re to your homescreen to quickly
                             access all features anytime'
@@ -229,7 +248,12 @@ module.exports = class App
     z 'html',
       request?.$page.renderHead() or $backupPage?.renderHead()
       z 'body',
-        z '#zorium-root', {className: z.classKebab {isIos}},
+        z '#zorium-root', {
+          className: z.classKebab {
+            isIos
+            isBottomBannerVisible: isBottomBannerVisible and isNative
+          }
+        },
           z '.z-root',
             unless hideDrawer
               z @$drawer, {currentPath: request?.req.path}

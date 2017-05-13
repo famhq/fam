@@ -12,6 +12,7 @@ if window?
 
 module.exports = class ThreadPage
   hideDrawer: true
+  hasBottomBanner: true
 
   constructor: ({@model, requests, @router, serverData}) ->
     thread = requests.flatMapLatest ({route}) =>

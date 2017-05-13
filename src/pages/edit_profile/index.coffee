@@ -4,6 +4,8 @@ Head = require '../../components/head'
 EditProfile = require '../../components/edit_profile'
 
 module.exports = class EditProfilePage
+  hasBottomBanner: true
+
   constructor: ({model, requests, router, serverData}) ->
     @$head = new Head({
       model
