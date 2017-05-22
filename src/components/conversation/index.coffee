@@ -117,7 +117,7 @@ module.exports = class Conversation extends Base
         if messages
           prevMessage = null
           _map messages, (message) =>
-            isRecent = new Date(message.time) - new Date(prevMessage?.time) <
+            isRecent = new Date(message?.time) - new Date(prevMessage?.time) <
                         FIVE_MINUTES_MS
             isGrouped = message.userId is prevMessage?.userId and isRecent
             isMe = message.userId is me.id

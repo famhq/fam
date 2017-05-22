@@ -60,7 +60,8 @@ module.exports = class ClanInfo
     clanPlayer = _find clan?.players, {playerId: mePlayer?.id}
     isLeader = clanPlayer?.role in ['coLeader', 'leader']
 
-    isClaimed = clan?.groupId
+    isClaimed = clan?.creatorId
+    hasPermission = clan?.group?.userIds?.indexOf(me?.id) isnt -1
 
     metrics =
       info: _filter [
@@ -152,13 +153,13 @@ module.exports = class ClanInfo
                   @model.signInDialog.openIfGuest me
                   .then =>
                     @isClaimClanDialogVisible.onNext true
-          else if mePlayerIsVerified and clanPlayer and isClaimed
+          else if clanPlayer and hasPermission
             z '.claim-button',
               z @$claimButton,
                 text: @model.l.get 'clanInfo.clanChat'
                 onclick: =>
                   @router.go "/group/#{clan.groupId}/chat"
-          else if clanPlayer
+          else if clanPlayer and isClaimed
             z '.claim-button',
               z @$claimButton,
                 text: @model.l.get 'clanInfo.verifySelf'

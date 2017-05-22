@@ -54,7 +54,7 @@ module.exports = class ProfileLanding
 
     @state.set isLoading: true
 
-    @model.clashRoyaleAPI.refreshByPlayerTag playerTag
+    @model.clashRoyaleAPI.setByPlayerId playerTag
     .then =>
       @model.player.getByUserIdAndGameId me?.id, config.CLASH_ROYAL_ID
       .take(1).toPromise()
@@ -108,22 +108,12 @@ module.exports = class ProfileLanding
               onclick: =>
                 @model.signInDialog.open 'signIn'
 
-
-        # FIXME FIXME: rm when approved for adsense
-        if not Environment.isMobile()
-          [
-            z '.subhead', 'Deck guides'
-            z @$decksGuides
-          ]
-        else
-          [
-            z '.subhead', @model.l.get 'playersPage.playersTop'
-            z @$playerList, {
-              onclick: ({player}) =>
-                userId = player?.userIds?[0]
-                @router.go "/user/id/#{userId}"
-            }
-          ]
+        z '.subhead', @model.l.get 'playersPage.playersTop'
+        z @$playerList, {
+          onclick: ({player}) =>
+            userId = player?.userIds?[0]
+            @router.go "/user/id/#{userId}"
+        }
 
         z '.terms',
           z 'p',

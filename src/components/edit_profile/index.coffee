@@ -77,7 +77,7 @@ module.exports = class EditProfile
       Promise.resolve null)
     .then =>
       if playerTag isnt currentPlayerTag
-        @model.clashRoyaleAPI.refreshByPlayerTag playerTag, {isUpdate: true}
+        @model.clashRoyaleAPI.refreshByPlayerId playerTag, {isUpdate: true}
     .then =>
       if avatarImage
         @upload avatarImage

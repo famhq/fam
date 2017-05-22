@@ -18,11 +18,9 @@ module.exports = class AdsenseAd
 
   afterMount: ->
     if window?
-      console.log 'go'
       (window.adsbygoogle = window.adsbygoogle or []).push({})
 
   render: ({client, slot, format} = {}) =>
-    console.log 'render'
     z '.z-adsense-ad', {
       key: "adsense-#{@unique}"
     },
@@ -30,6 +28,8 @@ module.exports = class AdsenseAd
         className: 'adsbygoogle'
         style:
           display: 'inline-block'
+          width: '320px'
+          height: '50px'
         attributes:
           'data-ad-client': client
           'data-ad-slot': slot

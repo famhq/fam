@@ -74,13 +74,6 @@ module.exports = class Head
         attributes:
           async: true
         src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-      z 'script',
-        innerHTML: '
-          (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-1232978630423169",
-            enable_page_level_ads: true
-          });
-        '
       # Appcache
       # TODO: re-enable?
       # if config.ENV is config.ENVS.PROD
@@ -117,12 +110,13 @@ module.exports = class Head
         name: 'twitter:description'
         content: "#{twitter.description or meta.description}"
       }
-      z 'meta', {name: 'twitter:image:src', content: "#{twitter.image}"}
+      z 'meta', {name: 'twitter:image', content: "#{twitter.image}"}
 
       # Open Graph
       z 'meta', {property: 'og:title', content: "#{openGraph.title}"}
       z 'meta', {property: 'og:type', content: 'website'}
-      z 'meta', {property: 'og:url', content: "#{openGraph.url}"}
+      if openGraph.url
+        z 'meta', {property: 'og:url', content: "#{openGraph.url}"}
       z 'meta', {property: 'og:image', content: "#{openGraph.image}"}
       z 'meta', {
         property: 'og:description', content: "#{openGraph.description}"
@@ -134,7 +128,8 @@ module.exports = class Head
       z 'link', {rel: 'apple-touch-icon', href: "#{ios.icon}"}
 
       # misc
-      z 'link', {rel: 'canonical', href: "#{meta.canonical}"}
+      if meta.canonical
+        z 'link', {rel: 'canonical', href: "#{meta.canonical}"}
       z 'meta', {name: 'theme-color', content: "#{meta.themeColor}"}
       z 'link', {rel: 'icon', href: "#{meta.favicon}"}
       z 'meta', {name: 'msapplication-tap-highlight', content: 'no'}

@@ -7,6 +7,7 @@ ButtonMenu = require '../../components/button_menu'
 Clan = require '../../components/clan'
 BottomBar = require '../../components/bottom_bar'
 Spinner = require '../../components/spinner'
+Icon = require '../../components/icon'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -46,6 +47,7 @@ module.exports = class ClanPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$spinner = new Spinner()
+    @$settingsIcon = new Icon()
 
     @$clan = new Clan {@model, @router, clan}
     @$bottomBar = new BottomBar {@model, @router, requests}
@@ -53,11 +55,12 @@ module.exports = class ClanPage
     @state = z.state
       windowSize: @model.window.getSize()
       clan: clan
+      me: @model.user.getMe()
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, clan} = @state.getValue()
+    {windowSize, clan, me} = @state.getValue()
 
     z '.p-clan', {
       style:
@@ -67,6 +70,14 @@ module.exports = class ClanPage
         title: @model.l.get 'general.clan'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
+        $topRightButton: z '.p-clan_top-right',
+          if clan and clan?.creatorId is me?.id
+            z @$settingsIcon, {
+              icon: 'settings'
+              color: colors.$tertiary900
+              onclick: =>
+                @router.go "/clan/#{clan?.id}/edit"
+              }
       }
       if clan
         @$clan

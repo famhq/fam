@@ -26,7 +26,6 @@ module.exports = class ClanGraphs
     @state = z.state {
       recordTypes: recordTypes.map (recordTypes) ->
         _map recordTypes, (recordType) ->
-          console.log recordType
           {
             recordType
             graphSeries: _clone(recordType.clanValues)?.reverse()

@@ -1,6 +1,7 @@
 z = require 'zorium'
 _defaults = require 'lodash/defaults'
 
+AppBar = require '../app_bar'
 Icon = require '../icon'
 colors = require '../../colors'
 
@@ -9,10 +10,11 @@ if window?
 
 module.exports = class ActionBar
   constructor: ({@model}) ->
+    @$appBar = new AppBar {@model}
     @$cancelIcon = new Icon()
     @$saveIcon = new Icon()
 
-  render: ({cancel, save, isSaving}) =>
+  render: ({title, cancel, save, isSaving}) =>
     cancel = _defaults cancel, {
       icon: 'close'
       text: @model.l.get 'general.cancel'
@@ -24,24 +26,23 @@ module.exports = class ActionBar
       onclick: -> null
     }
 
-    z 'header.z-action-bar',
-      z '.action', {
-        onclick: cancel.onclick
-      },
-        z '.icon',
+
+    z '.z-action-bar',
+      z @$appBar, {
+        title: title
+        style: 'secondary'
+        $topLeftButton:
           z @$cancelIcon,
             icon: cancel.icon
             color: colors.$primary500
-            isTouchTarget: false
-        z '.text', cancel.text
-
-      z '.action', {
-        onclick: save.onclick
-      },
-        z '.icon',
-          z @$saveIcon,
-            icon: save.icon
-            color: colors.$primary500
-            isTouchTarget: false
-        z '.text',
-          if isSaving then 'Loading...' else save.text
+            onclick: cancel.onclick
+        $topRightButton:
+          if isSaving
+            '...'
+          else
+            z @$saveIcon,
+              icon: save.icon
+              color: colors.$primary500
+              onclick: save.onclick
+        isFlat: true
+      }

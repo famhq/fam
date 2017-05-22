@@ -4,12 +4,15 @@ moment = require 'moment'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
 _isEmpty = require 'lodash/isEmpty'
+Environment = require 'clay-environment'
 
 colors = require '../../colors'
+config = require '../../config'
 AppBar = require '..//app_bar'
 ButtonBack = require '..//button_back'
 Icon = require '../icon'
 Avatar = require '../avatar'
+AdsenseAd = require '../adsense_ad'
 ThreadComment = require '../thread_comment'
 DeckCards = require '../deck_cards'
 Spinner = require '../spinner'
@@ -26,6 +29,7 @@ module.exports = class Thread
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
 
+    @$adsenseAd = new AdsenseAd()
     @$spinner = new Spinner()
     @$replyIcon = new Icon()
     @$upvoteIcon = new Icon()
@@ -62,16 +66,16 @@ module.exports = class Thread
         @router
       }
       windowSize: @model.window.getSize()
-      threadComments: thread.flatMapLatest (thread) =>
-        if thread?.id
-          @model.threadComment.getAllByThreadId thread.id
-          .map (threadComments) =>
-            _map threadComments, (threadComment) =>
-              new ThreadComment {
-                @model, @router, threadComment, @selectedProfileDialogUser
-              }
-        else
-          Rx.Observable.just null
+      # threadComments: thread.flatMapLatest (thread) =>
+      #   if thread?.id
+      #     @model.threadComment.getAllByThreadId thread.id
+      #     .map (threadComments) =>
+      #       _map threadComments, (threadComment) =>
+      #         new ThreadComment {
+      #           @model, @router, threadComment, @selectedProfileDialogUser
+      #         }
+      #   else
+      #     Rx.Observable.just null
 
 
   render: =>
@@ -140,6 +144,12 @@ module.exports = class Thread
             },
               z @$deckCards, {cardWidth: 45}
 
+          unless Environment.isGameApp(config.GAME_KEY)
+            z '.ad',
+              z @$adsenseAd, {
+                client: 'ca-pub-1232978630423169'
+                slot: '3223030936'
+              }
           z '.body', $body
 
       z '.divider'
@@ -166,6 +176,7 @@ module.exports = class Thread
             "#{FormatService.number thread?.commentCount} "
             @model.l.get 'thread.score'
       z '.divider.no-margin-bottom'
+
 
       # z '.comments',
       #   if threadComments and _isEmpty threadComments

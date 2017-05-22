@@ -88,7 +88,7 @@ module.exports = class Portal
       accessToken: user.id # Temporary
       userId: user.id
 
-  shareAny: ({text, url, path}) =>
+  shareAny: ({text, imageUrl, path}) =>
     ga? 'send', 'event', 'share_service', 'share_any'
 
     url = "https://#{config.HOST}#{path}"

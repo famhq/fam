@@ -19,6 +19,7 @@ Pages =
   FriendsPage: require './pages/friends'
   VideosPage: require './pages/videos'
   ClanPage: require './pages/clan'
+  ClanEditPage: require './pages/clan_edit'
   ConversationPage: require './pages/conversation'
   ConversationsPage: require './pages/conversations'
   NewConversationPage: require './pages/new_conversation'
@@ -82,17 +83,17 @@ module.exports = class App
       {isBottomBannerVisible} = @state.getValue()
       if $page.hasBottomBanner and not isBottomBannerVisible
         @state.set isBottomBannerVisible: true
-        @model.portal.call 'heyzap.showBanner', {
+        @model.portal?.call 'heyzap.showBanner', {
           position: 'bottom'
         }
-        @model.portal.call 'facebook.showBanner', { # legacy
+        @model.portal?.call 'facebook.showBanner', { # legacy
           placementId: '305278286509542_418535418517161'
           position: 'bottom'
         }
       else if not $page.hasBottomBanner and isBottomBannerVisible
         @state.set isBottomBannerVisible: false
-        @model.portal.call 'heyzap.hideBanner'
-        @model.portal.call 'facebook.destroyBanner' # legacy
+        @model.portal?.call 'heyzap.hideBanner'
+        @model.portal?.call 'facebook.destroyBanner' # legacy
 
       {req, route, $page: $page}
 
@@ -174,6 +175,7 @@ module.exports = class App
     route ['/friends/:action', '/friends'], 'FriendsPage'
     route '/videos', 'VideosPage'
     route '/clan', 'ClanPage'
+    route '/clan/:id/edit', 'ClanEditPage'
     route '/conversation/:conversationId', 'ConversationPage'
     route '/conversations', 'ConversationsPage'
     route '/newConversation', 'NewConversationPage'
@@ -226,7 +228,10 @@ module.exports = class App
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'
     ], 'ProfilePage'
-    route '/user/id/:id/chests', 'ProfileChestsPage'
+    route [
+      '/user/id/:id/chests'
+      '/user/:username/chests'
+    ], 'ProfileChestsPage'
     route '/editProfile', 'EditProfilePage'
     route '/*', 'FourOhFourPage'
     routes

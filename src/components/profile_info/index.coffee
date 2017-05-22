@@ -203,7 +203,7 @@ module.exports = class ProfileInfo
                     onclick: =>
                       tag = player?.id
                       @state.set isRefreshing: true
-                      @model.clashRoyaleAPI.refreshByPlayerTag tag
+                      @model.clashRoyaleAPI.refreshByPlayerId tag
                       .then =>
                         @state.set hasUpdatedPlayer: true, isRefreshing: false
 

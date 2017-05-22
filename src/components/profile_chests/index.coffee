@@ -5,6 +5,7 @@ Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
 AdsenseAd = require '../adsense_ad'
+PrimaryButton = require '../primary_button'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -14,6 +15,7 @@ if window?
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
     @$adsenseAd = new AdsenseAd()
+    @$shareButton = new PrimaryButton()
 
     @state = z.state {
       me: @model.user.getMe()
@@ -101,6 +103,16 @@ module.exports = class ProfileChests
                 z '.count',
                   "+#{player?.data.chestCycle.countUntil.epic + 1}"
 
+        z @$shareButton,
+          text: @model.l.get 'general.share'
+          onclick: =>
+            @model.portal.call 'share.any', {
+              text: ''
+              image: "#{config.PUBLIC_API_URL}/di/crChestCycle/#{me?.id}.png"
+              path: if me?.username \
+                    then "/user/#{me.username}/chests"
+                    else "/user/id/#{me?.id}/chests"
+            }
 
         # leadbolt cpms suck
         # if window? and Environment.isMobile() and not isNative
@@ -116,9 +128,9 @@ module.exports = class ProfileChests
         #     scrolling: 'no'
 
 
-
-      # z '.ad',
-      #   z @$adsenseAd, {
-      #     client: 'ca-pub-1232978630423169'
-      #     slot: '3223030936'
-      #   }
+      # unless Environment.isGameApp(config.GAME_KEY)
+      #   z '.ad',
+      #     z @$adsenseAd, {
+      #       client: 'ca-pub-1232978630423169'
+      #       slot: '3223030936'
+      #     }

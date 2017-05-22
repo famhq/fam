@@ -24,6 +24,7 @@ module.exports = class ProfileDialog
     @$deleteIcon = new Icon()
     @$chevronIcon = new Icon()
     @$closeIcon = new Icon()
+    @$copyIcon = new Icon()
 
     me = @model.user.getMe()
 
@@ -136,6 +137,24 @@ module.exports = class ProfileDialog
                     if isBlocked \
                     then @model.l.get 'profileDialog.unblock'
                     else @model.l.get 'profileDialog.block'
+
+
+              # if user?.chatMessageId
+              #   z 'li.menu-item', {
+              #     onclick: =>
+              #       null # TODO
+              #   },
+              #     z '.icon',
+              #       z @$copyIcon,
+              #         icon: 'copy'
+              #         color: colors.$primary500
+              #         isTouchTarget: false
+              #     z '.text', @model.l.get 'profileDialog.copy'
+
+
+
+
+
 
               # if not isMe #and user?.chatMessageId and not me?.flags.isModerator
               #   z 'li.menu-item', {

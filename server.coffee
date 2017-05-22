@@ -24,7 +24,7 @@ RouterService = require './src/services/router'
 MIN_TIME_REQUIRED_FOR_HSTS_GOOGLE_PRELOAD_MS = 10886400000 # 18 weeks
 HEALTHCHECK_TIMEOUT = 200
 RENDER_TO_STRING_TIMEOUT_MS = 1200
-BOT_RENDER_TO_STRING_TIMEOUT_MS = 3000
+BOT_RENDER_TO_STRING_TIMEOUT_MS = 4500
 
 styles = if config.ENV is config.ENVS.PROD
   fs.readFileSync gulpPaths.dist + '/bundle.css', 'utf-8'

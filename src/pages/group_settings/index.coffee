@@ -2,7 +2,6 @@ z = require 'zorium'
 
 Head = require '../../components/head'
 GroupSettings = require '../../components/group_settings'
-AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 colors = require '../../colors'
 
@@ -25,7 +24,6 @@ module.exports = class GroupSettingsPage
         description: @model.l.get 'groupSettingsPage.title'
       }
     })
-    @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupSettings = new GroupSettings {@model, @router, serverData, group}
 
@@ -41,10 +39,4 @@ module.exports = class GroupSettingsPage
       style:
         height: "#{windowSize.height}px"
     },
-      z @$appBar, {
-        title: @model.l.get 'groupSettingsPage.title'
-        style: 'secondary'
-        isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
-      }
       @$groupSettings
