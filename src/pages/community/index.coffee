@@ -83,18 +83,18 @@ module.exports = class CommunityPage
             $el: @$conversations
           }
         ]
-      z '.fab',
-        z @$fab,
-          colors:
-            c500: colors.$primary500
-          $icon: z @$plusIcon, {
-            icon: 'add'
-            isTouchTarget: false
-            color: colors.$white
-          }
-          onclick: =>
-            tab = TABS[selectedIndex]
-            if tab is 'groups'
-              @router.go '/newGroup'
-            else
-              @router.go '/newConversation'
+      # z '.fab',
+      #   z @$fab,
+      #     colors:
+      #       c500: colors.$primary500
+      #     $icon: z @$plusIcon, {
+      #       icon: 'add'
+      #       isTouchTarget: false
+      #       color: colors.$white
+      #     }
+      #     onclick: =>
+      #       tab = TABS[selectedIndex]
+      #       if tab is 'groups'
+      #         @router.go '/newGroup'
+      #       else
+      #         @router.go '/newConversation'
