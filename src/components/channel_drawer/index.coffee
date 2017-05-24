@@ -69,13 +69,6 @@ module.exports = class ChannelDrawer
           onclick: =>
             @isOpen.onNext false
             @router.go "/group/#{group.id}/settings"
-        if hasAdminPermission
-          z @$editIcon,
-            icon: 'edit'
-            color: colors.$primary500
-            onclick: =>
-              @isOpen.onNext false
-              @router.go "/group/#{group.id}/edit"
 
       z '.divider'
 

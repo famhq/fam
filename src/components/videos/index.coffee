@@ -51,6 +51,7 @@ module.exports = class Videos extends Base
                 href: "https://www.youtube.com/watch?v=#{video.sourceId}"
                 onclick: (e) =>
                   e?.preventDefault()
+                  ga? 'send', 'event', 'video', 'click', video.sourceId
                   @model.portal.call 'browser.openWindow', {
                     url: "https://www.youtube.com/watch?v=#{video.sourceId}"
                     target: '_system'

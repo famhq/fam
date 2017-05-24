@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
 
 Icon = require '../icon'
 Ripple = require '../ripple'
@@ -12,7 +13,30 @@ GROUPS_IN_DRAWER = 2
 
 module.exports = class BottomBar
   constructor: ({@model, @router, requests}) ->
-    @menuItems = [
+    @state = z.state {requests}
+
+    @expDecksPageGroup = localStorage?['exp:decksPage']
+    unless @expDecksPageGroup
+      @expDecksPageGroup = if Math.random() > 0.5 \
+                               then 'visible'
+                               else 'hidden'
+      localStorage?['exp:decksPage'] = @expDecksPageGroup
+    ga? 'send', 'event', 'exp', 'decksPage', @expDecksPageGroup
+
+    @expVideosPageGroup = localStorage?['exp:videosPage']
+    unless @expVideosPageGroup
+      @expVideosPageGroup = if Math.random() > 0.5 \
+                               then 'visible'
+                               else 'hidden'
+      localStorage?['exp:videosPage'] = @expVideosPageGroup
+    ga? 'send', 'event', 'exp', 'videosPage', @expVideosPageGroup
+
+
+  render: =>
+    {requests} = @state.getValue()
+    currentPath = requests?.req.path
+
+    @menuItems = _filter [
       {
         $icon: new Icon()
         icon: 'profile'
@@ -25,18 +49,20 @@ module.exports = class BottomBar
         route: '/clan'
         text: @model.l.get 'general.clan'
       }
-      {
-        $icon: new Icon()
-        icon: 'decks'
-        route: '/decks'
-        text: @model.l.get 'general.decks'
-      }
-      # {
-      #   $icon: new Icon()
-      #   icon: 'cards'
-      #   route: '/cards'
-      #   text: 'Cards'
-      # }
+      if window? and @expDecksPageGroup is 'visible'
+        {
+          $icon: new Icon()
+          icon: 'decks'
+          route: '/decks'
+          text: @model.l.get 'general.decks'
+        }
+      if window? and @model.l.language is 'es' and @expVideosPageGroup is 'visible'
+        {
+          $icon: new Icon()
+          icon: 'video'
+          route: '/videos'
+          text: 'Videos'
+        }
       {
         $icon: new Icon()
         icon: 'chat'
@@ -44,13 +70,6 @@ module.exports = class BottomBar
         text: @model.l.get 'general.chat'
       }
     ]
-
-    @state = z.state {requests}
-
-
-  render: =>
-    {requests} = @state.getValue()
-    currentPath = requests?.req.path
 
     z '.z-bottom-bar',
       _map @menuItems, ({$icon, icon, route, text}) =>

@@ -4,7 +4,7 @@ _startCase = require 'lodash/startCase'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
-AdsenseAd = require '../adsense_ad'
+AdcolonyAd = require '../adcolony_ad'
 PrimaryButton = require '../primary_button'
 config = require '../../config'
 colors = require '../../colors'
@@ -14,7 +14,7 @@ if window?
 
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
-    @$adsenseAd = new AdsenseAd()
+    @$adColonyAd = new AdcolonyAd()
     @$shareButton = new PrimaryButton()
 
     @state = z.state {
@@ -128,9 +128,5 @@ module.exports = class ProfileChests
         #     scrolling: 'no'
 
 
-      # unless Environment.isGameApp(config.GAME_KEY)
-      #   z '.ad',
-      #     z @$adsenseAd, {
-      #       client: 'ca-pub-1232978630423169'
-      #       slot: '3223030936'
-      #     }
+      if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+        z '.ad', @$adColonyAd

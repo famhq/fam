@@ -2,6 +2,7 @@ z = require 'zorium'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
+BottomBar = require '../../components/bottom_bar'
 ButtonMenu = require '../../components/button_menu'
 Videos = require '../../components/videos'
 colors = require '../../colors'
@@ -22,6 +23,7 @@ module.exports = class VideosPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
+    @$bottomBar = new BottomBar {@model, @router, requests}
 
     @$videos = new Videos {@model, @router, sort: 'popular'}
 
@@ -43,3 +45,4 @@ module.exports = class VideosPage
         $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
       }
       @$videos
+      @$bottomBar

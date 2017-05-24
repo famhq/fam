@@ -93,13 +93,6 @@ module.exports = class GroupPage
         $topRightButton:
           z '.p-group_top-right',
             z '.icon',
-              if hasAdminPermission
-                z @$editIcon,
-                  icon: 'edit'
-                  color: colors.$primary500
-                  onclick: =>
-                    @router.go "/group/#{group?.id}/edit"
-            z '.icon',
               z @$settingsIcon,
                 icon: 'settings'
                 color: colors.$primary500
