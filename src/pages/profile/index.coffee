@@ -46,21 +46,22 @@ module.exports = class ProfilePage
     @hideDrawer = usernameAndId.map ([username, id]) ->
       username or id
 
-    clashRoyaleData = user.flatMapLatest ({id}) =>
+    player = user.flatMapLatest ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (player) ->
         return player or {}
 
     @isShareSheetVisible = new Rx.BehaviorSubject false
+    @overlay$ = new Rx.BehaviorSubject null
 
     @$head = new Head({
       @model
       requests
       serverData
-      meta: clashRoyaleData.map (clashRoyaleData) ->
-        playerName = clashRoyaleData?.data?.name
+      meta: player.map (player) ->
+        playerName = player?.data?.name
         {
-          title: if clashRoyaleData?.id \
+          title: if player?.id \
                  then "#{playerName}'s Clash Royale stats - Starfire"
                  else 'Starfire - track wins, losses and more in Clash Royale'
 
@@ -71,7 +72,7 @@ module.exports = class ProfilePage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$profile = new Profile {@model, @router, user}
+    @$profile = new Profile {@model, @router, user, @overlay$}
     @$profileLanding = new ProfileLanding {@model, @router}
     @$bottomBar = new BottomBar {@model, @router, requests}
     @$shareSheet = new ShareSheet {
@@ -88,19 +89,20 @@ module.exports = class ProfilePage
       routeId: id
       isShareSheetVisible: @isShareSheetVisible
       me: me
-      clashRoyaleData: clashRoyaleData
+      player: player
       requests: requests
+      overlay$: @overlay$
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, clashRoyaleData, me, routeUsername, routeId, user,
-      isShareSheetVisible} = @state.getValue()
+    {windowSize, player, me, routeUsername, routeId, user,
+      isShareSheetVisible, overlay$} = @state.getValue()
 
-    isTagSet = clashRoyaleData?.id
+    isTagSet = player?.id
     isOtherProfile = routeId or routeUsername
     isMe = me?.id is user?.id or not user
-    playerName = clashRoyaleData?.data?.name
+    playerName = player?.data?.name
 
     if isMe
       text = 'View my Clash Royale profile on Starfire'
@@ -122,8 +124,8 @@ module.exports = class ProfilePage
     },
       z @$appBar, {
         title: if not isMe \
-               then clashRoyaleData?.data?.name
-               else if clashRoyaleData?.id
+               then player?.data?.name
+               else if player?.id
                then @model.l.get 'profilePage.title'
                else ''
         bgColor: if isOtherProfile \
@@ -154,9 +156,9 @@ module.exports = class ProfilePage
               }
         isFlat: true
       }
-      if clashRoyaleData and isTagSet
+      if player and isTagSet
         z @$profile, {isOtherProfile}
-      else if clashRoyaleData
+      else if player
         z @$profileLanding, {isHome: not routeId}
       else
         @$spinner
@@ -166,3 +168,6 @@ module.exports = class ProfilePage
 
       if isShareSheetVisible
         z @$shareSheet, {text, path}
+
+      if overlay$
+        overlay$

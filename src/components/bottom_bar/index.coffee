@@ -31,6 +31,14 @@ module.exports = class BottomBar
       localStorage?['exp:videosPage'] = @expVideosPageGroup
     ga? 'send', 'event', 'exp', 'videosPage', @expVideosPageGroup
 
+    @expSocialGroup = localStorage?['exp:videosPage']
+    unless @expSocialGroup
+      @expSocialGroup = if Math.random() > 0.5 \
+                               then 'visible'
+                               else 'control'
+      localStorage?['exp:videosPage'] = @expSocialGroup
+    ga? 'send', 'event', 'exp', 'social', @expSocialGroup
+
 
   render: =>
     {requests} = @state.getValue()
@@ -63,6 +71,14 @@ module.exports = class BottomBar
           route: '/videos'
           text: 'Videos'
         }
+      # if expSocialGroup is 'visible'
+      #   {
+      #     $icon: new Icon()
+      #     icon: 'chat'
+      #     route: '/social'
+      #     text: @model.l.get 'general.social'
+      #   }
+      # else
       {
         $icon: new Icon()
         icon: 'chat'

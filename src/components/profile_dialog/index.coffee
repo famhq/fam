@@ -1,4 +1,5 @@
 z = require 'zorium'
+_map = require 'lodash/map'
 
 Avatar = require '../avatar'
 Dialog = require '../dialog'
@@ -20,7 +21,9 @@ module.exports = class ProfileDialog
     @$manageIcon = new Icon()
     @$flagIcon = new Icon()
     @$blockIcon = new Icon()
-    @$banIcon = new Icon()
+    @$tempBanIcon = new Icon()
+    @$permaBanIcon = new Icon()
+    @$ipBanIcon = new Icon()
     @$deleteIcon = new Icon()
     @$chevronIcon = new Icon()
     @$closeIcon = new Icon()
@@ -56,6 +59,135 @@ module.exports = class ProfileDialog
     isMe = user?.id is me?.id
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
+    userOptions = [
+      {
+        icon: 'profile'
+        $icon: @$profileIcon
+        text: @model.l.get 'general.profile'
+        isVisible: not isMe
+        onclick: =>
+          @router.go "/user/id/#{user?.id}"
+          @selectedProfileDialogUser.onNext null
+      }
+      {
+        icon: 'chat-bubble'
+        $icon: @$messageIcon
+        text:
+          if isConversationLoading
+          then @model.l.get 'general.loading'
+          else @model.l.get 'profileDialog.message'
+        isVisible: not isMe
+        onclick: =>
+          unless isConversationLoading
+            @state.set isConversationLoading: true
+            @model.conversation.create {
+              userIds: [user.id]
+            }
+            .then (conversation) =>
+              @state.set isConversationLoading: false
+              @router.go "/conversation/#{conversation.id}"
+              @selectedProfileDialogUser.onNext null
+      }
+      {
+        icon: 'block'
+        $icon: @$blockIcon
+        text:
+          if isBlocked
+          then @model.l.get 'profileDialog.unblock'
+          else @model.l.get 'profileDialog.block'
+        isVisible: not isMe
+        onclick: =>
+          if isBlocked
+            @model.userData.unblockByUserId user?.id
+          else
+            @model.userData.blockByUserId user?.id
+          @selectedProfileDialogUser.onNext null
+      }
+      # {
+      #   icon: 'warning'
+      #   $icon: @$flagIcon
+      #   text:
+      #     if isFlagLoading \
+      #     then @model.l.get 'general.loading'
+      #     else if isFlagged
+      #     then @model.l.get 'profileDialog.reported'
+      #     else @model.l.get 'profileDialog.report'
+      #   isVisible: not isMe
+      #   onclick: =>
+      #     @selectedProfileDialogUser.onNext null
+      #     # @state.set isFlagLoading: true
+      #     # @model.threadComment.flag user?.chatMessageId
+      #     # .then =>
+      #     #   @state.set isFlagLoading: false, isFlagged: true
+      # }
+      # {
+      #   icon: 'copy'
+      #   $icon: @$copyIcon
+      #   text: @model.l.get 'profileDialog.copy'
+      #   isVisible: true
+      #   onclick:-=> null # TODO
+      # }
+    ]
+
+    modOptions = [
+      {
+        icon: 'warning'
+        $icon: @$tempBanIcon
+        text:
+          if user?.isChatBanned
+            @model.l.get 'profileDialog.chatBanned'
+          else
+            @model.l.get 'profileDialog.tempBan'
+        isVisible: not isMe
+        onclick: =>
+          if user?.isChatBanned
+            @model.mod.unbanByUserId user?.id
+          else
+            @model.mod.banByUserId user?.id, {duration: '24h'}
+          @selectedProfileDialogUser.onNext null
+      }
+      {
+        icon: 'perma-ban'
+        $icon: @$permaBanIcon
+        text:
+          if user?.isChatBanned
+            @model.l.get 'profileDialog.chatBanned'
+          else
+            @model.l.get 'profileDialog.permaBan'
+        isVisible: not isMe
+        onclick: =>
+          if user?.isChatBanned
+            @model.mod.unbanByUserId user?.id
+          else
+            @model.mod.banByUserId user?.id, {duration: 'permanent'}
+          @selectedProfileDialogUser.onNext null
+      }
+      {
+        icon: 'ip-ban'
+        $icon: @$ipBanIcon
+        text:
+          if user?.isChatBanned
+            @model.l.get 'profileDialog.chatBanned'
+          else
+            @model.l.get 'profileDialog.ipBan'
+        isVisible: not isMe
+        onclick: =>
+          if user?.isChatBanned
+            @model.mod.unbanByUserId user?.id
+          else
+            @model.mod.banByUserId user?.id, {type: 'ip', duration: 'permanent'}
+          @selectedProfileDialogUser.onNext null
+      }
+      {
+        icon: 'delete'
+        $icon: @$deleteIcon
+        text: @model.l.get 'profileDialog.delete'
+        isVisible: true
+        onclick: =>
+          @model.chatMessage.deleteById user?.chatMessageId
+          @selectedProfileDialogUser.onNext null
+      }
+    ]
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
       z @$dialog,
@@ -83,147 +215,41 @@ module.exports = class ProfileDialog
                       @selectedProfileDialogUser.onNext null
 
             z 'ul.content',
-              unless isMe
-                z 'li.menu-item', {
-                  onclick: =>
-                    @router.go "/user/id/#{user?.id}"
-                    @selectedProfileDialogUser.onNext null
-                },
+              _map userOptions, ({icon, $icon, text, onclick, isVisible}) ->
+                z 'li.menu-item', {onclick},
                   z '.icon',
-                    z @$profileIcon,
-                      icon: 'profile'
+                    z $icon, {
+                      icon: icon
                       color: colors.$primary500
                       isTouchTarget: false
-                  z '.text', @model.l.get 'general.profile'
-
-              unless isMe
-                z 'li.menu-item', {
-                  onclick: =>
-                    unless isConversationLoading
-                      @state.set isConversationLoading: true
-                      @model.conversation.create {
-                        userIds: [user.id]
-                      }
-                      .then (conversation) =>
-                        @state.set isConversationLoading: false
-                        @router.go "/conversation/#{conversation.id}"
-                        @selectedProfileDialogUser.onNext null
-                },
-                  z '.icon',
-                    z @$messageIcon,
-                      icon: 'chat-bubble'
-                      color: colors.$primary500
-                      isTouchTarget: false
-                  z '.text',
-                    if isConversationLoading
-                    then @model.l.get 'general.loading'
-                    else @model.l.get 'profileDialog.message'
-
-              unless isMe
-                z 'li.menu-item', {
-                  onclick: =>
-                    if isBlocked
-                      @model.userData.unblockByUserId user?.id
-                    else
-                      @model.userData.blockByUserId user?.id
-                    @selectedProfileDialogUser.onNext null
-                },
-                  z '.icon',
-                    z @$blockIcon,
-                      icon: 'block'
-                      color: colors.$primary500
-                      isTouchTarget: false
-                  z '.text',
-                    if isBlocked \
-                    then @model.l.get 'profileDialog.unblock'
-                    else @model.l.get 'profileDialog.block'
-
-
-              # if user?.chatMessageId
-              #   z 'li.menu-item', {
-              #     onclick: =>
-              #       null # TODO
-              #   },
-              #     z '.icon',
-              #       z @$copyIcon,
-              #         icon: 'copy'
-              #         color: colors.$primary500
-              #         isTouchTarget: false
-              #     z '.text', @model.l.get 'profileDialog.copy'
-
-
-
-
-
-
-              # if not isMe #and user?.chatMessageId and not me?.flags.isModerator
-              #   z 'li.menu-item', {
-              #     onclick: =>
-              #       @selectedProfileDialogUser.onNext null
-              #       # @state.set isFlagLoading: true
-              #       # @model.threadComment.flag user?.chatMessageId
-              #       # .then =>
-              #       #   @state.set isFlagLoading: false, isFlagged: true
-              #   },
-              #     z '.icon',
-              #       z @$flagIcon,
-              #         icon: 'warning'
-              #         color: colors.$primary500
-              #         isTouchTarget: false
-              #     z '.text',
-              #       if isFlagLoading \
-              #       then @model.l.get 'general.loading'
-              #       else if isFlagged
-              #       then @model.l.get 'profileDialog.reported'
-              #       else @model.l.get 'profileDialog.report'
-
-              if me?.flags?.isModerator
-                z '.divider'
-
-              if me?.flags?.isModerator and not isMe
-                z 'li.menu-item', {
-                  onclick: =>
-                    @model.user.setFlagsById user?.id, {
-                      isChatBanned: not user?.flags?.isChatBanned
                     }
-                    @selectedProfileDialogUser.onNext null
-                },
-                  z '.icon',
-                    z @$banIcon,
-                      icon: 'warning'
-                      color: colors.$primary500
-                      isTouchTarget: false
-                  z '.text',
-                    if user?.flags?.isChatBanned
-                      @model.l.get 'profileDialog.chatBanned'
-                    else
-                      @model.l.get 'profileDialog.ban'
+                  z '.text', text
 
-              if me?.flags?.isModerator and user?.chatMessageId
-                z 'li.menu-item', {
-                  onclick: =>
-                    @model.chatMessage.deleteById user?.chatMessageId
-                    @selectedProfileDialogUser.onNext null
-                },
-                  z '.icon',
-                    z @$deleteIcon,
-                      icon: 'delete'
-                      color: colors.$primary500
-                      isTouchTarget: false
-                  z '.text',
-                    @model.l.get 'profileDialog.delete'
-
-              if group and hasAdminPermission
-                [
-                  z 'li.divider'
-                  z 'li.menu-item', {
-                    onclick: =>
-                      @router.go "/group/#{group.id}/manage/#{user?.id}"
-                  },
+            if me?.flags?.isModerator
+              z 'ul.content',
+                z '.divider'
+                _map modOptions, ({icon, $icon, text, onclick, isVisible}) ->
+                  z 'li.menu-item', {onclick},
                     z '.icon',
-                      z @$manageIcon,
-                        icon: 'settings'
+                      z $icon, {
+                        icon: icon
                         color: colors.$primary500
                         isTouchTarget: false
-                    z '.text', 'Manage'
-                ]
+                      }
+                    z '.text', text
+
+
+              # if group and hasAdminPermission
+              #   [
+              #     z 'li.divider'
+              #     z 'li.menu-item', {
+              #       onclick: =>
+              #         @router.go "/group/#{group.id}/manage/#{user?.id}"
+              #     },
+              #       z '.icon',
+              #         z @$manageIcon,
+              #           icon: 'settings'
+              #           color: colors.$primary500
+              #           isTouchTarget: false
+              #       z '.text', 'Manage'
+              #   ]

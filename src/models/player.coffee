@@ -14,3 +14,6 @@ module.exports = class Player
 
   search: (playerId) =>
     @auth.call "#{@namespace}.search", {playerId}
+
+  verifyMe: ({gold, lo}) =>
+    @auth.call "#{@namespace}.verifyMe", {gold, lo}

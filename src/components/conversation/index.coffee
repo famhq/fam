@@ -11,6 +11,7 @@ Base = require '../base'
 FormattedText = require '../formatted_text'
 ConversationInput = require '../conversation_input'
 ConversationMessage = require '../conversation_message'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -202,6 +203,13 @@ module.exports = class Conversation extends Base
 
     if not isPostLoading and messageBody
       @isPostLoading.onNext true
+
+      type = if conversation?.groupId is config.MAIN_GROUP_ID \
+             then 'public'
+             else if conversation?.groupId
+             then 'group'
+             else 'private'
+      ga? 'send', 'event', 'chat_message', 'post', type
 
       @model.chatMessage.create {
         body: messageBody

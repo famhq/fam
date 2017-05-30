@@ -13,6 +13,7 @@ UiCard = require '../ui_card'
 RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
+VerifyAccountDialog = require '../verify_account_dialog'
 FormatService = require '../../services/format'
 config = require '../../config'
 colors = require '../../colors'
@@ -21,7 +22,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileInfo
-  constructor: ({@model, @router, user}) ->
+  constructor: ({@model, @router, user, @overlay$}) ->
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
@@ -29,6 +30,8 @@ module.exports = class ProfileInfo
     @$splitsInfoCard = new UiCard()
     @$followButton = new PrimaryButton()
     @$moreDetailsButton = new SecondaryButton()
+    @$verifyAccountButton = new SecondaryButton()
+    @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
@@ -207,7 +210,13 @@ module.exports = class ProfileInfo
                       .then =>
                         @state.set hasUpdatedPlayer: true, isRefreshing: false
 
-          unless isMe
+          if isMe and player and not player?.isVerified
+            z '.verify-button',
+              z @$verifyAccountButton,
+                text: @model.l.get 'clanInfo.verifySelf'
+                onclick: =>
+                  @overlay$.onNext @$verifyAccountDialog
+          else if not isMe
             z '.follow-button',
               z @$followButton,
                 text: if isFollowing \

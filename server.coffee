@@ -106,6 +106,13 @@ app.use (req, res, next) ->
   cookieSubject = new Rx.BehaviorSubject req.cookies
   cookieSubject.subscribeOnNext setCookies(req.cookies)
 
+  # for client to access
+  CookieService.set(
+    cookieSubject
+    'ip'
+    req.headers?['x-forwarded-for'] or req.connection.remoteAddress
+  )
+
   router = new RouterService {
     router: null
     model: null

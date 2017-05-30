@@ -14,7 +14,7 @@ if window?
 
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
-    @$adColonyAd = new AdcolonyAd()
+    @$adColonyAd = new AdcolonyAd {@model}
     @$shareButton = new PrimaryButton()
 
     @state = z.state {

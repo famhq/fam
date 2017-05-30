@@ -3,7 +3,8 @@ z = require 'zorium'
 Tabs = require '../tabs'
 Icon = require '../icon'
 ProfileInfo = require '../profile_info'
-ProfileHistory = require '../profile_history'
+ProfileDecks = require '../profile_decks'
+ProfileMatches = require '../profile_matches'
 ProfileGraphs = require '../profile_graphs'
 colors = require '../../colors'
 
@@ -11,16 +12,18 @@ if window?
   require './index.styl'
 
 module.exports = class Profile
-  constructor: ({@model, @router, user}) ->
+  constructor: ({@model, @router, user, @overlay$}) ->
     me = @model.user.getMe()
 
     @$tabs = new Tabs {@model}
     @$infoIcon = new Icon()
     @$historyIcon = new Icon()
+    @$decksIcon = new Icon()
     @$graphIcon = new Icon()
 
-    @$profileInfo = new ProfileInfo {@model, @router, user}
-    @$profileHistory = new ProfileHistory {@model, @router, user}
+    @$profileInfo = new ProfileInfo {@model, @router, user, @overlay$}
+    @$profileDecks = new ProfileDecks {@model, @router, user}
+    @$profileMatches = new ProfileMatches {@model, @router, user}
     @$profileGraphs = new ProfileGraphs {@model, @router, user}
 
     @state = z.state
@@ -41,11 +44,17 @@ module.exports = class Profile
             $menuText: 'Info'
             $el: @$profileInfo
           }
+          # {
+          #   $menuIcon: @$historyIcon
+          #   menuIconName: 'history'
+          #   $menuText: 'Matches'
+          #   $el: @$profileMatches
+          # }
           {
-            $menuIcon: @$historyIcon
-            menuIconName: 'history'
-            $menuText: 'History'
-            $el: @$profileHistory
+            $menuIcon: @$decksIcon
+            menuIconName: 'decks'
+            $menuText: 'Decks'
+            $el: @$profileDecks
           }
           {
             $menuIcon: @$graphIcon

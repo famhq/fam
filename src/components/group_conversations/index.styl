@@ -1,0 +1,15 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-group-conversations
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+  padding: 16px
+
+  > .g-grid
+    > .title
+      font-subhead()
+      color: getColor('$primary500')

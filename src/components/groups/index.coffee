@@ -36,7 +36,7 @@ module.exports = class Groups
         $groupList: @$myGroupList
       }
       {
-        title: @model.l.get 'groups.openGroupsList'
+        title: @model.l.get 'groups.openGroupList'
         $groupList: @$openGroupList
       }
     ]

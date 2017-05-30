@@ -1,14 +1,18 @@
 config = require '../config'
+CookieService = require '../services/cookie'
 
 module.exports = class User
   DEFAULT_NAME: 'Nameless'
 
   namespace: 'users'
 
-  constructor: ({@auth, @proxy, @exoid}) -> null
+  constructor: ({@auth, @proxy, @exoid, @cookieSubject}) -> null
 
   getMe: =>
     @auth.stream "#{@namespace}.getMe"
+
+  getIp: =>
+    CookieService.get @cookieSubject, 'ip'
 
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
