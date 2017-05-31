@@ -40,7 +40,7 @@ module.exports = class PlayersSearchPage
     },
       z @$appBar, {
         title: 'Find player'
-        style: 'secondary'
+        style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }

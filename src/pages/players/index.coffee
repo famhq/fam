@@ -9,6 +9,7 @@ PlayersTop = require '../../components/players_top'
 PlayersFollowing = require '../../components/players_following'
 ProfileDialog = require '../../components/profile_dialog'
 Head = require '../../components/head'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -61,7 +62,7 @@ module.exports = class PlayersPage
     },
       z @$appBar,
         isFlat: true
-        $topLeftButton: @$buttonMenu
+        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
         title: @model.l.get 'playersPage.title'
       z @$tabs,
         isBarFixed: false

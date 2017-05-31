@@ -62,7 +62,7 @@ module.exports = class ConversationPage
     },
       z @$appBar, {
         title: @model.user.getDisplayName toUser
-        style: 'secondary'
+        style: 'primary'
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }
       @$conversation

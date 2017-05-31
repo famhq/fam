@@ -75,13 +75,6 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'clan'
           }
-          {
-            path: '/decks'
-            title: @model.l.get 'drawer.menuItemDecks'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'decks'
-          }
           # {
           #   path: '/cards'
           #   title: 'Cards'
@@ -90,8 +83,10 @@ module.exports = class Drawer
           #   iconName: 'cards'
           # }
           {
-            path: '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
-            title: @model.l.get 'drawer.menuItemCommunity'
+            path: if @model.experiment.get('social') is 'visible' \
+                  then '/social'
+                  else '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
+            title: @model.l.get 'general.social'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'chat'

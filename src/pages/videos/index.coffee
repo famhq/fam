@@ -42,7 +42,7 @@ module.exports = class VideosPage
       z @$appBar, {
         title: @model.l.get 'videosPage.title'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
+        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
       }
       @$videos
       @$bottomBar

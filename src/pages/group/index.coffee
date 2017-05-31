@@ -87,7 +87,7 @@ module.exports = class GroupPage
     },
       z @$appBar, {
         title: group?.name
-        style: 'secondary'
+        style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
         $topRightButton:

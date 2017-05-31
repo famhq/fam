@@ -1,8 +1,10 @@
 z = require 'zorium'
 _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
+_startCase = require 'lodash/startCase'
 
 GroupHeader = require '../group_header'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -31,7 +33,7 @@ module.exports = class GroupList
                 hasMemberPermission = @model.group.hasPermission group, me, {
                   level: 'member'
                 }
-                z '.g-col.g-xs-6.g-md-3',
+                z '.g-col.g-xs-12.g-md-6',
                   @router.link z 'a.group', {
                     href: if hasMemberPermission \
                           then "/group/#{group.id}/chat"
@@ -42,4 +44,11 @@ module.exports = class GroupList
                         $header
                     z '.content',
                       z '.name', group.name or 'Nameless'
-                      z '.count', "#{group.userIds?.length} members"
+                      z '.count',
+                        _startCase(group.type) or '...'
+                        if group.id isnt config.MAIN_GROUP_ID
+                          [
+                            z 'span.middot',
+                              innerHTML: ' &middot; '
+                            "#{group.userIds?.length} members"
+                          ]

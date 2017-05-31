@@ -15,31 +15,6 @@ module.exports = class BottomBar
   constructor: ({@model, @router, requests}) ->
     @state = z.state {requests}
 
-    @expDecksPageGroup = localStorage?['exp:decksPage']
-    unless @expDecksPageGroup
-      @expDecksPageGroup = if Math.random() > 0.5 \
-                               then 'visible'
-                               else 'hidden'
-      localStorage?['exp:decksPage'] = @expDecksPageGroup
-    ga? 'send', 'event', 'exp', 'decksPage', @expDecksPageGroup
-
-    @expVideosPageGroup = localStorage?['exp:videosPage']
-    unless @expVideosPageGroup
-      @expVideosPageGroup = if Math.random() > 0.5 \
-                               then 'visible'
-                               else 'hidden'
-      localStorage?['exp:videosPage'] = @expVideosPageGroup
-    ga? 'send', 'event', 'exp', 'videosPage', @expVideosPageGroup
-
-    @expSocialGroup = localStorage?['exp:videosPage']
-    unless @expSocialGroup
-      @expSocialGroup = if Math.random() > 0.5 \
-                               then 'visible'
-                               else 'control'
-      localStorage?['exp:videosPage'] = @expSocialGroup
-    ga? 'send', 'event', 'exp', 'social', @expSocialGroup
-
-
   render: =>
     {requests} = @state.getValue()
     currentPath = requests?.req.path
@@ -57,14 +32,7 @@ module.exports = class BottomBar
         route: '/clan'
         text: @model.l.get 'general.clan'
       }
-      if window? and @expDecksPageGroup is 'visible'
-        {
-          $icon: new Icon()
-          icon: 'decks'
-          route: '/decks'
-          text: @model.l.get 'general.decks'
-        }
-      if window? and @model.l.language is 'es' and @expVideosPageGroup is 'visible'
+      if window? and @model.l.language is 'es'
         {
           $icon: new Icon()
           icon: 'video'
@@ -82,8 +50,10 @@ module.exports = class BottomBar
       {
         $icon: new Icon()
         icon: 'chat'
-        route: '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
-        text: @model.l.get 'general.chat'
+        route: if @model.experiment.get('social') is 'visible' \
+               then '/social'
+               else '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
+        text: @model.l.get 'general.social'
       }
     ]
 

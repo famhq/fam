@@ -18,11 +18,7 @@ module.exports = class ChannelDrawer
     me = @model.user.getMe()
 
     @$channelList = new ChannelList {@model, @router, group}
-    @$chatIcon = new Icon()
-    @$membersIcon = new Icon()
-    @$settingsIcon = new Icon()
     @$manageChannelsSettingsIcon = new Icon()
-    @$editIcon = new Icon()
 
     @$groupBadge = new GroupBadge {@model, group}
 
@@ -35,63 +31,38 @@ module.exports = class ChannelDrawer
   render: =>
     {isOpen, group, me, conversation} = @state.getValue()
 
-    drawerWidth = Math.min \
-      window?.innerWidth - DRAWER_RIGHT_PADDING, DRAWER_MAX_WIDTH
-    translateX = if isOpen then '0' else "-#{drawerWidth}px"
-
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.z-channel-drawer', {
-      className: z.classKebab {isOpen}
+      onclick: =>
+        @isOpen.onNext false
     },
-      z '.group-name',
-        z '.badge', z @$groupBadge
-        z '.name', group?.name
+      z '.drawer', {
+        onclick: (e) ->
+          e?.stopPropagation()
+      },
+        z '.title', @model.l.get 'channelDrawer.title'
 
-      z '.divider'
-
-      z '.menu',
-        z @$chatIcon,
-          icon: 'chat'
-          color: colors.$primary500
-          onclick: =>
+        z @$channelList, {
+          selectedConversationId: conversation?.id
+          onclick: (e, {id}) =>
+            @router.go "/group/#{group?.id}/chat/#{id}", {
+              ignoreHistory: true
+            }
             @isOpen.onNext false
-            @router.go "/group/#{group.id}/chat"
-        z @$membersIcon,
-          icon: 'friends'
-          color: colors.$primary500
-          onclick: =>
-            @isOpen.onNext false
-            @router.go "/group/#{group.id}/members"
-        z @$settingsIcon,
-          icon: 'settings'
-          color: colors.$primary500
-          onclick: =>
-            @isOpen.onNext false
-            @router.go "/group/#{group.id}/settings"
+        }
 
-      z '.divider'
-
-      z @$channelList, {
-        selectedConversationId: conversation?.id
-        onclick: (e, {id}) =>
-          @router.go "/group/#{group?.id}/chat/#{id}", {
-            ignoreHistory: true
-          }
-          @isOpen.onNext false
-      }
-
-      if hasAdminPermission
-        [
-          z '.divider'
-          z '.manage-channels', {
-            onclick: =>
-              @router.go "/group/#{group?.id}/manageChannels"
-          },
-            z '.icon',
-              z @$manageChannelsSettingsIcon,
-                icon: 'settings'
-                isTouchTarget: false
-                color: colors.$primary500
-            z '.text', 'Manage channels'
-        ]
+        if hasAdminPermission
+          [
+            z '.divider'
+            z '.manage-channels', {
+              onclick: =>
+                @router.go "/group/#{group?.id}/manageChannels"
+            },
+              z '.icon',
+                z @$manageChannelsSettingsIcon,
+                  icon: 'settings'
+                  isTouchTarget: false
+                  color: colors.$primary500
+              z '.text', 'Manage channels'
+          ]

@@ -83,7 +83,7 @@ module.exports = class ProfileChestsPage
     },
       z @$appBar, {
         title: @model.l.get 'profileChestsPage.title'
-        style: 'secondary'
+        style: 'primary'
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }
       if player

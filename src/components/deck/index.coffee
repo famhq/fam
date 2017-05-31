@@ -32,7 +32,7 @@ module.exports = class Deck
     z '.z-deck',
       z @$tabs,
         isBarFixed: false
-        barStyle: 'secondary'
+        barStyle: 'primary'
         tabs: [
           {
             $menuIcon: @$infoIcon

@@ -47,6 +47,7 @@ module.exports = class ConversationImageView
       z @$appBar, {
         title: @model.l.get 'conversationImageView.title'
         $topLeftButton: z @$buttonBack, {
+          color: colors.$primary500
           onclick: =>
             @model.imageViewOverlay.setImageData null
         }

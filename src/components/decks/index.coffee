@@ -59,7 +59,7 @@ module.exports = class Decks
         z @$appBar, {
           title: 'Battle Decks'
           isFlat: true
-          $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
+          $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
           $topRightButton: null # FIXME
         }
 

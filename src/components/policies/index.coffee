@@ -86,7 +86,4 @@ module.exports = class Policies
         z @$continueButton,
           text: 'Continue'
           onclick: =>
-            if Environment.isGameApp config.GAME_KEY
-              @router.go '/'
-            else
-              @router.go '/getApp'
+            @router.go '/'

@@ -30,7 +30,7 @@ module.exports = class ActionBar
     z '.z-action-bar',
       z @$appBar, {
         title: title
-        style: 'secondary'
+        style: 'primary'
         $topLeftButton:
           z @$cancelIcon,
             icon: cancel.icon

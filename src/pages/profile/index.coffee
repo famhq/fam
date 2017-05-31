@@ -128,29 +128,25 @@ module.exports = class ProfilePage
                else if player?.id
                then @model.l.get 'profilePage.title'
                else ''
-        bgColor: if isOtherProfile \
-                 then colors.$tertiary700
-                 else colors.$primary500
+        bgColor: if player and not isTagSet \
+                 then colors.$primary500
+                 else colors.$tertiary700
         $topLeftButton:
           z $button,
-            color: if isOtherProfile \
-                   then colors.$primary500
-                   else colors.$tertiary900
+            color: if player and not isTagSet \
+                   then colors.$tertiary900
+                   else colors.$primary500
         $topRightButton: z '.p-profile_top-right',
           if isTagSet
             z @$shareIcon,
               icon: 'share'
-              color: if isOtherProfile \
-                     then colors.$primary500
-                     else colors.$tertiary900
+              color: colors.$primary500
               onclick: =>
                 @isShareSheetVisible.onNext true
           if isMe and isTagSet
             z @$settingsIcon, {
               icon: 'settings'
-              color: if isOtherProfile \
-                     then colors.$primary500
-                     else colors.$tertiary900
+              color: colors.$primary500
               onclick: =>
                 @router.go '/editProfile'
               }

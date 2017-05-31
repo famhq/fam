@@ -22,8 +22,17 @@ if window?
 MIN_MS_BETWEEN_REFRESH = 2000
 
 module.exports = class ModHubPage
-  constructor: ({@model, @portal, @router}) ->
-    @$head = new Head {@model}
+  constructor: ({@model, requests, @router, serverData}) ->
+    @$head = new Head({
+      @model
+      requests
+      serverData
+      meta: {
+        title: 'Mod hub'
+        description: 'Mod hub'
+      }
+    })
+
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router, @model}
     selectedIndex = new Rx.BehaviorSubject 0
@@ -66,14 +75,13 @@ module.exports = class ModHubPage
       lastRefreshTime: null
       selectedProfileDialogUser: @selectedProfileDialogUser
 
-  renderHead: (params) =>
-    z @$head, params
+  renderHead: => @$head
 
   render: =>
     {me, selectedIndex, selectedProfileDialogUser,
       isLoading, lastRefreshTime} = @state.getValue()
 
-    if not me?.flags?.isModerator and false # FIXME FIXME
+    if not me?.flags?.isModerator
       return null
 
     z '.p-mod-hub',
@@ -82,6 +90,7 @@ module.exports = class ModHubPage
         isFlat: true
         $topLeftButton:
           z @$buttonBack,
+            color: colors.$primary500
             onclick: =>
               @router.go '/'
         # $topRightButton:

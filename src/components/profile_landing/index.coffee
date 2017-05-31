@@ -118,6 +118,9 @@ module.exports = class ProfileLanding
         z '.terms',
           z 'p',
             @model.l.get 'profileLanding.terms2'
+            z 'a', {
+              href: '/policies'
+            }, ' TOS'
 
       if isLoading
         z @$dialog,

@@ -2,50 +2,48 @@
 
 @require '../../vars'
 
-$zIndexDrawer = 300
+$zIndexChannelDrawer = 998
+$zIndexChannelDrawerDrawer = 999
 
 .z-channel-drawer
-  display: none
-  position: absolute
-  z-index: $zIndexDrawer
-  width: 100%
-  height: 100%
+  position: fixed
+  z-index: $zIndexChannelDrawer
   top: 0
   left: 0
-  flex-direction: column
-  background: getColor('$tertiary700')
+  width: 100%
+  height: 100%
 
-  &.is-open
+  > .drawer
+    position: absolute
+    z-index: $zIndexChannelDrawerDrawer
+    top: 8px
+    left: 64px
     display: flex
+    flex-direction: column
+    background: getColor('$tertiary500')
+    min-width: 178px
+    zp-shadow-1()
 
-  > .group-name
-    display: flex
-    align-items: center
-    padding: 16px
+    @media (min-width: $breakPointMedium)
+      left: 336px + 32px
 
-    > .badge
-      width: 24px
-      height: 24px
+    > .title
+      font-caption2()
+      padding: 8px 16px
+      border-bottom: 1px solid getColor('$white12')
 
-    > .name
-      font-title()
-      margin-left: 32px
+    > .divider
+      width: 100%
+      height: 1px
+      background: getColor('$white12')
+      margin: 8px 0
 
-  > .menu
-    display: flex
+    > .manage-channels
+      padding: 16px
+      display: flex
+      align-items: center
+      cursor: pointer
 
-  > .divider
-    width: 100%
-    height: 1px
-    background: getColor('$white12')
-    margin: 8px 0
-
-  > .manage-channels
-    padding: 16px
-    display: flex
-    align-items: center
-    cursor: pointer
-
-    > .text
-      font-body1()
-      margin-left: 36px
+      > .text
+        font-body1()
+        margin-left: 36px

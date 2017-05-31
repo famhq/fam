@@ -50,7 +50,7 @@ module.exports = class GroupManageChannelsPage
     },
       z @$appBar, {
         title: @model.l.get 'groupManageChannelsPage.title'
-        style: 'secondary'
+        style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }

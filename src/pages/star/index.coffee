@@ -1,7 +1,7 @@
 z = require 'zorium'
 
 Head = require '../../components/head'
-ForumSignature = require '../../components/forum_signature'
+PlayersSearch = require '../../components/players_search'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 colors = require '../../colors'
@@ -9,39 +9,39 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class ForumSignaturePage
+module.exports = class StarPage
   hideDrawer: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
+  constructor: ({model, requests, @router, serverData}) ->
     @$head = new Head({
-      @model
+      model
       requests
       serverData
       meta: {
-        title: @model.l.get 'forumSignaturePage.title'
-        description: @model.l.get 'forumSignaturePage.title'
+        title: model.l.get 'playersSearchPage.title'
+        description: model.l.get 'playersSearchPage.title'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$forumSignature = new ForumSignature {@model, @router, serverData}
+    @$playersSearch = new PlayersSearch {model, @router, serverData}
 
     @state = z.state
-      windowSize: @model.window.getSize()
+      windowSize: model.window.getSize()
 
   renderHead: => @$head
 
   render: =>
     {windowSize} = @state.getValue()
 
-    z '.p-forum-signature', {
+    z '.p-players-search', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: @model.l.get 'forumSignaturePage.title'
+        title: 'Find player'
         style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
       }
-      @$forumSignature
+      @$playersSearch

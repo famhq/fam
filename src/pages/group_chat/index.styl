@@ -26,16 +26,18 @@
   cursor: pointer
   position: relative
 
-  .hashtag
-    color: getColor('$tertiary900')
+  > .group
+    font-micro()
+    margin-bottom: 2px
 
-  .arrow
-    display: inline-block
-    vertical-align: top
-    margin-left: 10px
-    margin-top: 8px
-    width: 0
-    height: 0
-    border-left: 5px solid transparent
-    border-right: 5px solid transparent
-    border-top: 5px solid getColor('$tertiary900')
+  > .channel
+    > .arrow
+      display: inline-block
+      vertical-align: top
+      margin-left: 10px
+      margin-top: 8px
+      width: 0
+      height: 0
+      border-left: 5px solid transparent
+      border-right: 5px solid transparent
+      border-top: 5px solid getColor('$white')

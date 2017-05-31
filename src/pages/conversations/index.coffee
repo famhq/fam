@@ -4,6 +4,7 @@ Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Conversations = require '../../components/conversations'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -37,6 +38,6 @@ module.exports = class ConversationsPage
     },
       z @$appBar,
         isFlat: true
-        $topLeftButton: @$buttonMenu
+        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
         title: @model.l.get 'drawer.menuItemConversations'
       @$conversations

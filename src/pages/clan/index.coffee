@@ -69,7 +69,7 @@ module.exports = class ClanPage
       z @$appBar, {
         title: @model.l.get 'general.clan'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$tertiary900}
+        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
         $topRightButton: z '.p-clan_top-right',
           if clan and clan?.creatorId is me?.id
             z @$settingsIcon, {

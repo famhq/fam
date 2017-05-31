@@ -5,10 +5,11 @@ _find = require 'lodash/find'
 Head = require '../../components/head'
 GroupChat = require '../../components/group_chat'
 AppBar = require '../../components/app_bar'
+ButtonBack = require '../../components/button_back'
 ButtonMenu = require '../../components/button_menu'
 ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
-Ripple = require '../../components/ripple'
+Icon = require '../../components/icon'
 BottomBar = require '../../components/bottom_bar'
 colors = require '../../colors'
 
@@ -16,6 +17,8 @@ if window?
   require './index.styl'
 
 module.exports = class GroupChatPage
+  # hideDrawer: true # FIXME
+
   constructor: ({@model, requests, @router, serverData}) ->
     group = requests.flatMapLatest ({route}) =>
       @model.group.getById route.params.id
@@ -75,8 +78,9 @@ module.exports = class GroupChatPage
       }
     })
     @$appBar = new AppBar {@model}
+    @$buttonBack = new ButtonBack {@model, @router}
     @$buttonMenu = new ButtonMenu {@model, @router}
-    @$titleRipple = new Ripple()
+    @$settingsIcon = new Icon()
     @$bottomBar = new BottomBar {@model, @router, requests}
 
     @$groupChat = new GroupChat {
@@ -104,17 +108,17 @@ module.exports = class GroupChatPage
 
     @state = z.state
       windowSize: @model.window.getSize()
-      isChannelDrawerOpen: @isChannelDrawerOpen
       group: group
       me: me
       overlay$: overlay$
       selectedProfileDialogUser: selectedProfileDialogUser
+      isChannelDrawerOpen: @isChannelDrawerOpen
       conversation: conversation
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, isChannelDrawerOpen, overlay$, group, me, conversation
+    {windowSize, overlay$, group, me, conversation, isChannelDrawerOpen
       selectedProfileDialogUser} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
@@ -129,30 +133,30 @@ module.exports = class GroupChatPage
           onclick: =>
             @isChannelDrawerOpen.onNext not isChannelDrawerOpen
         },
-          z 'span.hashtag', '#'
-          conversation?.name
-          z '.arrow'
-          z @$titleRipple
-        $topLeftButton: z @$buttonMenu, {
-          color: colors.$tertiary900
-          onclick: =>
-            @isChannelDrawerOpen.onNext false
-            @model.drawer.open()
-        }
+          z '.group', group?.name
+          z '.channel',
+            z 'span.hashtag', '#'
+            conversation?.name
+            z '.arrow'
+        $topLeftButton:
+          if @model.experiment.get('social') is 'visible'
+            z @$buttonBack, {color: colors.$primary500}
+          else
+            z @$buttonMenu, {color: colors.$primary500}
         $topRightButton:
           z '.p-group_top-right',
             z '.icon',
               z @$settingsIcon,
                 icon: 'settings'
-                color: colors.$tertiary900
+                color: colors.$primary500
                 onclick: =>
                   @router.go "/group/#{group?.id}/settings"
       }
       z '.content',
         @$groupChat
-        @$channelDrawer
 
-      @$bottomBar
+      if @model.experiment.get('social') isnt 'visible'
+        @$bottomBar
 
       if overlay$
         z '.overlay',
@@ -160,3 +164,6 @@ module.exports = class GroupChatPage
 
       if selectedProfileDialogUser
         z @$profileDialog
+
+      if isChannelDrawerOpen
+        z @$channelDrawer

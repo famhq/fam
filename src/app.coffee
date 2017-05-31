@@ -23,7 +23,6 @@ Pages =
   ConversationsPage: require './pages/conversations'
   NewConversationPage: require './pages/new_conversation'
   AddEventPage: require './pages/add_event'
-  CommunityPage: require './pages/community'
   EditEventPage: require './pages/edit_event'
   EventPage: require './pages/event'
   EventsPage: require './pages/events'
@@ -31,7 +30,6 @@ Pages =
   ForumSignaturePage: require './pages/forum_signature'
   GroupPage: require './pages/group'
   GroupChatPage: require './pages/group_chat'
-  GroupChatNewPage: require './pages/group_chat_new'
   GroupMembersPage: require './pages/group_members'
   GroupSettingsPage: require './pages/group_settings'
   GroupInvitesPage: require './pages/group_invites'
@@ -171,7 +169,6 @@ module.exports = class App
 
 
     # route '/', 'HomePage'
-    route '/community', 'CommunityPage'
     route ['/friends/:action', '/friends'], 'FriendsPage'
     route '/videos', 'VideosPage'
     route '/clan', 'ClanPage'
@@ -198,7 +195,6 @@ module.exports = class App
     route '/group/:id/chat', 'GroupChatPage'
     route '/group/:id/members', 'GroupMembersPage'
     route '/group/:id/chat/:conversationId', 'GroupChatPage'
-    route '/group/:id/channel/:conversationId', 'GroupChatNewPage'
     route '/group/:id/invite', 'GroupInvitePage'
     route '/group/:id/manage/:userId', 'GroupManageMemberPage'
     route '/group/:id/manageChannels', 'GroupManageChannelsPage'

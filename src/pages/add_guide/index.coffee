@@ -45,7 +45,7 @@ module.exports = class AddGuidePage
     },
       z @$appBar, {
         title: @model.l.get 'addGuidePage.title'
-        style: 'secondary'
+        style: 'primary'
         isFlat: true
         $topLeftButton: z @$closeIcon, {
           icon: 'close'

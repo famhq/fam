@@ -67,7 +67,7 @@ module.exports = class Clan
       z @$tabs,
         isBarFixed: false
         isBarFlat: false
-        barStyle: if isOtherClan then 'secondary' else 'primary'
+        barStyle: 'primary'
         tabs: [
           {
             $menuIcon: @$infoIcon

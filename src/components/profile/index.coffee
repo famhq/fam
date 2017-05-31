@@ -36,7 +36,7 @@ module.exports = class Profile
       z @$tabs,
         isBarFixed: false
         isBarFlat: false
-        barStyle: if isOtherProfile then 'secondary' else 'primary'
+        barStyle: 'primary'
         tabs: [
           {
             $menuIcon: @$infoIcon

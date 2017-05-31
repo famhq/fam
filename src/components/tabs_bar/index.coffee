@@ -32,16 +32,11 @@ module.exports = class TabsBar
       isFlat, tabWidth} = props
     {selectedIndex} = @state.getValue()
 
-    if style is 'secondary'
-      bgColor ?= colors.$tertiary700
-      inactiveColor ?= colors.$white54
-      color ?= colors.$white
-      underlineColor ?= colors.$primary500
+    bgColor ?= colors.$tertiary700
+    inactiveColor ?= colors.$white54
+    color ?= colors.$white
+    underlineColor ?= colors.$primary500
 
-    bgColor ?= colors.$primary500
-    color ?= colors.$tabSelected
-    underlineColor ?= colors.$white
-    inactiveColor ?= colors.$tabUnselected
     isFullWidth = not tabWidth
 
     z '.z-tabs-bar', {

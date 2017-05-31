@@ -44,7 +44,7 @@ module.exports = class DeckPage
     },
       z @$appBar, {
         title: deck?.name
-        style: 'secondary'
+        style: 'primary'
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
         isFlat: true
         $topRightButton: null # FIXME

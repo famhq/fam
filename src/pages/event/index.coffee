@@ -79,7 +79,7 @@ module.exports = class EventPage
     },
       z @$appBar, {
         title: @model.l.get 'eventPage.title'
-        style: 'secondary'
+        style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
         $topRightButton:
