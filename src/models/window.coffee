@@ -1,12 +1,14 @@
 Rx = require 'rx-lite'
+Environment = require 'clay-environment'
 
 CookieService = require '../services/cookie'
+config = require '../config'
 
 DRAWER_RIGHT_PADDING = 56
 DRAWER_MAX_WIDTH = 336
 
 module.exports = class Window
-  constructor: ({@cookieSubject}) ->
+  constructor: ({@cookieSubject, @experiment}) ->
     @isPaused = false
 
     @size = new Rx.BehaviorSubject @getSizeVal()
@@ -32,6 +34,10 @@ module.exports = class Window
     else
       width = undefined
       height = 732
+
+    # isNative = Environment.isGameApp config.GAME_KEY
+    # if @experiment.get('ad') is 'visible' and isNative
+    #   height -= 50
 
     {
       width: width

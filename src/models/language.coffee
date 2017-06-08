@@ -1,5 +1,6 @@
 _reduce = require 'lodash/reduce'
 _defaultsDeep = require 'lodash/defaultsDeep'
+Rx = require 'rx-lite'
 
 config = require '../config'
 
@@ -11,18 +12,27 @@ config = require '../config'
 # profile page share
 
 languages =
-  en: require '../lang/strings_en'
-  es: require '../lang/strings_es'
-  it: require '../lang/strings_it'
-  fr: require '../lang/strings_fr'
+  en: require '../lang/en/strings_en'
+  es: require '../lang/es/strings_es'
+  it: require '../lang/it/strings_it'
+  fr: require '../lang/fr/strings_fr'
+  zh: require '../lang/zh/strings_zh'
+  ja: require '../lang/ja/strings_ja'
+  ko: require '../lang/ko/strings_ko'
+  de: require '../lang/de/strings_de'
 
 class Language
-  constructor: ({@language}) -> null
+  constructor: ({language}) ->
+    @language = new Rx.BehaviorSubject language
 
-  setLanguage: (@language) => null
+  setLanguage: (language) =>
+    @language.onNext language
+
+  getLanguage: => @language
 
   get: (strKey, replacements) =>
-    baseResponse = languages[@language]?[strKey] or
+    language = @language.getValue()
+    baseResponse = languages[language]?[strKey] or
                     languages['en']?[strKey] or ''
 
     unless baseResponse
@@ -35,7 +45,7 @@ class Language
                       baseResponse.plurality.other or ''
 
     _reduce replacements, (str, replace, key) ->
-      find = ///__#{key}__///g
+      find = ///{#{key}}///g
       str.replace find, replace
     , baseResponse
 

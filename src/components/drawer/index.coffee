@@ -83,22 +83,12 @@ module.exports = class Drawer
           #   iconName: 'cards'
           # }
           {
-            path: if @model.experiment.get('social') is 'visible' \
-                  then '/social'
-                  else '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
+            path: '/social'
             title: @model.l.get 'general.social'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'chat'
           }
-          if hasConversations
-            {
-              path: '/conversations'
-              title: @model.l.get 'drawer.menuItemConversations'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'chat-bubble'
-            }
           {
             isDivider: true
           }
@@ -251,7 +241,7 @@ module.exports = class Drawer
                     return z 'li.divider'
 
                   isSelected = currentPath?.indexOf(path) is 0 or (
-                    path is '/community' and currentPath is '/'
+                    path is '/profile' and currentPath is '/'
                   )
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}

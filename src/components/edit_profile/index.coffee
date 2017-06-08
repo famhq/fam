@@ -29,7 +29,7 @@ module.exports = class EditProfile
     currentPlayerTag = me.flatMapLatest ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (player) ->
-        player.id
+        player?.id
     @playerTagValueStreams.onNext currentPlayerTag
     @playerTagError = new Rx.BehaviorSubject null
 

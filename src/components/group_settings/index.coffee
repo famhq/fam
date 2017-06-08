@@ -94,7 +94,7 @@ module.exports = class Settings
       @model.group.leaveById group.id
       .then =>
         @state.set isLeaveGroupLoading: false
-        @router.go '/community'
+        @router.go '/social'
 
   save: =>
     {group, name, description, password,

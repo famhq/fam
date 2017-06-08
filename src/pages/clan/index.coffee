@@ -74,7 +74,7 @@ module.exports = class ClanPage
           if clan and clan?.creatorId is me?.id
             z @$settingsIcon, {
               icon: 'settings'
-              color: colors.$tertiary900
+              color: colors.$primary500
               onclick: =>
                 @router.go "/group/#{clan?.group?.id}/settings"
               }

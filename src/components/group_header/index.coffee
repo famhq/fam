@@ -22,6 +22,8 @@ module.exports = class GroupHeader
       style:
         backgroundImage: if group?.id is config.MAIN_GROUP_ID \
           then "url(#{config.CDN_URL}/groups/covers/clash_royale.jpg?1)"
+          else if group?.id is config.WITH_ZACK_GROUP_ID \
+          then "url(#{config.CDN_URL}/groups/covers/withzack.jpg)"
           else if background
           then "url(#{config.CDN_URL}/groups/backgrounds/#{background}_bg.jpg)"
           else 'none'

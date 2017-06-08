@@ -6,7 +6,6 @@ Head = require '../../components/head'
 GroupChat = require '../../components/group_chat'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
-ButtonMenu = require '../../components/button_menu'
 ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
 Icon = require '../../components/icon'
@@ -79,7 +78,6 @@ module.exports = class GroupChatPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
     @$bottomBar = new BottomBar {@model, @router, requests}
 
@@ -138,11 +136,7 @@ module.exports = class GroupChatPage
             z 'span.hashtag', '#'
             conversation?.name
             z '.arrow'
-        $topLeftButton:
-          if @model.experiment.get('social') is 'visible'
-            z @$buttonBack, {color: colors.$primary500}
-          else
-            z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
         $topRightButton:
           z '.p-group_top-right',
             z '.icon',
@@ -154,9 +148,6 @@ module.exports = class GroupChatPage
       }
       z '.content',
         @$groupChat
-
-      if @model.experiment.get('social') isnt 'visible'
-        @$bottomBar
 
       if overlay$
         z '.overlay',

@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _takeRight = require 'lodash/takeRight'
 _isEmpty = require 'lodash/isEmpty'
+Rx = require 'rx-lite'
 
 FormatService = require '../../services/format'
 DeckCards = require '../deck_cards'
@@ -15,7 +16,7 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class ProfileHistory
+module.exports = class ProfileDecks
   constructor: ({@model, @router, user}) ->
     userDecks = user.flatMapLatest ({id}) =>
       @model.clashRoyaleUserDeck.getAllByUserId id, {sort: 'recent'}
@@ -23,8 +24,16 @@ module.exports = class ProfileHistory
     @$migrateCard = new UiCard()
 
     @state = z.state {
-      isImporting: false
       me: @model.user.getMe()
+      isPrivate: userDecks
+      .catch (err) ->
+        error = JSON.parse err.message
+        Rx.Observable.just true
+      .map (result) ->
+        if result is true
+          true
+        else
+          false
       currentDeck: userDecks.map (userDecks) ->
         # userDeck = _find userDecks, {isCurrentDeck: true}
         userDeck = userDecks?[0]
@@ -52,39 +61,28 @@ module.exports = class ProfileHistory
     }
 
   render: =>
-    {me, currentDeck, otherDecks, isImporting} = @state.getValue()
+    {me, currentDeck, otherDecks, isPrivate} = @state.getValue()
 
-    z '.z-profile-history',
-      z '.g-grid',
-        z '.title',
-          @model.l.get 'profileHistory.currentTitle'
-        z '.deck',
-          z currentDeck?.$deck
-          z currentDeck?.$stats
+    z '.z-profile-decks',
+      if isPrivate
+        z '.g-grid',
+          'This player\'s decks are private'
+      else
+        z '.g-grid',
+          z '.title',
+            @model.l.get 'profileHistory.currentTitle'
+          z '.deck',
+            z currentDeck?.$deck
+            z currentDeck?.$stats
 
-        z '.divider'
+          z '.divider'
 
-        z '.title',
-          @model.l.get 'profileHistory.otherDecksTitle'
-        if _isEmpty otherDecks
-          @model.l.get 'profileHistory.otherDecksEmpty'
-        else
-          _map otherDecks, ({$deck, $stats}) ->
-            z '.deck',
-              z $deck
-              z $stats
-
-        # TODO: rm whenever
-        # if not localStorage?['hasImported'] and new Date(me?.joinTime) < Date.now() - 3600 * 24
-        #   z '.migrate',
-        #     z @$migrateCard,
-        #       text: 'We moved decks to a new database to improve server performance.
-        #             Do you want to import your old decks?'
-        #       submit:
-        #         text: if isImporting then 'importing...' else 'import'
-        #         onclick: =>
-        #           @state.set isImporting: true
-        #           @model.clashRoyaleUserDeck.import()
-        #           .then =>
-        #             localStorage?['hasImported'] = '1'
-        #             @state.set isImporting: false
+          z '.title',
+            @model.l.get 'profileHistory.otherDecksTitle'
+          if _isEmpty otherDecks
+            @model.l.get 'profileHistory.otherDecksEmpty'
+          else
+            _map otherDecks, ({$deck, $stats}) ->
+              z '.deck',
+                z $deck
+                z $stats

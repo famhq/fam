@@ -59,6 +59,7 @@ isomorphic =
   # hardcoded while we just have one game
   CLASH_ROYALE_ID: '319a9065-e3dc-4d02-ad30-62047716a88f'
   MAIN_GROUP_ID: '73ed4af0-a2f2-4371-a893-1360d3989708' # TODO: remove?
+  WITH_ZACK_GROUP_ID: 'e4495c00-977b-4632-8e7c-01b352401b4f' # TODO: remove?
 
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
   USER_CDN_URL: 'https://cdn.wtf/images/starfire'

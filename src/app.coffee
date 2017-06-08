@@ -3,6 +3,7 @@ Rx = require 'rx-lite'
 HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
 Environment = require 'clay-environment'
+semver = require 'semver'
 
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
@@ -57,6 +58,7 @@ Pages =
   ProfilePage: require './pages/profile'
   ProfileChestsPage: require './pages/profile_chests'
   SocialPage: require './pages/social'
+  StarPage: require './pages/star'
   TosPage: require './pages/tos'
   PoliciesPage: require './pages/policies'
   PrivacyPage: require './pages/privacy'
@@ -74,24 +76,38 @@ module.exports = class App
       requests, routes, (vals...) -> vals
     )
 
+    if window? and Environment.isGameApp config.GAME_KEY
+      appVersion = Environment.getAppVersion config.GAME_KEY
+      if appVersion
+        admobMediationSupported = semver.gte(appVersion, '1.2.4')
+        nativeAdsSupported = semver.gte(appVersion, '1.2.3')
+        if @model.experiment.get('ad') is 'visible' and nativeAdsSupported
+          setTimeout =>
+            portalCall = if admobMediationSupported \
+                         then 'admob.showBanner'
+                         else 'heyzap.showBanner'
+            @model.portal?.call portalCall, {
+              position: 'bottom'
+              overlap: false
+              adId: 'ca-app-pub-1232978630423169/4640778134'
+            }
+          , 1000
+
     @requests = requestsAndRoutes.map ([req, routes]) =>
       route = routes.get req.path
       $page = route.handler?()
 
       {isBottomBannerVisible} = @state.getValue()
-      if $page.hasBottomBanner and not isBottomBannerVisible
-        @state.set isBottomBannerVisible: true
-        @model.portal?.call 'heyzap.showBanner', {
-          position: 'bottom'
-        }
-        @model.portal?.call 'facebook.showBanner', { # legacy
-          placementId: '305278286509542_418535418517161'
-          position: 'bottom'
-        }
-      else if not $page.hasBottomBanner and isBottomBannerVisible
-        @state.set isBottomBannerVisible: false
-        @model.portal?.call 'heyzap.hideBanner'
-        @model.portal?.call 'facebook.destroyBanner' # legacy
+
+      if @model.experiment.get('ad') isnt 'visible'
+        if $page.hasBottomBanner and not isBottomBannerVisible
+          @state.set isBottomBannerVisible: true
+          @model.portal?.call 'heyzap.showBanner', {
+            position: 'bottom'
+          }
+        else if not $page.hasBottomBanner and isBottomBannerVisible
+          @state.set isBottomBannerVisible: false
+          @model.portal?.call 'heyzap.hideBanner'
 
       {req, route, $page: $page}
 
@@ -219,6 +235,7 @@ module.exports = class App
     route '/players/search', 'PlayersSearchPage'
     route '/policies', 'PoliciesPage'
     route '/social', 'SocialPage'
+    route '/star/:username', 'StarPage'
     route '/tos', 'TosPage'
     route '/privacy', 'PrivacyPage'
     route [
@@ -247,7 +264,7 @@ module.exports = class App
                             access all features anytime'
 
     z 'html',
-      request?.$page.renderHead() or $backupPage?.renderHead()
+      request?.$page?.renderHead() or $backupPage?.renderHead()
       z 'body',
         z '#zorium-root', {
           className: z.classKebab {

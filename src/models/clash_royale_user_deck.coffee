@@ -3,11 +3,10 @@ module.exports = class ClashRoyaleUserDeck
 
   constructor: ({@auth}) -> null
 
-  getAll: ({sort, filter} = {}) =>
-    @auth.stream "#{@namespace}.getAll", {sort, filter}
-
   getAllByUserId: (userId, {sort, filter} = {}) =>
-    @auth.stream "#{@namespace}.getAllByUserId", {userId, sort, filter}
+    @auth.stream "#{@namespace}.getAllByUserId", {userId, sort, filter}, {
+      isErrorable: true
+    }
 
   getByDeckId: (deckId) =>
     @auth.stream "#{@namespace}.getByDeckId", {deckId}

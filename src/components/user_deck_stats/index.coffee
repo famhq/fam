@@ -39,8 +39,8 @@ module.exports = class UserDeckStats
           ' / '
           FormatService.number userDeck?.draws
       z '.stat',
-        z '.name', 'Win rate'
+        z '.name', 'Win %'
         z '.value', winRate
       z '.stat',
-        z '.name', 'Cmty win rate'
+        z '.name', 'Community win %'
         z '.value', commWinRate

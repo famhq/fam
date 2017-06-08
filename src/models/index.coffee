@@ -30,8 +30,10 @@ GroupRecordType = require './group_record_type'
 GameRecordType = require './game_record_type'
 Language = require './language'
 Mod = require './mod'
+Payment = require './payment'
 Product = require './product'
 PushToken = require './push_token'
+Star = require './star'
 Stream = require './stream'
 Thread = require './thread'
 ThreadComment = require './thread_comment'
@@ -123,8 +125,10 @@ module.exports = class Model
     @thread = new Thread {@auth}
     @threadComment = new ThreadComment {@auth}
     @mod = new Mod {@auth}
+    @payment = new Payment {@auth}
     @product = new Product {@auth}
     @pushToken = new PushToken {@auth, pushToken}
+    @star = new Star {@auth}
     @stream = new Stream {@auth}
     @video = new Video {@auth}
     @drawer = new Drawer()
@@ -134,20 +138,11 @@ module.exports = class Model
     @imageViewOverlay = new ImageViewOverlay()
     @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {@user, @game, @modal, @installOverlay, @getAppDialog}
-    @window = new Window {cookieSubject}
-
-
-    # expNativeLanguageGroup = localStorage?['exp:nativeLanguage']
-    # unless expNativeLanguageGroup
-    #   expNativeLanguageGroup = if Math.random() > 0.5 \
-    #                            then 'native'
-    #                            else 'control'
-    #   localStorage?['exp:nativeLanguage'] = expNativeLanguageGroup
-    # ga? 'send', 'event', 'exp', 'nativeLanguage', expNativeLanguageGroup
+    @window = new Window {cookieSubject, @experiment}
 
     language = window?.navigator?.languages?[0] or window?.navigator?.language
     browserLanugage = language?.split?('-')[0]
-    if browserLanugage in ['es', 'it', 'fr'] # and expNativeLanguageGroup is 'native'
+    if browserLanugage in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh']
       language = browserLanugage
     else
       language = 'en'

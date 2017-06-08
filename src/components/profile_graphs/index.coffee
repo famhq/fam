@@ -54,11 +54,3 @@ module.exports = class ProfileGraphs
                   showLabel: false
                   showGrid: false
             }
-
-        z '.ask',
-          'What else do you want us to track? Tell us in the community!'
-          z '.button',
-            z @$communityButton,
-              text: 'Go to community'
-              onclick: =>
-                @router.go '/community'

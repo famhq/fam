@@ -49,9 +49,9 @@ module.exports = class Input
       style:
         backgroundColor: colors.background
       z '.hint', {
-        style:
-          color: if isFocused and not error? \
-                 then colors.c500 else null
+        # style:
+        #   color: if isFocused and not error? \
+        #          then colors.c500 else null
       },
         hintText
       z 'input.input',

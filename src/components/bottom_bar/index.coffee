@@ -50,9 +50,7 @@ module.exports = class BottomBar
       {
         $icon: new Icon()
         icon: 'chat'
-        route: if @model.experiment.get('social') is 'visible' \
-               then '/social'
-               else '/group/73ed4af0-a2f2-4371-a893-1360d3989708/chat'
+        route: '/social'
         text: @model.l.get 'general.social'
       }
     ]
