@@ -8,6 +8,7 @@ Environment = require 'clay-environment'
 moment = require 'moment'
 
 Icon = require '../icon'
+AdsenseAd = require '../adsense_ad'
 RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
@@ -26,6 +27,7 @@ module.exports = class ClanInfo
     @$membersIcon = new Icon()
     @$refreshIcon = new Icon()
     @$claimButton = new PrimaryButton()
+    @$adsenseAd = new AdsenseAd()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
@@ -171,6 +173,18 @@ module.exports = class ClanInfo
         z '.block',
           z '.g-grid',
             z '.description', clan?.data?.description
+
+        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'mobile300x250'
+            }
+        else if not Environment.isMobile()
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'desktop728x90'
+            }
+
         z '.divider'
         z '.block',
           _map metrics, (stats, key) ->

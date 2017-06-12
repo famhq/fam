@@ -3,7 +3,6 @@ Rx = require 'rx-lite'
 HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
 Environment = require 'clay-environment'
-semver = require 'semver'
 
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
@@ -76,39 +75,9 @@ module.exports = class App
       requests, routes, (vals...) -> vals
     )
 
-    if window? and Environment.isGameApp config.GAME_KEY
-      appVersion = Environment.getAppVersion config.GAME_KEY
-      if appVersion
-        admobMediationSupported = semver.gte(appVersion, '1.2.4')
-        nativeAdsSupported = semver.gte(appVersion, '1.2.3')
-        if @model.experiment.get('ad') is 'visible' and nativeAdsSupported
-          setTimeout =>
-            portalCall = if admobMediationSupported \
-                         then 'admob.showBanner'
-                         else 'heyzap.showBanner'
-            @model.portal?.call portalCall, {
-              position: 'bottom'
-              overlap: false
-              adId: 'ca-app-pub-1232978630423169/4640778134'
-            }
-          , 1000
-
-    @requests = requestsAndRoutes.map ([req, routes]) =>
+    @requests = requestsAndRoutes.map ([req, routes]) ->
       route = routes.get req.path
       $page = route.handler?()
-
-      {isBottomBannerVisible} = @state.getValue()
-
-      if @model.experiment.get('ad') isnt 'visible'
-        if $page.hasBottomBanner and not isBottomBannerVisible
-          @state.set isBottomBannerVisible: true
-          @model.portal?.call 'heyzap.showBanner', {
-            position: 'bottom'
-          }
-        else if not $page.hasBottomBanner and isBottomBannerVisible
-          @state.set isBottomBannerVisible: false
-          @model.portal?.call 'heyzap.hideBanner'
-
       {req, route, $page: $page}
 
     # used if state / requests fails to work
@@ -145,7 +114,6 @@ module.exports = class App
     @state = z.state {
       $backupPage: $backupPage
       me: me
-      isBottomBannerVisible: false
       isOffline: isOffline
       addToHomeSheetIsVisible: addToHomeSheetIsVisible
       signInDialogIsOpen: @model.signInDialog.isOpen()
@@ -252,7 +220,7 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
       installOverlayIsOpen, signInDialogIsOpen, pushNotificationSheetIsOpen
-      getAppDialogIsOpen, addToHomeSheetIsVisible, isBottomBannerVisible,
+      getAppDialogIsOpen, addToHomeSheetIsVisible,
       isOffline} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
@@ -267,10 +235,7 @@ module.exports = class App
       request?.$page?.renderHead() or $backupPage?.renderHead()
       z 'body',
         z '#zorium-root', {
-          className: z.classKebab {
-            isIos
-            isBottomBannerVisible: isBottomBannerVisible and isNative
-          }
+          className: z.classKebab {isIos}
         },
           z '.z-root',
             unless hideDrawer

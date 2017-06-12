@@ -1,7 +1,9 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _map = require 'lodash/map'
+Environment = require 'clay-environment'
 
+AdsenseAd = require '../adsense_ad'
 GroupList = require '../group_list'
 UiCard = require '../ui_card'
 Icon = require '../icon'
@@ -36,6 +38,7 @@ module.exports = class Groups
     @$unreadInvitesChevronIcon = new Icon()
 
     @$translateCard = new UiCard()
+    @$adsenseAd = new AdsenseAd()
 
     language = @model.l.getLanguage()
 
@@ -43,9 +46,8 @@ module.exports = class Groups
       me: @model.user.getMe()
       language: language
       isTranslateCardVisible: language.map (lang) ->
-        needTranslations = ['ko', 'de', 'zh', 'ja']
+        needTranslations = ['pt']
         isNeededLanguage = lang in needTranslations
-        console.log language, lang
         localStorage? and isNeededLanguage and
                                 not localStorage['hideTranslateCard']
 
@@ -117,3 +119,14 @@ module.exports = class Groups
                     @model.portal.call 'browser.openWindow',
                       url: 'https://crowdin.com/project/starfire'
                       target: '_SYSTEM'
+            else if Environment.isMobile() and
+                      not Environment.isGameApp(config.GAME_KEY)
+              z '.ad',
+                z @$adsenseAd, {
+                  slot: 'mobile300x250'
+                }
+            else if not Environment.isMobile()
+              z '.ad',
+                z @$adsenseAd, {
+                  slot: 'desktop728x90'
+                }

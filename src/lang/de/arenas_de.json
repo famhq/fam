@@ -1,6 +1,6 @@
 {
   "crArena.trainingCamp":"Ausbildungslager",
-  "crArena.goblinStadium":"Koboldstation",
+  "crArena.goblinStadium":"Koboldstadion",
   "crArena.bonePit":"Knochengrube",
   "crArena.barbarianBowl":"Barbarenoval",
   "crArena.pekkasPlayhouse":"P.E.K.K.A's Spielplatz",
@@ -11,13 +11,13 @@
   "crArena.jungleArena":"Dschungelarena",
   "crArena.hogMountain":"Schweineberg",
   "crArena.legendaryArena":"Legendäre Arena",
-  "crArena.challenger1":"Herausforderer 1",
-  "crArena.challenger2":"Herausforderer 2",
-  "crArena.challenger3":"Herausforderer 3",
-  "crArena.master1":"Meister 1",
-  "crArena.master2":"Meister 2",
-  "crArena.master3":"Meister 3",
-  "crArena.champion":"Campion",
+  "crArena.challenger1":"Herausforderer I",
+  "crArena.challenger2":"Herausforderer II",
+  "crArena.challenger3":"Herausforderer III",
+  "crArena.master1":"Meister I",
+  "crArena.master2":"Meister II",
+  "crArena.master3":"Meister III",
+  "crArena.champion":"Champion",
   "crArena.grandChampion":"Großer Champion",
   "crArena.ultimateChampion":"Ultimativer Champion"
 }

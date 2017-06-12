@@ -8,7 +8,7 @@ if window?
 
 module.exports = class GroupChat
   constructor: (options) ->
-    {@model, @router, conversation, overlay$, group
+    {@model, @router, conversation, overlay$, group, isLoading
       selectedProfileDialogUser} = options
 
     @$conversation = new Conversation {
@@ -17,6 +17,7 @@ module.exports = class GroupChat
       selectedProfileDialogUser
       conversation
       overlay$
+      isLoading: isLoading
       isGroup: true
     }
 

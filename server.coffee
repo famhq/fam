@@ -122,7 +122,9 @@ app.use (req, res, next) ->
     timeout: 5000
     transports: ['websocket']
   }
-  model = new Model({cookieSubject, io, serverHeaders: req.headers})
+  model = new Model {
+    cookieSubject, io, serverHeaders: req.headers
+  }
   requests = new Rx.BehaviorSubject(req)
   serverData = {req, res, styles, bundlePath}
   userAgent = req.headers?['user-agent']

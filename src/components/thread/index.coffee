@@ -147,8 +147,7 @@ module.exports = class Thread
           unless Environment.isGameApp(config.GAME_KEY)
             z '.ad',
               z @$adsenseAd, {
-                client: 'ca-pub-1232978630423169'
-                slot: '3223030936'
+                slot: 'mobile320x50'
               }
           z '.body', $body
 

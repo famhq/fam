@@ -1,10 +1,10 @@
 {
-  "crChest.wooden":"Wooden chest",
-  "crChest.silver":"Silver chest",
-  "crChest.gold":"Gold chest",
-  "crChest.giant":"Giant chest",
-  "crChest.epic":"Epic chest",
-  "crChest.magic":"Magic chest",
-  "crChest.superMagical":"Super magical chest",
-  "crChest.legendary":"Legendary chest"
+  "crChest.wooden":"木箱",
+  "crChest.silver":"白银宝箱",
+  "crChest.gold":"黄金宝箱",
+  "crChest.giant":"巨型宝箱",
+  "crChest.epic":"史诗宝箱",
+  "crChest.magic":"神奇宝箱",
+  "crChest.superMagical":"超级神奇宝箱",
+  "crChest.legendary":"传奇宝箱"
 }

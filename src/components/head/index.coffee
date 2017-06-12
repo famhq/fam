@@ -19,8 +19,10 @@ module.exports = class Head
     userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
     meta = _merge {
-      title: 'Starfire'
-      description: 'The social hub for games'
+      title: 'Starfire - Clash Royale chat, stats and chest cycle tracker'
+      description: 'Talk to other Clash Royale players, track your stats, and
+                    set which chests you have next. Support for more mobile
+                    games coming soon!'
       icon256: 'http://cdn.wtf/d/images/starfire/web_icon_256.png'
       twitter:
         siteHandle: '@starfirehq'

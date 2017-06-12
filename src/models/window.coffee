@@ -35,10 +35,6 @@ module.exports = class Window
       width = undefined
       height = 732
 
-    # isNative = Environment.isGameApp config.GAME_KEY
-    # if @experiment.get('ad') is 'visible' and isNative
-    #   height -= 50
-
     {
       width: width
       height: height

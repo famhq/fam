@@ -1,10 +1,10 @@
 {
-  "crChest.wooden":"Wooden chest",
-  "crChest.silver":"Silver chest",
-  "crChest.gold":"Gold chest",
-  "crChest.giant":"Giant chest",
-  "crChest.epic":"Epic chest",
-  "crChest.magic":"Magic chest",
-  "crChest.superMagical":"Super magical chest",
-  "crChest.legendary":"Legendary chest"
+  "crChest.wooden":"나무 상자",
+  "crChest.silver":"실버 상자",
+  "crChest.gold":"골드 상자",
+  "crChest.giant":"자이언트 상자",
+  "crChest.epic":"영웅 상자",
+  "crChest.magic":"마법 상자",
+  "crChest.superMagical":"슈퍼 마법 상자",
+  "crChest.legendary":"전설 상자"
 }

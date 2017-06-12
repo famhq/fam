@@ -1,15 +1,15 @@
 Starfire für Clash Royale
 
-Die perfekte ergänzungs App für Clash Royale, seht detaillierte Statistiken für euch, den Clan, chatfunktion und mehr
+Die ultimative Clash Royale Begleit-App für Statistiken, Clans, Chats und mehr
 
-Starfire is the ultimate companion app for Clash Royale.
+Starfire ist die ultimative Begleit-App für Clash Royale.
 
-Starfire features:
+Starfire enthält die folgenden Funktionen:
 
-• Automatic stat and chest cycle tracking
-• Clan stats and recruiting
-• Real-time chat channels - share text, images, and gifs
-• Private messaging
-• Push notifications - stay up to date with chats, announcements, and events
+• Automatische Statistiken und Verfolgen des Truhenkreislaufs
+• Clan-Statistiken und -Mitgliedersuche
+• Echtzeit-Chats - Teile Text, Bilder und Gifs
+• Private Nachrichten
+• „Push”-Benachrichtigungen - bleibe auf dem Stand bei Chats, Ankündigungen und Events
 
-...and much, much more! Starfire is constantly evolving based on community feedback!
+...und viel, viel mehr! Starfire entwickelt sich ständig weiter, basierend auf Rückmeldungen der Community!

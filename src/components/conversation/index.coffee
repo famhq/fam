@@ -27,9 +27,9 @@ FIVE_MINUTES_MS = 60 * 5 * 1000
 module.exports = class Conversation extends Base
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
-      selectedProfileDialogUser, @scrollYOnly, @isGroup} = options
+      selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading} = options
 
-    isLoading = new Rx.BehaviorSubject false
+    isLoading ?= new Rx.BehaviorSubject false
     @isPostLoading = new Rx.BehaviorSubject false
     isTextareaFocused = new Rx.BehaviorSubject false
     isActive ?= new Rx.BehaviorSubject false
@@ -47,8 +47,15 @@ module.exports = class Conversation extends Base
     @message = new Rx.BehaviorSubject ''
     @messages = new Rx.BehaviorSubject null
 
+    lastConversationId = null
+
     loadedMessages = conversationAndMe.flatMapLatest (resp) =>
       [conversation, me] = resp
+
+      if lastConversationId isnt conversation.id
+        isLoading.onNext true
+
+      lastConversationId = conversation.id
 
       (if conversation
         @model.chatMessage.getAllByConversationId(conversation.id)

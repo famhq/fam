@@ -10,6 +10,7 @@ Environment = require 'clay-environment'
 Icon = require '../icon'
 Avatar = require '../avatar'
 FlatButton = require '../flat_button'
+AdsenseAd = require '../adsense_ad'
 GroupBadge = require '../group_badge'
 Ripple = require '../ripple'
 colors = require '../../colors'
@@ -23,6 +24,7 @@ GROUPS_IN_DRAWER = 2
 module.exports = class Drawer
   constructor: ({@model, @router}) ->
     @$avatar = new Avatar()
+    @$adsenseAd = new AdsenseAd()
     me = @model.user.getMe()
     hasConversations = @model.conversation.getAll().map (conversations) ->
       not _isEmpty conversations
@@ -263,3 +265,9 @@ module.exports = class Drawer
                       title
                       z $ripple
               ]
+
+          unless Environment.isMobile()
+            z '.ad',
+              z @$adsenseAd, {
+                slot: 'desktop336x280'
+              }

@@ -140,11 +140,13 @@ module.exports = class Model
     @portal?.setModels {@user, @game, @modal, @installOverlay, @getAppDialog}
     @window = new Window {cookieSubject, @experiment}
 
-    language = window?.navigator?.languages?[0] or window?.navigator?.language
-    browserLanugage = language?.split?('-')[0]
-    if browserLanugage in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh']
-      language = browserLanugage
+    if window?
+      fullLanguage = window.navigator.languages?[0] or window.navigator.language
     else
+      fullLanguage = serverHeaders?['accept-language']
+
+    language = fullLanguage.substr 0, 2
+    unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt']
       language = 'en'
 
     @l = new Language {language}

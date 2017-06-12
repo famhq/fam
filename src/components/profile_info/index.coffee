@@ -14,6 +14,7 @@ RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 VerifyAccountDialog = require '../verify_account_dialog'
+AdsenseAd = require '../adsense_ad'
 FormatService = require '../../services/format'
 config = require '../../config'
 colors = require '../../colors'
@@ -32,6 +33,7 @@ module.exports = class ProfileInfo
     @$moreDetailsButton = new SecondaryButton()
     @$verifyAccountButton = new SecondaryButton()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
+    @$adsenseAd = new AdsenseAd()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
@@ -251,6 +253,17 @@ module.exports = class ProfileInfo
                   text: @model.l.get 'profileInfo.moreDetailsButtonText'
                   onclick: =>
                     @router.go "/user/id/#{user?.id}/chests"
+
+        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'mobile300x250'
+            }
+        else if not Environment.isMobile()
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'desktop728x90'
+            }
 
         z '.block',
           _map metrics, (stats, key) =>

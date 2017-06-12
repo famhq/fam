@@ -28,6 +28,7 @@ module.exports = class GroupChatPage
     overlay$ = new Rx.BehaviorSubject null
     @isChannelDrawerOpen = new Rx.BehaviorSubject false
     selectedProfileDialogUser = new Rx.BehaviorSubject null
+    isLoading = new Rx.BehaviorSubject false
     me = @model.user.getMe()
 
     groupAndConversationIdAndMe = Rx.Observable.combineLatest(
@@ -37,8 +38,15 @@ module.exports = class GroupChatPage
       (vals...) -> vals
     )
 
+    currentConversationId = null
     conversation = groupAndConversationIdAndMe
     .flatMapLatest ([group, conversationId, me]) =>
+      # side effect
+      if conversationId isnt currentConversationId
+        # is set to false when messages load in conversation component
+        isLoading.onNext true
+
+      currentConversationId = conversationId
       hasMemberPermission = @model.group.hasPermission group, me
       conversationId ?= localStorage?['groupConversationId3:' + group.id]
       unless conversationId
@@ -87,6 +95,7 @@ module.exports = class GroupChatPage
       group
       selectedProfileDialogUser
       overlay$
+      isLoading: isLoading
       conversation: conversation
     }
     @$profileDialog = new ProfileDialog {

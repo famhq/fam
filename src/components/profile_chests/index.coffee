@@ -4,7 +4,7 @@ _startCase = require 'lodash/startCase'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
-AdcolonyAd = require '../adcolony_ad'
+AdsenseAd = require '../adsense_ad'
 PrimaryButton = require '../primary_button'
 config = require '../../config'
 colors = require '../../colors'
@@ -14,33 +14,13 @@ if window?
 
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
-    @$adColonyAd = new AdcolonyAd {@model}
+    @$adsenseAd = new AdsenseAd()
     @$shareButton = new PrimaryButton()
 
     @state = z.state {
       me: @model.user.getMe()
       player: player
     }
-
-  # ugly, but works
-  # https://github.com/fbsamples/audience-network/blob/master/samples/mobile_web/mweb_dynamic.html
-  # FIXME FIXME: move into portal-gun, have the iframe be in app.coffee
-  # addFbAd: ->
-  #   placementId = '305278286509542_418535418517161'
-  #   txt1 = '<script id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk/xfbml.ad.js#xfbml=1&version=v2.5&appId=' + config.FB_ID + '">' + '</scr' + 'ipt>'
-  #   txt3 = '<script>' + 'window.fbAsyncInit = function() {' + 'FB.Event.subscribe(' + '\'ad.loaded\',' + 'function(placementID) {' + 'console.log(\'ad loaded\');' + '});' + 'FB.Event.subscribe(' + '\'ad.error\',' + 'function(errorCode, errorMessage, placementID) {' + 'console.log(\'ad error \' + errorCode + \': \' + errorMessage);' + '});' + '};' + '</scr' + 'ipt>'
-  #   txt2 = '<div id="fb-root">' + '</div>' + '<fb:' + 'ad placementid="' + placementId + '" format="320x50" testmode="false">' + '</fb:' + 'ad>'
-  #   $fbAd = document.getElementById 'fb-ad'
-  #   if $fbAd
-  #     docMWeb = $fbAd.contentWindow.document
-  #     docMWeb.open()
-  #     docMWeb.write '<html><head>' + txt1 + '</head><body>' + txt3 + txt2 + '</body></html>'
-  #     docMWeb.close()
-  #
-  # destroyFbAd: ->
-  #   $fbAd = document.getElementById('fb-ad')
-  #   if $fbAd
-  #     $fbAd.contentWindow.location.reload()
 
   render: =>
     {player, me} = @state.getValue()
@@ -114,19 +94,13 @@ module.exports = class ProfileChests
                     else "/user/id/#{me?.id}/chests"
             }
 
-        # leadbolt cpms suck
-        # if window? and Environment.isMobile() and not isNative
-        #   # z 'iframe#fb-ad.banner'
-        #   referer = window.location.href.substr(0, 255)
-        #   z 'iframe.banner',
-        #     src: 'https://ad.leadbolt.net/show_app_ad?' +
-        #         'section_id=442400826' +
-        #         "&lang=#{navigator.language}" +
-        #         "&scr_w=#{window.screen.width}" +
-        #         "&scr_h=#{window.screen.height}" +
-        #         "&referer=#{encodeURIComponent(referer)}"
-        #     scrolling: 'no'
-
-
-      if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
-        z '.ad', @$adColonyAd
+        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'mobile320x50'
+            }
+        else if not Environment.isMobile()
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'desktop728x90'
+            }

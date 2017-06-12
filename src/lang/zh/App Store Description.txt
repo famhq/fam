@@ -1,15 +1,15 @@
-Starfire for Clash Royale
+星火皇室助手
 
-The ultimate Clash Royale companion app for stats, clans, chat, and more
+皇室战争查询终端存有个人账号状态，部落，聊天以及更多
 
-Starfire is the ultimate companion app for Clash Royale.
+星火软件是引领皇室战争玩家走向冠军的终极软件
 
-Starfire features:
+星火软件特点
 
-• Automatic stat and chest cycle tracking
-• Clan stats and recruiting
-• Real-time chat channels - share text, images, and gifs
-• Private messaging
-• Push notifications - stay up to date with chats, announcements, and events
+自动统计数据及宝箱掉落循环追踪
+部落信息和吸收新成员
+• 实时聊天频道-分享文本、 图像和 gif 图像
+私人信件
+推送通知—保持聊天，公告，重要事件及时更新
 
-...and much, much more! Starfire is constantly evolving based on community feedback!
+…还有更多，更多！ 星火会根据社区反馈及时调整！

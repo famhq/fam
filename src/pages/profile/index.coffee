@@ -63,10 +63,9 @@ module.exports = class ProfilePage
         {
           title: if player?.id \
                  then "#{playerName}'s Clash Royale stats - Starfire"
-                 else 'Starfire - track wins, losses and more in Clash Royale'
+                 else undefined # use default
 
-          description: 'Automatically track useful Clash Royale stats to ' +
-                        'become a better player!'
+          description: undefined # use default
         }
     })
     @$appBar = new AppBar {@model}
