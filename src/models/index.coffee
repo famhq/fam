@@ -23,6 +23,7 @@ Conversation = require './conversation'
 DynamicImage = require './dynamic_image'
 Event = require './event'
 Experiment = require './experiment'
+FindFriend = require './find_friend'
 Gif = require './gif'
 Group = require './group'
 GroupRecord = require './group_record'
@@ -101,6 +102,17 @@ module.exports = class Model
 
     pushToken = new Rx.BehaviorSubject null
 
+    if window?
+      fullLanguage = window.navigator.languages?[0] or window.navigator.language
+    else
+      fullLanguage = serverHeaders?['accept-language']
+
+    language = fullLanguage.substr 0, 2
+    unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt']
+      language = 'en'
+
+    @l = new Language {language}
+
     @auth = new Auth {@exoid, cookieSubject, pushToken}
     @user = new User {@auth, proxy, @exoid, cookieSubject}
     @userData = new UserData {@auth}
@@ -117,12 +129,13 @@ module.exports = class Model
     @clashRoyaleCard = new ClashRoyaleCard {@auth}
     @event = new Event {@auth}
     @experiment = new Experiment()
+    @findFriend = new FindFriend {@auth}
     @gif = new Gif()
     @group = new Group {@auth}
     @groupRecord = new GroupRecord {@auth}
     @groupRecordType = new GroupRecordType {@auth}
     @gameRecordType = new GameRecordType {@auth}
-    @thread = new Thread {@auth}
+    @thread = new Thread {@auth, @l}
     @threadComment = new ThreadComment {@auth}
     @mod = new Mod {@auth}
     @payment = new Payment {@auth}
@@ -139,17 +152,6 @@ module.exports = class Model
     @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {@user, @game, @modal, @installOverlay, @getAppDialog}
     @window = new Window {cookieSubject, @experiment}
-
-    if window?
-      fullLanguage = window.navigator.languages?[0] or window.navigator.language
-    else
-      fullLanguage = serverHeaders?['accept-language']
-
-    language = fullLanguage.substr 0, 2
-    unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt']
-      language = 'en'
-
-    @l = new Language {language}
 
     # if expNativeLanguageGroup is 'native'
     @user.getMe().take(1).toPromise()

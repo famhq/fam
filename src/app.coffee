@@ -163,14 +163,14 @@ module.exports = class App
     route '/events', 'EventsPage'
     route '/event/:id', 'EventPage'
     route '/event/:id/edit', 'EditEventPage'
+    route '/thread/:id', 'ThreadPage'
     route '/thread/:id/reply', 'ThreadReplyPage'
 
     route '/decksNew', 'DecksNewPage'
 
     if breakpoint is 'desktop'
-      route ['/decks', '/thread/:id'], 'DecksPage'
+      route ['/decks', '/deckGuide/:id'], 'DecksPage'
     else
-      route '/thread/:id', 'ThreadPage'
       route ['/decks'], 'DecksPage'
 
     route '/forumSignature', 'ForumSignaturePage'

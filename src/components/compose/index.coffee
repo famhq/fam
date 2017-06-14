@@ -36,10 +36,11 @@ module.exports = class Compose
         save:
           text: 'Done'
           onclick: (e) =>
-            @state.set isLoading: true
-            onDone e
-            .then =>
-              @state.set isLoading: false
+            unless isLoading
+              @state.set isLoading: true
+              onDone e
+              .then =>
+                @state.set isLoading: false
       }
       z '.g-grid',
         [

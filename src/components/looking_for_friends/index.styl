@@ -2,17 +2,24 @@
 
 @require '../../vars'
 
-.z-players-following
+.z-looking-for-friends
   width: 100%
   box-sizing: border-box
   overflow: auto
   -webkit-overflow-scrolling: touch
 
   > .g-grid
+    > .search
+      padding: 16px
+      cursor: pointer
+
     > .subhead
       font-subhead()
       color: getColor('$primary500')
-      padding: 16px
+      margin: 16px
+
+    > .button
+      margin: 16px
 
     > .empty-state
       font-caption1()

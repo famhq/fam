@@ -31,8 +31,11 @@ module.exports = class PlayersFollowing
             z 'div',
               @model.l.get 'playersFollowing.emptyDiv2'
         else
-          z @$playerList, {
-            onclick: ({player}) =>
-              userId = player?.userIds?[0]
-              @router.go "/user/id/#{userId}"
-          }
+          [
+            z '.subhead', @model.l.get 'playersPage.playersFollowing'
+            z @$playerList, {
+              onclick: ({player}) =>
+                userId = player?.userIds?[0]
+                @router.go "/user/id/#{userId}"
+            }
+          ]

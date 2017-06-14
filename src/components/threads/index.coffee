@@ -20,7 +20,7 @@ module.exports = class Threads
 
     @state = z.state
       me: @model.user.getMe()
-      threads: @model.thread.getAll().map (threads) ->
+      threads: @model.thread.getAll({category: 'news'}).map (threads) ->
         _map threads, (thread) ->
           {
             thread
@@ -41,9 +41,13 @@ module.exports = class Threads
           [
             z '.g-grid',
               @router.link z 'a.thread', {
-                href: "/thread/#{thread.id}/1"
+                href: "/thread/#{thread.id}"
               },
-                z '.content',
+                if thread.image
+                  z 'img.image',
+                    src: thread.image
+                z '.title', thread.title
+                z '.info',
                   z '.author',
                     z '.name', @model.user.getDisplayName thread.user
                     z '.middot',
@@ -52,55 +56,25 @@ module.exports = class Threads
                       if thread.addTime
                       then moment(thread.addTime).fromNowModified()
                       else '...'
-                  z '.title', thread.title
-                  z '.text', thread.firstMessage?.text
-                  z '.stats',
-                    z '.votes',
-                      z $upvoteIcon,
-                        icon: 'upvote'
-                        color: colors.$white54
-                        size: '12px'
-                        touchWidth: '24px'
-                        touchHeight: '24px'
-                        onclick: =>
-                          @vote thread.id, 'up'
-                      z '.count', thread.score or 0
-                      z $downvoteIcon,
-                        icon: 'downvote'
-                        color: colors.$white54
-                        size: '12px'
-                        touchWidth: '24px'
-                        touchHeight: '24px'
-                        onclick: =>
-                          @vote thread.id, 'down'
-                    z '.comments',
-                      z $commentIcon,
-                        icon: 'comment'
-                        color: colors.$white54
-                        size: '12px'
-                        touchWidth: '24px'
-                        touchHeight: '24px'
-                      z '.count', thread.commentCount or 0
+                    z '.middot',
+                      innerHTML: '&middot;'
+                    z '.count',
+                      thread.commentCount or 0
+                      ' comments'
 
-
-                if thread.image
-                  z '.right',
-                    z 'img.image',
-                      src: thread.image
-            z '.divider'
           ]
       else
         @$spinner
 
-      z '.fab',
-        z @$fab,
-          colors:
-            c500: colors.$primary500
-          $icon: z @$addIcon, {
-            icon: 'add'
-            isTouchTarget: false
-            color: colors.$white
-          }
-          onclick: =>
-            @router.go '/newThread'
+      # z '.fab',
+      #   z @$fab,
+      #     colors:
+      #       c500: colors.$primary500
+      #     $icon: z @$addIcon, {
+      #       icon: 'add'
+      #       isTouchTarget: false
+      #       color: colors.$white
+      #     }
+      #     onclick: =>
+      #       @router.go '/newThread'
     ]

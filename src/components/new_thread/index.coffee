@@ -27,4 +27,4 @@ module.exports = class NewThread
             body: @bodyValue.getValue()
           }
           .then ({id}) =>
-            @router.go "/thread/#{id}/1", {reset: true}
+            @router.go "/thread/#{id}", {reset: true}

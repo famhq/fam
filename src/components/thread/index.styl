@@ -5,117 +5,121 @@
 .z-thread
   flex: 1
   width: 100%
-  overflow: auto
-  -webkit-overflow-scrolling: touch
   display: flex
   flex-direction: column
   background: getColor('$tertiary700')
   max-width: 700px // TODO: 512px
   margin: 0 auto
 
-  > .header
+  > .content
+    flex: 1
+    display: flex
+    flex-direction: column
+    overflow: auto
+    -webkit-overflow-scrolling: touch
 
-    > .header-image
-      width: 100%
-      padding-bottom: 57%
-      background-size: auto 100%
-      background-repeat: no-repeat
-      background-position: center
-      position: relative
-      cursor: pointer
-
-      &:after
-        position: absolute
-        content: ' '
-        top: 0
-        left: 0
+    > .header
+      > .header-image
         width: 100%
-        height: 100%
-        background: getColor('$black54')
-
-      > .play
-        width: 48px
-        height: 48px
-        border-radius: 50%
-        background: getColor('$white')
-        position: absolute
-        left: 50%
-        top: 50%
-        margin-left: -24px
-        margin-top: -24px
-        z-index: 1
-        display: flex
+        padding-bottom: 57%
+        background-size: auto 100%
+        background-repeat: no-repeat
+        background-position: center
+        position: relative
+        cursor: pointer
 
         &:after
-          display: block
-          content: ''
-          width: 0
-          height: 0
-          border-left: 15px solid getColor('$primary500')
-          border-bottom: 11px solid transparent
-          border-top: 11px solid transparent
-          margin: auto
+          position: absolute
+          content: ' '
+          top: 0
+          left: 0
+          width: 100%
+          height: 100%
+          background: getColor('$black54')
 
-  > .post
-    padding: 16px
+        > .play
+          width: 48px
+          height: 48px
+          border-radius: 50%
+          background: getColor('$white')
+          position: absolute
+          left: 50%
+          top: 50%
+          margin-left: -24px
+          margin-top: -24px
+          z-index: 1
+          display: flex
 
-    > .g-grid
-      > .author
-        font-caption1()
-        color: getColor('$tertiary300')
-        display: flex
+          &:after
+            display: block
+            content: ''
+            width: 0
+            height: 0
+            border-left: 15px solid getColor('$primary500')
+            border-bottom: 11px solid transparent
+            border-top: 11px solid transparent
+            margin: auto
 
-        > .name
-          margin-left: 8px
+    > .post
+      padding: 16px
 
-      > .title
-        font-title()
-        margin-top: 16px
+      > .g-grid
+        > .author
+          font-caption1()
+          color: getColor('$tertiary300')
+          display: flex
 
-      > .deck
-        margin-top: 16px
+          > .name
+            margin-left: 8px
 
-      > .ad
-        width: 320px
-        height: 50px
-        margin: 10px auto 0 auto
-        background: getColor('$tertiary900')
+        > .title
+          font-title()
+          margin-top: 16px
 
-      > .body
-        font-body1()
-        margin-top: 16px
+        > .deck
+          margin-top: 16px
 
-        a
-          color: getColor('$primary500')
-          text-decoration: underline
+        > .ad
+          width: 320px
+          height: 50px
+          margin: 10px auto 0 auto
+          background: getColor('$tertiary900')
 
-  > .stats
-    padding-right: 16px
+        > .body
+          font-body1()
+          margin-top: 16px
 
-    > .g-grid
-      display: flex
-      align-items: center
+          a
+            color: getColor('$primary500')
+            text-decoration: underline
 
-      > .vote
+    > .stats
+      padding-right: 16px
+
+      > .g-grid
         display: flex
         align-items: center
 
-      > .score
-        margin-left: auto
+        > .vote
+          display: flex
+          align-items: center
 
-  > .comments
-    padding-top: 16px
-    flex: 1
-    background: getColor('$tertiary900')
+        > .score
+          margin-left: auto
 
-    > .no-comments
-      padding: 16px
+    > .comments
+      padding-top: 16px
+      flex: 1
+      background: getColor('$tertiary900')
 
-    > .divider
-      width: 100%
-      height: 1px
-      background: getColor('$white12')
-      margin: 8px 0
+      > .no-comments
+        padding: 16px
+
+      > .divider
+        width: 100%
+        height: 1px
+        background: getColor('$white12')
+        margin: 8px 0
 
   > .divider
     width: 100%

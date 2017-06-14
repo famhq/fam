@@ -31,6 +31,8 @@ class Language
 
   getLanguage: => @language
 
+  getLanguageStr: => @language.getValue()
+
   get: (strKey, replacements) =>
     language = @language.getValue()
     baseResponse = languages[language]?[strKey] or

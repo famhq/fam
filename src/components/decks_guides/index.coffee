@@ -21,7 +21,7 @@ module.exports = class DecksGuides extends Base
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
-    guides = @model.thread.getAll({type: 'deckGuide', sort})
+    guides = @model.thread.getAll({category: 'decks', sort})
     .map (guides) ->
       guides
 

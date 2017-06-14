@@ -3,16 +3,18 @@ _defaults = require 'lodash/defaults'
 module.exports = class Thread
   namespace: 'threads'
 
-  constructor: ({@auth}) -> null
+  constructor: ({@auth, @l}) -> null
 
   create: (diff) =>
     @auth.call "#{@namespace}.create", diff, {invalidateAll: true}
 
-  getAll: ({type, ignoreCache} = {}) =>
-    @auth.stream "#{@namespace}.getAll", {type}, {ignoreCache}
+  getAll: ({category, ignoreCache} = {}) =>
+    language = @l.getLanguageStr()
+    @auth.stream "#{@namespace}.getAll", {category, language}, {ignoreCache}
 
   getById: (id, {ignoreCache} = {}) =>
-    @auth.stream "#{@namespace}.getById", {id}, {ignoreCache}
+    language = @l.getLanguageStr()
+    @auth.stream "#{@namespace}.getById", {id, language}, {ignoreCache}
 
   voteById: (id, {vote}) =>
     @auth.call "#{@namespace}.voteById", {id, vote}, {invalidateAll: true}

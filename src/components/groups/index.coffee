@@ -46,7 +46,7 @@ module.exports = class Groups
       me: @model.user.getMe()
       language: language
       isTranslateCardVisible: language.map (lang) ->
-        needTranslations = ['pt']
+        needTranslations = ['es', 'it', 'fr', 'ja', 'ko', 'zh', 'pt', 'de']
         isNeededLanguage = lang in needTranslations
         localStorage? and isNeededLanguage and
                                 not localStorage['hideTranslateCard']

@@ -26,7 +26,6 @@ module.exports = class AdsenseAd
     @unique = Math.random()
 
   afterMount: ->
-    console.log 'mount ad'
     if window?
       setTimeout ->
         (window.adsbygoogle = window.adsbygoogle or []).push({})
@@ -40,16 +39,22 @@ module.exports = class AdsenseAd
 
     z '.z-adsense-ad', {
       key: "adsense-#{@unique}"
+      style:
+        width: "#{slotInfo.width}px"
+        height: "#{slotInfo.height}px"
+        margin: '0 auto'
+        backgroundColor: colors.$tertiary700
+        position: 'relative'
     },
       z 'ins',
-        key: "adsense-#{@unique}-ins"
         className: 'adsbygoogle'
         style:
-          display: 'block'
+          position: 'absolute'
+          top: 0
+          left: 0
+          display: 'inline-block'
           width: "#{slotInfo.width}px"
           height: "#{slotInfo.height}px"
-          margin: '0 auto'
-          backgroundColor: colors.$tertiary700
         attributes:
           'data-ad-client': CLIENT
           'data-ad-slot': slotInfo.slot

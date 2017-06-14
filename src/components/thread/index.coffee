@@ -12,7 +12,6 @@ AppBar = require '..//app_bar'
 ButtonBack = require '..//button_back'
 Icon = require '../icon'
 Avatar = require '../avatar'
-AdsenseAd = require '../adsense_ad'
 ThreadComment = require '../thread_comment'
 DeckCards = require '../deck_cards'
 Spinner = require '../spinner'
@@ -29,7 +28,6 @@ module.exports = class Thread
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
 
-    @$adsenseAd = new AdsenseAd()
     @$spinner = new Spinner()
     @$replyIcon = new Icon()
     @$upvoteIcon = new Icon()
@@ -66,16 +64,19 @@ module.exports = class Thread
         @router
       }
       windowSize: @model.window.getSize()
-      # threadComments: thread.flatMapLatest (thread) =>
-      #   if thread?.id
-      #     @model.threadComment.getAllByThreadId thread.id
-      #     .map (threadComments) =>
-      #       _map threadComments, (threadComment) =>
-      #         new ThreadComment {
-      #           @model, @router, threadComment, @selectedProfileDialogUser
-      #         }
-      #   else
-      #     Rx.Observable.just null
+      threadComments: thread.flatMapLatest (thread) =>
+        if thread?.id
+          @model.threadComment.getAllByParentIdAndParentType {
+            parentId: thread.id
+            parentType: 'thread'
+          }
+          .map (threadComments) =>
+            _map threadComments, (threadComment) =>
+              new ThreadComment {
+                @model, @router, threadComment, @selectedProfileDialogUser
+              }
+        else
+          Rx.Observable.just null
 
 
   render: =>
@@ -83,6 +84,9 @@ module.exports = class Thread
       selectedProfileDialogUser} = @state.getValue()
 
     videoWidth = Math.min(windowSize.width, 512)
+
+    hasVotedUp = thread?.myVote?.vote is 1
+    hasVotedDown = thread?.myVote?.vote is -1
 
     hasAdminPermission = @model.thread.hasPermission thread, me, {
       level: 'admin'
@@ -92,8 +96,8 @@ module.exports = class Thread
       z @$appBar, {
         title: ''
         bgColor: colors.$tertiary700
-        $topLeftButton: unless @isInline
-                          z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: if not @isInline \
+                        then z @$buttonBack, {color: colors.$primary500}
         $topRightButton: if hasAdminPermission
           z @$editIcon,
             icon: 'edit'
@@ -103,103 +107,103 @@ module.exports = class Thread
         else
           null
       }
-      if thread?.headerImage
-        z '.header',
-          if isVideoVisible
-            z 'iframe',
-              width: videoWidth
-              height: videoWidth * (9 / 16)
-              src: thread.data.videoUrl
-              attributes:
-                frameborder: 0
-                allowfullscreen: true
-                webkitallowfullscreen: true
+      z '.content',
+        if thread?.headerImage
+          z '.header',
+            if isVideoVisible
+              z 'iframe',
+                width: videoWidth
+                height: videoWidth * (9 / 16)
+                src: thread.data.videoUrl
+                attributes:
+                  frameborder: 0
+                  allowfullscreen: true
+                  webkitallowfullscreen: true
+            else
+              z '.header-image', {
+                onclick: =>
+                  if thread.data.videoUrl
+                    @state.set isVideoVisible: true
+                style:
+                  backgroundImage: "url(#{thread.headerImage.versions[0].url})"
+              },
+                z '.play'
+        z '.post',
+          z '.g-grid',
+            z '.author',
+              z '.avatar',
+                z @$avatar, {user: thread?.creator, size: '20px'}
+              z '.name', @model.user.getDisplayName thread?.creator
+              z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
+              z '.time',
+                if thread?.addTime
+                then moment(thread?.addTime).fromNowModified()
+                else '...'
+            z '.title',
+              thread?.title
+
+            if thread?.data?.deckId
+              z '.deck', {
+                onclick: =>
+                  @state.set isDeckDialogVisible: true
+              },
+                z @$deckCards, {cardWidth: 45}
+
+            z '.body', $body
+
+        z '.divider'
+        z '.stats',
+          z '.g-grid',
+            z '.vote',
+              z '.upvote',
+                z @$upvoteIcon,
+                  icon: 'upvote'
+                  size: '18px'
+                  color: if hasVotedUp \
+                         then colors.$primary500
+                         else colors.$white
+                  onclick: =>
+                    @model.thread.voteById thread.id, {vote: 'up'}
+              z '.downvote',
+                z @$downvoteIcon,
+                  icon: 'downvote'
+                  size: '18px'
+                  color: if hasVotedDown \
+                         then colors.$primary500
+                         else colors.$white
+                  onclick: =>
+                    @model.thread.voteById thread.id, {vote: 'down'}
+            z '.score',
+              "#{FormatService.number thread?.score} points"
+              z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
+              "#{FormatService.number thread?.commentCount} "
+              @model.l.get 'thread.score'
+        z '.divider.no-margin-bottom'
+
+
+        z '.comments',
+          if threadComments and _isEmpty threadComments
+            z '.no-comments', @model.l.get 'thread.noComments'
+          else if threadComments
+            _map threadComments, ($threadComment) ->
+              [
+                z $threadComment
+                z '.divider'
+              ]
           else
-            z '.header-image', {
-              onclick: =>
-                if thread.data.videoUrl
-                  @state.set isVideoVisible: true
-              style:
-                backgroundImage: "url(#{thread.headerImage.versions[0].url})"
-            },
-              z '.play'
-      z '.post',
-        z '.g-grid',
-          z '.author',
-            z '.avatar',
-              z @$avatar, {user: thread?.creator, size: '20px'}
-            z '.name', @model.user.getDisplayName thread?.creator
-            z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
-            z '.time',
-              if thread?.addTime
-              then moment(thread?.addTime).fromNowModified()
-              else '...'
-          z '.title',
-            thread?.title
+            @$spinner
 
-          if thread?.data?.deckId
-            z '.deck', {
-              onclick: =>
-                @state.set isDeckDialogVisible: true
-            },
-              z @$deckCards, {cardWidth: 45}
-
-          unless Environment.isGameApp(config.GAME_KEY)
-            z '.ad',
-              z @$adsenseAd, {
-                slot: 'mobile320x50'
-              }
-          z '.body', $body
-
-      z '.divider'
-      z '.stats',
-        z '.g-grid',
-          z '.vote',
-            z '.upvote',
-              z @$upvoteIcon,
-                icon: 'upvote'
-                size: '18px'
-                color: colors.$white
-                onclick: =>
-                  @model.thread.voteById thread.id, {vote: 'up'}
-            z '.downvote',
-              z @$downvoteIcon,
-                icon: 'downvote'
-                size: '18px'
-                color: colors.$white
-                onclick: =>
-                  @model.thread.voteById thread.id, {vote: 'down'}
-          z '.score',
-            "#{FormatService.number thread?.score} points"
-            z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
-            "#{FormatService.number thread?.commentCount} "
-            @model.l.get 'thread.score'
-      z '.divider.no-margin-bottom'
-
-
-      # z '.comments',
-      #   if threadComments and _isEmpty threadComments
-      #     z '.no-comments', @model.l.get 'thread.noComments'
-      #   else if threadComments
-      #     _map threadComments, ($threadComment) ->
-      #       [
-      #         z $threadComment
-      #         z '.divider'
-      #       ]
-      #   else
-      #     @$spinner
-
-      # z '.fab',
-      #   z @$fab,
-      #     colors:
-      #       c500: colors.$primary500
-      #     $icon: z @$replyIcon, {
-      #       icon: 'reply'
-      #       isTouchTarget: false
-      #       color: colors.$white
-      #     }
-      #     onclick: =>
-      #       @router.go "/thread/#{thread.id}/reply"
+      z '.fab',
+        z @$fab,
+          colors:
+            c500: colors.$primary500
+          $icon: z @$replyIcon, {
+            icon: 'reply'
+            isTouchTarget: false
+            color: colors.$white
+          }
+          onclick: =>
+            @router.go "/thread/#{thread.id}/reply"
 
       if selectedProfileDialogUser
         z @$profileDialog

@@ -39,14 +39,12 @@ module.exports = class BottomBar
           route: '/videos'
           text: 'Videos'
         }
-      # if expSocialGroup is 'visible'
-      #   {
-      #     $icon: new Icon()
-      #     icon: 'chat'
-      #     route: '/social'
-      #     text: @model.l.get 'general.social'
-      #   }
-      # else
+      {
+        $icon: new Icon()
+        icon: 'friends'
+        route: '/players'
+        text: @model.l.get 'drawer.menuItemPlayers'
+      }
       {
         $icon: new Icon()
         icon: 'chat'

@@ -7,6 +7,7 @@ ButtonMenu = require '../../components/button_menu'
 BottomBar = require '../../components/bottom_bar'
 Groups = require '../../components/groups'
 Conversations = require '../../components/conversations'
+Threads = require '../../components/threads'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
 Fab = require '../../components/fab'
@@ -35,6 +36,7 @@ module.exports = class SocialPage
     @$buttonMenu = new ButtonMenu {@model}
     @$groups = new Groups {@model, @router}
     @$conversations = new Conversations {@model, @router}
+    @$threads = new Threads {@model, @router}
     @$tabs = new Tabs {@model, selectedIndex}
     @$groupsIcon = new Icon()
     @$conversationsIcon = new Icon()
@@ -66,6 +68,12 @@ module.exports = class SocialPage
             menuIconName: 'chat'
             $menuText: @model.l.get 'communityPage.menuText'
             $el: @$groups
+          }
+          {
+            $menuIcon: @$groupsIcon
+            menuIconName: 'rss'
+            $menuText: @model.l.get 'communityPage.menuNews'
+            $el: @$threads
           }
           {
             $menuIcon: @$conversationsIcon

@@ -23,9 +23,12 @@ module.exports = class ThreadReply
       z @$compose,
         isReply: true
         onDone: (e) =>
-          @model.threadComment.create {
-            body: @bodyValue.getValue()
-            threadId: threadId
-          }
+          @model.signInDialog.openIfGuest me
           .then =>
-            @router.go "/thread/#{threadId}/1", {reset: true}
+            @model.threadComment.create {
+              body: @bodyValue.getValue()
+              parentId: threadId
+              parentType: 'thread'
+            }
+          .then =>
+            @router.go "/thread/#{threadId}", {reset: true}
