@@ -1,6 +1,8 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+Environment = require 'clay-environment'
 
+AdsenseAd = require '../adsense_ad'
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
 Dialog = require '../dialog'
@@ -21,6 +23,7 @@ module.exports = class PlayersSearch
     }
     @$trackButton = new PrimaryButton()
     @$dialog = new Dialog()
+    @$adsenseAd = new AdsenseAd()
 
     @state = z.state
       me: me
@@ -67,6 +70,19 @@ module.exports = class PlayersSearch
                     then @model.l.get 'general.loading'
                     else @model.l.get 'playersSearch.trackButtonText'
               type: 'submit'
+
+
+        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'mobile300x250'
+            }
+        else if not Environment.isMobile()
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'desktop728x90'
+            }
+
       if isLoading
         z @$dialog,
           isVanilla: true

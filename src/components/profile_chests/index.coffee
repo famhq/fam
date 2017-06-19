@@ -56,6 +56,11 @@ module.exports = class ProfileChests
             z @$adsenseAd, {
               slot: 'mobile300x250'
             }
+        else if not Environment.isMobile()
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'desktop728x90'
+            }
 
         z '.title', @model.l.get 'profileChests.chestsUntilTitle'
         z '.chests-until',

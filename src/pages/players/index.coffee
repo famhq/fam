@@ -8,7 +8,6 @@ Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
 PlayersTop = require '../../components/players_top'
 PlayersFollowing = require '../../components/players_following'
-LookingForFriends = require '../../components/looking_for_friends'
 ProfileDialog = require '../../components/profile_dialog'
 Head = require '../../components/head'
 colors = require '../../colors'
@@ -50,9 +49,7 @@ module.exports = class PlayersPage
     @$playersFollowing = new PlayersFollowing {
       @model, router, selectedProfileDialogUser
     }
-    @$lookingForFriends = new LookingForFriends {@model, router, overlay$}
 
-    @$lookingForFriendsIcon = new Icon()
     @$followingIcon = new Icon()
     @$topPlayersIcon = new Icon()
 
@@ -77,12 +74,6 @@ module.exports = class PlayersPage
       z @$tabs,
         isBarFixed: false
         tabs: [
-          {
-            $menuText: @model.l.get 'playersPage.findFriends'
-            $el: @$lookingForFriends
-            $menuIcon: @$lookingForFriendsIcon
-            menuIconName: 'search'
-          }
           {
             $menuText: @model.l.get 'playersPage.playersTop'
             $el: @$playersTop
