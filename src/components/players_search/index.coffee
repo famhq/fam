@@ -38,7 +38,7 @@ module.exports = class PlayersSearch
     .then =>
       @model.player.search playerTag
     .then (player) =>
-      userId = player?.userIds?[0]
+      userId = player?.userId
       @router.go "/user/id/#{userId}"
     .then =>
       @state.set isLoading: false

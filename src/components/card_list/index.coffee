@@ -17,7 +17,7 @@ DESKTOP_CARDS_PER_ROW = 12
 getCardSizeInfo = ->
   if window?
     # TODO: json file with these vars, stylus uses this
-    if window.matchMedia('(min-width: 840px)').matches
+    if window.matchMedia('(min-width: 768px)').matches
       {cardsPerRow: DESKTOP_CARDS_PER_ROW}
     else
       {cardsPerRow: DEFAULT_CARDS_PER_ROW}

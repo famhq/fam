@@ -50,9 +50,12 @@ module.exports = class SignInDialog
     }
     .then =>
       @state.set isLoading: false
-      @model.user.getMe().take(1).subscribe =>
-        @model.signInDialog.loggedIn()
-        @model.signInDialog.close()
+      # give time for invalidate to work
+      setTimeout =>
+        @model.user.getMe().take(1).subscribe =>
+          @model.signInDialog.loggedIn()
+          @model.signInDialog.close()
+      , 0
     .catch (err) =>
       @usernameError.onNext err.message
       @state.set isLoading: false
@@ -67,9 +70,12 @@ module.exports = class SignInDialog
     }
     .then =>
       @state.set isLoading: false
-      @model.user.getMe().take(1).subscribe =>
-        @model.signInDialog.loggedIn()
-        @model.signInDialog.close()
+      # give time for invalidate to work
+      setTimeout =>
+        @model.user.getMe().take(1).subscribe =>
+          @model.signInDialog.loggedIn()
+          @model.signInDialog.close()
+      , 0
     .catch (err) =>
       @usernameError.onNext err.message
       @state.set isLoading: false

@@ -92,20 +92,22 @@ module.exports = class Thread
       level: 'admin'
     }
 
+    points = if thread then thread.upvotes - thread.downvotes else 0
+
     z '.z-thread',
       z @$appBar, {
         title: ''
         bgColor: colors.$tertiary700
         $topLeftButton: if not @isInline \
                         then z @$buttonBack, {color: colors.$primary500}
-        $topRightButton: if hasAdminPermission
-          z @$editIcon,
-            icon: 'edit'
-            color: colors.$primary500
-            onclick: =>
-              @router.go "/editGuide/#{thread.id}"
-        else
-          null
+        # $topRightButton: if hasAdminPermission
+        #   z @$editIcon,
+        #     icon: 'edit'
+        #     color: colors.$primary500
+        #     onclick: =>
+        #       @router.go "/editGuide/#{thread.id}"
+        # else
+        #   null
       }
       z '.content',
         if thread?.headerImage
@@ -174,7 +176,7 @@ module.exports = class Thread
                   onclick: =>
                     @model.thread.voteById thread.id, {vote: 'down'}
             z '.score',
-              "#{FormatService.number thread?.score} points"
+              "#{FormatService.number points} points"
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               "#{FormatService.number thread?.commentCount} "
               @model.l.get 'thread.score'

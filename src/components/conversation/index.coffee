@@ -1,6 +1,7 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
 _last = require 'lodash/last'
 _isEmpty = require 'lodash/isEmpty'
 _debounce = require 'lodash/debounce'
@@ -124,7 +125,9 @@ module.exports = class Conversation extends Base
       messages: messagesAndMe.map ([messages, me]) =>
         if messages
           prevMessage = null
-          _map messages, (message) =>
+          _filter _map messages, (message) =>
+            unless message
+              return
             isRecent = new Date(message?.time) - new Date(prevMessage?.time) <
                         FIVE_MINUTES_MS
             isGrouped = message.userId is prevMessage?.userId and isRecent
@@ -211,7 +214,7 @@ module.exports = class Conversation extends Base
     if not isPostLoading and messageBody
       @isPostLoading.onNext true
 
-      type = if conversation?.groupId is config.MAIN_GROUP_ID \
+      type = if conversation?.group?.type is 'public' \
              then 'public'
              else if conversation?.groupId
              then 'group'

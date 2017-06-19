@@ -4,6 +4,8 @@ _map = require 'lodash/map'
 
 Icon = require '../icon'
 CardPickerDialog = require '../card_picker_dialog'
+UploadOverlay = require '../upload_overlay'
+ConversationImagePreview = require '../conversation_image_preview'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -11,12 +13,30 @@ if window?
   require './index.styl'
 
 module.exports = class MarkdownEditor
-  constructor: ({@model, @valueStreams, @value, @error} = {}) ->
+  constructor: (options) ->
+    {@model, @valueStreams, @attachmentsValueStreams, @value, @error} = options
     @value ?= new Rx.BehaviorSubject ''
     @error ?= new Rx.BehaviorSubject null
     @overlay$ = new Rx.BehaviorSubject null
+    @imageData = new Rx.BehaviorSubject null
 
     @$cardPickerDialog = new CardPickerDialog {@model, @overlay$}
+    @$conversationImagePreview = new ConversationImagePreview {
+      @imageData
+      @model
+      @overlay$
+      onUpload: ({key, width, height}) =>
+        {attachments} = @state.getValue()
+
+        attachments or= []
+        url = "#{config.USER_CDN_URL}/cm/#{key}.small.png"
+        @attachmentsValueStreams.onNext Rx.Observable.just(attachments.concat [
+          {type: 'image', src: url}
+        ])
+        @setModifier {
+          pattern: "![](#{url} =#{width}x#{height})"
+        }
+    }
 
     @modifiers = [
       {
@@ -57,10 +77,18 @@ module.exports = class MarkdownEditor
                         "(https://#{config.HOST}/clashRoyale/card/#{card.key})"
             }
       }
+      {
+        icon: 'image'
+        $icon: new Icon()
+        title: 'Image'
+        pattern: "[$1](https://#{config.HOST}/clashRoyale/card/$0)"
+        $uploadOverlay: new UploadOverlay {@model}
+      }
     ]
 
     @state = z.state {
       value: @valueStreams?.switch() or @value
+      attachments: @attachmentsValueStreams.switch()
       error: @error
       overlay$: @overlay$
     }
@@ -104,12 +132,19 @@ module.exports = class MarkdownEditor
     {value, error, overlay$} = @state.getValue()
 
     z '.z-markdown-editor',
+      z 'textarea.textarea', {
+        placeholder: hintText or ''
+        onkeyup: @setValueFromEvent
+        value: value
+      }
+
       z '.panel',
-        _map @modifiers, ({icon, $icon, title, pattern, onclick}, i) =>
+        _map @modifiers, (options) =>
+          {icon, $icon, title, pattern, onclick, $uploadOverlay} = options
           z '.icon', {
             title: title
           },
-            z $icon,
+            z $icon, {
               icon: icon
               color: colors.$white
               onclick: =>
@@ -117,11 +152,21 @@ module.exports = class MarkdownEditor
                   onclick()
                 else
                   @setModifier {pattern, onclick}
-
-      z 'textarea.textarea', {
-        placeholder: hintText or ''
-        onkeyup: @setValueFromEvent
-        value: value
-      }
+            }
+            if $uploadOverlay
+              z '.upload-overlay',
+                z $uploadOverlay, {
+                  onSelect: ({file, dataUrl}) =>
+                    img = new Image()
+                    img.src = dataUrl
+                    img.onload = =>
+                      @imageData.onNext {
+                        file
+                        dataUrl
+                        width: img.width
+                        height: img.height
+                      }
+                      @overlay$.onNext @$conversationImagePreview
+                }
 
       overlay$

@@ -46,7 +46,7 @@ module.exports = class GroupList
                       z '.name', group.name or 'Nameless'
                       z '.count',
                         _startCase(group.type) or '...'
-                        if group.id isnt config.MAIN_GROUP_ID
+                        if group.type isnt 'public'
                           [
                             z 'span.middot',
                               innerHTML: ' &middot; '

@@ -8,9 +8,11 @@ module.exports = class Thread
   create: (diff) =>
     @auth.call "#{@namespace}.create", diff, {invalidateAll: true}
 
-  getAll: ({category, ignoreCache} = {}) =>
+  getAll: ({category, sort, limit, ignoreCache} = {}) =>
     language = @l.getLanguageStr()
-    @auth.stream "#{@namespace}.getAll", {category, language}, {ignoreCache}
+    @auth.stream "#{@namespace}.getAll", {category, language, limit, sort}, {
+      ignoreCache
+    }
 
   getById: (id, {ignoreCache} = {}) =>
     language = @l.getLanguageStr()

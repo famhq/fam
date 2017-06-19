@@ -21,6 +21,6 @@ module.exports = class PlayersTop
         z '.subhead', @model.l.get 'playersPage.playersTop'
         z @$playerList, {
           onclick: ({player}) =>
-            userId = player?.userIds?[0]
+            userId = player?.userId
             @router.go "/user/id/#{userId}"
         }

@@ -10,8 +10,8 @@ module.exports = class Group
       name, description, badgeId, background, mode
     }, {invalidateAll: true}
 
-  getAll: ({filter} = {}) =>
-    @auth.stream "#{@namespace}.getAll", {filter}
+  getAll: ({filter, language} = {}) =>
+    @auth.stream "#{@namespace}.getAll", {filter, language}
 
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
@@ -48,4 +48,4 @@ module.exports = class Group
       when 'admin'
       then group.creatorId is userId
       # member
-      else group.userIds?.indexOf(userId) isnt -1 or group.id is config.MAIN_GROUP_ID
+      else group.userIds?.indexOf(userId) isnt -1 or group.type is 'public'

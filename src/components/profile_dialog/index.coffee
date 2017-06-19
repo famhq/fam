@@ -141,9 +141,11 @@ module.exports = class ProfileDialog
         isVisible: not isMe
         onclick: =>
           if user?.isChatBanned
-            @model.mod.unbanByUserId user?.id
+            @model.mod.unbanByUserId user?.id, {groupId: group?.id}
           else
-            @model.mod.banByUserId user?.id, {duration: '24h'}
+            @model.mod.banByUserId user?.id, {
+              duration: '24h', groupId: group?.id
+            }
           @selectedProfileDialogUser.onNext null
       }
       {
@@ -157,9 +159,12 @@ module.exports = class ProfileDialog
         isVisible: not isMe
         onclick: =>
           if user?.isChatBanned
-            @model.mod.unbanByUserId user?.id
+            @model.mod.unbanByUserId user?.id, {groupId: group?.id}
           else
-            @model.mod.banByUserId user?.id, {duration: 'permanent'}
+            @model.mod.banByUserId user?.id, {
+              duration: 'permanent'
+              groupId: group?.id
+            }
           @selectedProfileDialogUser.onNext null
       }
       {
@@ -173,9 +178,13 @@ module.exports = class ProfileDialog
         isVisible: not isMe
         onclick: =>
           if user?.isChatBanned
-            @model.mod.unbanByUserId user?.id
+            @model.mod.unbanByUserId user?.id, {
+              groupId: group?.id
+            }
           else
-            @model.mod.banByUserId user?.id, {type: 'ip', duration: 'permanent'}
+            @model.mod.banByUserId user?.id, {
+              type: 'ip', duration: 'permanent', groupId: group?.id
+            }
           @selectedProfileDialogUser.onNext null
       }
       {

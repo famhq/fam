@@ -49,6 +49,14 @@ module.exports = class ProfileChests
                 height: 90
               z '.count',
                 if i is 0 then 'Next' else "+#{i + 1}"
+
+
+        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+          z '.ad',
+            z @$adsenseAd, {
+              slot: 'mobile300x250'
+            }
+
         z '.title', @model.l.get 'profileChests.chestsUntilTitle'
         z '.chests-until',
           z '.chest',
@@ -93,13 +101,7 @@ module.exports = class ProfileChests
                     then "/user/#{me.username}/chests"
                     else "/user/id/#{me?.id}/chests"
             }
-
-        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
-          z '.ad',
-            z @$adsenseAd, {
-              slot: 'mobile320x50'
-            }
-        else if not Environment.isMobile()
+        if not Environment.isMobile()
           z '.ad',
             z @$adsenseAd, {
               slot: 'desktop728x90'

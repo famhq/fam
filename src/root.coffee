@@ -142,7 +142,11 @@ init = ->
   # clashroyale://add_friend?tag=C8PJ28CG&token=fx379f9b
   # https://link.clashroyale.com/invite/friend/es?tag=UCCQV29Q&token=9krrx8x6&platform=android
   model.portal.call 'heyzap.init', {publisherKey: config.HEYZAP_PUBLISHER_KEY}
-  model.portal.call 'appodeal.init', {appKey: config.APPODEAL_APP_KEY}
+  model.portal.call 'appodeal.init', {
+    appKey: if Environment.isiOS() \
+            then config.APPODEAL_APP_KEY_IOS
+            else config.APPODEAL_APP_KEY_ANDROID
+  }
   .catch -> null
   .then ->
     if Environment.isGameApp config.GAME_KEY
@@ -158,6 +162,7 @@ init = ->
                        else if admobMediationSupported
                        then 'admob.showBanner'
                        else 'heyzap.showBanner'
+
           model.portal?.call portalCall, {
             position: 'bottom'
             overlap: false

@@ -5,19 +5,21 @@ module.exports = class Mod
 
   constructor: ({@auth}) -> null
 
-  getAllBanned: ({duration}) =>
-    @auth.stream "#{@namespace}.getAllBanned", {duration}
+  getAllBanned: ({duration, groupId}) =>
+    @auth.stream "#{@namespace}.getAllBanned", {duration, groupId}
 
-  getAllReportedMessages: ({skipCache} = {}) =>
-    @auth.stream "#{@namespace}.getAllReportedMessages", {}, {skipCache}
+  getAllReportedMessages: ({groupId}, {skipCache} = {}) =>
+    @auth.stream "#{@namespace}.getAllReportedMessages", {groupId}, {skipCache}
 
   unflagById: (id) =>
     @auth.call "#{@namespace}.unflagById", {id}, {invalidateAll: true}
 
-  banByUserId: (userId, {duration, type} = {}) =>
-    @auth.call "#{@namespace}.banByUserId", {userId, duration, type}, {
+  banByUserId: (userId, {groupId, duration, type} = {}) =>
+    @auth.call "#{@namespace}.banByUserId", {userId, groupId, duration, type}, {
       invalidateAll: true
     }
 
-  unbanByUserId: (userId) =>
-    @auth.call "#{@namespace}.unbanByUserId", {userId}, {invalidateAll: true}
+  unbanByUserId: (userId, {groupId}) =>
+    @auth.call "#{@namespace}.unbanByUserId", {userId, groupId}, {
+      invalidateAll: true
+    }

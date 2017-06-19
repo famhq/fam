@@ -1,27 +1,43 @@
 z = require 'zorium'
+Rx = require 'rx-lite'
 
 Icon = require '../icon'
 ActionBar = require '../action_bar'
+MarkdownEditor = require '../markdown_editor'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 module.exports = class Compose
-  constructor: ({@model, @router, @titleValue, @bodyValue}) ->
+  constructor: (options) ->
+    {@model, @router, @titleValue, @bodyValue,
+      @bodyValueStreams, @attachmentsValueStreams} = options
     me = @model.user.getMe()
 
     @$actionBar = new ActionBar {@model}
 
+    @attachmentsValueStreams ?= new Rx.ReplaySubject 1
+    @$markdownEditor = new MarkdownEditor {
+      @model
+      value: @bodyValue
+      valueStreams: @bodyValueStreams
+      attachmentsValueStreams: @attachmentsValueStreams
+    }
+
     @state = z.state
       me: me
       isLoading: false
+      titleValue: @titleValue
 
   setTitle: (e) =>
     @titleValue.onNext e.target.value
 
   setBody: (e) =>
-    @bodyValue.onNext e.target.value
+    if @bodyValueStreams
+      @bodyValueStreams.onNext Rx.Observable.just e.target.value
+    else
+      @bodyValue.onNext e.target.value
 
   render: ({isReply, onDone}) =>
     {me, isLoading} = @state.getValue()
@@ -54,14 +70,8 @@ module.exports = class Compose
 
               z '.divider'
             ]
-          z 'textarea.textarea',
-            # for some reason necessary on iOS to get it to focus properly
-            onclick: (e) ->
-              setImmediate ->
-                e?.target?.focus()
-            placeholder: if isReply \
-                        then @model.l.get 'compose.responseHintText'
-                        else @model.l.get 'compose.postHintText'
-            onkeyup: @setBody
-            onchange: @setBody
+          z @$markdownEditor,
+            hintText: if isReply \
+                      then @model.l.get 'compose.responseHintText'
+                      else @model.l.get 'compose.postHintText'
         ]

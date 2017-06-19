@@ -16,17 +16,18 @@ if window?
 module.exports = class Groups
   constructor: ({@model, @router}) ->
     myGroups = @model.group.getAll({filter: 'mine'})
-    publicGroup = @model.group.getById config.MAIN_GROUP_ID
-    myGroupsAndPublicGroup = Rx.Observable.combineLatest(
+    publicGroups = @model.l.getLanguage().flatMapLatest (language) =>
+      @model.group.getAll({filter: 'public', language})
+    myGroupsAndPublicGroups = Rx.Observable.combineLatest(
       myGroups
-      publicGroup
-      (myGroups, publicGroup) ->
-        (myGroups or []).concat [publicGroup]
+      publicGroups
+      (myGroups, publicGroups) ->
+        (myGroups or []).concat publicGroups
     )
     @$myGroupList = new GroupList {
       @model
       @router
-      groups: myGroupsAndPublicGroup
+      groups: myGroupsAndPublicGroups
     }
     @$suggestedGroupsList = new GroupList {
       @model

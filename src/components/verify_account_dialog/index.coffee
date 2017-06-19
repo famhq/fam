@@ -27,7 +27,6 @@ module.exports = class VerifyAccountDialog
 
     @hiValueStreams = new Rx.ReplaySubject null
     @hiValueStreams.onNext player.map (player) ->
-      console.log player
       player?.hi
     @hiError = new Rx.BehaviorSubject null
     @$hiInput = new PrimaryInput

@@ -60,7 +60,7 @@ module.exports = class ThreadComment
           width: '20px'
       },
         z @$avatar, {
-          creator
+          user: creator
           size: '20px'
           bgColor: colors.$grey200
         }
