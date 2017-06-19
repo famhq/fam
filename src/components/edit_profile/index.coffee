@@ -1,5 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+Environment = require 'clay-environment'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
@@ -8,6 +9,7 @@ UploadOverlay = require '../upload_overlay'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 PrimaryInput = require '../primary_input'
+AdsenseAd = require '../adsense_ad'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -49,6 +51,8 @@ module.exports = class EditProfile
     @$playerTagInput = new PrimaryInput
       valueStreams: @playerTagValueStreams
       error: @playerTagError
+
+    @$adsenseAd = new AdsenseAd()
 
     @state = z.state
       me: me
@@ -116,6 +120,12 @@ module.exports = class EditProfile
         z '.input',
           z @$playerTagInput,
             hintText: @model.l.get 'editProfile.playerTagInputHintText'
+
+      if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+        z '.ad',
+          z @$adsenseAd, {
+            slot: 'mobile300x250'
+          }
 
       z '.section',
         z '.title', 'Change avatar'

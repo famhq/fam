@@ -170,10 +170,6 @@ module.exports = class ClanInfo
                   .then =>
                     @isJoinGroupDialogVisible.onNext true
       z '.content',
-        z '.block',
-          z '.g-grid',
-            z '.description', clan?.data?.description
-
         if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
           z '.ad',
             z @$adsenseAd, {
@@ -184,6 +180,10 @@ module.exports = class ClanInfo
             z @$adsenseAd, {
               slot: 'desktop728x90'
             }
+
+        z '.block',
+          z '.g-grid',
+            z '.description', clan?.data?.description
 
         z '.divider'
         z '.block',
