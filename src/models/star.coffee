@@ -5,3 +5,6 @@ module.exports = class Star
 
   getByUsername: (username) =>
     @auth.stream "#{@namespace}.getByUsername", {username}
+
+  getAll: =>
+    @auth.stream "#{@namespace}.getAll", {}

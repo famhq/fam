@@ -8,6 +8,9 @@ if window?
 
 module.exports = class NewThreadPage
   constructor: ({model, requests, @router, serverData}) ->
+    category = requests.map ({route}) ->
+      route.params.category
+
     @$head = new Head({
       model
       requests
@@ -17,7 +20,7 @@ module.exports = class NewThreadPage
         description: model.l.get 'newThreadPage.title'
       }
     })
-    @$newThread = new NewThread {model, @router}
+    @$newThread = new NewThread {model, @router, category}
 
     @state = z.state
       windowSize: model.window.getSize()

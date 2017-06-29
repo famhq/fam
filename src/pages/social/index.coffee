@@ -15,6 +15,7 @@ TABS = ['groups', 'conversations']
 
 module.exports = class SocialPage
   constructor: ({@model, requests, @router, serverData}) ->
+    pageTitle = new Rx.BehaviorSubject @model.l.get 'communityPage.menuText'
     @$head = new Head({
       @model
       requests
@@ -27,23 +28,24 @@ module.exports = class SocialPage
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
-    @$social = new Social {@model, @router}
+    @$social = new Social {@model, @router, pageTitle}
     @$bottomBar = new BottomBar {@model, @router, requests}
 
     @state = z.state
       windowSize: @model.window.getSize()
+      pageTitle: pageTitle
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, pageTitle} = @state.getValue()
 
     z '.p-social', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: @model.l.get 'general.social'
+        title: pageTitle
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
       }

@@ -10,6 +10,7 @@ Environment = require 'clay-environment'
 Spinner = require '../spinner'
 Base = require '../base'
 FormattedText = require '../formatted_text'
+PrimaryButton = require '../primary_button'
 ConversationInput = require '../conversation_input'
 ConversationMessage = require '../conversation_message'
 config = require '../../config'
@@ -28,7 +29,8 @@ FIVE_MINUTES_MS = 60 * 5 * 1000
 module.exports = class Conversation extends Base
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
-      selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading} = options
+      selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading,
+      group} = options
 
     isLoading ?= new Rx.BehaviorSubject false
     @isPostLoading = new Rx.BehaviorSubject false
@@ -92,6 +94,7 @@ module.exports = class Conversation extends Base
 
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
+    @$followButton = new PrimaryButton()
     @$conversationInput = new ConversationInput {
       @model
       @message
@@ -119,6 +122,9 @@ module.exports = class Conversation extends Base
       isPostLoading: @isPostLoading
       error: null
       conversation: @conversation
+      group: group
+      isFollowLoading: false
+      followingIds: @model.userFollower.getAllFollowingIds()
       isLoaded: false
       isScrolledBottom: @isScrolledBottomStreams.switch()
 
@@ -233,8 +239,9 @@ module.exports = class Conversation extends Base
         @isPostLoading.onNext false
 
   render: =>
-    {me, isLoading, message, isTextareaFocused, isLoaded
-      messages, conversation, isScrolledBottom} = @state.getValue()
+    {me, isLoading, message, isTextareaFocused, isLoaded, followingIds,
+      messages, conversation, group, isScrolledBottom,
+      isFollowLoading} = @state.getValue()
 
     z '.z-conversation',
       z '.g-grid',
@@ -255,5 +262,22 @@ module.exports = class Conversation extends Base
           else
             @$loadingSpinner
 
-      z '.bottom',
-        @$conversationInput
+      if group?.star and not
+          @model.userFollower.isFollowing followingIds, group?.star?.user?.id
+        z '.bottom.is-follow',
+          z '.text',
+            @model.l.get 'conversation.followMessage', {
+              name: @model.user.getDisplayName group.star?.user
+            }
+          z @$followButton,
+            text: if isFollowLoading \
+                  then @model.l.get 'general.loading'
+                  else @model.l.get 'profileInfo.followButtonText'
+            onclick: =>
+              @state.set isFollowLoading: true
+              @model.userFollower.followByUserId group.star?.user?.id
+              .then =>
+                @state.set isFollowLoading: false
+      else
+        z '.bottom',
+          @$conversationInput

@@ -11,6 +11,7 @@ Icon = require '../icon'
 AdsenseAd = require '../adsense_ad'
 RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
+ClanMetrics = require '../clan_metrics'
 FormatService = require '../../services/format'
 config = require '../../config'
 colors = require '../../colors'
@@ -37,6 +38,8 @@ module.exports = class ClanInfo
       @model
       isVisible: isRequestNotificationCardVisible
     }
+
+    @$clanMetrics = new ClanMetrics {@model, @router, clan}
 
     me = @model.user.getMe()
 
@@ -67,10 +70,10 @@ module.exports = class ClanInfo
 
     metrics =
       info: _filter [
-        # {
-        #   name: 'Donations this wk'
-        #   value: FormatService.number clan?.data?.donation
-        # }
+        {
+          name: 'Donations this wk'
+          value: FormatService.number clan?.data?.donations
+        }
         {
           name: @model.l.get 'clanInfo.type'
           value: _startCase clan?.data?.type
@@ -187,12 +190,4 @@ module.exports = class ClanInfo
 
         z '.divider'
         z '.block',
-          _map metrics, (stats, key) ->
-            z '.g-grid',
-              z '.title',
-                _startCase key
-              z '.g-cols',
-                _map stats, ({name, value}) ->
-                  z '.g-col.g-xs-6',
-                    z '.name', name
-                    z '.value', value
+          z @$clanMetrics

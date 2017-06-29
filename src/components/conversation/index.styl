@@ -38,7 +38,16 @@ $zIndexTextarea = 2
         margin: 0
 
   > .bottom
-    margin: 0 16px 16px 16px
+    padding: 0 16px 16px 16px
+
+    &.is-follow
+      background: getColor('$tertiary700')
+      padding: 16px
+
+      > .text
+        font-body1()
+        text-align: center
+        margin-bottom: 4px
 
   @media (min-width: $breakPointMedium)
     > .textarea-container

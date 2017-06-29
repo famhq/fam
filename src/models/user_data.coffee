@@ -38,9 +38,3 @@ module.exports = class UserData
     @auth.call "#{@namespace}.deleteConversationByUserId", {userId}, {
       invalidateAll: true
     }
-
-  followByUserId: (userId) =>
-    @auth.call "#{@namespace}.followByUserId", {userId}, {invalidateAll: true}
-
-  unfollowByUserId: (userId) =>
-    @auth.call "#{@namespace}.unfollowByUserId", {userId}, {invalidateAll: true}

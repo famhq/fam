@@ -26,10 +26,11 @@ module.exports = class StarPage
       model
       requests
       serverData
-      meta: {
-        title: model.l.get 'starPage.title'
-        description: model.l.get 'starPage.title'
-      }
+      meta: star.map (star) ->
+        {
+          title: star?.user?.username
+          description: model.l.get 'starPage.title'
+        }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
@@ -41,18 +42,18 @@ module.exports = class StarPage
     @state = z.state
       windowSize: model.window.getSize()
       isDonateDialogVisible: @isDonateDialogVisible
+      star: star
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, isDonateDialogVisible} = @state.getValue()
+    {windowSize, isDonateDialogVisible, star} = @state.getValue()
 
     z '.p-players-search', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: ''
         style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}

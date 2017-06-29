@@ -16,6 +16,7 @@ module.exports = class GroupChat
       @router
       selectedProfileDialogUser
       conversation
+      group
       overlay$
       isLoading: isLoading
       isGroup: true

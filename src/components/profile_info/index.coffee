@@ -11,6 +11,7 @@ moment = require 'moment'
 Icon = require '../icon'
 UiCard = require '../ui_card'
 RequestNotificationsCard = require '../request_notifications_card'
+ClanBadge = require '../clan_badge'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 VerifyAccountDialog = require '../verify_account_dialog'
@@ -32,6 +33,7 @@ module.exports = class ProfileInfo
     @$followButton = new PrimaryButton()
     @$moreDetailsButton = new SecondaryButton()
     @$verifyAccountButton = new SecondaryButton()
+    @$clanBadge = new ClanBadge()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
     @$adsenseAd = new AdsenseAd()
 
@@ -51,6 +53,7 @@ module.exports = class ProfileInfo
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
       user: user
       me: @model.user.getMe()
+      followingIds: @model.userFollower.getAllFollowingIds()
       player: user.flatMapLatest ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
     }
@@ -109,10 +112,10 @@ module.exports = class ProfileInfo
 
   render: =>
     {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing
-      isSplitsInfoCardVisible, user, me} = @state.getValue()
+      isSplitsInfoCardVisible, user, me, followingIds} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
-    isFollowing = @model.user.isFollowing me, user?.id
+    isFollowing = followingIds and followingIds.indexOf(user?.id) isnt -1
 
     metrics =
       stats: [
@@ -166,8 +169,11 @@ module.exports = class ProfileInfo
               z '.tag', "##{player?.id}"
             if player?.data?.clan
               z '.right',
-                z '.clan-name', player?.data?.clan.name
-                z '.clan-tag', "##{player?.data?.clan.tag}"
+                z '.clan-info',
+                  z '.clan-name', player?.data?.clan.name
+                  z '.clan-tag', "##{player?.data?.clan.tag}"
+                z '.clan-badge',
+                  z @$clanBadge, {clan: player?.data?.clan, size: '32px'}
           z '.g-cols',
             z '.g-col.g-xs-4',
               z '.icon',
@@ -226,9 +232,9 @@ module.exports = class ProfileInfo
                     else @model.l.get 'profileInfo.followButtonText'
                 onclick: =>
                   if isFollowing
-                    @model.userData.unfollowByUserId user?.id
+                    @model.userFollower.unfollowByUserId user?.id
                   else
-                    @model.userData.followByUserId user?.id
+                    @model.userFollower.followByUserId user?.id
       z '.content',
         if isRequestNotificationCardVisible and isMe
           z '.card',

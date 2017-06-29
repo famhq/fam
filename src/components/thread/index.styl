@@ -121,14 +121,29 @@
         background: getColor('$white12')
         margin: 8px 0
 
-  > .divider
-    width: 100%
-    height: 1px
-    background: getColor('$white12')
-    margin: 8px 0
+    > .divider
+      width: 100%
+      height: 1px
+      background: getColor('$white12')
+      margin: 8px 0
 
-    &.no-margin-bottom
-      margin-bottom: 0
+    > .clan
+      padding: 16px
+
+      > .clan-info
+        display: flex
+
+        > .badge
+          width: 34px
+
+        > .info
+          margin-left: 16px
+
+          > .name
+            font-h1()
+
+          > .tag
+            font-caption2()
 
   > .fab
     position: fixed

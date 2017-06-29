@@ -1,0 +1,37 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-stars
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .title
+    font-subhead()
+    color: getColor('$primary500')
+    padding: 16px
+    margin: 0
+
+  > .stars
+    padding: 0 16px
+
+    > .star
+      display: flex
+      background: getColor('$tertiary700')
+      padding: 16px
+      border-radius: 2px
+
+      > .info
+        margin-left: 16px
+
+        > .name
+          font-title()
+          overflow: hidden
+
+        > .followers
+          font-caption2()
+
+      > .plus-icon
+        margin-left: auto

@@ -32,16 +32,21 @@ module.exports = class ConversationImageView
     imageData ?= {}
 
     windowHeight = windowSize.height - appBarHeight
-    imageAspectRatio = imageData.aspectRatio
-    windowAspectRatio = windowSize.width / windowHeight
 
-    # 3:1, 1:1
-    if imageAspectRatio > windowAspectRatio
-      imageWidth = windowSize.width
-      imageHeight = imageWidth / imageAspectRatio
+    if imageData.width
+      imageAspectRatio = imageData.aspectRatio
+      windowAspectRatio = windowSize.width / windowHeight
+
+      # 3:1, 1:1
+      if imageAspectRatio > windowAspectRatio
+        imageWidth = windowSize.width
+        imageHeight = imageWidth / imageAspectRatio
+      else
+        imageHeight = windowHeight
+        imageWidth = imageHeight * imageAspectRatio
     else
-      imageHeight = windowHeight
-      imageWidth = imageHeight * imageAspectRatio
+      imageHeight = undefined
+      imageWidth = undefined
 
     z '.z-conversation-image-view',
       z @$appBar, {

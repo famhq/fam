@@ -25,15 +25,19 @@ module.exports = class ConversationImagePreview
 
     imageData ?= {}
 
-    imageAspectRatio = imageData.width / imageData.height
-    windowAspectRatio = windowSize.width / windowSize.height
-    # 3:1, 1:1
-    if imageAspectRatio > windowAspectRatio
-      previewWidth = Math.min windowSize.width, imageData.width
-      previewHeight = previewWidth / imageAspectRatio
+    if imageData.width
+      imageAspectRatio = imageData.width / imageData.height
+      windowAspectRatio = windowSize.width / windowSize.height
+      # 3:1, 1:1
+      if imageAspectRatio > windowAspectRatio
+        previewWidth = Math.min windowSize.width, imageData.width
+        previewHeight = previewWidth / imageAspectRatio
+      else
+        previewHeight = Math.min windowSize.height, imageData.height
+        previewWidth = previewHeight * imageAspectRatio
     else
-      previewHeight = Math.min windowSize.height, imageData.height
-      previewWidth = previewHeight * imageAspectRatio
+      previewHeight = undefined
+      previewWidth = undefined
 
     z '.z-conversation-image-preview',
       z 'img',

@@ -26,6 +26,11 @@ module.exports = class Thread
       invalidateAll: true
     }
 
+  deleteById: (id) =>
+    @auth.call "#{@namespace}.deleteById", {id}, {
+      invalidateAll: true
+    }
+
   hasPermission: (thread, user, {level} = {}) ->
     userId = user?.id
     level ?= 'member'

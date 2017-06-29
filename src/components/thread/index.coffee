@@ -12,6 +12,8 @@ AppBar = require '..//app_bar'
 ButtonBack = require '..//button_back'
 Icon = require '../icon'
 Avatar = require '../avatar'
+ClanBadge = require '../clan_badge'
+ClanMetrics = require '../clan_metrics'
 ThreadComment = require '../thread_comment'
 DeckCards = require '../deck_cards'
 Spinner = require '../spinner'
@@ -28,11 +30,13 @@ module.exports = class Thread
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
 
+    @$clanSpinner = new Spinner()
     @$spinner = new Spinner()
     @$replyIcon = new Icon()
     @$upvoteIcon = new Icon()
     @$downvoteIcon = new Icon()
     @$editIcon = new Icon()
+    @$deleteIcon = new Icon()
 
     @$fab = new Fab()
     @$avatar = new Avatar()
@@ -49,6 +53,13 @@ module.exports = class Thread
         Rx.Observable.just null
 
     @$deckCards = new DeckCards {@model, @router, deck}
+    @$clanBadge = new ClanBadge()
+
+    clan = thread.flatMapLatest (thread) =>
+      if thread.data?.clan
+        @model.clan.getById thread.data?.clan.id
+      else
+        Rx.Observable.just null
 
     @state = z.state
       me: @model.user.getMe()
@@ -60,9 +71,13 @@ module.exports = class Thread
       $body: new FormattedText {
         text: thread.map (thread) ->
           thread?.body
+        imageWidth: 'auto'
         @model
         @router
       }
+      $clanMetrics: clan.map (clanObj) =>
+        if clanObj then new ClanMetrics {@model, @router, clan} else null
+      clan: clan
       windowSize: @model.window.getSize()
       threadComments: thread.flatMapLatest (thread) =>
         if thread?.id
@@ -81,7 +96,7 @@ module.exports = class Thread
 
   render: =>
     {me, thread, $body, threadComments, isVideoVisible, windowSize,
-      selectedProfileDialogUser} = @state.getValue()
+      selectedProfileDialogUser, clan, $clanMetrics} = @state.getValue()
 
     videoWidth = Math.min(windowSize.width, 512)
 
@@ -100,14 +115,24 @@ module.exports = class Thread
         bgColor: colors.$tertiary700
         $topLeftButton: if not @isInline \
                         then z @$buttonBack, {color: colors.$primary500}
-        # $topRightButton: if hasAdminPermission
-        #   z @$editIcon,
-        #     icon: 'edit'
-        #     color: colors.$primary500
-        #     onclick: =>
-        #       @router.go "/editGuide/#{thread.id}"
-        # else
-        #   null
+        $topRightButton:
+          if me?.flags?.isModerator
+            z @$deleteIcon,
+              icon: 'delete'
+              color: colors.$primary500
+              onclick: =>
+                @model.thread.deleteById thread.id
+                .then =>
+                  @router.go '/social'
+
+          # else if hasAdminPermission
+          #   z @$editIcon,
+          #     icon: 'edit'
+          #     color: colors.$primary500
+          #     onclick: =>
+          #       @router.go "/editGuide/#{thread.id}"
+          else
+            null
       }
       z '.content',
         if thread?.headerImage
@@ -153,6 +178,25 @@ module.exports = class Thread
 
             z '.body', $body
 
+        if clan
+          [
+            z '.divider'
+            z '.clan',
+              z '.clan-info',
+                z '.badge',
+                  z @$clanBadge, {clan}
+                z '.info',
+                  z '.name', clan?.data.name
+                  z '.tag', "##{clan?.id}"
+              $clanMetrics
+          ]
+        else if thread?.data?.clan?.id
+          [
+            z '.divider'
+            z '.clan',
+              z @$clanSpinner
+          ]
+
         z '.divider'
         z '.stats',
           z '.g-grid',
@@ -180,8 +224,6 @@ module.exports = class Thread
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               "#{FormatService.number thread?.commentCount} "
               @model.l.get 'thread.score'
-        z '.divider.no-margin-bottom'
-
 
         z '.comments',
           if threadComments and _isEmpty threadComments

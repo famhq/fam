@@ -142,19 +142,18 @@ init = ->
   # clashroyale://add_friend?tag=C8PJ28CG&token=fx379f9b
   # https://link.clashroyale.com/invite/friend/es?tag=UCCQV29Q&token=9krrx8x6&platform=android
   model.portal.call 'heyzap.init', {publisherKey: config.HEYZAP_PUBLISHER_KEY}
-  model.portal.call 'appodeal.init', {
-    appKey: if Environment.isiOS() \
-            then config.APPODEAL_APP_KEY_IOS
-            else config.APPODEAL_APP_KEY_ANDROID
-  }
+  # model.portal.call 'appodeal.init', {
+  #   appKey: if Environment.isiOS() \
+  #           then config.APPODEAL_APP_KEY_IOS
+  #           else config.APPODEAL_APP_KEY_ANDROID
+  # }
   .catch -> null
   .then ->
     if Environment.isGameApp config.GAME_KEY
       appVersion = Environment.getAppVersion config.GAME_KEY
       if appVersion
         admobMediationSupported = semver.gte(appVersion, '1.2.4')
-        # TODO: change to 1.2.7
-        appodealMediationSupported = semver.gte(appVersion, '1.2.7')
+        appodealMediationSupported = semver.gte(appVersion, '1.2.7') and false
         nativeAdsSupported = semver.gte(appVersion, '1.2.3')
         setTimeout ->
           portalCall = if appodealMediationSupported \

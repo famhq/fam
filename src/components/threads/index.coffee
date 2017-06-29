@@ -12,20 +12,28 @@ _find = require 'lodash/find'
 
 colors = require '../../colors'
 Icon = require '../icon'
+ClanBadge = require '../clan_badge'
 Spinner = require '../spinner'
 
 if window?
   require './index.styl'
 
 module.exports = class Threads
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, category}) ->
     @$spinner = new Spinner()
 
-    threads = Rx.Observable.combineLatest(
-      @model.thread.getAll()
-      @model.thread.getAll({sort: 'new', limit: 3})
-      (vals...) -> vals
-    )
+    console.log category
+    if category is 'clan'
+      threads = Rx.Observable.combineLatest(
+        @model.thread.getAll({category, sort: 'new'})
+        (vals...) -> vals
+      )
+    else
+      threads = Rx.Observable.combineLatest(
+        @model.thread.getAll({category})
+        @model.thread.getAll({category, sort: 'new', limit: 3})
+        (vals...) -> vals
+      )
 
     @state = z.state
       me: @model.user.getMe()
@@ -46,6 +54,7 @@ module.exports = class Threads
             thread
             $pointsIcon: new Icon()
             $commentsIcon: new Icon()
+            $icon: if thread.data.clan then new ClanBadge() else null
           }
         return _map _range(cols), (colIndex) ->
           _filter threads, (thread, i) -> i % cols is colIndex
@@ -63,42 +72,46 @@ module.exports = class Threads
             _map chunkedThreads, (threads) =>
               z '.column',
                 _map threads, (properties) =>
-                  {thread, $pointsIcon, $commentsIcon} = properties
+                  {thread, $pointsIcon, $commentsIcon, $icon} = properties
                   imageAttachment = _find thread.attachments, {type: 'image'}
                   @router.link z 'a.thread', {
                     href: "/thread/#{thread.id}"
                   },
-                    if imageAttachment
+                    if imageAttachment and thread.category isnt 'clan'
                       z '.image',
                         style:
                           backgroundImage: "url(#{imageAttachment.src})"
                     z '.content',
-                      z '.title', thread.title
+                      if thread.data.clan
+                        z '.icon',
+                          z $icon, {clan: thread.data.clan, size: '34px'}
                       z '.info',
-                        z '.author',
-                          z '.name', @model.user.getDisplayName thread.creator
-                          z '.middot',
-                            innerHTML: '&middot;'
-                          z '.time',
-                            if thread.addTime
-                            then moment(thread.addTime).fromNowModified()
-                            else '...'
-                          z '.comments',
-                            thread.commentCount or 0
-                            z '.icon',
-                              z $commentsIcon,
-                                icon: 'comment'
-                                isTouchTarget: false
-                                color: colors.$tertiary300
-                                size: '14px'
-                          z '.points',
-                            (thread.upvotes - thread.downvotes) or 0
-                            z '.icon',
-                              z $pointsIcon,
-                                icon: 'add-circle'
-                                isTouchTarget: false
-                                color: colors.$tertiary300
-                                size: '14px'
+                        z '.title', thread.title
+                        z '.bottom',
+                          z '.author',
+                            z '.name', @model.user.getDisplayName thread.creator
+                            z '.middot',
+                              innerHTML: '&middot;'
+                            z '.time',
+                              if thread.addTime
+                              then moment(thread.addTime).fromNowModified()
+                              else '...'
+                            z '.comments',
+                              thread.commentCount or 0
+                              z '.icon',
+                                z $commentsIcon,
+                                  icon: 'comment'
+                                  isTouchTarget: false
+                                  color: colors.$tertiary300
+                                  size: '14px'
+                            z '.points',
+                              (thread.upvotes - thread.downvotes) or 0
+                              z '.icon',
+                                z $pointsIcon,
+                                  icon: 'add-circle'
+                                  isTouchTarget: false
+                                  color: colors.$tertiary300
+                                  size: '14px'
       else
         @$spinner
     ]

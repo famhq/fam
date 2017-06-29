@@ -45,7 +45,7 @@ module.exports = class GroupList
                     z '.content',
                       z '.name', group.name or 'Nameless'
                       z '.count',
-                        _startCase(group.type) or '...'
+                        _startCase(group.type) or 'General'
                         if group.type isnt 'public'
                           [
                             z 'span.middot',

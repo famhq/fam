@@ -1,6 +1,6 @@
 z = require 'zorium'
 
-GroupBadge = require '../group_badge'
+ClanBadge = require '../clan_badge'
 config = require '../../config'
 
 if window?
@@ -8,7 +8,7 @@ if window?
 
 module.exports = class GroupHeader
   constructor: ({@model, @router, group}) ->
-    # @$groupBadge = new GroupBadge {group}
+    @$clanBadge = new ClanBadge {group}
     @state = z.state {group}
 
   render: ({badgeId, background} = {}) =>
@@ -23,7 +23,8 @@ module.exports = class GroupHeader
         backgroundImage: if background \
                           then "url(#{background})"
                           else 'none'
-    }
-      #   z '.g-grid',
-      #     z '.badge',
-      #       z @$groupBadge, {badgeId}
+    },
+      if group?.clan
+        z '.g-grid',
+          z '.badge',
+            z @$clanBadge, {clan: group?.clan}

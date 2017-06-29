@@ -113,6 +113,13 @@ module.exports = class ConversationMessage
                   color: colors.$white
                   isTouchTarget: false
                   size: '22px'
+            else if user?.flags?.isStar
+              z '.icon',
+                z @$statusIcon,
+                  icon: 'star-tag'
+                  color: colors.$white
+                  isTouchTarget: false
+                  size: '22px'
             z '.name', @model.user.getDisplayName user
             if isVerified
               z '.verified',

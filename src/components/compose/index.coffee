@@ -39,7 +39,7 @@ module.exports = class Compose
     else
       @bodyValue.onNext e.target.value
 
-  render: ({isReply, onDone}) =>
+  render: ({isReply, onDone, $head}) =>
     {me, isLoading} = @state.getValue()
 
     z '.z-compose',
@@ -60,6 +60,7 @@ module.exports = class Compose
       }
       z '.g-grid',
         [
+          $head
           unless isReply
             [
               z 'input.title',

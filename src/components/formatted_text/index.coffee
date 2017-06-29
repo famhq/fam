@@ -10,20 +10,29 @@ if window?
   require './index.styl'
 
 module.exports = class FormattedText
-  constructor: ({text, model, @router}) ->
+  constructor: ({text, @imageWidth, model, @router}) ->
     text = if text?.map then text else Rx.Observable.just text
 
     $el = text?.map?((text) => @get$ {text, model}) or @get$ {text, model}
 
-    @state = z.state {$el}
+    @state = z.state {
+      $el
+      windowSize: model.window.getSize()
+    }
 
-  get$: ({text, model}) ->
+  get$: ({text, model}) =>
+    {windowSize} = @state.getValue()
+
     remark()
     .use vdom, {
       components:
-        img: (tagName, props, children) ->
+        img: (tagName, props, children) =>
           unless props.src
             return
+
+          imageWidth = if @imageWidth is 'auto' \
+                       then undefined
+                       else 200
 
           imageAspectRatioRegex = /%20=([0-9.]+)x([0-9.]+)/ig
           localImageRegex = ///
@@ -46,10 +55,13 @@ module.exports = class FormattedText
 
           largeImageSrc ?= imageSrc
 
+
           z 'img', {
             src: imageSrc
-            width: 200
-            height: if imageAspectRatio then 200 / imageAspectRatio else 'auto'
+            width: imageWidth
+            height: if imageAspectRatio and @imageWidth isnt 'auto' \
+                    then imageWidth / imageAspectRatio
+                    else undefined
             onclick: (e) ->
               e?.stopPropagation()
               e?.preventDefault()

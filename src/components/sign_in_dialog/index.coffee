@@ -57,7 +57,11 @@ module.exports = class SignInDialog
           @model.signInDialog.close()
       , 0
     .catch (err) =>
-      @usernameError.onNext err.message
+      err = try
+        JSON.parse err.message
+      catch
+        {}
+      @usernameError.onNext err.info
       @state.set isLoading: false
 
   signIn: (e) =>

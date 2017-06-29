@@ -42,15 +42,17 @@ module.exports = class Groups
     @$adsenseAd = new AdsenseAd()
 
     language = @model.l.getLanguage()
+    @isTranslateCardVisibleStreams = new Rx.ReplaySubject 1
+    @isTranslateCardVisibleStreams.onNext language.map (lang) ->
+      needTranslations = ['es', 'it', 'fr', 'ja', 'ko', 'zh', 'pt', 'de']
+      isNeededLanguage = lang in needTranslations
+      localStorage? and isNeededLanguage and
+                              not localStorage['hideTranslateCard']
 
     @state = z.state
       me: @model.user.getMe()
       language: language
-      isTranslateCardVisible: language.map (lang) ->
-        needTranslations = ['es', 'it', 'fr', 'ja', 'ko', 'zh', 'pt', 'de']
-        isNeededLanguage = lang in needTranslations
-        localStorage? and isNeededLanguage and
-                                not localStorage['hideTranslateCard']
+      isTranslateCardVisible: @isTranslateCardVisibleStreams.switch()
 
   render: =>
     {me, isTranslateCardVisible, language} = @state.getValue()
@@ -112,7 +114,9 @@ module.exports = class Groups
                   text: @model.l.get 'translateCard.cancelText'
                   onclick: =>
                     localStorage['hideTranslateCard'] = '1'
-                    @state.set isTranslateCardVisible: false
+                    @isTranslateCardVisibleStreams.onNext(
+                      Rx.Observable.just false
+                    )
                 submit:
                   text: @model.l.get 'translateCard.submit'
                   onclick: =>

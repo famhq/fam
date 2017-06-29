@@ -20,17 +20,17 @@ module.exports = class ClanPage
       if route.params.id then route.params.id else false
 
     me = @model.user.getMe()
-    gameData = me.flatMapLatest ({id}) =>
+    player = me.flatMapLatest ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
-    gameDataAndId = Rx.Observable.combineLatest(gameData, id, (vals...) -> vals)
+    playerAndId = Rx.Observable.combineLatest(player, id, (vals...) -> vals)
 
-    clan = gameDataAndId.flatMapLatest ([gameData, id]) =>
+    clan = playerAndId.flatMapLatest ([player, id]) =>
       if id
         @model.clan.getById id
         .map (clan) -> clan or false
-      else if gameData?.data?.clan?.tag
-        @model.clan.getById gameData?.data?.clan?.tag
+      else if player?.data?.clan?.tag
+        @model.clan.getById player?.data?.clan?.tag
         .map (clan) -> clan or false
       else
         Rx.Observable.just false

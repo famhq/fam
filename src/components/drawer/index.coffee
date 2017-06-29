@@ -101,6 +101,13 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'friends'
           }
+          {
+            path: '/recruiting'
+            title: @model.l.get 'general.recruiting'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'recruit'
+          }
           # {
           #   path: '/events'
           #   title: 'Tournaments'

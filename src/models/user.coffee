@@ -46,9 +46,6 @@ module.exports = class User
   isBlocked: (me, userId) ->
     me?.data?.blockedUserIds?.indexOf(userId) isnt -1
 
-  isFollowing: (me, userId) ->
-    me?.data?.followingIds?.indexOf(userId) isnt -1
-
   setAvatarImage: (file) =>
     formData = new FormData()
     formData.append 'file', file, file.name

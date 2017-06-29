@@ -13,21 +13,53 @@ if window?
   require './index.styl'
 
 module.exports = class Social
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, pageTitle}) ->
     selectedIndex = new Rx.BehaviorSubject 0
 
     @$groups = new Groups {@model, @router}
     @$conversations = new Conversations {@model, @router}
     @$threads = new Threads {@model, @router}
+    @$recruiting = new Threads {@model, @router, category: 'clan'}
     @$tabs = new Tabs {@model, selectedIndex}
     @$groupsIcon = new Icon()
     @$feedIcon = new Icon()
+    @$recruitingIcon = new Icon()
     @$conversationsIcon = new Icon()
     @$addIcon = new Icon()
     @$fab = new Fab()
 
+    @tabs = [
+      {
+        $menuIcon: @$groupsIcon
+        menuIconName: 'chat'
+        $menuText: @model.l.get 'communityPage.menuText'
+        $el: @$groups
+      }
+      {
+        $menuIcon: @$feedIcon
+        menuIconName: 'rss'
+        $menuText: @model.l.get 'communityPage.menuNews'
+        $el: @$threads
+      }
+      {
+        $menuIcon: @$recruitingIcon
+        menuIconName: 'recruit'
+        $menuText: @model.l.get 'general.recruiting'
+        $el: @$recruiting
+      }
+      {
+        $menuIcon: @$conversationsIcon
+        menuIconName: 'inbox'
+        $menuText: @model.l.get 'drawer.menuItemConversations'
+        $el: @$conversations
+      }
+    ]
+
     @state = z.state
-      selectedIndex: selectedIndex
+      selectedIndex: selectedIndex.map (index) =>
+        # side effect
+        pageTitle.onNext @tabs[index].$menuText
+        index
       language: @model.l.getLanguage()
 
   render: =>
@@ -36,27 +68,8 @@ module.exports = class Social
     z '.z-social',
       z @$tabs,
         isBarFixed: false
-        tabs: [
-          {
-            $menuIcon: @$groupsIcon
-            menuIconName: 'chat'
-            $menuText: @model.l.get 'communityPage.menuText'
-            $el: @$groups
-          }
-          {
-            $menuIcon: @$feedIcon
-            menuIconName: 'rss'
-            $menuText: @model.l.get 'communityPage.menuNews'
-            $el: @$threads
-          }
-          {
-            $menuIcon: @$conversationsIcon
-            menuIconName: 'inbox'
-            $menuText: @model.l.get 'drawer.menuItemConversations'
-            $el: @$conversations
-          }
-        ]
-      if selectedIndex is 1 and language is 'es'
+        tabs: @tabs
+      if selectedIndex is 2 or (selectedIndex is 1 and language is 'es')
         z '.fab',
           z @$fab,
             colors:
@@ -67,4 +80,7 @@ module.exports = class Social
               color: colors.$white
             }
             onclick: =>
-              @router.go '/newThread'
+              if selectedIndex is 1
+                @router.go '/newThread'
+              else
+                @router.go '/newThread/clan'

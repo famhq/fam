@@ -106,8 +106,3 @@ module.exports = class ProfileChests
                     then "/user/#{me.username}/chests"
                     else "/user/id/#{me?.id}/chests"
             }
-        if not Environment.isMobile()
-          z '.ad',
-            z @$adsenseAd, {
-              slot: 'desktop728x90'
-            }

@@ -37,16 +37,18 @@ module.exports = class DonateDialog
 
     @state = z.state
       me: @model.user.getMe()
+      username: username
       isLoading: false
       error: null
       amount: @amountValue
       step: 'setAmount'
 
   render: =>
-    {me, error, isLoading, amount, step} = @state.getValue()
-    console.log 'amount', amount
-
+    {me, error, isLoading, amount, step, username} = @state.getValue()
     hasStripeId = me?.flags.hasStripeId
+
+    # start with just spain
+    currency = '€'
 
     z '.z-donate-dialog',
       z @$dialog,
@@ -64,8 +66,8 @@ module.exports = class DonateDialog
               @$stripeDialogInner
             else
               z '.donate',
-                z 'p', @model.l.get 'donateDialog.text1'
-                z 'p', @model.l.get 'donateDialog.text2'
+                z 'p', @model.l.get 'donateDialog.text1', {name: username}
+                z 'p', @model.l.get 'donateDialog.text2', {name: username}
                 z 'input.range',
                   type: 'range'
                   defaultValue: Math.floor AMOUNTS.length / 2
@@ -75,7 +77,7 @@ module.exports = class DonateDialog
                   max: AMOUNTS.length - 1
                   step: 1
                 z '.amount',
-                  amount
+                  "#{currency}#{amount}"
         cancelButton:
           text: 'cancel'
           onclick: =>

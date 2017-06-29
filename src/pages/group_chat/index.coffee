@@ -82,6 +82,7 @@ module.exports = class GroupChatPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$settingsIcon = new Icon()
+    @$linkIcon = new Icon()
     @$bottomBar = new BottomBar {@model, @router, requests}
 
     @$groupChat = new GroupChat {
@@ -149,6 +150,18 @@ module.exports = class GroupChatPage
                 color: colors.$primary500
                 onclick: =>
                   @router.go "/group/#{group?.id}/settings"
+            if group?.id is 'd9070cbb-e06a-46c6-8048-cfdc4225343e'
+              z '.icon',
+                z @$linkIcon,
+                  icon: 'external-link'
+                  color: colors.$primary500
+                  onclick: =>
+                    @model.portal.call 'browser.openWindow', {
+                      url:
+                        'https://www.youtube.com/channel/UCjmGtPZMS9kSLheN4MYO2XQ'
+                      target: '_system'
+                  }
+
       }
       z '.content',
         @$groupChat

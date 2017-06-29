@@ -5,6 +5,7 @@ GroupHeader = require '../group_header'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 Icon = require '../icon'
+FormatService = require '../../services/format'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -45,7 +46,9 @@ module.exports = class Star
               z 'div',
                 'Verified'
                 z 'span', innerHTML: ' &middot; '
-                'XX followers' # FIXME
+                FormatService.number star?.user.followerCount
+                ' '
+                @model.l.get 'general.followers'
         z '.buttons',
           z @$donateButton,
             text: @model.l.get 'general.donate'
@@ -54,4 +57,5 @@ module.exports = class Star
 
       z '.divider'
 
-      z '.title', 'Recent videos'
+      z '.g-grid',
+        z '.title', 'Recent videos'
