@@ -8,7 +8,7 @@ Fonctionnalités de Stafire:
 
 • Statistiques et cycle de coffres
 • Statistiques de clan et recrutement
-• Conversations en temps réel - partagez des textes, images et gifs
+• Conversations en temps réel - partager des textes, images et gifs
 • Messages privés
 • Notifications - restez à jour avec les conversations, les annonces et les événements
 

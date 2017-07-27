@@ -57,5 +57,5 @@ module.exports = class Star
 
       z '.divider'
 
-      z '.g-grid',
-        z '.title', 'Recent videos'
+      # z '.g-grid',
+      #   z '.title', @model.l.get 'videos.recentVideos'

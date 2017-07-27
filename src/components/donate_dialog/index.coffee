@@ -27,8 +27,7 @@ module.exports = class DonateDialog
       username
       @amountValue
       (username, amount) ->
-        console.log 'combine', username, amount
-        {username, amount}
+        {username, amount, currency: 'eur'}
     )
 
     @$stripeDialogInner = new StripeDialogInner {
@@ -41,10 +40,11 @@ module.exports = class DonateDialog
       isLoading: false
       error: null
       amount: @amountValue
+      product: product
       step: 'setAmount'
 
   render: =>
-    {me, error, isLoading, amount, step, username} = @state.getValue()
+    {me, error, isLoading, amount, step, username, product} = @state.getValue()
     hasStripeId = me?.flags.hasStripeId
 
     # start with just spain
@@ -67,7 +67,7 @@ module.exports = class DonateDialog
             else
               z '.donate',
                 z 'p', @model.l.get 'donateDialog.text1', {name: username}
-                z 'p', @model.l.get 'donateDialog.text2', {name: username}
+                # z 'p', @model.l.get 'donateDialog.text2', {name: username}
                 z 'input.range',
                   type: 'range'
                   defaultValue: Math.floor AMOUNTS.length / 2

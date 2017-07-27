@@ -77,7 +77,7 @@
   "deckInfo.winLossDraw": "W / L / D",
   "decksGuides.noGuides": "No guides found",
   "donateDialog.title": "Donate",
-  "donateDialog.text1": "Show your support for {name}",
+  "donateDialog.text1": "Show your support for {name}. All proceeds go to {name}. Non-refundable",
   "donateDialog.text2": "As a bonus, you can personalize your appearance in {name}’s chat group, and you may receive a special shoutout in their next video!",
   "drawer.menuItemProfile": "Profile",
   "drawer.menuItemClan": "Clan",

@@ -147,7 +147,7 @@
   "join.createAccountButtonText":"アカウントを作成",
   "joinGroupDialog.error":"パスワードが正しくありません。",
   "joinGroupDialog.text":"そのグループに参加するためのパスワードをあなたのクランのリーダーに聞いてください。",
-  "newThread.link":"続けてあなたのクラッシュロワイヤルのプロフィールをリンクします。",
+  "newThread.link":"あなたのクラロワデータと関連付けます。",
   "offlineOverlay.text":"オフラインのようです。再開するためにインターネットに再接続してください",
   "offlineOverlay.closeButtonText":"このメッセージを閉じる",
   "playersFollowing.emptyDiv1":"友達や好きな選手を追いかけましょう！",

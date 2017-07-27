@@ -2,13 +2,13 @@ Starfire para Clash Royale
 
 La aplicación complementaria de Clash Royale para estadísticas, clanes, chat y más
 
-Starfire es la última aplicación complementaria para Clash Royale.
+Starfire es la mejor aplicación complementaria para Clash Royale.
 
-Características de Starfire :
+Características de Starfire:
 
 • Seguimiento automático del estado y del ciclo del cofres
 • Estadísticas del clan y reclutamiento
-• Canales de chat: compartir texto, imágenes y gifs
+• Canales de chat en tiempo real: compartir texto, imágenes y gifs
 • Mensajería privada
 • Notificaciones: mantenerse al día con chats, anuncios y eventos
 

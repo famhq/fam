@@ -160,12 +160,12 @@ module.exports = class Head
 
       unless Environment.isGameApp(config.GAME_KEY, {userAgent})
         [
-          # z 'script',
-          #   src: 'https://js.stripe.com/v2/'
-          # z 'script',
-          #   innerHTML: "
-          #     Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
-          #   "
+          z 'script',
+            src: 'https://js.stripe.com/v2/'
+          z 'script',
+            innerHTML: "
+              Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
+            "
           z 'script',
             innerHTML: "
               (function(d, s, id) {

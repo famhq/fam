@@ -57,27 +57,28 @@ module.exports = class StripeDialog
     {isLoading, numberValue, cvcValue,
       expireMonthValue, expireYearValue} = @state.getValue()
 
-    Stripe.card.createToken {
-      number: numberValue
-      cvc: cvcValue
-      exp_month: expireMonthValue
-      exp_year: expireYearValue
-    }, (status, response) =>
-      if response.error
-        @state.set error: response.error.message, isLoading: false
-        return
+    new Promise (resolve, reject) =>
+      Stripe.card.createToken {
+        number: numberValue
+        cvc: cvcValue
+        exp_month: expireMonthValue
+        exp_year: expireYearValue
+      }, (status, response) =>
+        if response.error
+          @state.set error: response.error.message, isLoading: false
+          return reject()
 
-      stripeToken = response.id
+        stripeToken = response.id
 
-      @model.payment.purchase {productId: product.productId, stripeToken}
+        resolve @model.payment.purchase {
+          product, stripeToken
+        }
 
   onPurchase: ({product}) =>
-    @model.payment.purchase {productId: product.productId}
+    @model.payment.purchase {product}
 
   render: =>
     {me, product, error} = @state.getValue()
-
-    console.log 'pppp', product
 
     isiOSApp = Environment.isGameApp(config.GAME_KEY) and Environment.isiOS()
     if isiOSApp

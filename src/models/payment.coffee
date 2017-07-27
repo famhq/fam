@@ -19,8 +19,8 @@ module.exports = class Payment
       priceMicros: priceMicros
       currency: currency
 
-  purchase: ({productId, stripeToken, transactionId}) =>
+  purchase: ({product, stripeToken, transactionId}) =>
     @auth.call 'payments.purchase',
-      productId: productId
+      product: product
       stripeToken: stripeToken
       transactionId: transactionId
