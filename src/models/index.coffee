@@ -107,8 +107,8 @@ module.exports = class Model
     else
       fullLanguage = serverHeaders?['accept-language']
 
-    language = fullLanguage.substr 0, 2
-    unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt']
+    language = fullLanguage?.substr(0, 2)
+    unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
       language = 'en'
 
     @l = new Language {language}

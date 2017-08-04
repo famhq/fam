@@ -6,7 +6,7 @@ if window?
 config = require '../../config'
 colors = require '../../colors'
 
-DEFAULT_WIDTH = 76
+DEFAULT_WIDTH = 80
 DEFAULT_HEIGHT = 96
 
 module.exports = class Card
@@ -28,7 +28,7 @@ module.exports = class Card
         width: "#{width}px"
         height: "#{height}px"
         backgroundImage: if card and card.key \
-                         then "url(#{cdnUrl}/cards/#{card.key}_small.png)"
+                         then "url(#{cdnUrl}/cards/#{card.key}_small.png?1)"
                          else null
         backgroundColor: if card and card.key then null else colors.$black
 

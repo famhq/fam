@@ -17,6 +17,9 @@ class PushService
     model.portal.call 'push.register'
     .then ({token, sourceType} = {}) ->
       if token?
+        lang = model.l.getLanguageStr()
+        model.portal.call 'push.subscribeToTopic', {topic: 'all'}
+        model.portal.call 'push.subscribeToTopic', {topic: lang}
         if not isAlwaysCalled or not localStorage?['isPushTokenStored']
           sourceType ?= if Environment.isAndroid() then 'android' else 'ios'
           model.pushToken.create {token, sourceType}

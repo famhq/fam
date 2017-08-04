@@ -6,8 +6,10 @@ _chunk = require 'lodash/chunk'
 _filter = require 'lodash/filter'
 _range = require 'lodash/range'
 _find = require 'lodash/find'
+_orderBy = require 'lodash/orderBy'
 _flatten = require 'lodash/flatten'
 _isEmpty = require 'lodash/isEmpty'
+_uniqBy = require 'lodash/uniqBy'
 _find = require 'lodash/find'
 
 colors = require '../../colors'
@@ -22,7 +24,6 @@ module.exports = class Threads
   constructor: ({@model, @router, category}) ->
     @$spinner = new Spinner()
 
-    console.log category
     if category is 'clan'
       threads = Rx.Observable.combineLatest(
         @model.thread.getAll({category, sort: 'new'})
@@ -32,19 +33,22 @@ module.exports = class Threads
       threads = Rx.Observable.combineLatest(
         @model.thread.getAll({category})
         @model.thread.getAll({category, sort: 'new', limit: 3})
+        @model.thread.getAll({category: 'news'})
         (vals...) -> vals
       )
 
     @state = z.state
       me: @model.user.getMe()
-      chunkedThreads: threads.map ([popularThreads, newThreads]) ->
+      chunkedThreads: threads.map ([popularThreads, newThreads, newsThreads]) ->
         # TODO: json file with these vars, stylus uses this
         if window?.matchMedia('(min-width: 768px)').matches
           cols = 2
         else
           cols = 1
 
-        threads = popularThreads
+        threads = _filter popularThreads.concat(newsThreads)
+        threads = _uniqBy threads, 'id'
+        threads = _orderBy threads, 'score', 'desc'
         _map newThreads, (thread, i) ->
           unless _find threads, {id: thread.id}
             threads.splice (i + 1) * 2, 0, thread

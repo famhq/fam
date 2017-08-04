@@ -21,6 +21,7 @@ languages =
   ko: require '../lang/ko/strings_ko'
   de: require '../lang/de/strings_de'
   pt: require '../lang/pt/strings_pt'
+  pl: require '../lang/pl/strings_pl'
 
 class Language
   constructor: ({language}) ->
