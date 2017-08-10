@@ -11,7 +11,7 @@ if window?
 
 module.exports = class Compose
   constructor: (options) ->
-    {@model, @router, @titleValue, @bodyValue,
+    {@model, @router, @titleValue, @titleValueStreams, @bodyValue,
       @bodyValueStreams, @attachmentsValueStreams} = options
     me = @model.user.getMe()
 
@@ -28,10 +28,13 @@ module.exports = class Compose
     @state = z.state
       me: me
       isLoading: false
-      titleValue: @titleValue
+      titleValue: @titleValueStreams?.switch() or @titleValue
 
   setTitle: (e) =>
-    @titleValue.onNext e.target.value
+    if @titleValueStreams
+      @titleValueStreams.onNext Rx.Observable.just e.target.value
+    else
+      @titleValue.onNext e.target.value
 
   setBody: (e) =>
     if @bodyValueStreams
@@ -40,7 +43,7 @@ module.exports = class Compose
       @bodyValue.onNext e.target.value
 
   render: ({isReply, onDone, $head}) =>
-    {me, isLoading} = @state.getValue()
+    {me, isLoading, titleValue} = @state.getValue()
 
     z '.z-compose',
       z @$actionBar, {
@@ -67,6 +70,7 @@ module.exports = class Compose
                 type: 'text'
                 onkeyup: @setTitle
                 onchange: @setTitle
+                value: titleValue
                 placeholder: @model.l.get 'compose.titleHintText'
 
               z '.divider'

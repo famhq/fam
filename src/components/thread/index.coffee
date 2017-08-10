@@ -114,25 +114,29 @@ module.exports = class Thread
         title: ''
         bgColor: colors.$tertiary700
         $topLeftButton: if not @isInline \
-                        then z @$buttonBack, {color: colors.$primary500}
+                        then z @$buttonBack, {
+                          color: colors.$primary500
+                          onclick: =>
+                            @router.go '/social/threads'
+                        }
         $topRightButton:
-          if me?.flags?.isModerator
-            z @$deleteIcon,
-              icon: 'delete'
-              color: colors.$primary500
-              onclick: =>
-                @model.thread.deleteById thread.id
-                .then =>
-                  @router.go '/social'
-
-          # else if hasAdminPermission
-          #   z @$editIcon,
-          #     icon: 'edit'
-          #     color: colors.$primary500
-          #     onclick: =>
-          #       @router.go "/editGuide/#{thread.id}"
-          else
-            null
+          z '.z-thread_top-right',
+            [
+              if hasAdminPermission
+                z @$editIcon,
+                  icon: 'edit'
+                  color: colors.$primary500
+                  onclick: =>
+                    @router.go "/thread/#{thread.id}/edit"
+              if me?.flags?.isModerator
+                z @$deleteIcon,
+                  icon: 'delete'
+                  color: colors.$primary500
+                  onclick: =>
+                    @model.thread.deleteById thread.id
+                    .then =>
+                      @router.go '/social'
+            ]
       }
       z '.content',
         if thread?.headerImage
@@ -160,7 +164,11 @@ module.exports = class Thread
             z '.author',
               z '.avatar',
                 z @$avatar, {user: thread?.creator, size: '20px'}
-              z '.name', @model.user.getDisplayName thread?.creator
+              z '.name', {
+                onclick: =>
+                  @selectedProfileDialogUser.onNext thread?.creator
+              },
+                @model.user.getDisplayName thread?.creator
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               z '.time',
                 if thread?.addTime
@@ -209,7 +217,9 @@ module.exports = class Thread
                          then colors.$primary500
                          else colors.$white
                   onclick: =>
-                    @model.thread.voteById thread.id, {vote: 'up'}
+                    @model.signInDialog.openIfGuest me
+                    .then =>
+                      @model.thread.voteById thread.id, {vote: 'up'}
               z '.downvote',
                 z @$downvoteIcon,
                   icon: 'downvote'

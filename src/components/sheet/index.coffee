@@ -42,7 +42,7 @@ module.exports = class Sheet
                 z '.message', message
               z '.actions',
                 z @$closeButton,
-                  text: @model.l.get 'sheet.closeButtonText'
+                  text: @model.l.get 'general.notNow'
                   isFullWidth: false
                   onclick: =>
                     @isVisible.onNext false

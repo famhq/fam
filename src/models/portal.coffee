@@ -52,6 +52,7 @@ module.exports = class Portal
     @portal.on 'share.any', @shareAny
     @portal.on 'env.getPlatform', @getPlatform
     @portal.on 'app.install', @appInstall
+    @portal.on 'app.rate', @appRate
 
     # fallbacks
     @portal.on 'app.onResume', @appOnResume
@@ -107,6 +108,15 @@ module.exports = class Portal
 
   isChrome: ->
     navigator.userAgent.match /chrome/i
+
+  appRate: =>
+    ga? 'send', 'event', 'native', 'rate'
+
+    @call 'browser.openWindow',
+      url: if Environment.isiOS() \
+           then config.ITUNES_APP_URL
+           else config.GOOGLE_PLAY_APP_URL
+      target: '_system'
 
   appOnResume: (callback) =>
     if @appResumeHandler

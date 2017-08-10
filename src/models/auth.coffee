@@ -42,6 +42,8 @@ module.exports = class Auth
     @exoid.call 'auth.login'
     .then ({accessToken}) =>
       @setAccessToken accessToken
+    .then =>
+      @exoid.invalidateAll()
 
   join: ({email, username, password} = {}) =>
     @exoid.call 'auth.join', {email, username, password}

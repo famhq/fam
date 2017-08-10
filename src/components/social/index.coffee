@@ -13,8 +13,7 @@ if window?
   require './index.styl'
 
 module.exports = class Social
-  constructor: ({@model, @router, pageTitle}) ->
-    selectedIndex = new Rx.BehaviorSubject 0
+  constructor: ({@model, @router, pageTitle, selectedIndex}) ->
 
     @$groups = new Groups {@model, @router}
     @$conversations = new Conversations {@model, @router}

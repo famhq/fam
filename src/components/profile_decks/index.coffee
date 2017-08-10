@@ -27,6 +27,7 @@ module.exports = class ProfileDecks
       me: @model.user.getMe()
       isPrivate: userDecks
       .catch (err) ->
+        ga? 'send', 'event', 'deck_err', err.message
         error = JSON.parse err.message
         Rx.Observable.just true
       .map (result) ->

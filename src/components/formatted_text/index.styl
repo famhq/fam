@@ -3,7 +3,7 @@
 @require '../../vars'
 
 .z-formatted-text
-  max-width: 700px // TODO: 510px
+  max-width: 700px // TODO: 510px?
 
   ul
     margin: 4px 0
@@ -18,6 +18,8 @@
   img
     display: block
     max-width: 100%
+    // easy fix for too tall of images in chat, etc... 
+    max-height: 800px
 
   h1
     font-subhead()
@@ -30,3 +32,14 @@
   h3
     font-body1()
     margin: 0
+
+  blockquote
+    margin: 0
+    padding: 16px
+    background: getColor('$tertiary500')
+
+  ul
+    padding: 0 0 0 16px
+
+    li
+      margin-bottom: 8px

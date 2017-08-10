@@ -131,6 +131,18 @@ module.exports = class Drawer
           #   $ripple: new Ripple()
           #   iconName: 'video'
           # }
+          if me?.flags.isModerator
+            {
+              isDivider: true
+            }
+          if me?.flags.isModerator
+            {
+              path: '/modHub'
+              title: 'Mod hub'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'edit'
+            }
           if needsApp
             {
               isDivider: true

@@ -10,18 +10,30 @@ if window?
   require './index.styl'
 
 module.exports = class NewThread
-  constructor: ({@model, @router, category}) ->
-    @titleValue ?= new Rx.BehaviorSubject ''
+  constructor: ({@model, @router, category, thread}) ->
+    @titleValueStreams ?= new Rx.BehaviorSubject ''
     @bodyValueStreams ?= new Rx.ReplaySubject 1
-    @bodyValueStreams.onNext new Rx.BehaviorSubject ''
     @attachmentsValueStreams ?= new Rx.ReplaySubject 1
     @attachmentsValueStreams.onNext new Rx.BehaviorSubject []
+    category ?= Rx.Observable.just null
+
+    if thread
+      @titleValueStreams.onNext thread.map (thread) -> thread?.title
+      @bodyValueStreams.onNext thread.map (thread) -> thread?.body
+    else
+      @titleValueStreams.onNext new Rx.BehaviorSubject ''
+      @bodyValueStreams.onNext new Rx.BehaviorSubject ''
+
 
     @$clanBadge = new ClanBadge()
     @$spinner = new Spinner()
 
     @$compose = new Compose {
-      @model, @router, @titleValue, @bodyValueStreams, @attachmentsValueStreams
+      @model
+      @router
+      @titleValueStreams
+      @bodyValueStreams
+      @attachmentsValueStreams
     }
 
     categoryAndMe = Rx.Observable.combineLatest(
@@ -32,9 +44,11 @@ module.exports = class NewThread
 
     @state = z.state
       me: @model.user.getMe()
+      titleValue: @titleValueStreams.switch()
       bodyValue: @bodyValueStreams.switch()
       attachmentsValue: @attachmentsValueStreams.switch()
       category: category
+      thread: thread
       clan: categoryAndMe.flatMapLatest ([category, me]) =>
         if category is 'clan'
           @model.player.getByUserIdAndGameId me.id, config.CLASH_ROYALE_ID
@@ -49,7 +63,8 @@ module.exports = class NewThread
         if clan then clan else false
 
   render: =>
-    {me, bodyValue, attachmentsValue, clan, category} = @state.getValue()
+    {me, titleValue, bodyValue, attachmentsValue, clan,
+      category, thread} = @state.getValue()
 
     if clan
       data =
@@ -82,13 +97,17 @@ module.exports = class NewThread
 
           @model.signInDialog.openIfGuest me
           .then =>
-            @model.thread.create {
-              title: @titleValue.getValue()
+            newThread = {
+              title: titleValue
               body: bodyValue
               attachments: attachmentsValue
               category: category
               data: data
             }
+            if thread
+              @model.thread.updateById thread.id, newThread
+            else
+              @model.thread.create newThread
           .then ({id}) =>
             @bodyValueStreams.onNext Rx.Observable.just null
             @attachmentsValueStreams.onNext Rx.Observable.just null

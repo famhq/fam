@@ -101,7 +101,7 @@ module.exports = class Decks
           onclick: =>
             @model.signInDialog.openIfGuest me
             .then =>
-              if selectedIndex is 0
-                @router.go '/addGuide'
-              else
-                @router.go '/addDeck'
+              # if selectedIndex is 0
+              #   @router.go '/addGuide'
+              # else
+              @router.go '/addDeck'

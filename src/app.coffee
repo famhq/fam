@@ -12,6 +12,7 @@ AddToHomeScreenSheet = require './components/add_to_home_sheet'
 PushNotificationsSheet = require './components/push_notifications_sheet'
 ConversationImageView = require './components/conversation_image_view'
 OfflineOverlay = require './components/offline_overlay'
+Nps = require './components/nps'
 config = require './config'
 
 Pages =
@@ -40,8 +41,7 @@ Pages =
   GroupAddChannelPage: require './pages/group_add_channel'
   GroupEditChannelPage: require './pages/group_edit_channel'
   GroupManageMemberPage: require './pages/group_manage_member'
-  AddGuidePage: require './pages/add_guide'
-  EditGuidePage: require './pages/edit_guide'
+  EditThreadPage: require './pages/edit_thread'
   ThreadPage: require './pages/thread'
   ThreadReplyPage: require './pages/thread_reply'
   NewThreadPage: require './pages/new_thread'
@@ -102,6 +102,8 @@ module.exports = class App
       isVisible: addToHomeSheetIsVisible
     }
     @$pushNotificationsSheet = new PushNotificationsSheet {@model, @router}
+
+    @$nps = new Nps {@model}
 
     me = @model.user.getMe()
 
@@ -166,6 +168,7 @@ module.exports = class App
     route '/event/:id', 'EventPage'
     route '/event/:id/edit', 'EditEventPage'
     route '/thread/:id', 'ThreadPage'
+    route '/thread/:id/edit', 'EditThreadPage'
     route '/thread/:id/reply', 'ThreadReplyPage'
 
     route '/decksNew', 'DecksNewPage'
@@ -192,8 +195,6 @@ module.exports = class App
     route '/group/:id/addRecords', 'GroupAddRecordsPage'
     route '/group/:id/manageRecords', 'GroupManageRecordsPage'
     route '/groupInvites', 'GroupInvitesPage'
-    route '/addGuide', 'AddGuidePage'
-    route '/editGuide/:id', 'EditGuidePage'
     route ['/newThread', '/newThread/:category'], 'NewThreadPage'
     route '/addDeck', 'AddDeckPage'
     route '/cards', 'CardsPage'
@@ -204,7 +205,7 @@ module.exports = class App
     route '/players', 'PlayersPage'
     route '/players/search', 'PlayersSearchPage'
     route '/policies', 'PoliciesPage'
-    route '/social', 'SocialPage'
+    route ['/social', '/social/:tab'], 'SocialPage'
     route '/recruiting', 'RecruitingPage'
     route '/stars', 'StarsPage'
     route '/star/:username', 'StarPage'
@@ -267,3 +268,9 @@ module.exports = class App
               z @$pushNotificationsSheet
             if isOffline
               z @$offlineOverlay
+            if @$nps.shouldBeShown()
+              z @$nps,
+                gameName: 'Starfire'
+                gameKey: config.GAME_KEY
+                onRate: =>
+                  @model.portal.call 'app.rate'

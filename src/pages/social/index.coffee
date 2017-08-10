@@ -16,6 +16,8 @@ TABS = ['groups', 'conversations']
 module.exports = class SocialPage
   constructor: ({@model, requests, @router, serverData}) ->
     pageTitle = new Rx.BehaviorSubject @model.l.get 'communityPage.menuText'
+    selectedIndex = new Rx.BehaviorSubject 0
+
     @$head = new Head({
       @model
       requests
@@ -28,7 +30,7 @@ module.exports = class SocialPage
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
-    @$social = new Social {@model, @router, pageTitle}
+    @$social = new Social {@model, @router, pageTitle, selectedIndex}
     @$bottomBar = new BottomBar {@model, @router, requests}
 
     @state = z.state

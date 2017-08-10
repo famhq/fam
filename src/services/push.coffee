@@ -21,7 +21,13 @@ class PushService
         model.portal.call 'push.subscribeToTopic', {topic: 'all'}
         model.portal.call 'push.subscribeToTopic', {topic: lang}
         if not isAlwaysCalled or not localStorage?['isPushTokenStored']
-          sourceType ?= if Environment.isAndroid() then 'android' else 'ios'
+          appVersion = Environment.getAppVersion config.GAME_KEY
+          isIosFCM = appVersion and semver.gte(appVersion, '1.3.1')
+          sourceType ?= if Environment.isAndroid() \
+                        then 'android'
+                        else if isIosFCM
+                        then 'ios-fcm'
+                        else 'ios'
           model.pushToken.create {token, sourceType}
           localStorage?['isPushTokenStored'] = 1
         model.pushToken.setCurrentPushToken token
