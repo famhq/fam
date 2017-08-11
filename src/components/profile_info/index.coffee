@@ -186,7 +186,9 @@ module.exports = class ProfileInfo
                 z @$arenaIcon,
                   icon: 'castle'
                   color: colors.$secondary500
-              z '.text', "Arena #{player?.data?.arena?.number}"
+              z '.text',
+                @model.l.get 'general.arena'
+                " #{player?.data?.arena?.number}"
               if player?.data?.league
                 z '.text', player?.data?.league?.name
             z '.g-col.g-xs-4',
@@ -194,7 +196,9 @@ module.exports = class ProfileInfo
                 z @$levelIcon,
                   icon: 'crown'
                   color: colors.$secondary500
-              z '.text', "Level #{player?.data?.level}"
+              z '.text',
+                @model.l.get 'general.level'
+                " #{player?.data?.level}"
         z '.divider'
         z '.g-grid',
           z '.last-updated',

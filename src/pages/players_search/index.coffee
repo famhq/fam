@@ -39,7 +39,7 @@ module.exports = class PlayersSearchPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: 'Find player'
+        title: @model.l.get 'playersSearchPage.title'
         style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}

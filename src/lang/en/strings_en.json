@@ -6,6 +6,8 @@
   "general.discard": "Discard",
   "general.done": "Done",
   "general.share": "Share",
+  "general.arena": "Arena",
+  "general.level": "Level",
   "general.info": "Info",
   "general.history": "History",
   "general.graphs": "Graphs",
@@ -240,6 +242,7 @@
   "stepBar.back": "Back",
   "stripeDialog.confirmTitle": "Confirm",
   "stripeDialog.title": "Payment",
+  "time.justNow": "just now",
   "thread.noComments": "No comments found",
   "thread.score": "comments",
   "translateCard.request1": "Help translate Starfire",
@@ -298,5 +301,13 @@
   "privacyPage.title": "Privacy",
   "profileChestsPage.title": "Chest cycle",
   "tosPage.title": "Terms of service",
-  "videosPage.title": "Videos"
+  "videosPage.title": "Videos",
+  "error.usernameTaken": "Username is taken",
+  "error.invalid": "Invalid",
+  "error.invalidUsername": "Invalid username",
+  "error.invalidPassword": "Invalid password",
+  "error.usernameNotFound": "Username not found",
+  "error.incorrectPassword": "Incorrect password",
+  "error.invalidEmail": "Invalid email",
+  "error.passwordSet": "Password is already set"
 }

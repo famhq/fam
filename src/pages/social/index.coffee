@@ -18,6 +18,11 @@ module.exports = class SocialPage
     pageTitle = new Rx.BehaviorSubject @model.l.get 'communityPage.menuText'
     selectedIndex = new Rx.BehaviorSubject 0
 
+    # hacky way to get /threads to go to 2nd tab
+    tabHack = requests.map ({route}) ->
+      if route.params.tab is 'threads'
+        selectedIndex.onNext 1
+
     @$head = new Head({
       @model
       requests
@@ -36,6 +41,7 @@ module.exports = class SocialPage
     @state = z.state
       windowSize: @model.window.getSize()
       pageTitle: pageTitle
+      tabHack: tabHack
 
   renderHead: => @$head
 

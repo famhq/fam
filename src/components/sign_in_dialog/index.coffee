@@ -42,6 +42,9 @@ module.exports = class SignInDialog
   join: (e) =>
     e?.preventDefault()
     @state.set isLoading: true
+    @usernameError.onNext null
+    @emailError.onNext null
+    @passwordError.onNext null
 
     @model.auth.join {
       username: @usernameValue.getValue()
@@ -61,12 +64,18 @@ module.exports = class SignInDialog
         JSON.parse err.message
       catch
         {}
-      @usernameError.onNext err.info
+      errorSubject = switch err.info.field
+        when 'email' then @emailError
+        when 'password' then @passwordError
+        else @usernameError
+      errorSubject.onNext @model.l.get err.info.langKey
       @state.set isLoading: false
 
   signIn: (e) =>
     e?.preventDefault()
     @state.set isLoading: true
+    @usernameError.onNext null
+    @passwordError.onNext null
 
     @model.auth.login {
       username: @usernameValue.getValue()
@@ -81,7 +90,15 @@ module.exports = class SignInDialog
           @model.signInDialog.close()
       , 0
     .catch (err) =>
-      @usernameError.onNext err.message
+      err = try
+        JSON.parse err.message
+      catch
+        {}
+      errorSubject = switch err.info.field
+        when 'password' then @passwordError
+        else @usernameError
+
+      errorSubject.onNext @model.l.get err.info.langKey
       @state.set isLoading: false
 
   cancel: =>
@@ -99,15 +116,17 @@ module.exports = class SignInDialog
             z '.header',
               z '.title',
                 if mode is 'join'
-                then 'Get started'
-                else 'Welcome back'
+                then @model.l.get 'join.title'
+                else @model.l.get 'signIn.title'
               z '.button', {
                 onclick: =>
                   @model.signInDialog.setMode(
                     if mode is 'join' then 'signIn' else 'join'
                   )
               },
-                if mode is 'join' then 'Sign in' else 'Sign up'
+                if mode is 'join'
+                then @model.l.get 'general.signIn'
+                else @model.l.get 'general.signUp'
 
 
             # z '.signup-facebook', {
@@ -123,26 +142,26 @@ module.exports = class SignInDialog
             z 'form.content',
               z '.input',
                 z @$usernameInput, {
-                  hintText: 'Username'
+                  hintText: @model.l.get 'general.username'
                 }
               if mode is 'join'
                 z '.input',
                   z @$emailInput, {
-                    hintText: 'Email address'
+                    hintText: @model.l.get 'general.email'
                   }
               z '.input',
                 z @$passwordInput, {
                   type: 'password'
-                  hintText: 'Password'
+                  hintText: @model.l.get 'general.password'
                 }
               z '.actions',
                 z '.button',
                   z @$submitButton,
                     text: if isLoading \
-                          then 'Loading...'
+                          then @model.l.get 'general.loading'
                           else if mode is 'join'
-                          then 'Create account'
-                          else 'Sign in'
+                          then @model.l.get 'join.createAccountButtonText'
+                          else @model.l.get 'general.signIn'
                     colors:
                       cText: colors.$primary500
                     onclick: (e) =>

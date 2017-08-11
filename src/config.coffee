@@ -6,14 +6,6 @@ _range = require 'lodash/range'
 _merge = require 'lodash/merge'
 assertNoneMissing = require 'assert-none-missing'
 
-moment = require 'moment'
-# change from 'a few seconds ago'
-moment.fn.fromNowModified = (a) ->
-  if Math.abs(moment().diff(this)) < 30000
-    # 1000 milliseconds
-    return 'just now'
-  @fromNow a
-
 colors = require './colors'
 
 # Don't let server environment variables leak into client code

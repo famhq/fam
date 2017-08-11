@@ -1,6 +1,7 @@
 _reduce = require 'lodash/reduce'
 _defaultsDeep = require 'lodash/defaultsDeep'
 Rx = require 'rx-lite'
+moment = require 'moment'
 
 config = require '../config'
 
@@ -26,9 +27,20 @@ languages =
 class Language
   constructor: ({language}) ->
     @language = new Rx.BehaviorSubject language
+    @setLanguage language
 
   setLanguage: (language) =>
     @language.onNext language
+    moment.locale language
+
+    # change from 'a few seconds ago'
+    justNowStr = @get 'time.justNow'
+
+    moment.fn.fromNowModified = (a) ->
+      if Math.abs(moment().diff(this)) < 30000
+        # 1000 milliseconds
+        return justNowStr
+      @fromNow a
 
   getLanguage: => @language
 

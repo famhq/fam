@@ -31,7 +31,7 @@ module.exports = class PlayersTop
             bgColor: colors.$tertiary500
             onclick: =>
               @router.go '/players/search'
-            placeholder: 'Find player...'
+            placeholder: @model.l.get 'playersSearchPage.title'
           }
 
         if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
