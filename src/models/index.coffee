@@ -9,6 +9,7 @@ _pick = require 'lodash/pick'
 
 Auth = require './auth'
 Player = require './player'
+Addon = require './addon'
 Clan = require './clan'
 ClanRecordType = require './clan_record_type'
 ClashRoyaleAPI = require './clash_royale_api'
@@ -120,6 +121,7 @@ module.exports = class Model
     @userFollower = new UserFollower {@auth}
     @userGroupData = new UserGroupData {@auth}
     @player = new Player {@auth}
+    @addon = new Addon {@auth, @l}
     @clan = new Clan {@auth}
     @dynamicImage = new DynamicImage {@auth}
     @chatMessage = new ChatMessage {@auth, proxy, @exoid}

@@ -36,7 +36,9 @@
   "general.signUp": "Sign up",
   "general.verify": "Verify",
   "general.yes": "Yes",
+  "general.days": "days",
   "addDeck.nameHintText": "Enter a name...",
+  "addons.discover": "Discover",
   "addToHomeSheet.submitButton": "Add to home",
   "arenaPickerDialog.title": "Max Arena",
   "boostDialog.title": "Boost your message",
@@ -177,6 +179,7 @@
   "profileChests.adCard": "We hate ads too, but we have a few to help us pay the bills. If you verify your account (on the clan page), ads won't be shown anymore.",
   "profileChests.chestsTitle": "Upcoming chests",
   "profileChests.chestsUntilTitle": "Chests until",
+  "profileChests.daysUntilTitle": "Days until",
   "profileDialog.message": "Message",
   "profileDialog.block": "Block",
   "profileDialog.unblock": "Unblock",
@@ -258,6 +261,7 @@
   "addDeckPage.title": "New deck",
   "addEventPage.title": "Add event",
   "addGuidePage.title": "Add guide",
+  "addonsPage.title": "More tools",
   "cardsPage.title": "Battle cards",
   "clanPage.empty": "Looks like you're not in a clan",
   "clanEditPage.title": "Edit clan",
@@ -309,5 +313,19 @@
   "error.usernameNotFound": "Username not found",
   "error.incorrectPassword": "Incorrect password",
   "error.invalidEmail": "Invalid email",
-  "error.passwordSet": "Password is already set"
+  "error.passwordSet": "Password is already set",
+
+
+
+  "crChest.wooden": "Wooden",
+  "crChest.silver": "Silver",
+  "crChest.gold": "Gold",
+  "crChest.giant": "Giant",
+  "crChest.epic": "Epic",
+  "crChest.magic": "Magic",
+  "crChest.superMagical": "Super magical",
+  "crChest.legendary": "Legendary",
+  "crChest.epicOffer": "Epic offer",
+  "crChest.legendaryOffer": "Legendary offer",
+  "crChest.arenaOffer": "Arena offer"
 }

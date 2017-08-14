@@ -108,6 +108,13 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'recruit'
           }
+          {
+            path: '/addons'
+            title: @model.l.get 'addonsPage.title'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'ellipsis'
+          }
           # {
           #   path: '/events'
           #   title: 'Tournaments'

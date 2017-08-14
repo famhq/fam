@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
+_sortBy = require 'lodash/sortBy'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
@@ -70,7 +71,7 @@ module.exports = class ProfileChests
                 backgroundImage:
                   "url(#{config.CDN_URL}/chests/super_magical_chest.png)"
             z '.info',
-              z '.name', 'Super Magical'
+              z '.name', @model.l.get 'crChest.superMagical'
               z '.count',
                 "+#{player?.data.chestCycle.countUntil.superMagical + 1}"
 
@@ -81,7 +82,7 @@ module.exports = class ProfileChests
                   backgroundImage:
                     "url(#{config.CDN_URL}/chests/legendary_chest.png)"
               z '.info',
-                z '.name', 'Legendary'
+                z '.name', @model.l.get 'crChest.legendary'
                 z '.count',
                   "+#{player?.data.chestCycle.countUntil.legendary + 1}"
 
@@ -92,7 +93,7 @@ module.exports = class ProfileChests
                   backgroundImage:
                     "url(#{config.CDN_URL}/chests/epic_chest.png)"
               z '.info',
-                z '.name', 'Epic'
+                z '.name', @model.l.get 'crChest.epic'
                 z '.count',
                   "+#{player?.data.chestCycle.countUntil.epic + 1}"
 
@@ -106,3 +107,30 @@ module.exports = class ProfileChests
                     then "/user/#{me.username}/chests"
                     else "/user/id/#{me?.id}/chests"
             }
+
+
+        if player?.data.shopOffers
+          shopOffers = _map player.data.shopOffers, (days, chest) ->
+            {days, chest}
+          shopOffers = _sortBy shopOffers, 'days'
+          [
+            z '.spacer'
+            z '.title', @model.l.get 'profileChests.daysUntilTitle'
+            z '.chests-until',
+              _map shopOffers, ({days, chest}) =>
+                if days >= 0
+                  if chest is 'arena'
+                    arena = player.data.arena?.number
+                    imageUrl = "#{config.CDN_URL}/arenas/#{arena}.png"
+                  else
+                    imageUrl = "#{config.CDN_URL}/chests/#{chest}_opened.png?1"
+                  z '.chest',
+                    z '.image',
+                      style:
+                        backgroundImage:
+                          "url(#{imageUrl})"
+                    z '.info',
+                      z '.name', @model.l.get("crChest.#{chest}Offer")
+                      z '.count',
+                        "#{days} #{@model.l.get 'general.days'}"
+          ]
