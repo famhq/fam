@@ -49,7 +49,7 @@ module.exports = class Addons extends Base
                 href: "/addon/#{addon.id}"
               },
                 z 'img.icon',
-                  src: addon.iconUrl
+                  src: lang.iconUrl
                 z '.info',
                   z '.name', lang.name
                   z '.description', lang.description

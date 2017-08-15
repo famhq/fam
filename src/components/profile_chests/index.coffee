@@ -7,6 +7,7 @@ Environment = require 'clay-environment'
 
 AdsenseAd = require '../adsense_ad'
 PrimaryButton = require '../primary_button'
+SecondaryButton = require '../secondary_button'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -17,6 +18,7 @@ module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
     @$adsenseAd = new AdsenseAd()
     @$shareButton = new PrimaryButton()
+    @$shopOffersButton = new SecondaryButton()
 
     @state = z.state {
       me: @model.user.getMe()
@@ -63,6 +65,13 @@ module.exports = class ProfileChests
               slot: 'desktop728x90'
             }
 
+
+        if player?.data.shopOffers
+          z @$shopOffersButton,
+            text: @model.l.get 'profileChests.viewShopOffers'
+            onclick: =>
+              @router.go '/addons'
+
         z '.title', @model.l.get 'profileChests.chestsUntilTitle'
         z '.chests-until',
           z '.chest',
@@ -107,30 +116,3 @@ module.exports = class ProfileChests
                     then "/user/#{me.username}/chests"
                     else "/user/id/#{me?.id}/chests"
             }
-
-
-        if player?.data.shopOffers
-          shopOffers = _map player.data.shopOffers, (days, chest) ->
-            {days, chest}
-          shopOffers = _sortBy shopOffers, 'days'
-          [
-            z '.spacer'
-            z '.title', @model.l.get 'profileChests.daysUntilTitle'
-            z '.chests-until',
-              _map shopOffers, ({days, chest}) =>
-                if days >= 0
-                  if chest is 'arena'
-                    arena = player.data.arena?.number
-                    imageUrl = "#{config.CDN_URL}/arenas/#{arena}.png"
-                  else
-                    imageUrl = "#{config.CDN_URL}/chests/#{chest}_opened.png?1"
-                  z '.chest',
-                    z '.image',
-                      style:
-                        backgroundImage:
-                          "url(#{imageUrl})"
-                    z '.info',
-                      z '.name', @model.l.get("crChest.#{chest}Offer")
-                      z '.count',
-                        "#{days} #{@model.l.get 'general.days'}"
-          ]

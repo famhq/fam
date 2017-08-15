@@ -12,22 +12,22 @@ if window?
 module.exports = class PlayersSearchPage
   hideDrawer: true
 
-  constructor: ({model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData}) ->
     @$head = new Head({
-      model
+      @model
       requests
       serverData
       meta: {
-        title: model.l.get 'playersSearchPage.title'
-        description: model.l.get 'playersSearchPage.title'
+        title: @model.l.get 'playersSearchPage.title'
+        description: @model.l.get 'playersSearchPage.title'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$playersSearch = new PlayersSearch {model, @router, serverData}
+    @$playersSearch = new PlayersSearch {@model, @router, serverData}
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
   renderHead: => @$head
 

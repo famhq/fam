@@ -1,4 +1,5 @@
 Environment = require 'clay-environment'
+semver = require 'semver'
 
 config = require '../config'
 
@@ -33,7 +34,7 @@ class PushService
         model.pushToken.setCurrentPushToken token
     .catch (err) ->
       unless err.message is 'Method not found'
-        log.error err
+        console.log err
 
 
 module.exports = new PushService()

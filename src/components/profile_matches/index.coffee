@@ -23,16 +23,14 @@ module.exports = class ProfileMatches
     @state = z.state {
       me: @model.user.getMe()
       matches: matches.map (matches) ->
-        _map otherDecks, (userDeck) ->
-          if userDeck?.deck
-            {
-              userDeck: userDeck
-              $deck: new DeckCards {deck: userDeck?.deck}
-              $stats: new UserDeckStats {userDeck}
-            }
-          else
-            console.log 'missing deck', userDeck
-            null
+        console.log match
+        _map matches, (match) ->
+          {
+            # userDeck: userDeck
+            # # player1
+            # $deck: new DeckCards {deck: userDeck?.deck}
+            # $stats: new UserDeckStats {userDeck}
+          }
     }
 
   render: =>

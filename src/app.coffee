@@ -60,6 +60,7 @@ Pages =
   ProfileChestsPage: require './pages/profile_chests'
   SocialPage: require './pages/social'
   RecruitingPage: require './pages/recruiting'
+  ShopOffersPage: require './pages/shop_offers'
   StarPage: require './pages/star'
   StarsPage: require './pages/stars'
   TosPage: require './pages/tos'
@@ -223,6 +224,11 @@ module.exports = class App
       '/user/:username/chests'
     ], 'ProfileChestsPage'
     route '/editProfile', 'EditProfilePage'
+    route [
+      '/user/id/:id/shopOffers'
+      '/user/:username/shopOffers'
+      '/shopOffers'
+    ], 'ShopOffersPage'
     route '/*', 'FourOhFourPage'
     routes
 

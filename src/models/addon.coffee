@@ -8,12 +8,42 @@ addons = [
       en:
         name: 'Card Maker'
         description: 'Create any imaginary card you want!'
-    url: 'https://www.clashroyalecardmaker.com/'
-    iconUrl: 'https://www.clashroyalecardmaker.com/android-icon-192x192.png'
+        url: 'https://www.clashroyalecardmaker.com/'
+        iconUrl: 'https://www.clashroyalecardmaker.com/android-icon-192x192.png'
     creator:
       username: 'dabolus'
       name: 'Dabolus'
   }
+  {
+    id: 'f537f4b0-08cb-453c-8122-ae80e4163226'
+    lang:
+      en:
+        name: 'Shop offers'
+        description: 'See which shop offers you have coming up next'
+        url: '/shopOffers'
+        iconUrl: 'https://cdn.wtf/d/images/starfire/chests/legendary_chest.png'
+    creator:
+      username: 'austin'
+      name: 'Austin'
+  }
+  # no https...
+  # {
+  #   id: '351e143d-337f-447e-880f-78e682c1183b'
+  #   lang:
+  #     en:
+  #       name: 'Wiki'
+  #       description: 'Knowledgebase of Clash Royale facts'
+  #       url: 'http://clashroyale.wikia.com/wiki/Clash_Royale_Wiki'
+  #       iconUrl: 'https://cdn.wtf/d/images/starfire/addons/wiki.png'
+  #     es:
+  #       name: 'Wiki'
+  #       description: 'Knowledgebase of Clash Royale facts'
+  #       url: 'http://es.clash-royale.wikia.com/wiki/Inicio'
+  #       iconUrl: 'https://cdn.wtf/d/images/starfire/addons/wiki.png'
+  #   creator:
+  #     username: 'community'
+  #     name: 'Community'
+  # }
 ]
 
 module.exports = class Addon
