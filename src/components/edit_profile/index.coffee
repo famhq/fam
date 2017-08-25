@@ -41,7 +41,6 @@ module.exports = class EditProfile
     @$avatarButton = new PrimaryButton()
     @$uploadOverlay = new UploadOverlay {@model}
 
-    @$forumSigButton = new SecondaryButton()
     @$logoutButton = new SecondaryButton()
 
     @$usernameInput = new PrimaryInput
@@ -145,10 +144,6 @@ module.exports = class EditProfile
                   @state.set avatarImage: file, avatarDataUrl: dataUrl
 
       z '.section',
-        z @$forumSigButton,
-          text: @model.l.get 'editProfile.forumSigButtonText'
-          onclick: =>
-            @router.go '/forumSignature'
 
         z @$logoutButton,
           text: @model.l.get 'editProfile.logoutButtonText'

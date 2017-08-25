@@ -135,7 +135,8 @@ module.exports = class MarkdownEditor
       z 'textarea.textarea', {
         placeholder: hintText or ''
         onkeyup: @setValueFromEvent
-        value: value
+        # bug where cursor goes to end
+        # value: value
       }
 
       z '.panel',

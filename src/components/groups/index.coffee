@@ -81,7 +81,7 @@ module.exports = class Groups
     z '.z-groups',
       if unreadGroupInvites
         @router.link z 'a.unread-invites', {
-          href: '/groupInvites'
+          href: '/group-invites'
         },
           z '.icon',
             z @$unreadInvitesIcon,

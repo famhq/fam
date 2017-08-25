@@ -3,6 +3,7 @@ module.exports = class ThreadComment
   constructor: ({@auth}) -> null
 
   create: ({body, parentId, parentType}) =>
+    ga? 'send', 'event', 'social_interaction', 'thread_comment', "#{parentId}"
     @auth.call "#{@namespace}.create", {body, parentId, parentType}, {
       invalidateAll: true
     }

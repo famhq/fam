@@ -58,4 +58,4 @@ module.exports = class RecruitingPage
             color: colors.$white
           }
           onclick: =>
-            @router.go '/newThread/clan'
+            @router.go '/new-thread/clan'

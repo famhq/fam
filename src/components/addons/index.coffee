@@ -3,6 +3,7 @@ Rx = require 'rx-lite'
 _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
 _truncate = require 'lodash/truncate'
+_kebabCase = require 'lodash/kebabCase'
 
 Base = require '../base'
 Avatar = require '../avatar'
@@ -43,16 +44,17 @@ module.exports = class Addons extends Base
           'No addons found'
         else if addons
           _map addons, ({addon, $rating}) =>
-            lang = @model.addon.getLang(addon)
             [
               @router.link z 'a.addon', {
-                href: "/addon/#{addon.id}"
+                href: "/addon/clash-royale/#{_kebabCase(addon.key)}"
               },
                 z 'img.icon',
-                  src: lang.iconUrl
+                  src: addon.iconUrl
                 z '.info',
-                  z '.name', lang.name
-                  z '.description', lang.description
+                  z '.name',
+                    @model.l.get "#{addon.key}.title", {file: 'addons'}
+                  z '.description',
+                    @model.l.get "#{addon.key}.description", {file: 'addons'}
             ]
         else
           @$spinner

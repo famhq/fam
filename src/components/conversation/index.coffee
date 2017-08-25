@@ -267,7 +267,8 @@ module.exports = class Conversation extends Base
         z '.bottom.is-follow',
           z '.text',
             @model.l.get 'conversation.followMessage', {
-              name: @model.user.getDisplayName group.star?.user
+              replacements:
+                name: @model.user.getDisplayName group.star?.user
             }
           z @$followButton,
             text: if isFollowLoading \

@@ -69,6 +69,10 @@ module.exports = class Portal
     @portal.on 'networkInformation.onOffline', @networkInformationOnOffline
     @portal.on 'networkInformation.onOnline', @networkInformationOnOnline
 
+    # SDK
+    @portal.on 'player.getMe', @playerGetMe
+    @portal.on 'forum.share', @forumShare
+
     @portal.on 'browser.openWindow', ({url, target, options}) ->
       window.open url, target, options
 
@@ -82,8 +86,8 @@ module.exports = class Portal
   ###
   @returns {Promise<AuthStatus>}
   ###
-  authGetStatus: ->
-    User.getMe()
+  authGetStatus: =>
+    @model.user.getMe()
     .take(1).toPromise()
     .then (user) ->
       accessToken: user.id # Temporary
@@ -169,7 +173,7 @@ module.exports = class Portal
           }
         else if Environment.isGameChromeApp(config.GAME_KEY)
           redirectUri = encodeURIComponent(
-            "https://#{config.HOST}/facebookLogin/chrome"
+            "https://#{config.HOST}/facebook-login/chrome"
           )
           window.location.href = 'https://www.facebook.com/dialog/oauth?' +
                "client_id=#{config.FB_ID}&" +
@@ -188,6 +192,12 @@ module.exports = class Portal
       method: 'share',
       href: url
     }
+
+  playerGetMe: =>
+    @user.getMe().take(1).toPromise()
+
+  forumShare: =>
+    console.log 'TODO'
 
   pushRegister: ->
     navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->

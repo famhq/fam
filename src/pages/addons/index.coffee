@@ -45,4 +45,4 @@ module.exports = class AddOnsPage
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
       }
       @$addons
-      # @$bottomBar
+      @$bottomBar

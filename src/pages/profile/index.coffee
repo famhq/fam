@@ -62,7 +62,7 @@ module.exports = class ProfilePage
         playerName = player?.data?.name
         {
           title: if player?.id \
-                 then "#{playerName}'s Clash Royale stats - Starfire"
+                 then "#{playerName}'s Clash Royale stats"
                  else undefined # use default
 
           description: undefined # use default
@@ -147,7 +147,7 @@ module.exports = class ProfilePage
               icon: 'settings'
               color: colors.$primary500
               onclick: =>
-                @router.go '/editProfile'
+                @router.go '/edit-profile'
               }
         isFlat: true
       }

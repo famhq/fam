@@ -144,7 +144,7 @@ module.exports = class Drawer
             }
           if me?.flags.isModerator
             {
-              path: '/modHub'
+              path: '/mod-hub'
               title: 'Mod hub'
               $icon: new Icon()
               $ripple: new Ripple()

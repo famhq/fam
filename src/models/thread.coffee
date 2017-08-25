@@ -6,6 +6,7 @@ module.exports = class Thread
   constructor: ({@auth, @l}) -> null
 
   create: (diff) =>
+    ga? 'send', 'event', 'social_interaction', 'thread', diff.category
     @auth.call "#{@namespace}.create", diff, {invalidateAll: true}
 
   getAll: ({category, sort, limit, ignoreCache} = {}) =>

@@ -80,6 +80,6 @@ module.exports = class Social
             }
             onclick: =>
               if selectedIndex is 1
-                @router.go '/newThread'
+                @router.go '/new-thread'
               else
-                @router.go '/newThread/clan'
+                @router.go '/new-thread/clan'

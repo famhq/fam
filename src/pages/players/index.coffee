@@ -28,8 +28,8 @@ module.exports = class PlayersPage
       requests
       serverData
       meta: {
-        title: @model.l.get 'playersPage.title'
-        description: @model.l.get 'playersPage.title'
+        title: @model.l.get 'playersPage.playersTop'
+        description: @model.l.get 'playersPage.playersTop'
       }
     })
     @$appBar = new AppBar {@model}

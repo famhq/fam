@@ -32,6 +32,7 @@ module.exports = class ProfileInfo
     @$splitsInfoCard = new UiCard()
     @$followButton = new PrimaryButton()
     @$moreDetailsButton = new SecondaryButton()
+    @$shopOffersButton = new SecondaryButton()
     @$verifyAccountButton = new SecondaryButton()
     @$clanBadge = new ClanBadge()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
@@ -276,10 +277,16 @@ module.exports = class ProfileInfo
                     width: 90
                     height: 90
               z '.chests-button',
-                z @$moreDetailsButton,
-                  text: @model.l.get 'profileInfo.moreDetailsButtonText'
-                  onclick: =>
-                    @router.go "/user/id/#{user?.id}/chests"
+                z 'div',
+                  z @$moreDetailsButton,
+                    text: @model.l.get 'profileInfo.moreDetailsButtonText'
+                    onclick: =>
+                      @router.go "/user/id/#{user?.id}/chests"
+                z 'div',
+                  z @$shopOffersButton,
+                    text: @model.l.get 'profileChests.viewShopOffers'
+                    onclick: =>
+                      @router.go '/addon/clash-royale/shop-offers'
 
 
         z '.block',

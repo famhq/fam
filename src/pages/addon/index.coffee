@@ -1,5 +1,6 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+_camelCase = require 'lodash/camelCase'
 
 Head = require '../../components/head'
 Addon = require '../../components/addon'
@@ -14,20 +15,19 @@ module.exports = class AddonPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    id = requests.map ({route}) ->
-      route.params.id
-    addon = id.flatMapLatest (id) =>
-      @model.addon.getById id
+    key = requests.map ({route}) ->
+      route.params.key
+    addon = key.flatMapLatest (key) =>
+      @model.addon.getByKey _camelCase key
 
     @$head = new Head({
       @model
       requests
       serverData
       meta: addon.map (addon) =>
-        lang = @model.addon.getLang(addon)
         {
-          title: lang?.name
-          description: lang?.description
+          title: @model.l.get "#{addon.key}.title", {file: 'addons'}
+          description: @model.l.get "#{addon.key}.description", {file: 'addons'}
         }
     })
     @$appBar = new AppBar {@model}
@@ -43,8 +43,6 @@ module.exports = class AddonPage
   render: =>
     {windowSize, addon} = @state.getValue()
 
-    lang = @model.addon.getLang(addon)
-
     z '.p-addon', {
       style:
         height: "#{windowSize.height}px"
@@ -52,7 +50,11 @@ module.exports = class AddonPage
       z @$appBar, {
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
-        title: lang?.name
+        $topLeftButton: z @$buttonBack, {
+          color: colors.$primary500
+          onclick: =>
+            @router.go '/addons'
+        }
+        title: @model.l.get "#{addon?.key}.title", {file: 'addons'}
       }
       @$addon

@@ -4,5 +4,9 @@
   "shopOffers.title": "Shop offers",
   "shopOffers.description": "See which shop offers you have coming up next",
   "wiki.title": "Wiki",
-  "wiki.description": "Knowledgebase of Clash Royale facts"
+  "wiki.description": "Knowledgebase of Clash Royale facts",
+  "chestSimulator.title": "Chest simulator",
+  "chestSimulator.description": "Open fake chests",
+  "forumSignature.title": "Custom forum signature",
+  "forumSignature.description": "Generate a custom signature for forums"
 }

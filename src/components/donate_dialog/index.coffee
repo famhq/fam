@@ -66,7 +66,10 @@ module.exports = class DonateDialog
               @$stripeDialogInner
             else
               z '.donate',
-                z 'p', @model.l.get 'donateDialog.text1', {name: username}
+                z 'p', @model.l.get 'donateDialog.text1', {
+                  replacements:
+                    name: username
+                }
                 # z 'p', @model.l.get 'donateDialog.text2', {name: username}
                 z 'input.range',
                   type: 'range'

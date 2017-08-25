@@ -137,7 +137,7 @@ module.exports = class Settings
           icon: 'edit'
           text: 'Manage Records'
           onclick: =>
-            @router.go "/group/#{group?.id}/manageRecords"
+            @router.go "/group/#{group?.id}/manage-records"
         }
       ]
 

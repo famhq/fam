@@ -104,4 +104,4 @@ module.exports = class Decks
               # if selectedIndex is 0
               #   @router.go '/addGuide'
               # else
-              @router.go '/addDeck'
+              @router.go '/add-deck'

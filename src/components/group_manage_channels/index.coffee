@@ -26,7 +26,7 @@ module.exports = class GroupInfo
     z '.z-group-manage-channels',
       z @$channelList, {
         onclick: (e, {id}) =>
-          @router.go "/group/#{group.id}/editChannel/#{id}"
+          @router.go "/group/#{group.id}/edit-channel/#{id}"
       }
 
       z '.fab',
@@ -39,4 +39,4 @@ module.exports = class GroupInfo
             color: colors.$white
           }
           onclick: =>
-            @router.go "/group/#{group.id}/newChannel"
+            @router.go "/group/#{group.id}/new-channel"

@@ -77,4 +77,4 @@ module.exports = class EventsPage
           onclick: =>
             @model.signInDialog.openIfGuest(me)
             .then =>
-              @router.go '/addEvent'
+              @router.go '/add-event'

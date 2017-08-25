@@ -48,7 +48,7 @@ module.exports = class GroupMembers
           z @$addRecordsButton, {
             text: 'Add records'
             onclick: =>
-              @router.go "/group/#{group?.id}/addRecords"
+              @router.go "/group/#{group?.id}/add-records"
           }
         z 'h2.title',
           'Online'

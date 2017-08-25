@@ -21,6 +21,7 @@ module.exports = class ChatMessage
     @clientChangesStream[diff.conversationId]?.onNext(
       _merge diff, {clientId}, localDiff
     )
+    ga? 'send', 'event', 'social_interaction', 'chat_message', "#{diff.type}"
 
     @auth.call "#{@namespace}.create", _merge diff, {clientId}
     .catch (err) ->

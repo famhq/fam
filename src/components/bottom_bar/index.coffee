@@ -32,18 +32,24 @@ module.exports = class BottomBar
         route: '/clan'
         text: @model.l.get 'general.clan'
       }
-      if window? and @model.l.language is 'es'
-        {
-          $icon: new Icon()
-          icon: 'video'
-          route: '/videos'
-          text: 'Videos'
-        }
+      # if window? and @model.l.language is 'es'
+      #   {
+      #     $icon: new Icon()
+      #     icon: 'video'
+      #     route: '/videos'
+      #     text: 'Videos'
+      #   }
       {
         $icon: new Icon()
         icon: 'friends'
         route: '/players'
         text: @model.l.get 'drawer.menuItemPlayers'
+      }
+      {
+        $icon: new Icon()
+        icon: 'ellipsis'
+        route: '/addons'
+        text: @model.l.get 'general.tools'
       }
       {
         $icon: new Icon()

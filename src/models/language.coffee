@@ -2,6 +2,7 @@ _reduce = require 'lodash/reduce'
 _defaultsDeep = require 'lodash/defaultsDeep'
 Rx = require 'rx-lite'
 moment = require 'moment'
+_mapValues = require 'lodash/mapValues'
 
 config = require '../config'
 
@@ -12,17 +13,19 @@ config = require '../config'
 # friendspage
 # profile page share
 
-languages =
-  en: require '../lang/en/strings_en'
-  es: require '../lang/es/strings_es'
-  it: require '../lang/it/strings_it'
-  fr: require '../lang/fr/strings_fr'
-  zh: require '../lang/zh/strings_zh'
-  ja: require '../lang/ja/strings_ja'
-  ko: require '../lang/ko/strings_ko'
-  de: require '../lang/de/strings_de'
-  pt: require '../lang/pt/strings_pt'
-  pl: require '../lang/pl/strings_pl'
+files = {strings: null, cards: null, addons: null}
+
+files = _mapValues files, (val, file) ->
+  en: require "../lang/en/#{file}_en"
+  es: require "../lang/es/#{file}_es"
+  it: require "../lang/it/#{file}_it"
+  fr: require "../lang/fr/#{file}_fr"
+  zh: require "../lang/zh/#{file}_zh"
+  ja: require "../lang/ja/#{file}_ja"
+  ko: require "../lang/ko/#{file}_ko"
+  de: require "../lang/de/#{file}_de"
+  pt: require "../lang/pt/#{file}_pt"
+  pl: require "../lang/pl/#{file}_pl"
 
 class Language
   constructor: ({language}) ->
@@ -46,13 +49,14 @@ class Language
 
   getLanguageStr: => @language.getValue()
 
-  get: (strKey, replacements) =>
+  get: (strKey, {replacements, file} = {}) =>
+    file ?= 'strings'
     language = @language.getValue()
-    baseResponse = languages[language]?[strKey] or
-                    languages['en']?[strKey] or ''
+    baseResponse = files[file][language]?[strKey] or
+                    files[file]['en']?[strKey] or ''
 
     unless baseResponse
-      console.log 'missing', strKey
+      console.log 'missing', file, strKey
 
     if typeof baseResponse is 'object'
       # some languages (czech) have many plural forms

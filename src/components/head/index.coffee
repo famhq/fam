@@ -19,7 +19,7 @@ module.exports = class Head
     userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
     meta = _merge {
-      title: 'Starfire - Clash Royale chat, stats and chest cycle tracker'
+      title: 'global chat, stats and chest cycle tracker'
       description: 'Talk to other Clash Royale players, track your stats, and
                     set which chests you have next. Support for more mobile
                     games coming soon!'
@@ -51,6 +51,8 @@ module.exports = class Head
       manifestUrl: '/manifest.json'
     }, meta
 
+    meta.title = "Clash Royale #{meta.title} | Starfire"
+
     meta = _merge {
       twitter:
         title: meta.title
@@ -72,10 +74,6 @@ module.exports = class Head
       z 'title', "#{meta.title}"
       z 'meta', {name: 'description', content: "#{meta.description}"}
 
-      z 'script',
-        attributes:
-          async: true
-        src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
       # Appcache
       # TODO: re-enable?
       # if config.ENV is config.ENVS.PROD
@@ -161,11 +159,29 @@ module.exports = class Head
       unless Environment.isGameApp(config.GAME_KEY, {userAgent})
         [
           z 'script',
-            src: 'https://js.stripe.com/v2/'
-          z 'script',
-            innerHTML: "
-              Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
-            "
+            attributes:
+              async: true
+            src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+
+          # z 'script',
+          #   innerHTML: '''
+          #     var inmobi_conf = {
+          #     siteid : "1503223902919",
+          #     slot : "14",
+          #     manual: true,
+          #     adtype: "int" };
+          #   '''
+          # z 'script',
+          #   attributes:
+          #     async: true
+          #   src: 'https://cf.cdn.inmobi.com/ad/inmobi.js'
+
+          # z 'script',
+          #   src: 'https://js.stripe.com/v2/'
+          # z 'script',
+          #   innerHTML: "
+          #     Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
+          #   "
           z 'script',
             innerHTML: "
               (function(d, s, id) {
