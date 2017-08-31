@@ -156,7 +156,10 @@ module.exports = class Model
     @installOverlay = new InstallOverlay()
     @imageViewOverlay = new ImageViewOverlay()
     @pushNotificationSheet = new PushNotificationSheet()
-    @portal?.setModels {@user, @game, @modal, @installOverlay, @getAppDialog}
+    @portal?.setModels {
+      @user, @game, @player, @clashRoyaleMatch, @modal,
+      @installOverlay, @getAppDialog
+    }
     @window = new Window {cookieSubject, @experiment}
 
     # if expNativeLanguageGroup is 'native'

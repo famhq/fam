@@ -30,6 +30,7 @@ module.exports = class GroupList
           z '.g-grid',
             z '.g-cols',
               _map groups, ({group, $header}) =>
+                group.type ?= 'general'
                 hasMemberPermission = @model.group.hasPermission group, me, {
                   level: 'member'
                 }
@@ -45,10 +46,11 @@ module.exports = class GroupList
                     z '.content',
                       z '.name', group.name or 'Nameless'
                       z '.count',
-                        _startCase(group.type) or 'General'
+                        @model.l.get "groupList.type#{_startCase(group.type)}"
                         if group.type isnt 'public'
                           [
                             z 'span.middot',
                               innerHTML: ' &middot; '
-                            "#{group.userIds?.length} members"
+                            "#{group.userIds?.length} "
+                            @model.l.get 'general.members'
                           ]

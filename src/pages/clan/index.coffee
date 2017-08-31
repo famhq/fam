@@ -30,7 +30,7 @@ module.exports = class ClanPage
         @model.clan.getById id
         .map (clan) -> clan or false
       else if player?.data?.clan?.tag
-        @model.clan.getById player?.data?.clan?.tag
+        @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
         .map (clan) -> clan or false
       else
         Rx.Observable.just false

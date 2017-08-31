@@ -56,8 +56,11 @@ module.exports = class ProfileChestsPage
         {
           title: "#{playerName}'s #{@model.l.get 'profileChestsPage.title'}"
           description:
-            "+#{player?.data?.chestCycle.countUntil.superMagical + 1} until " +
-            'Super Magical Chest'
+            if player?.data?.chestCycle # FIXME
+              "+#{player?.data?.chestCycle.countUntil.superMagical + 1} until " +
+              'Super Magical Chest'
+            else
+              'Track my chest cycle'
           twitter:
             image: "#{config.PUBLIC_API_URL}/di/crChestCycle/#{me?.id}.png"
           openGraph:

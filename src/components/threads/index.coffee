@@ -109,7 +109,7 @@ module.exports = class Threads
                                   color: colors.$tertiary300
                                   size: '14px'
                             z '.points',
-                              (thread.upvotes - thread.downvotes) or 0
+                              thread.upvotes or 0
                               z '.icon',
                                 z $pointsIcon,
                                   icon: 'add-circle'

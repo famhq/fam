@@ -29,7 +29,7 @@ module.exports = class ClanInfo
     metrics =
       info: _filter [
         {
-          name: 'Donations this wk'
+          name: @model.l.get 'clanInfo.weekDonations'
           value: FormatService.number clan?.data?.donations
         }
         {

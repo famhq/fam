@@ -31,7 +31,7 @@ module.exports = class UserDeckStats
 
     z '.z-user-deck-stats',
       z '.stat',
-        z '.name', 'W / L / D'
+        z '.name', @model.l.get 'deckInfo.winLossDraw'
         z '.value',
           FormatService.number userDeck?.wins
           ' / '
@@ -39,8 +39,8 @@ module.exports = class UserDeckStats
           ' / '
           FormatService.number userDeck?.draws
       z '.stat',
-        z '.name', 'Win %'
+        z '.name', @model.l.get 'deckInfo.winPercent'
         z '.value', winRate
       z '.stat',
-        z '.name', 'Community win %'
+        z '.name', @model.l.get 'deckInfo.communityWinPercent'
         z '.value', commWinRate

@@ -49,7 +49,6 @@ Pages =
   NewThreadPage: require './pages/new_thread'
   AddDeckPage: require './pages/add_deck'
   DeckPage: require './pages/deck'
-  DecksPage: require './pages/decks'
   DecksNewPage: require './pages/decks_new'
   CardPage: require './pages/card'
   CardsPage: require './pages/cards'
@@ -177,11 +176,6 @@ module.exports = class App
     route '/thread/:id/reply', 'ThreadReplyPage'
     route '/decks-new', 'DecksNewPage'
 
-    if breakpoint is 'desktop'
-      route ['/decks', '/deckGuide/:id'], 'DecksPage'
-    else
-      route ['/decks'], 'DecksPage'
-
     route ['/forum-signature', '/forumSignature'], 'ForumSignaturePage'
 
     route '/group/:id', 'GroupPage'
@@ -220,6 +214,7 @@ module.exports = class App
     route '/privacy', 'PrivacyPage'
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'
+      '/clash-royale-player/:playerId'
     ], 'ProfilePage'
     route [
       '/user/id/:id/chests'

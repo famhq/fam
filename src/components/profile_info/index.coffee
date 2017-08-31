@@ -2,6 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _take = require 'lodash/take'
 _startCase = require 'lodash/startCase'
+_snakeCase = require 'lodash/snakeCase'
 _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
 Rx = require 'rx-lite'
@@ -24,7 +25,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileInfo
-  constructor: ({@model, @router, user, @overlay$}) ->
+  constructor: ({@model, @router, user, player, @overlay$}) ->
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
@@ -55,8 +56,7 @@ module.exports = class ProfileInfo
       user: user
       me: @model.user.getMe()
       followingIds: @model.userFollower.getAllFollowingIds()
-      player: user.flatMapLatest ({id}) =>
-        @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      player: player
     }
 
   getWinRateFromStats: (stats) ->
@@ -122,11 +122,17 @@ module.exports = class ProfileInfo
       stats: [
         {
           name: @model.l.get 'profileInfo.statWins'
-          value: FormatService.number player?.data?.stats.wins
+          value: FormatService.number(
+            player?.data?.wins or
+            player?.data?.stats.wins # legacy
+          )
         }
         {
           name: @model.l.get 'profileInfo.statLosses'
-          value: FormatService.number player?.data?.stats.losses
+          value: FormatService.number(
+            player?.data?.losses or
+            player?.data?.stats.losses # legacy
+          )
         }
         {
           name: @model.l.get 'profileInfo.statWinRate'
@@ -134,23 +140,38 @@ module.exports = class ProfileInfo
         }
         {
           name: @model.l.get 'profileInfo.statFavoriteCard'
-          value: _startCase player?.data?.stats.favoriteCard
+          value: _startCase(
+            player?.data?.currentFavouriteCard?.name or
+            player?.data?.stats?.favoriteCard # legacy
+          )
         }
         {
           name: @model.l.get 'profileInfo.statThreeCrowns'
-          value: FormatService.number player?.data?.stats.threeCrowns
+          value: FormatService.number(
+            player?.data?.threeCrownWins or
+            player?.data?.stats.threeCrowns # legacy
+          )
         }
         {
           name: @model.l.get 'profileInfo.statCardsFound'
-          value: FormatService.number player?.data?.stats.cardsFound
+          value: FormatService.number(
+            player?.data?.cards?.length or
+            player?.data?.stats.cardsFound # legacy
+          )
         }
         {
           name: @model.l.get 'profileInfo.statMaxTrophies'
-          value: FormatService.number player?.data?.stats.maxTrophies
+          value: FormatService.number(
+            player?.data?.bestTrophies or
+            player?.data?.stats.maxTrophies # legacy
+          )
         }
         {
           name: @model.l.get 'profileInfo.statTotalDonations'
-          value: FormatService.number player?.data?.stats.totalDonations
+          value: FormatService.number(
+            player?.data?.totalDonations or
+            player?.data?.stats.totalDonations # legacy
+          )
         }
       ]
       ladder: @getTypeStats player?.data?.splits?.ladder
@@ -172,7 +193,7 @@ module.exports = class ProfileInfo
               z '.right',
                 z '.clan-info',
                   z '.clan-name', player?.data?.clan.name
-                  z '.clan-tag', "##{player?.data?.clan.tag}"
+                  z '.clan-tag', "#{player?.data?.clan.tag}"
                 z '.clan-badge',
                   z @$clanBadge, {clan: player?.data?.clan, size: '32px'}
           z '.g-cols',
@@ -188,10 +209,15 @@ module.exports = class ProfileInfo
                   icon: 'castle'
                   color: colors.$secondary500
               z '.text',
-                @model.l.get 'general.arena'
-                " #{player?.data?.arena?.number}"
-              if player?.data?.league
-                z '.text', player?.data?.league?.name
+                if player?.data?.arena?.number
+                  [
+                    @model.l.get 'general.arena'
+                    " #{player?.data?.arena?.number}"
+                  ]
+                else
+                  " #{player?.data?.arena?.name}"
+              # if player?.data?.league
+              #   z '.text', player?.data?.league?.name
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$levelIcon,
@@ -199,7 +225,7 @@ module.exports = class ProfileInfo
                   color: colors.$secondary500
               z '.text',
                 @model.l.get 'general.level'
-                " #{player?.data?.level}"
+                " #{player?.data?.expLevel or player?.data?.level}"
         z '.divider'
         z '.g-grid',
           z '.last-updated',
@@ -257,7 +283,35 @@ module.exports = class ProfileInfo
               slot: 'desktop728x90'
             }
 
-        if player?.data?.chestCycle
+        if player?.data?.upcomingChests
+          upcomingChests = player?.data.upcomingChests.items.slice 2, 10
+          z '.block',
+            z '.g-grid',
+              z '.title', @model.l.get 'profileChests.chestsTitle'
+              z '.chests', {
+                ontouchstart: (e) ->
+                  e?.stopPropagation()
+              },
+                _map upcomingChests, ({name, index}, i) ->
+                  chest = _snakeCase name
+                  z 'img.chest',
+                    src: "#{config.CDN_URL}/chests/#{chest}.png"
+                    width: 90
+                    height: 90
+              z '.chests-button',
+                z 'div',
+                  z @$moreDetailsButton,
+                    text: @model.l.get 'profileInfo.moreDetailsButtonText'
+                    onclick: =>
+                      @router.go "/user/id/#{user?.id}/chests"
+                if player?.data?.shopOffers
+                  z 'div',
+                    z @$shopOffersButton,
+                      text: @model.l.get 'profileChests.viewShopOffers'
+                      onclick: =>
+                        @router.go '/addon/clash-royale/shop-offers'
+        # legacy
+        else if player?.data?.chestCycle
           z '.block',
             z '.g-grid',
               z '.title', @model.l.get 'profileChests.chestsTitle'

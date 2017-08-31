@@ -191,7 +191,7 @@ gulp.task 'dist:sw', ->
     output:
       filename: 'service_worker.js'
     plugins: [
-      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
+      # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       # new webpack.optimize.UglifyJsPlugin
       #   mangle:
       #     except: ['process']
@@ -205,7 +205,7 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
     # devtool: 'source-map'
     plugins: [
       # new Visualizer()
-      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
+      # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       new webpack.optimize.UglifyJsPlugin
         mangle:
           except: ['process']

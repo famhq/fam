@@ -153,6 +153,8 @@ module.exports = class Tabs
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, isBarFlat,
       barTabWidth, hasAppBar, windowSize, vDomKey, barStyle} = options
 
+    tabs ?= [{$el: ''}]
+
     # if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
     #   @beforeUnmount true
     #   setTimeout =>

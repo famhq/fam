@@ -543,33 +543,6 @@
         }
       }
     },
-    "clay-nps": {
-      "version": "0.2.4",
-      "from": "clay-nps@latest",
-      "resolved": "https://registry.npmjs.org/clay-nps/-/clay-nps-0.2.4.tgz",
-      "dependencies": {
-        "bluebird": {
-          "version": "2.11.0",
-          "from": "bluebird@>=2.9.34 <3.0.0",
-          "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-2.11.0.tgz"
-        },
-        "clay-environment": {
-          "version": "0.3.3",
-          "from": "clay-environment@>=0.3.1 <0.4.0",
-          "resolved": "https://registry.npmjs.org/clay-environment/-/clay-environment-0.3.3.tgz"
-        },
-        "lodash": {
-          "version": "3.10.1",
-          "from": "lodash@>=3.7.0 <4.0.0",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
-        },
-        "rx-lite": {
-          "version": "2.5.2",
-          "from": "rx-lite@>=2.5.2 <3.0.0",
-          "resolved": "https://registry.npmjs.org/rx-lite/-/rx-lite-2.5.2.tgz"
-        }
-      }
-    },
     "clay-request": {
       "version": "0.5.0",
       "from": "git://github.com/claydotio/clay-request.git",
@@ -3420,7 +3393,7 @@
     "portal-gun": {
       "version": "0.4.1",
       "from": "git://github.com/claydotio/portal-gun.git",
-      "resolved": "git://github.com/claydotio/portal-gun.git#617d3de971cf8075080cd2c3f0e53278e5bab0b3",
+      "resolved": "git://github.com/claydotio/portal-gun.git#6585488d293426a383edcb1e813759f4540255e1",
       "dependencies": {
         "promiz": {
           "version": "1.0.3",

@@ -27,7 +27,8 @@ module.exports = class AddonPage
       meta: addon.map (addon) =>
         {
           title: @model.l.get "#{addon.key}.title", {file: 'addons'}
-          description: @model.l.get "#{addon.key}.description", {file: 'addons'}
+          description: addon.metaDescription or
+            @model.l.get "#{addon.key}.description", {file: 'addons'}
         }
     })
     @$appBar = new AppBar {@model}

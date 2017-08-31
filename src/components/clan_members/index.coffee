@@ -14,7 +14,8 @@ module.exports = class ClanMembers
     @$playerList = new PlayerList {
       @model
       selectedProfileDialogUser
-      players: clan.map ({players}) -> players
+      players: clan.map ({players}) ->
+        players
     }
     @state = z.state {}
 

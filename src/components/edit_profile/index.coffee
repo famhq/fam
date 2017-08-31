@@ -127,7 +127,7 @@ module.exports = class EditProfile
           }
 
       z '.section',
-        z '.title', 'Change avatar'
+        z '.title', @model.l.get 'editProfile.changeAvatar'
         if avatarUploadError
           avatarUploadError
         z '.flex',

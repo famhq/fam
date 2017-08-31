@@ -72,19 +72,19 @@ module.exports = class Clan
           {
             $menuIcon: @$infoIcon
             menuIconName: 'info'
-            $menuText: 'Info'
+            $menuText: @model.l.get 'general.info'
             $el: @$clanInfo
           }
           {
             $menuIcon: @$membersIcon
             menuIconName: 'friends'
-            $menuText: 'Members'
+            $menuText: @model.l.get 'general.members'
             $el: @$clanMembers
           }
           {
             $menuIcon: @$graphIcon
             menuIconName: 'stats'
-            $menuText: 'Graphs'
+            $menuText: @model.l.get 'general.graphs'
             $el: @$clanGraphs
           }
         ]

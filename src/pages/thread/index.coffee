@@ -3,7 +3,6 @@ Rx = require 'rx-lite'
 
 Head = require '../../components/head'
 Thread = require '../../components/thread'
-Decks = require '../../components/decks'
 Icon = require '../../components/icon'
 colors = require '../../colors'
 

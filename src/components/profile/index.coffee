@@ -12,7 +12,7 @@ if window?
   require './index.styl'
 
 module.exports = class Profile
-  constructor: ({@model, @router, user, @overlay$}) ->
+  constructor: ({@model, @router, user, player, @overlay$}) ->
     me = @model.user.getMe()
 
     @$tabs = new Tabs {@model}
@@ -21,10 +21,10 @@ module.exports = class Profile
     @$decksIcon = new Icon()
     @$graphIcon = new Icon()
 
-    @$profileInfo = new ProfileInfo {@model, @router, user, @overlay$}
-    @$profileDecks = new ProfileDecks {@model, @router, user}
-    @$profileMatches = new ProfileMatches {@model, @router, user}
-    @$profileGraphs = new ProfileGraphs {@model, @router, user}
+    @$profileInfo = new ProfileInfo {@model, @router, user, player, @overlay$}
+    @$profileDecks = new ProfileDecks {@model, @router, user, player}
+    @$profileMatches = new ProfileMatches {@model, @router, user, player}
+    @$profileGraphs = new ProfileGraphs {@model, @router, user, player}
 
     @state = z.state
       me: me
@@ -41,7 +41,7 @@ module.exports = class Profile
           {
             $menuIcon: @$infoIcon
             menuIconName: 'info'
-            $menuText: 'Info'
+            $menuText: @model.l.get 'general.info'
             $el: @$profileInfo
           }
           # {
@@ -53,13 +53,13 @@ module.exports = class Profile
           {
             $menuIcon: @$decksIcon
             menuIconName: 'decks'
-            $menuText: 'Decks'
+            $menuText: @model.l.get 'general.decks'
             $el: @$profileDecks
           }
           {
             $menuIcon: @$graphIcon
             menuIconName: 'stats'
-            $menuText: 'Graphs'
+            $menuText: @model.l.get 'general.graphs'
             $el: @$profileGraphs
           }
         ]

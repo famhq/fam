@@ -27,47 +27,57 @@ module.exports = class Social
     @$addIcon = new Icon()
     @$fab = new Fab()
 
-    @tabs = [
-      {
-        $menuIcon: @$groupsIcon
-        menuIconName: 'chat'
-        $menuText: @model.l.get 'communityPage.menuText'
-        $el: @$groups
-      }
-      {
+    language = @model.l.getLanguage()
+
+    tabs = language.map (lang) =>
+      tabs = [
+        {
+          $menuIcon: @$groupsIcon
+          menuIconName: 'chat'
+          $menuText: @model.l.get 'communityPage.menuText'
+          $el: @$groups
+        }
+        {
+          $menuIcon: @$recruitingIcon
+          menuIconName: 'recruit'
+          $menuText: @model.l.get 'general.recruiting'
+          $el: @$recruiting
+        }
+        {
+          $menuIcon: @$conversationsIcon
+          menuIconName: 'inbox'
+          $menuText: @model.l.get 'drawer.menuItemConversations'
+          $el: @$conversations
+        }
+      ]
+      pos = if lang is 'es' then 0 else 1
+      tabs.splice pos, 0, {
         $menuIcon: @$feedIcon
         menuIconName: 'rss'
         $menuText: @model.l.get 'communityPage.menuNews'
         $el: @$threads
       }
-      {
-        $menuIcon: @$recruitingIcon
-        menuIconName: 'recruit'
-        $menuText: @model.l.get 'general.recruiting'
-        $el: @$recruiting
-      }
-      {
-        $menuIcon: @$conversationsIcon
-        menuIconName: 'inbox'
-        $menuText: @model.l.get 'drawer.menuItemConversations'
-        $el: @$conversations
-      }
-    ]
+      tabs
+
+    selectedIndexAndTabs = Rx.Observable.combineLatest(
+      selectedIndex, tabs, (vals...) -> vals
+    )
 
     @state = z.state
-      selectedIndex: selectedIndex.map (index) =>
+      selectedIndex: selectedIndexAndTabs.map ([index, tabs]) ->
         # side effect
-        pageTitle.onNext @tabs[index].$menuText
+        pageTitle.onNext tabs[index].$menuText
         index
-      language: @model.l.getLanguage()
+      tabs: tabs
+      language: language
 
   render: =>
-    {selectedIndex, language} = @state.getValue()
+    {selectedIndex, language, tabs} = @state.getValue()
 
     z '.z-social',
       z @$tabs,
         isBarFixed: false
-        tabs: @tabs
+        tabs: tabs
       if selectedIndex is 2 or (selectedIndex is 1 and language is 'es')
         z '.fab',
           z @$fab,

@@ -1,3 +1,4 @@
+_map = require 'lodash/map'
 Environment = require 'clay-environment'
 
 config = require '../config'
@@ -28,7 +29,10 @@ module.exports = class Portal
     CLAY_APP: 'clay_app'
     WEB: 'web'
 
-  setModels: ({@user, @game, @modal, @installOverlay, @getAppDialog}) => null
+  setModels: (props) =>
+    {@user, @game, @player, @clashRoyaleMatch,
+      @modal, @installOverlay, @getAppDialog} = props
+    null
 
   call: (args...) =>
     unless window?
@@ -70,7 +74,9 @@ module.exports = class Portal
     @portal.on 'networkInformation.onOnline', @networkInformationOnOnline
 
     # SDK
-    @portal.on 'player.getMe', @playerGetMe
+    @portal.on 'clashRoyale.player.getMe', @clashRoyalePlayerGetMe
+    @portal.on 'clashRoyale.player.getByTag', @clashRoyalePlayerGetByTag
+    @portal.on 'clashRoyale.match.getAllByTag', @clashRoyaleMatchGetAllByTag
     @portal.on 'forum.share', @forumShare
 
     @portal.on 'browser.openWindow', ({url, target, options}) ->
@@ -193,10 +199,29 @@ module.exports = class Portal
       href: url
     }
 
-  playerGetMe: =>
-    @user.getMe().take(1).toPromise()
+  clashRoyalePlayerGetMe: =>
+    @user.getMe()
+    .flatMapLatest (me) =>
+      console.log me.id
+      @player.getByUserIdAndGameId me?.id, config.CLASH_ROYALE_ID
+      .map (player) -> player.data
+    .take(1).toPromise()
 
-  forumShare: =>
+  clashRoyalePlayerGetByTag: ({tag}) =>
+    @player.getByUserIdAndGameId tag, config.CLASH_ROYALE_ID
+    .map (player) ->
+      unless player
+        throw {statusCode: 404, info: 'player not found'}
+      player.data
+    .take(1).toPromise()
+
+  clashRoyaleMatchGetAllByTag: ({tag}) =>
+    @clashRoyaleMatch.getAllByPlayerId tag, config.CLASH_ROYALE_ID
+    .take(1).toPromise()
+    .then (matches) ->
+      _map matches, 'data'
+
+  forumShare: ->
     console.log 'TODO'
 
   pushRegister: ->

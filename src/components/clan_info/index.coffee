@@ -59,10 +59,8 @@ module.exports = class ClanInfo
     {isSplitsInfoCardVisible, clan, mePlayer, me,
       hasUpdatedClan, isRefreshing} = @state.getValue()
 
-    isMe = clan?.id and clan?.id is me?.id
-
     mePlayerIsVerified = mePlayer?.isVerified
-    clanPlayer = _find clan?.players, {playerId: mePlayer?.id}
+    clanPlayer = _find clan?.data?.memberList, {tag: "##{mePlayer?.id}"}
     isLeader = clanPlayer?.role in ['coLeader', 'leader']
 
     isClaimed = clan?.creatorId
@@ -71,20 +69,27 @@ module.exports = class ClanInfo
     metrics =
       info: _filter [
         {
-          name: 'Donations this wk'
-          value: FormatService.number clan?.data?.donations
+          name: @model.l.get 'clanInfo.weekDonations'
+          value: FormatService.number(
+            clan?.data?.donationsPerWeek or
+            clan?.data?.donations or 0 # legacy
+          )
         }
         {
           name: @model.l.get 'clanInfo.type'
-          value: _startCase clan?.data?.type
+          value: @model.l.get "clanInfo.type#{_startCase clan?.data?.type}"
         }
         {
           name: @model.l.get 'clanInfo.minTrophies'
-          value: FormatService.number clan?.data?.minTrophies
+          value: FormatService.number(
+            clan?.data?.requiredTrophies or
+            clan?.data?.minTrophies or 0 # legacy
+          )
         }
         {
           name: @model.l.get 'clanInfo.region'
-          value: clan?.data?.region
+          value: clan?.data?.location?.name or
+            clan?.data?.region # legacy
         }
         if clan?.password
           {
@@ -93,7 +98,8 @@ module.exports = class ClanInfo
           }
       ]
 
-    memberCount = clan?.players?.length
+    memberCount = clan?.data?.memberList?.length or
+      clan?.players?.length # legacy
 
     z '.z-clan-info',
       z '.header',
@@ -112,13 +118,19 @@ module.exports = class ClanInfo
                 z @$trophyIcon,
                   icon: 'trophy'
                   color: colors.$secondary500
-              z '.text', FormatService.number clan?.data?.trophies
+              z '.text', FormatService.number(
+                clan?.data?.clanScore or
+                clan?.data?.trophies # legacy
+              )
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$donationsIcon,
                   icon: 'cards'
                   color: colors.$secondary500
-              z '.text', FormatService.number clan?.data?.donations
+              z '.text', FormatService.number(
+                clan?.data?.donationsPerWeek or
+                clan?.data?.donations or 0 # legacy
+              )
               if clan?.data?.league
                 z '.text', clan?.data?.league?.name
             z '.g-col.g-xs-4',
@@ -132,7 +144,8 @@ module.exports = class ClanInfo
         z '.g-grid',
           z '.last-updated',
             z '.time',
-              @model.l.get 'clanInfo.lastUpdateTime'
+              @model.l.get 'clanInfo.lastUpdatedTime'
+              ' '
               moment(clan?.lastUpdateTime).fromNowModified()
             if clan?.isUpdatable and not hasUpdatedClan
               z '.refresh',

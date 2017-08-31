@@ -6,6 +6,11 @@ module.exports = class Player
   getByUserIdAndGameId: (userId, gameId, {embed} = {}) =>
     @auth.stream "#{@namespace}.getByUserIdAndGameId", {userId, gameId, embed}
 
+  getByPlayerIdAndGameId: (playerId, gameId, {embed} = {}) =>
+    @auth.stream "#{@namespace}.getByPlayerIdAndGameId", {
+      playerId, gameId, embed
+    }
+
   getTop: =>
     @auth.stream "#{@namespace}.getTop", {}
 

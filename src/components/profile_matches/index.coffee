@@ -16,7 +16,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileMatches
-  constructor: ({@model, @router, user}) ->
+  constructor: ({@model, @router, user, player}) ->
     matches = user.flatMapLatest ({id}) =>
       @model.clashRoyaleMatch.getAllByUserId id, {sort: 'recent'}
 

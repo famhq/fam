@@ -40,11 +40,11 @@ addons = [
       username: 'austin'
       name: 'Austin'
   }
-  # {
-  #   id: '123'
-  #   key: 'test'
-  #   url: 'http://192.168.0.109.xip.io:3004/'
-  # }
+  {
+    id: '123'
+    key: 'test'
+    url: 'http://192.168.0.109.xip.io:3004/'
+  }
   # no https...
   # {
   #   id: '351e143d-337f-447e-880f-78e682c1183b'

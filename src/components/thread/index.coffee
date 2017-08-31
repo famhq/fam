@@ -107,7 +107,7 @@ module.exports = class Thread
       level: 'admin'
     }
 
-    points = if thread then thread.upvotes - thread.downvotes else 0
+    points = if thread then thread.upvotes else 0
 
     z '.z-thread',
       z @$appBar, {
@@ -230,10 +230,10 @@ module.exports = class Thread
                   onclick: =>
                     @model.thread.voteById thread.id, {vote: 'down'}
             z '.score',
-              "#{FormatService.number points} points"
+              "#{FormatService.number points} #{@model.l.get('thread.points')}"
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               "#{FormatService.number thread?.commentCount} "
-              @model.l.get 'thread.score'
+              @model.l.get 'thread.comments'
 
         z '.comments',
           if threadComments and _isEmpty threadComments

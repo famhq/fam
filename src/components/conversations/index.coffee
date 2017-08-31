@@ -32,7 +32,7 @@ module.exports = class Conversations
       z '.g-grid',
         if conversations and _isEmpty conversations
           z '.no-conversations',
-            'No conversations found'
+            @model.l.get 'conversations.noneFound'
         else if conversations
           _map conversations, ({conversation, $avatar}) =>
             otherUser = _find conversation.users, (user) ->

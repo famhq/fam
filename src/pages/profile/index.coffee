@@ -43,13 +43,19 @@ module.exports = class ProfilePage
         @hasBottomBanner = false
         @model.user.getMe()
 
+    player = requests.flatMapLatest ({route}) =>
+      if route.params.playerId
+        @model.player.getByPlayerIdAndGameId(
+          route.params.playerId, config.CLASH_ROYALE_ID
+        )
+      else
+        user.flatMapLatest ({id}) =>
+          @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+          .map (player) ->
+            return player or {}
+
     @hideDrawer = usernameAndId.map ([username, id]) ->
       username or id
-
-    player = user.flatMapLatest ({id}) =>
-      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
-      .map (player) ->
-        return player or {}
 
     @isShareSheetVisible = new Rx.BehaviorSubject false
     @overlay$ = new Rx.BehaviorSubject null
@@ -71,7 +77,7 @@ module.exports = class ProfilePage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$profile = new Profile {@model, @router, user, @overlay$}
+    @$profile = new Profile {@model, @router, user, player, @overlay$}
     @$profileLanding = new ProfileLanding {@model, @router}
     @$bottomBar = new BottomBar {@model, @router, requests}
     @$shareSheet = new ShareSheet {

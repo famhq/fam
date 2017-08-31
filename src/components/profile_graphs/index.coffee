@@ -15,7 +15,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileGraphs
-  constructor: ({@model, @router, user}) ->
+  constructor: ({@model, @router, user, player}) ->
     @$communityButton = new PrimaryButton()
     @$adsenseAd = new AdsenseAd()
 

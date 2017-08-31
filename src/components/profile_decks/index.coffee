@@ -17,7 +17,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileDecks
-  constructor: ({@model, @router, user}) ->
+  constructor: ({@model, @router, user, player}) ->
     userDecks = user.flatMapLatest ({id}) =>
       @model.clashRoyaleUserDeck.getAllByUserId id, {sort: 'recent'}
 
@@ -35,26 +35,26 @@ module.exports = class ProfileDecks
           true
         else
           false
-      currentDeck: userDecks.map (userDecks) ->
+      currentDeck: userDecks.map (userDecks) =>
         # userDeck = _find userDecks, {isCurrentDeck: true}
         userDeck = userDecks?[0]
         if userDeck?.deck
           {
             userDeck: userDeck
             $deck: new DeckCards {deck: userDeck?.deck}
-            $stats: new UserDeckStats {userDeck}
+            $stats: new UserDeckStats {@model, userDeck}
           }
-      otherDecks: userDecks.map (userDecks) ->
+      otherDecks: userDecks.map (userDecks) =>
         # userDecks = _filter userDecks, ({isCurrentDeck}) ->
         #   not isCurrentDeck
         # _filter _map userDecks, (userDeck) ->
         otherDecks = _takeRight(userDecks, userDecks?.length - 1)
-        _filter _map otherDecks, (userDeck) ->
+        _filter _map otherDecks, (userDeck) =>
           if userDeck?.deck
             {
               userDeck: userDeck
               $deck: new DeckCards {deck: userDeck?.deck}
-              $stats: new UserDeckStats {userDeck}
+              $stats: new UserDeckStats {@model, userDeck}
             }
           else
             console.log 'missing deck', userDeck

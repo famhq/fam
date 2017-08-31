@@ -1,5 +1,6 @@
 z = require 'zorium'
-_ = require 'lodash'
+_map = require 'lodash/map'
+_range = require 'lodash/range'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 
@@ -146,7 +147,7 @@ module.exports = class Nps
                       @npsValue.onNext e.currentTarget.value
                       @state.set npsSet: true
                 z '.numbers',
-                  _.map _.range(NPS_MIN, NPS_MAX + 1), (number) =>
+                  _map _range(NPS_MIN, NPS_MAX + 1), (number) =>
                     z '.number', {
                       onclick: =>
                         @npsValue.onNext number
