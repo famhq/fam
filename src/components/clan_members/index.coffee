@@ -13,6 +13,7 @@ module.exports = class ClanMembers
   constructor: ({@model, @router, clan, selectedProfileDialogUser}) ->
     @$playerList = new PlayerList {
       @model
+      @router
       selectedProfileDialogUser
       players: clan.map ({players}) ->
         players

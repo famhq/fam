@@ -1,20 +1,19 @@
 # Starfi.re
 
-For curious eyes. Eventually we'll probably open this up more to contributions, etc...
-
 ## Manifesto
-The goal with Starfire is to build an open community for mobile games, starting
-with Clash Royale. I believe in keeping things as transparent as possible,
-which is why I have the client-side code publicly visible. I'll eventually put
-the backend code on here once I have time to verify that I don't have any
-passwords or keys in the git history.
+The goal with Starfire is to build an open community for mobile games, starting with Clash Royale. There are plenty of tools and websites out there trying to build something like this, but where I think this can be better is in that  developer-focused, transparent and open mindset. In sticking with being as transparent as possible, I have the client-side code publicly visible.  I'll eventually put the backend code on here once I have time to verify that I  don't have any passwords or keys in the git history.
 
-The "team" is just me (Austin) right now, and I'd prefer to grow through
-your contributions. Starfire has a developer platform where you can build your
-own tools on top of our data and userbase (millions of users) and keep 100% of
-your ad revenue.
+### Backstory
 
 
+### The "team"
+
+Starfire currently consists of just me (Austin) right now, and I'd prefer to grow through your contributions. There is a developer platform where you can build your own tools on top of our data and userbase (millions of users) and keep 100% of your ad revenue.
+
+---
+
+
+#### Misc (mostly for me right now)
 #### Dev SSL
 
 Note that you need to specify full xip host (multi-level wildcards are not allowed)

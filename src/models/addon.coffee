@@ -40,11 +40,20 @@ addons = [
       username: 'austin'
       name: 'Austin'
   }
-  {
-    id: '123'
-    key: 'test'
-    url: 'http://192.168.0.109.xip.io:3004/'
-  }
+  # {
+  #   id: 'db0593b5-114f-43db-9d98-0b0a88ce3d12'
+  #   key: 'popularDecks'
+  #   url: 'https://cr-api.com/decks'
+  #   iconUrl: 'https://cdn.wtf/d/images/starfire/cards/archers_small.png'
+  #   creator:
+  #     username: 'smlbiobot'
+  #     name: 'smlbiobot'
+  # }
+  # {
+  #   id: '123'
+  #   key: 'test'
+  #   url: 'http://192.168.0.109.xip.io:3004/'
+  # }
   # no https...
   # {
   #   id: '351e143d-337f-447e-880f-78e682c1183b'

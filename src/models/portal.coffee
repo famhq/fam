@@ -30,7 +30,7 @@ module.exports = class Portal
     WEB: 'web'
 
   setModels: (props) =>
-    {@user, @game, @player, @clashRoyaleMatch,
+    {@user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck
       @modal, @installOverlay, @getAppDialog} = props
     null
 
@@ -77,6 +77,7 @@ module.exports = class Portal
     @portal.on 'clashRoyale.player.getMe', @clashRoyalePlayerGetMe
     @portal.on 'clashRoyale.player.getByTag', @clashRoyalePlayerGetByTag
     @portal.on 'clashRoyale.match.getAllByTag', @clashRoyaleMatchGetAllByTag
+    @portal.on 'clashRoyale.deck.getAllByTag', @clashRoyaleDeckGetAllByTag
     @portal.on 'forum.share', @forumShare
 
     @portal.on 'browser.openWindow', ({url, target, options}) ->
@@ -202,13 +203,12 @@ module.exports = class Portal
   clashRoyalePlayerGetMe: =>
     @user.getMe()
     .flatMapLatest (me) =>
-      console.log me.id
       @player.getByUserIdAndGameId me?.id, config.CLASH_ROYALE_ID
       .map (player) -> player.data
     .take(1).toPromise()
 
   clashRoyalePlayerGetByTag: ({tag}) =>
-    @player.getByUserIdAndGameId tag, config.CLASH_ROYALE_ID
+    @player.getByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID
     .map (player) ->
       unless player
         throw {statusCode: 404, info: 'player not found'}
@@ -220,6 +220,10 @@ module.exports = class Portal
     .take(1).toPromise()
     .then (matches) ->
       _map matches, 'data'
+
+  clashRoyaleDeckGetAllByTag: ({tag}) =>
+    @clashRoyalePlayerDeck.getAllByPlayerId tag, config.CLASH_ROYALE_ID
+    .take(1).toPromise()
 
   forumShare: ->
     console.log 'TODO'

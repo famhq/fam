@@ -10,7 +10,7 @@ if window?
   require './index.styl'
 
 module.exports = class Addon
-  constructor: ({@model, @router, addon, @isDonateDialogVisible}) ->
+  constructor: ({@model, @router, addon, testUrl}) ->
     player = @model.user.getMe().flatMapLatest ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (player) ->
@@ -22,9 +22,10 @@ module.exports = class Addon
 
     @state = z.state
       addon: addon
+      testUrl: testUrl
 
   render: =>
-    {addon} = @state.getValue()
+    {addon, testUrl} = @state.getValue()
 
     z '.z-addon',
       if addon?.id is 'f537f4b0-08cb-453c-8122-ae80e4163226'
@@ -35,4 +36,4 @@ module.exports = class Addon
         z @$forumSignature
       else
         z 'iframe.iframe',
-          src: addon?.url.replace '{lang}', @model.l.getLanguageStr()
+          src: testUrl or addon?.url.replace '{lang}', @model.l.getLanguageStr()

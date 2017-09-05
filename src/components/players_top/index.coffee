@@ -17,6 +17,7 @@ module.exports = class PlayersTop
 
     @$playerList = new PlayerList {
       @model
+      @router
       @selectedProfileDialogUser
       players: @model.player.getTop()
     }

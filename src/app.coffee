@@ -161,7 +161,7 @@ module.exports = class App
     # route '/', 'HomePage'
     route ['/friends/:action', '/friends'], 'FriendsPage'
     route '/videos', 'VideosPage'
-    route '/addon/clash-royale/:key', 'AddonPage'
+    route ['/addon', '/addon/clash-royale/:key'], 'AddonPage'
     route '/addons', 'AddonsPage'
     route '/clan', 'ClanPage'
     route '/conversation/:conversationId', 'ConversationPage'

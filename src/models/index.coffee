@@ -14,7 +14,7 @@ Clan = require './clan'
 ClanRecordType = require './clan_record_type'
 ClashRoyaleAPI = require './clash_royale_api'
 ClashRoyaleDeck = require './clash_royale_deck'
-ClashRoyaleUserDeck = require './clash_royale_user_deck'
+ClashRoyalePlayerDeck = require './clash_royale_player_deck'
 ClashRoyaleCard = require './clash_royale_card'
 ClashRoyaleMatch = require './clash_royale_match'
 ChatMessage = require './chat_message'
@@ -130,7 +130,7 @@ module.exports = class Model
     @clanRecordType = new ClanRecordType {@auth}
     @clashRoyaleAPI = new ClashRoyaleAPI {@auth}
     @clashRoyaleDeck = new ClashRoyaleDeck {@auth}
-    @clashRoyaleUserDeck = new ClashRoyaleUserDeck {@auth}
+    @clashRoyalePlayerDeck = new ClashRoyalePlayerDeck {@auth}
     @clashRoyaleCard = new ClashRoyaleCard {@auth, @l}
     @clashRoyaleMatch = new ClashRoyaleMatch {@auth}
     @event = new Event {@auth}
@@ -157,7 +157,7 @@ module.exports = class Model
     @imageViewOverlay = new ImageViewOverlay()
     @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {
-      @user, @game, @player, @clashRoyaleMatch, @modal,
+      @user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck, @modal,
       @installOverlay, @getAppDialog
     }
     @window = new Window {cookieSubject, @experiment}

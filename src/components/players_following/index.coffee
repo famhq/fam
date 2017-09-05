@@ -13,6 +13,7 @@ module.exports = class PlayersFollowing
 
     @$playerList = new PlayerList {
       @model
+      @router
       @selectedProfileDialogUser
       players: players
     }

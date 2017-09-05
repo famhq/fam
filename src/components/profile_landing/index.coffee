@@ -23,6 +23,7 @@ module.exports = class ProfileLanding
 
     @$playerList = new PlayerList {
       @model
+      @router
       @selectedProfileDialogUser
       players: @model.player.getTop().map (players) ->
         _take players, TOP_PLAYER_COUNT

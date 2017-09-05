@@ -19,8 +19,8 @@ module.exports = class ProfileGraphs
     @$communityButton = new PrimaryButton()
     @$adsenseAd = new AdsenseAd()
 
-    recordTypes = user.flatMapLatest ({id}) =>
-      @model.gameRecordType.getAllByUserIdAndGameId(
+    recordTypes = player.flatMapLatest ({id}) =>
+      @model.gameRecordType.getAllByPlayerIdAndGameId(
         id
         config.CLASH_ROYALE_ID
         {embed: ['meValues']}
@@ -31,7 +31,7 @@ module.exports = class ProfileGraphs
         _map recordTypes, (recordType) ->
           {
             recordType
-            graphSeries: _clone(recordType.userValues)?.reverse()
+            graphSeries: _clone(recordType.playerValues)?.reverse()
             $graph: new GraphWidget()
           }
     }

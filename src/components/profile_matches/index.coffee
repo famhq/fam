@@ -7,7 +7,7 @@ _isEmpty = require 'lodash/isEmpty'
 
 FormatService = require '../../services/format'
 DeckCards = require '../deck_cards'
-UserDeckStats = require '../user_deck_stats'
+PlayerDeckStats = require '../player_deck_stats'
 UiCard = require '../ui_card'
 config = require '../../config'
 colors = require '../../colors'
@@ -26,10 +26,10 @@ module.exports = class ProfileMatches
         console.log match
         _map matches, (match) ->
           {
-            # userDeck: userDeck
+            # playerDeck: playerDeck
             # # player1
-            # $deck: new DeckCards {deck: userDeck?.deck}
-            # $stats: new UserDeckStats {userDeck}
+            # $deck: new DeckCards {deck: playerDeck?.deck}
+            # $stats: new PlayerDeckStats {playerDeck}
           }
     }
 

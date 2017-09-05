@@ -10,8 +10,8 @@ if window?
 module.exports = class DeckInfo
   constructor: ({@model, @router, deck}) ->
     me = @model.user.getMe()
-    userDeck = deck.flatMapLatest (deck) =>
-      @model.clashRoyaleUserDeck.getByDeckId deck.id
+    playerDeck = deck.flatMapLatest (deck) =>
+      @model.clashRoyalePlayerDeck.getByDeckId deck.id
 
     @$deckCards = new DeckCards {
       @model
@@ -22,16 +22,16 @@ module.exports = class DeckInfo
     @state = z.state
       me: me
       deck: deck
-      userDeck: userDeck
+      playerDeck: playerDeck
 
   render: =>
-    {me, deck, userDeck} = @state.getValue()
+    {me, deck, playerDeck} = @state.getValue()
 
 
-    winsAndLosses = userDeck?.wins + userDeck?.losses
+    winsAndLosses = playerDeck?.wins + playerDeck?.losses
     winRate = FormatService.percentage(
       if winsAndLosses and not isNaN winsAndLosses
-      then userDeck?.wins / winsAndLosses
+      then playerDeck?.wins / winsAndLosses
       else 0
     )
 
@@ -60,11 +60,11 @@ module.exports = class DeckInfo
           z '.stat',
             z '.name', 'W / L / D'
             z '.value',
-              FormatService.number userDeck?.wins
+              FormatService.number playerDeck?.wins
               ' / '
-              FormatService.number userDeck?.losses
+              FormatService.number playerDeck?.losses
               ' / '
-              FormatService.number userDeck?.draws
+              FormatService.number playerDeck?.draws
           z '.stat',
             z '.name', 'Win rate'
             z '.value', winRate

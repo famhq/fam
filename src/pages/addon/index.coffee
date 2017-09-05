@@ -19,21 +19,24 @@ module.exports = class AddonPage
       route.params.key
     addon = key.flatMapLatest (key) =>
       @model.addon.getByKey _camelCase key
+    testUrl = requests.map ({req}) ->
+      req.query.testUrl
 
     @$head = new Head({
       @model
       requests
       serverData
       meta: addon.map (addon) =>
-        {
-          title: @model.l.get "#{addon.key}.title", {file: 'addons'}
-          description: addon.metaDescription or
-            @model.l.get "#{addon.key}.description", {file: 'addons'}
-        }
+        if addon
+          {
+            title: @model.l.get "#{addon.key}.title", {file: 'addons'}
+            description: addon.metaDescription or
+              @model.l.get "#{addon.key}.description", {file: 'addons'}
+          }
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$addon = new Addon {@model, @router, serverData, addon}
+    @$addon = new Addon {@model, @router, serverData, addon, testUrl}
 
     @state = z.state
       windowSize: @model.window.getSize()

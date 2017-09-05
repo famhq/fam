@@ -43,10 +43,13 @@ module.exports = class ProfilePage
         @hasBottomBanner = false
         @model.user.getMe()
 
-    player = requests.flatMapLatest ({route}) =>
-      if route.params.playerId
+    routePlayerId = requests. map ({route}) ->
+      if route.params.playerId then route.params.playerId else false
+
+    player = routePlayerId.flatMapLatest (playerId) =>
+      if playerId
         @model.player.getByPlayerIdAndGameId(
-          route.params.playerId, config.CLASH_ROYALE_ID
+          playerId, config.CLASH_ROYALE_ID
         )
       else
         user.flatMapLatest ({id}) =>
@@ -92,6 +95,7 @@ module.exports = class ProfilePage
       routeUsername: username
       user: user
       routeId: id
+      routePlayerId: routePlayerId
       isShareSheetVisible: @isShareSheetVisible
       me: me
       player: player
@@ -101,11 +105,11 @@ module.exports = class ProfilePage
   renderHead: => @$head
 
   render: =>
-    {windowSize, player, me, routeUsername, routeId, user,
+    {windowSize, player, me, routeUsername, routeId, routePlayerId, user,
       isShareSheetVisible, overlay$} = @state.getValue()
 
     isTagSet = player?.id
-    isOtherProfile = routeId or routeUsername
+    isOtherProfile = routeId or routeUsername or routePlayerId
     isMe = me?.id is user?.id or not user
     playerName = player?.data?.name
 
@@ -121,7 +125,7 @@ module.exports = class ProfilePage
 
     path = if username then "/user/#{username}" else "/user/id/#{id}"
 
-    $button = if routeUsername or routeId then @$buttonBack else @$buttonMenu
+    $button = if isOtherProfile then @$buttonBack else @$buttonMenu
 
     z '.p-profile', {
       style:

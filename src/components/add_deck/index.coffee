@@ -36,7 +36,7 @@ module.exports = class AddDeck
     {selectedCards, isLoading} = @state.getValue()
     if selectedCards.length is CARDS_PER_DECK and not isLoading
       @state.set isLoading: true
-      @model.clashRoyaleUserDeck.create {
+      @model.clashRoyalePlayerDeck.create {
         cardIds: _map selectedCards, 'id'
         cardKeys: _map selectedCards, 'key'
         name: @nameValue.getValue()

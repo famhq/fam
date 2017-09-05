@@ -49,7 +49,6 @@ module.exports = class ClanInfo
       # isSplitsInfoCardVisible: window? and not localStorage?['hideClanSplitsInfo']
       me: me
       hasUpdatedClan: false
-      isUpdatable: false
       mePlayer: me.flatMapLatest ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       clan: clan
@@ -147,7 +146,7 @@ module.exports = class ClanInfo
               @model.l.get 'clanInfo.lastUpdatedTime'
               ' '
               moment(clan?.lastUpdateTime).fromNowModified()
-            if clan?.isUpdatable and not hasUpdatedClan
+            if @model.clan.canRefresh clan, hasUpdatedClan
               z '.refresh',
                 if isRefreshing
                   '...'

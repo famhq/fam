@@ -5,12 +5,14 @@ _startCase = require 'lodash/startCase'
 _snakeCase = require 'lodash/snakeCase'
 _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
+_filter = require 'lodash/filter'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 moment = require 'moment'
 
 Icon = require '../icon'
 UiCard = require '../ui_card'
+Dialog = require '../dialog'
 RequestNotificationsCard = require '../request_notifications_card'
 ClanBadge = require '../clan_badge'
 PrimaryButton = require '../primary_button'
@@ -36,6 +38,7 @@ module.exports = class ProfileInfo
     @$shopOffersButton = new SecondaryButton()
     @$verifyAccountButton = new SecondaryButton()
     @$clanBadge = new ClanBadge()
+    @$dialog = new Dialog()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
     @$adsenseAd = new AdsenseAd()
 
@@ -174,13 +177,16 @@ module.exports = class ProfileInfo
           )
         }
       ]
-      ladder: @getTypeStats player?.data?.splits?.ladder
+      ladder: @getTypeStats player?.data?.splits?.PvP or
+        player?.data?.splits?.ladder
       grandChallenge: @getTypeStats player?.data?.splits?.grandChallenge
       classicChallenge: @getTypeStats player?.data?.splits?.classicChallenge
 
     lastUpdateTime = if player?.lastDataUpdateTime > player?.lastMatchesUpdateTime \
                      then player?.lastDataUpdateTime
                      else player?.lastMatchesUpdateTime
+
+    canRefresh = @model.player.canRefresh player, hasUpdatedPlayer
 
     z '.z-profile-info',
       z '.header',
@@ -209,13 +215,13 @@ module.exports = class ProfileInfo
                   icon: 'castle'
                   color: colors.$secondary500
               z '.text',
-                if player?.data?.arena?.number
+                if player?.data?.arena?.name
+                  player?.data?.arena?.name
+                else
                   [
                     @model.l.get 'general.arena'
                     " #{player?.data?.arena?.number}"
                   ]
-                else
-                  " #{player?.data?.arena?.name}"
               # if player?.data?.league
               #   z '.text', player?.data?.league?.name
             z '.g-col.g-xs-4',
@@ -233,21 +239,38 @@ module.exports = class ProfileInfo
               @model.l.get 'profileInfo.lastUpdatedTime'
               ' '
               moment(lastUpdateTime).fromNowModified()
-            if player?.isUpdatable and not hasUpdatedPlayer
-              z '.refresh',
-                if isRefreshing
-                  '...'
-                else
-                  z @$refreshIcon,
-                    icon: 'refresh'
-                    isTouchTarget: false
-                    color: colors.$primary500
-                    onclick: =>
+            z '.refresh',
+              if isRefreshing
+                '...'
+              else
+                z @$refreshIcon,
+                  icon: 'refresh'
+                  isTouchTarget: false
+                  color: if canRefresh \
+                         then colors.$primary500
+                         else colors.$tertiary300
+                  onclick: =>
+                    if canRefresh
                       tag = player?.id
                       @state.set isRefreshing: true
                       @model.clashRoyaleAPI.refreshByPlayerId tag
                       .then =>
                         @state.set hasUpdatedPlayer: true, isRefreshing: false
+                    else
+                      @overlay$.onNext z @$dialog, {
+                        isVanilla: true
+                        $title: @model.l.get 'profileInfo.waitTitle'
+                        $content: @model.l.get 'profileInfo.waitDescription', {
+                          replacements:
+                            number: '10'
+                        }
+                        onLeave: =>
+                          @overlay$.onNext null
+                        submitButton:
+                          text: @model.l.get 'installOverlay.closeButtonText'
+                          onclick: =>
+                            @overlay$.onNext null
+                      }
 
           if isMe and player and not player?.isVerified
             z '.verify-button',
@@ -284,7 +307,8 @@ module.exports = class ProfileInfo
             }
 
         if player?.data?.upcomingChests
-          upcomingChests = player?.data.upcomingChests.items.slice 2, 10
+          upcomingChests = _filter player?.data.upcomingChests.items, (item) ->
+            item.index? and item.index < 8
           z '.block',
             z '.g-grid',
               z '.title', @model.l.get 'profileChests.chestsTitle'

@@ -72,7 +72,7 @@ module.exports = class ShopOffers
               @model.l.get 'profileInfo.lastUpdatedTime'
               ' '
               moment(lastUpdateTime).fromNowModified()
-            if player?.isUpdatable and not hasUpdatedPlayer
+            if @model.player.canRefresh player
               z '.refresh',
                 if isRefreshing
                   '...'

@@ -2,6 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _find = require 'lodash/find'
 _chunk = require 'lodash/chunk'
+_filter = require 'lodash/filter'
 _startCase = require 'lodash/startCase'
 _camelCase = require 'lodash/camelCase'
 _snakeCase = require 'lodash/snakeCase'
@@ -45,7 +46,8 @@ module.exports = class ProfileChests
             e?.stopPropagation()
         },
           if player?.data.upcomingChests
-            upcomingChests = player?.data.upcomingChests.items.slice 2, 10
+            upcomingChests = _filter player?.data.upcomingChests.items, (item) ->
+              item.index? and item.index < 8
             _map upcomingChests, ({name, index}) =>
               chest = _snakeCase name
               z '.chest',
@@ -103,16 +105,17 @@ module.exports = class ProfileChests
                   )?.index
                 else # legacy
                   index = player?.data.chestCycle.countUntil[chest]
-                z '.chest',
-                  z '.image',
-                    style:
-                      backgroundImage:
-                        "url(#{config.CDN_URL}/chests/" +
-                        "#{_snakeCase(chest)}_chest.png)"
-                  z '.info',
-                    z '.name', @model.l.get "crChest.#{chest}"
-                    z '.count',
-                      "+#{index}"
+                if index
+                  z '.chest',
+                    z '.image',
+                      style:
+                        backgroundImage:
+                          "url(#{config.CDN_URL}/chests/" +
+                          "#{_snakeCase(chest)}_chest.png)"
+                    z '.info',
+                      z '.name', @model.l.get "crChest.#{chest}"
+                      z '.count',
+                        "+#{index}"
 
 
         z @$shareButton,

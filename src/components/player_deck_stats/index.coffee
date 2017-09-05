@@ -6,25 +6,25 @@ Icon = require '../../components/icon'
 if window?
   require './index.styl'
 
-module.exports = class UserDeckStats
-  constructor: ({@model, @router, userDeck}) ->
+module.exports = class PlayerDeckStats
+  constructor: ({@model, @router, playerDeck}) ->
     @state = z.state
-      userDeck: userDeck
+      playerDeck: playerDeck
 
   render: =>
-    {userDeck} = @state.getValue()
+    {playerDeck} = @state.getValue()
 
-    winsAndLosses = userDeck?.wins + userDeck?.losses
+    winsAndLosses = playerDeck?.wins + playerDeck?.losses
     winRate = FormatService.percentage(
       if winsAndLosses and not isNaN winsAndLosses
-      then userDeck?.wins / winsAndLosses
+      then playerDeck?.wins / winsAndLosses
       else 0
     )
 
-    commWinsAndLosses = userDeck?.deck?.wins + userDeck?.deck?.losses
+    commWinsAndLosses = playerDeck?.deck?.wins + playerDeck?.deck?.losses
     commWinRate = FormatService.percentage(
       if winsAndLosses and not isNaN commWinsAndLosses
-      then userDeck?.deck?.wins / commWinsAndLosses
+      then playerDeck?.deck?.wins / commWinsAndLosses
       else 0
     )
 
@@ -33,11 +33,11 @@ module.exports = class UserDeckStats
       z '.stat',
         z '.name', @model.l.get 'deckInfo.winLossDraw'
         z '.value',
-          FormatService.number userDeck?.wins
+          FormatService.number playerDeck?.wins
           ' / '
-          FormatService.number userDeck?.losses
+          FormatService.number playerDeck?.losses
           ' / '
-          FormatService.number userDeck?.draws
+          FormatService.number playerDeck?.draws
       z '.stat',
         z '.name', @model.l.get 'deckInfo.winPercent'
         z '.value', winRate

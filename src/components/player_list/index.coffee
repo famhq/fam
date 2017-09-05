@@ -10,7 +10,7 @@ if window?
   require './index.styl'
 
 module.exports = class PlayerList
-  constructor: ({@model, players, @selectedProfileDialogUser}) ->
+  constructor: ({@model, @router, players, @selectedProfileDialogUser}) ->
     @state = z.state
       players: players.map (players) ->
         _map players, (player) ->
@@ -26,12 +26,16 @@ module.exports = class PlayerList
 
     z '.z-player-list',
       _map players, ({$avatar, $trophyIcon, $verifiedIcon, player}) =>
-        z '.player', {
-          onclick: =>
+        z 'a.player', {
+          href: "/clash-royale-player/#{player.playerId}"
+          onclick: (e) =>
+            e?.preventDefault()
             if onclick
               onclick player
             else if player.player?.verifiedUser
               @selectedProfileDialogUser.onNext player.player?.verifiedUser
+            else
+              @router.go "/clash-royale-player/#{player.playerId}"
         },
           if player.rank
             z '.rank', "##{player.rank}"
