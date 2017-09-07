@@ -59,7 +59,7 @@ module.exports = class ProfileChests
                   if index is 0
                   then @model.l.get('general.next')
                   else "+#{index}"
-          else
+          else if player?.data.chestCycle # LEGACY TODO: rm after mid sept
             _map player?.data.chestCycle.chests, (chest, i) =>
               if i is player?.data.chestCycle.countUntil.superMagical
                 chest = 'super_magical'
@@ -103,9 +103,9 @@ module.exports = class ProfileChests
                   index = _find(player?.data.upcomingChests.items, ({name}) ->
                     _camelCase(name) is "#{chest}Chest"
                   )?.index
-                else # legacy
+                else if player?.data.chestCycle?.countUntil # legacy
                   index = player?.data.chestCycle.countUntil[chest]
-                if index
+                if index?
                   z '.chest',
                     z '.image',
                       style:

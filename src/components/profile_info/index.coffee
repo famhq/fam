@@ -181,6 +181,7 @@ module.exports = class ProfileInfo
         player?.data?.splits?.ladder
       grandChallenge: @getTypeStats player?.data?.splits?.grandChallenge
       classicChallenge: @getTypeStats player?.data?.splits?.classicChallenge
+      '2v2': @getTypeStats player?.data?.splits?['2v2']
 
     lastUpdateTime = if player?.lastDataUpdateTime > player?.lastMatchesUpdateTime \
                      then player?.lastDataUpdateTime

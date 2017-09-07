@@ -97,6 +97,10 @@ module.exports = class ProfileDecks
                 value: 'tournament'
                 text: @model.l.get 'profileDecks.tournament'
               }
+              {
+                value: '2v2'
+                text: @model.l.get 'profileDecks.2v2'
+              }
             ]
           if currentDeck
             [

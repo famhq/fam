@@ -56,7 +56,7 @@ module.exports = class ProfileChestsPage
         {
           title: "#{playerName}'s #{@model.l.get 'profileChestsPage.title'}"
           description:
-            if player?.data?.chestCycle # FIXME
+            if player?.data?.chestCycle?.countUntil # FIXME
               "+#{player?.data?.chestCycle.countUntil.superMagical + 1} until " +
               'Super Magical Chest'
             else

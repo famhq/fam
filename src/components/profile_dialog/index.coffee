@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
 
 Avatar = require '../avatar'
 Dialog = require '../dialog'
@@ -59,7 +60,7 @@ module.exports = class ProfileDialog
     isMe = user?.id is me?.id
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
-    userOptions = [
+    userOptions = _filter [
       {
         icon: 'profile'
         $icon: @$profileIcon
@@ -88,21 +89,22 @@ module.exports = class ProfileDialog
               @router.go "/conversation/#{conversation.id}"
               @selectedProfileDialogUser.onNext null
       }
-      {
-        icon: 'block'
-        $icon: @$blockIcon
-        text:
-          if isBlocked
-          then @model.l.get 'profileDialog.unblock'
-          else @model.l.get 'profileDialog.block'
-        isVisible: not isMe
-        onclick: =>
-          if isBlocked
-            @model.userData.unblockByUserId user?.id
-          else
-            @model.userData.blockByUserId user?.id
-          @selectedProfileDialogUser.onNext null
-      }
+      unless user?.flags?.isModerator
+        {
+          icon: 'block'
+          $icon: @$blockIcon
+          text:
+            if isBlocked
+            then @model.l.get 'profileDialog.unblock'
+            else @model.l.get 'profileDialog.block'
+          isVisible: not isMe
+          onclick: =>
+            if isBlocked
+              @model.userData.unblockByUserId user?.id
+            else
+              @model.userData.blockByUserId user?.id
+            @selectedProfileDialogUser.onNext null
+        }
       # {
       #   icon: 'warning'
       #   $icon: @$flagIcon
