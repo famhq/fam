@@ -1,12 +1,12 @@
 {
   "cardMaker.title":"카드 생성기",
-  "cardMaker.description":"당신이 원하는 카드를 얼마든지 만들어 보세요!",
+  "cardMaker.description":"당신이 원하는 카드를 만들어 보세요!",
   "shopOffers.title":"특가 상품",
   "shopOffers.description":"다음에 나올 특가 상품들을 확인하세요",
   "wiki.title":"사전",
-  "wiki.description":"클래시로얄 지식들",
+  "wiki.description":"클래시로얄에 대한 지식 베이스",
   "chestSimulator.title":"상자 시뮬레이터",
-  "chestSimulator.description":"상자 열기 시뮬레이터",
-  "forumSignature.title":"포럼에 서명을해주십시오",
-  "forumSignature.description":"포럼을 위한 서명을 해 주십시오"
+  "chestSimulator.description":"가짜 상자 열기",
+  "forumSignature.title":"포럼에 서명 해주세요",
+  "forumSignature.description":"포럼을 위한 서명을 해 주세요"
 }
