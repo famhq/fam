@@ -21,7 +21,7 @@ module.exports = class SocialPage
     # hacky way to get /threads to go to 2nd tab
     tabHack = requests.map ({route}) ->
       if route.params.tab is 'threads'
-        selectedIndex.onNext 1
+        selectedIndex.onNext 0
 
     @$head = new Head({
       @model

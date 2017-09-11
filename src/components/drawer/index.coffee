@@ -292,7 +292,7 @@ module.exports = class Drawer
                       z $ripple
               ]
 
-          unless Environment.isMobile()
+          if not Environment.isMobile() and windowSize?.height > 880
             z '.ad',
               z @$adsenseAd, {
                 slot: 'desktop336x280'

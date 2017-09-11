@@ -29,11 +29,11 @@ module.exports = class Groups
       @router
       groups: myGroupsAndPublicGroups
     }
-    @$suggestedGroupsList = new GroupList {
-      @model
-      @router
-      groups: @model.group.getAll({filter: 'suggested'})
-    }
+    # @$suggestedGroupsList = new GroupList {
+    #   @model
+    #   @router
+    #   groups: @model.group.getAll({filter: 'suggested'})
+    # }
 
     @$unreadInvitesIcon = new Icon()
     @$unreadInvitesChevronIcon = new Icon()

@@ -54,7 +54,7 @@ module.exports = class NewThread
           @model.player.getByUserIdAndGameId me.id, config.CLASH_ROYALE_ID
           .flatMapLatest (player) =>
             if player?.data?.clan?.tag
-              @model.clan.getById player?.data?.clan?.tag
+              @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
             else
               Rx.Observable.just false
         else

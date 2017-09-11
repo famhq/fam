@@ -35,7 +35,8 @@ module.exports = class DeckCards extends Base
       cardsPerRow: cardsPerRow
       cardGroups: deck.map (deck) =>
         cards = _map deck?.cards, (card, i) =>
-          $el = @getCached$ (card?.id or "empty-#{i}"), Card, {card}
+          # can have multiple of same cardId per deck
+          $el = @getCached$ ("#{card?.id}#{i}" or "empty-#{i}"), Card, {card}
           {card, $el}
         _chunk cards, cardsPerRow or @cardSizeInfo.cardsPerRow
 

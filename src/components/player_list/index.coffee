@@ -27,7 +27,7 @@ module.exports = class PlayerList
     z '.z-player-list',
       _map players, ({$avatar, $trophyIcon, $verifiedIcon, player}) =>
         z 'a.player', {
-          href: "/clash-royale-player/#{player.playerId}"
+          href: "/clash-royale-player/#{player.tag?.replace('#', '')}"
           onclick: (e) =>
             e?.preventDefault()
             if onclick
@@ -35,7 +35,7 @@ module.exports = class PlayerList
             else if player.player?.verifiedUser
               @selectedProfileDialogUser.onNext player.player?.verifiedUser
             else
-              @router.go "/clash-royale-player/#{player.playerId}"
+              @router.go "/clash-royale-player/#{player.tag?.replace('#', '')}"
         },
           if player.rank
             z '.rank', "##{player.rank}"

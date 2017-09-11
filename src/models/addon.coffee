@@ -49,11 +49,6 @@ addons = [
   #     username: 'smlbiobot'
   #     name: 'smlbiobot'
   # }
-  # {
-  #   id: '123'
-  #   key: 'test'
-  #   url: 'http://192.168.0.109.xip.io:3004/'
-  # }
   # no https...
   # {
   #   id: '351e143d-337f-447e-880f-78e682c1183b'
@@ -72,6 +67,11 @@ addons = [
   #     username: 'community'
   #     name: 'Community'
   # }
+
+  # SDK ids. These will eventually be stored in database,
+  # but hardcoded until then.
+  # htmldino: 005862d0-a474-4329-9b6d-20cf31c46be0
+  # t.lombart97: 93d9d6b7-aec2-4ae1-a1a2-b76bb81ddb98
 ]
 
 module.exports = class Addon

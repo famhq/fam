@@ -78,7 +78,7 @@ module.exports = class Social
       z @$tabs,
         isBarFixed: false
         tabs: tabs
-      if selectedIndex is 2 or (selectedIndex is 1 and language is 'es')
+      if selectedIndex is 2 or (selectedIndex is 0 and language is 'es')
         z '.fab',
           z @$fab,
             colors:
@@ -89,7 +89,7 @@ module.exports = class Social
               color: colors.$white
             }
             onclick: =>
-              if selectedIndex is 1
+              if selectedIndex is 0
                 @router.go '/new-thread'
               else
                 @router.go '/new-thread/clan'
