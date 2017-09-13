@@ -63,6 +63,7 @@ Pages =
   StarPage: require './pages/star'
   StarsPage: require './pages/stars'
   TosPage: require './pages/tos'
+  UserOfWeekPage: require './pages/user_of_week'
   PoliciesPage: require './pages/policies'
   PrivacyPage: require './pages/privacy'
   EditProfilePage: require './pages/edit_profile'
@@ -211,6 +212,7 @@ module.exports = class App
     route '/stars', 'StarsPage'
     route '/star/:username', 'StarPage'
     route '/tos', 'TosPage'
+    route '/user-of-week', 'UserOfWeekPage'
     route '/privacy', 'PrivacyPage'
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'

@@ -1,15 +1,15 @@
 module.exports = class Experiment
   constructor: ->
-    expAdGroup = localStorage?['exp:ad']
-    unless expAdGroup
-      expAdGroup = if Math.random() > 0.5 \
-                               then 'visible'
+    expThreadsGroup = localStorage?['exp:threads']
+    unless expThreadsGroup
+      expThreadsGroup = if Math.random() > 0.5 \
+                               then 'lite'
                                else 'control'
-      localStorage?['exp:ad'] = expAdGroup
-    ga? 'send', 'event', 'exp', 'ad', expAdGroup
+      localStorage?['exp:threads'] = expThreadsGroup
+    ga? 'send', 'event', 'exp', 'threads', expThreadsGroup
 
     @experiments =
-      ad: expAdGroup
+      threads: expThreadsGroup
 
   get: (key) =>
     @experiments[key]

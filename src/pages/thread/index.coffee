@@ -14,8 +14,11 @@ module.exports = class ThreadPage
   hasBottomBanner: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    thread = requests.flatMapLatest ({route}) =>
+    # allow reset beforeUnmount so stale thread doesn't show when loading new
+    @thread = new Rx.BehaviorSubject null
+    loadedThread = requests.flatMapLatest ({route}) =>
       @model.thread.getById route.params.id
+    thread = Rx.Observable.merge @thread, loadedThread
 
     @$head = new Head({
       @model
@@ -32,6 +35,9 @@ module.exports = class ThreadPage
       windowSize: @model.window.getSize()
 
   renderHead: => @$head
+
+  beforeUnmount: =>
+    @thread.onNext {}
 
   render: =>
     {windowSize, $el} = @state.getValue()

@@ -39,6 +39,9 @@ module.exports = class Threads
 
     @state = z.state
       me: @model.user.getMe()
+      language: @model.l.getLanguage()
+      category: category
+      expandedId: null
       chunkedThreads: threads.map ([popularThreads, newThreads, newsThreads]) ->
         # TODO: json file with these vars, stylus uses this
         if window?.matchMedia('(min-width: 768px)').matches
@@ -64,31 +67,59 @@ module.exports = class Threads
           _filter threads, (thread, i) -> i % cols is colIndex
 
   render: =>
-    {me, chunkedThreads} = @state.getValue()
+    {me, chunkedThreads, language, category, expandedId} = @state.getValue()
 
-    z '.z-threads', [
+    isLite = @model.experiment.get('threads') is 'lite' and category isnt 'clan'
+    isControl = not isLite or category is 'clan'
+
+    z '.z-threads', {
+      className: z.classKebab {isLite, isControl}
+    }, [
       if chunkedThreads and _isEmpty chunkedThreads[0]
         z '.no-threads',
           'No threads found'
       else if chunkedThreads
         z '.g-grid',
+          if language is 'es'
+            z '.user-of-week', {
+              onclick: =>
+                @router.go '/user-of-week'
+            },
+              z 'span.title', @model.l.get 'threads.userOfWeek'
+              ' Austin '
+              "(#{@model.l.get 'threads.winner'})"
+              z '.description',
+                @model.l.get 'threads.learnMore'
           z '.columns',
             _map chunkedThreads, (threads) =>
               z '.column',
                 _map threads, (properties) =>
                   {thread, $pointsIcon, $commentsIcon, $icon} = properties
+
                   imageAttachment = _find thread.attachments, {type: 'image'}
+                  isExpanded = expandedId is thread.id
+
                   @router.link z 'a.thread', {
                     href: "/thread/#{thread.id}"
+                    className: z.classKebab {isExpanded}
                   },
-                    if imageAttachment and thread.category isnt 'clan'
-                      z '.image',
-                        style:
-                          backgroundImage: "url(#{imageAttachment.src})"
                     z '.content',
                       if thread.data.clan
                         z '.icon',
                           z $icon, {clan: thread.data.clan, size: '34px'}
+                      else if imageAttachment
+                        z '.image',
+                          style:
+                            backgroundImage: "url(#{imageAttachment.src})"
+                          onclick: (e) =>
+                            unless isLite
+                              return
+                            e?.stopPropagation()
+                            e?.preventDefault()
+                            ga? 'send', 'event', 'thread', 'preview', ''
+                            @state.set expandedId: if expandedId is thread.id \
+                                                   then null
+                                                   else thread.id
                       z '.info',
                         z '.title', thread.title
                         z '.bottom',
@@ -116,6 +147,10 @@ module.exports = class Threads
                                   isTouchTarget: false
                                   color: colors.$tertiary300
                                   size: '14px'
+                    if isExpanded
+                      z 'img.full-image', {
+                        src: imageAttachment.src
+                      }
       else
         @$spinner
     ]

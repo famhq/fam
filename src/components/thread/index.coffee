@@ -56,7 +56,7 @@ module.exports = class Thread
     @$clanBadge = new ClanBadge()
 
     clan = thread.flatMapLatest (thread) =>
-      if thread.data?.clan
+      if thread?.data?.clan
         @model.clan.getById thread.data?.clan.id
       else
         Rx.Observable.just null

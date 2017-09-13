@@ -2,7 +2,7 @@
 
 @require '../../vars'
 
-.z-threads
+.z-threads.is-control
   flex: 1
   width: 100%
   overflow: auto
@@ -15,6 +15,15 @@
 
   > .g-grid
     margin-top: 4px
+
+    > .user-of-week
+      background: getColor('$primary900')
+      padding: 8px
+      margin-bottom: 16px
+      border-radius: 2px
+
+      > .title
+        font-button()
 
     > .columns
       display: flex
@@ -36,16 +45,111 @@
           border-radius: 2px
           margin-bottom: 16px
 
-          > .image
-            background-size: cover
-            background-position: center
-            width: 100%
-            height: 0
-            padding-bottom: 33%
+          > .content
+
+            > .image
+              background-size: cover
+              background-position: center
+              width: 100%
+              height: 0
+              padding-bottom: 33%
+
+            > .icon
+              width: 34px
+              margin-right: 16px
+              display: none // FIXME
+
+            > .info
+              flex: 1
+              padding: 16px
+
+              > .title
+                font-title()
+
+              > .bottom
+                margin-top: 8px
+
+                > .author
+                  font-caption2()
+                  display: flex
+                  align-items: center
+
+                  > .middot
+                    margin: 0 4px
+
+                  > .comments
+                    margin-left: auto
+                    margin-right: 16px
+
+                  > .comments, > .points
+                    display: flex
+                    align-items: center
+
+                    > .icon
+                      margin-left: 8px
+
+
+.z-threads&.is-lite
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+  box-sizing: border-box
+
+  > .no-threads
+    text-align: center
+
+  > .g-grid
+    margin-top: 4px
+
+    > .user-of-week
+      background: getColor('$primary900')
+      padding: 8px
+      margin-bottom: 16px
+      border-radius: 2px
+
+      > .title
+        font-button()
+
+    > .columns
+      display: flex
+
+      > .column
+        flex: 1
+        margin: 0 8px
+
+        &:first-child
+          margin-left: 0
+
+        &:last-child
+          margin-right: 0
+
+        > .thread
+          width: 100%
+          padding: 8px 16px
+          box-sizing: border-box
+          display: block
+          border-bottom: 1px solid getColor('$tertiary500')
+
+          &.is-expanded
+
+            > .full-image
+              width: 100%
+              height: auto
+              margin-top: 8px
 
           > .content
-            padding: 16px
+            padding: 0 16px
             display: flex
+            flex: 1
+
+            > .image
+              background-size: cover
+              background-position: center
+              width: 70px
+              height: 70px
+              margin-right: 16px
+              // padding-bottom: 100%
 
             > .icon
               width: 34px
@@ -53,12 +157,14 @@
 
             > .info
               flex: 1
+              display: flex
+              flex-direction: column
 
               > .title
                 font-title()
 
               > .bottom
-                margin-top: 8px
+                margin-top: auto
 
                 > .author
                   font-caption2()
