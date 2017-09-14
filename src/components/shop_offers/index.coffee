@@ -84,7 +84,9 @@ module.exports = class ShopOffers
                     onclick: =>
                       tag = player?.id
                       @state.set isRefreshing: true
-                      @model.clashRoyaleAPI.refreshByPlayerId tag
+                      @model.clashRoyaleAPI.refreshByPlayerId tag, {
+                        isLegacy: true
+                      }
                       .then =>
                         @state.set hasUpdatedPlayer: true, isRefreshing: false
 

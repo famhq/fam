@@ -2,6 +2,7 @@ z = require 'zorium'
 Rx = require 'rx-lite'
 moment = require 'moment'
 _map = require 'lodash/map'
+_find = require 'lodash/find'
 _defaults = require 'lodash/defaults'
 _isEmpty = require 'lodash/isEmpty'
 Environment = require 'clay-environment'
@@ -15,6 +16,7 @@ Avatar = require '../avatar'
 ClanBadge = require '../clan_badge'
 ClanMetrics = require '../clan_metrics'
 ThreadComment = require '../thread_comment'
+ThreadPreview = require '../thread_preview'
 DeckCards = require '../deck_cards'
 Spinner = require '../spinner'
 FormattedText = require '../formatted_text'
@@ -54,6 +56,7 @@ module.exports = class Thread
 
     @$deckCards = new DeckCards {@model, @router, deck}
     @$clanBadge = new ClanBadge()
+    @$threadPreview = new ThreadPreview {@model, thread}
 
     clan = thread.flatMapLatest (thread) =>
       if thread?.data?.clan
@@ -98,7 +101,11 @@ module.exports = class Thread
     {me, thread, $body, threadComments, isVideoVisible, windowSize,
       selectedProfileDialogUser, clan, $clanMetrics} = @state.getValue()
 
+    headerAttachment = _find thread?.attachments, {type: 'video'}
+    headerImageSrc = headerAttachment?.previewSrc
+
     videoWidth = Math.min(windowSize.width, 512)
+    videoAttachment = _find thread?.attachments, {type: 'video'}
 
     hasVotedUp = thread?.myVote?.vote is 1
     hasVotedDown = thread?.myVote?.vote is -1
@@ -139,24 +146,17 @@ module.exports = class Thread
             ]
       }
       z '.content',
-        if thread?.headerImage
+        if headerImageSrc
           z '.header',
             if isVideoVisible
-              z 'iframe',
-                width: videoWidth
-                height: videoWidth * (9 / 16)
-                src: thread.data.videoUrl
-                attributes:
-                  frameborder: 0
-                  allowfullscreen: true
-                  webkitallowfullscreen: true
+              z @$threadPreview, {width: windowSize.width}
             else
               z '.header-image', {
                 onclick: =>
-                  if thread.data.videoUrl
+                  if videoAttachment
                     @state.set isVideoVisible: true
                 style:
-                  backgroundImage: "url(#{thread.headerImage.versions[0].url})"
+                  backgroundImage: "url(#{headerImageSrc})"
               },
                 z '.play'
         z '.post',

@@ -15,6 +15,7 @@ _find = require 'lodash/find'
 colors = require '../../colors'
 Icon = require '../icon'
 ClanBadge = require '../clan_badge'
+ThreadPreview = require '../thread_preview'
 Spinner = require '../spinner'
 
 if window?
@@ -42,7 +43,7 @@ module.exports = class Threads
       language: @model.l.getLanguage()
       category: category
       expandedId: null
-      chunkedThreads: threads.map ([popularThreads, newThreads, newsThreads]) ->
+      chunkedThreads: threads.map ([popularThreads, newThreads, newsThreads]) =>
         # TODO: json file with these vars, stylus uses this
         if window?.matchMedia('(min-width: 768px)').matches
           cols = 2
@@ -56,9 +57,10 @@ module.exports = class Threads
           unless _find threads, {id: thread.id}
             threads.splice (i + 1) * 2, 0, thread
 
-        threads = _map threads, (thread) ->
+        threads = _map threads, (thread) =>
           {
             thread
+            $threadPreview: new ThreadPreview {@model, thread}
             $pointsIcon: new Icon()
             $commentsIcon: new Icon()
             $icon: if thread.data.clan then new ClanBadge() else null
@@ -94,9 +96,11 @@ module.exports = class Threads
             _map chunkedThreads, (threads) =>
               z '.column',
                 _map threads, (properties) =>
-                  {thread, $pointsIcon, $commentsIcon, $icon} = properties
+                  {thread, $pointsIcon, $commentsIcon, $icon,
+                    $threadPreview} = properties
 
-                  imageAttachment = _find thread.attachments, {type: 'image'}
+                  mediaAttachment = thread.attachments?[0]
+                  mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
                   isExpanded = expandedId is thread.id
 
                   @router.link z 'a.thread', {
@@ -107,10 +111,10 @@ module.exports = class Threads
                       if thread.data.clan
                         z '.icon',
                           z $icon, {clan: thread.data.clan, size: '34px'}
-                      else if imageAttachment
+                      else if mediaSrc
                         z '.image',
                           style:
-                            backgroundImage: "url(#{imageAttachment.src})"
+                            backgroundImage: "url(#{mediaSrc})"
                           onclick: (e) =>
                             unless isLite
                               return
@@ -148,9 +152,8 @@ module.exports = class Threads
                                   color: colors.$tertiary300
                                   size: '14px'
                     if isExpanded
-                      z 'img.full-image', {
-                        src: imageAttachment.src
-                      }
+                      z '.preview',
+                        z $threadPreview
       else
         @$spinner
     ]
