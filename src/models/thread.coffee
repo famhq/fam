@@ -9,9 +9,11 @@ module.exports = class Thread
     ga? 'send', 'event', 'social_interaction', 'thread', diff.category
     @auth.call "#{@namespace}.create", diff, {invalidateAll: true}
 
-  getAll: ({category, sort, limit, ignoreCache} = {}) =>
+  getAll: ({category, sort, skip, limit, ignoreCache} = {}) =>
     language = @l.getLanguageStr()
-    @auth.stream "#{@namespace}.getAll", {category, language, limit, sort}, {
+    @auth.stream "#{@namespace}.getAll", {
+      category, language, skip, limit, sort
+    }, {
       ignoreCache
     }
 
@@ -20,6 +22,7 @@ module.exports = class Thread
     @auth.stream "#{@namespace}.getById", {id, language}, {ignoreCache}
 
   voteById: (id, {vote}) =>
+    ga? 'send', 'event', 'social_interaction', 'thread_vote', "#{id}"
     @auth.call "#{@namespace}.voteById", {id, vote}, {invalidateAll: true}
 
   updateById: (id, diff) =>

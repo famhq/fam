@@ -149,7 +149,7 @@ module.exports = class Thread
         if headerImageSrc
           z '.header',
             if isVideoVisible
-              z @$threadPreview, {width: windowSize.width}
+              z @$threadPreview, {width: videoWidth}
             else
               z '.header-image', {
                 onclick: =>

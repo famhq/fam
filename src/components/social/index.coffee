@@ -18,11 +18,9 @@ module.exports = class Social
     @$groups = new Groups {@model, @router}
     @$conversations = new Conversations {@model, @router}
     @$threads = new Threads {@model, @router}
-    @$recruiting = new Threads {@model, @router, category: 'clan'}
     @$tabs = new Tabs {@model, selectedIndex}
     @$groupsIcon = new Icon()
     @$feedIcon = new Icon()
-    @$recruitingIcon = new Icon()
     @$conversationsIcon = new Icon()
     @$addIcon = new Icon()
     @$fab = new Fab()
@@ -36,12 +34,6 @@ module.exports = class Social
           menuIconName: 'chat'
           $menuText: @model.l.get 'communityPage.menuText'
           $el: @$groups
-        }
-        {
-          $menuIcon: @$recruitingIcon
-          menuIconName: 'recruit'
-          $menuText: @model.l.get 'general.recruiting'
-          $el: @$recruiting
         }
         {
           $menuIcon: @$conversationsIcon

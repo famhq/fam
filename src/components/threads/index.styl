@@ -101,6 +101,14 @@
 
   > .g-grid
     margin-top: 4px
+    padding-bottom: 48px // for loading spinner
+    position: relative
+
+    > .loading
+      position: absolute
+      width: 100%
+      left: 0
+      bottom: 16px
 
     > .user-of-week
       background: getColor('$primary900')
@@ -143,6 +151,12 @@
               margin-right: 16px
               // padding-bottom: 100%
 
+            > .text-icon
+              background: getColor('$primary500')
+              width: 70px
+              height: 70px
+              margin-right: 16px
+
             > .icon
               width: 34px
               margin-right: 16px
@@ -154,6 +168,7 @@
 
               > .title
                 font-title()
+                word-break: break-all
 
               > .bottom
                 margin-top: auto

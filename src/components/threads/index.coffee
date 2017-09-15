@@ -5,6 +5,7 @@ _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
 _filter = require 'lodash/filter'
 _range = require 'lodash/range'
+_debounce = require 'lodash/debounce'
 _find = require 'lodash/find'
 _orderBy = require 'lodash/orderBy'
 _flatten = require 'lodash/flatten'
@@ -21,41 +22,32 @@ Spinner = require '../spinner'
 if window?
   require './index.styl'
 
+SCROLL_THRESHOLD = 250
+SCROLL_THREAD_LOAD_COUNT = 20
+SCROLL_DEBOUNCE_MS = 50
+
 module.exports = class Threads
-  constructor: ({@model, @router, category}) ->
+  constructor: ({@model, @router, @category, @sort}) ->
     @$spinner = new Spinner()
 
-    if category is 'clan'
-      threads = Rx.Observable.combineLatest(
-        @model.thread.getAll({category, sort: 'new'})
-        (vals...) -> vals
-      )
-    else
-      threads = Rx.Observable.combineLatest(
-        @model.thread.getAll({category})
-        @model.thread.getAll({category, sort: 'new', limit: 3})
-        @model.thread.getAll({category: 'news'})
-        (vals...) -> vals
-      )
+    @threadStreams = new Rx.ReplaySubject(1)
+    @threadStreamCache = []
+    @appendThreadStream @getTopStream()
+
+    @debouncedScroll = _debounce @scrollListener, SCROLL_DEBOUNCE_MS
 
     @state = z.state
       me: @model.user.getMe()
       language: @model.l.getLanguage()
-      category: category
+      category: @category
       expandedId: null
-      chunkedThreads: threads.map ([popularThreads, newThreads, newsThreads]) =>
+      isLoading: false
+      chunkedThreads: @threadStreams.switch().map (threads) =>
         # TODO: json file with these vars, stylus uses this
         if window?.matchMedia('(min-width: 768px)').matches
           cols = 2
         else
           cols = 1
-
-        threads = _filter popularThreads.concat(newsThreads)
-        threads = _uniqBy threads, 'id'
-        threads = _orderBy threads, 'score', 'desc'
-        _map newThreads, (thread, i) ->
-          unless _find threads, {id: thread.id}
-            threads.splice (i + 1) * 2, 0, thread
 
         threads = _map threads, (thread) =>
           {
@@ -63,13 +55,64 @@ module.exports = class Threads
             $threadPreview: new ThreadPreview {@model, thread}
             $pointsIcon: new Icon()
             $commentsIcon: new Icon()
+            $textIcon: new Icon()
             $icon: if thread.data.clan then new ClanBadge() else null
           }
         return _map _range(cols), (colIndex) ->
           _filter threads, (thread, i) -> i % cols is colIndex
 
+  afterMount: (@$$el) =>
+    @$$el?.addEventListener 'scroll', @debouncedScroll
+    @$$el?.addEventListener 'resize', @debouncedScroll
+
+  beforeUnmount: =>
+    @$$el?.removeEventListener 'scroll', @debouncedScroll
+    @$$el?.removeEventListener 'resize', @debouncedScroll
+
+  scrollListener: =>
+    {isLoading} = @state.getValue()
+
+    if isLoading
+      return
+
+    $$el = @$$el
+
+    totalScrolled = $$el.scrollTop
+    totalScrollHeight = $$el.scrollHeight - $$el.offsetHeight
+
+    if totalScrollHeight - totalScrolled < SCROLL_THRESHOLD
+      @loadMore()
+
+  getTopStream: (skip = 0) =>
+    @model.thread.getAll {
+      @category
+      @sort
+      skip
+      limit: SCROLL_THREAD_LOAD_COUNT
+    }
+
+  loadMore: =>
+    @state.set
+      isLoading: true
+
+    skip = @threadStreamCache.length * SCROLL_THREAD_LOAD_COUNT
+    threadStream = @getTopStream skip
+    @appendThreadStream threadStream
+
+    threadStream.take(1).toPromise()
+    .then =>
+      @state.set
+        isLoading: false
+
+  appendThreadStream: (threadStream) =>
+    @threadStreamCache = @threadStreamCache.concat [threadStream]
+    @threadStreams.onNext \
+      Rx.Observable.combineLatest @threadStreamCache, (threads...) ->
+        _flatten threads
+
   render: =>
-    {me, chunkedThreads, language, category, expandedId} = @state.getValue()
+    {me, chunkedThreads, language, category,
+      expandedId, isLoading} = @state.getValue()
 
     isLite = @model.experiment.get('threads') is 'lite' and category isnt 'clan'
     isControl = not isLite or category is 'clan'
@@ -96,7 +139,7 @@ module.exports = class Threads
             _map chunkedThreads, (threads) =>
               z '.column',
                 _map threads, (properties) =>
-                  {thread, $pointsIcon, $commentsIcon, $icon,
+                  {thread, $pointsIcon, $commentsIcon, $icon, $textIcon,
                     $threadPreview} = properties
 
                   mediaAttachment = thread.attachments?[0]
@@ -124,6 +167,13 @@ module.exports = class Threads
                             @state.set expandedId: if expandedId is thread.id \
                                                    then null
                                                    else thread.id
+                      else if isLite
+                        z '.text-icon',
+                          z $textIcon,
+                            icon: 'text'
+                            size: '30px'
+                            isTouchTarget: false
+                            color: colors.$white
                       z '.info',
                         z '.title', thread.title
                         z '.bottom',
@@ -154,6 +204,8 @@ module.exports = class Threads
                     if isExpanded
                       z '.preview',
                         z $threadPreview
+          if isLoading
+            z '.loading', @$spinner
       else
         @$spinner
     ]

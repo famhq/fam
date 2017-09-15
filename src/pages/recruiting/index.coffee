@@ -27,7 +27,7 @@ module.exports = class RecruitingPage
     @$fab = new Fab()
     @$addIcon = new Icon()
 
-    @$threads = new Threads {@model, @router, category: 'clan'}
+    @$threads = new Threads {@model, @router, category: 'clan', sort: 'new'}
 
     @state = z.state
       windowSize: @model.window.getSize()
