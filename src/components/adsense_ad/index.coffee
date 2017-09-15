@@ -21,7 +21,7 @@ slots =
     width: 300
     height: 250
   mobile320x100:
-    slot: '8149561732'
+    slot: '1003987655'
     width: 320
     height: 100
 

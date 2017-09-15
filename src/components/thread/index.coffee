@@ -9,8 +9,8 @@ Environment = require 'clay-environment'
 
 colors = require '../../colors'
 config = require '../../config'
-AppBar = require '..//app_bar'
-ButtonBack = require '..//button_back'
+AppBar = require '../app_bar'
+ButtonBack = require '../button_back'
 Icon = require '../icon'
 Avatar = require '../avatar'
 ClanBadge = require '../clan_badge'
@@ -104,7 +104,7 @@ module.exports = class Thread
     headerAttachment = _find thread?.attachments, {type: 'video'}
     headerImageSrc = headerAttachment?.previewSrc
 
-    videoWidth = Math.min(windowSize.width, 512)
+    videoWidth = Math.min(windowSize.width, 700)
     videoAttachment = _find thread?.attachments, {type: 'video'}
 
     hasVotedUp = thread?.myVote?.vote is 1

@@ -24,6 +24,10 @@ module.exports = class ThreadPreview
     imageAttachment = _find thread.attachments, {type: 'image'}
     videoAttachment = _find thread.attachments, {type: 'video'}
     width ?= windowSize.width - PADDING * 2
+    heightAspect = if videoAttachment?.aspectRatio \
+                   then 1 / videoAttachment.aspectRatio
+                   else 9 / 16
+    height = width * heightAspect
 
     z '.z-thread-preview',
       if videoAttachment and videoAttachment.mp4Src
@@ -43,7 +47,7 @@ module.exports = class ThreadPreview
       else if videoAttachment
         z 'iframe',
           width: width
-          height: width * (9 / 16)
+          height: height
           src: videoAttachment.src
           attributes:
             frameborder: 0
