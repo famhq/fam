@@ -20,6 +20,9 @@ module.exports = class Card
     height = width * (DEFAULT_HEIGHT / DEFAULT_WIDTH)
     cdnUrl = config.CDN_URL
 
+    size = if width <= 24 then 'tiny' else 'small'
+    bgUrl = if card then "#{cdnUrl}/cards/#{card.key}_#{size}.png?1" else ''
+
     z '.z-card', {
       onclick: ->
         onclick? card
@@ -28,7 +31,7 @@ module.exports = class Card
         width: "#{width}px"
         height: "#{height}px"
         backgroundImage: if card and card.key \
-                         then "url(#{cdnUrl}/cards/#{card.key}_small.png?1)"
+                         then "url(#{bgUrl})"
                          else null
         backgroundColor: if card and card.key then null else colors.$black
 

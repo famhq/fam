@@ -8,6 +8,7 @@ Rx = require 'rx-lite'
 
 FormatService = require '../../services/format'
 DeckCards = require '../deck_cards'
+UiCard = require '../ui_card'
 PlayerDeckStats = require '../player_deck_stats'
 Dropdown = require '../dropdown'
 config = require '../../config'
@@ -16,10 +17,14 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
+MIN_GAMES_FOR_GUIDE = 20
+MIN_WIN_RATE_FOR_GUIDE = 0.6
+
 module.exports = class ProfileDecks
   constructor: ({@model, @router, user, player}) ->
     @typeValue = new Rx.BehaviorSubject 'all'
     @$dropdown = new Dropdown {value: @typeValue}
+    @$postDeckCard = new UiCard()
 
     playerAndType = Rx.Observable.combineLatest(
       player
@@ -32,6 +37,8 @@ module.exports = class ProfileDecks
 
     @state = z.state {
       me: @model.user.getMe()
+      language: @model.l.getLanguage()
+      hidePostDeckCard: localStorage?.hidePostDeckCard
       isPrivate: playerDecks
       .catch (err) ->
         ga? 'send', 'event', 'deck_err', err.message
@@ -71,7 +78,15 @@ module.exports = class ProfileDecks
     }
 
   render: =>
-    {me, currentDeck, otherDecks, isPrivate} = @state.getValue()
+    {me, currentDeck, otherDecks, language,
+      hidePostDeckCard, isPrivate} = @state.getValue()
+
+    currentDeckGamesPlayed = currentDeck?.playerDeck?.wins +
+                              currentDeck?.playerDeck?.losses # ignore draws
+    currentDeckWinRate = currentDeck?.playerDeck?.wins / currentDeckGamesPlayed
+    shouldShowPostDeckCard = currentDeckGamesPlayed >= MIN_GAMES_FOR_GUIDE and
+                             currentDeckWinRate >= MIN_WIN_RATE_FOR_GUIDE and
+                             language is 'es' and not hidePostDeckCard
 
     z '.z-profile-decks',
       if isPrivate
@@ -109,6 +124,25 @@ module.exports = class ProfileDecks
               z '.deck',
                 z currentDeck?.$deck
                 z currentDeck?.$stats
+
+              if shouldShowPostDeckCard
+                # TODO: localstorage and translation
+                z @$postDeckCard, {
+                  isHighlighted: true
+                  text: @model.l.get 'profileDecks.postGuide'
+                  cancel:
+                    text: @model.l.get 'translateCard.cancelText'
+                    onclick: =>
+                      localStorage?.hidePostDeckCard = '1'
+                      @state.set hidePostDeckCard: true
+                  submit:
+                    text: @model.l.get 'addGuidePage.title'
+                    onclick: =>
+                      console.log currentDeck
+                      @router.go(
+                        "/new-thread/deckGuide/#{currentDeck.playerDeck.id}"
+                      )
+                }
 
               z '.divider'
             ]

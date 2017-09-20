@@ -16,8 +16,10 @@ _find = require 'lodash/find'
 colors = require '../../colors'
 Icon = require '../icon'
 ClanBadge = require '../clan_badge'
+DeckCards = require '../deck_cards'
 ThreadPreview = require '../thread_preview'
 Spinner = require '../spinner'
+FormatService = require '../../services/format'
 
 if window?
   require './index.styl'
@@ -27,7 +29,7 @@ SCROLL_THREAD_LOAD_COUNT = 20
 SCROLL_DEBOUNCE_MS = 50
 
 module.exports = class Threads
-  constructor: ({@model, @router, @category, @sort}) ->
+  constructor: ({@model, @router, @filter}) ->
     @$spinner = new Spinner()
 
     @threadStreams = new Rx.ReplaySubject(1)
@@ -39,7 +41,7 @@ module.exports = class Threads
     @state = z.state
       me: @model.user.getMe()
       language: @model.l.getLanguage()
-      category: @category
+      filter: @filter
       expandedId: null
       isLoading: false
       chunkedThreads: @threadStreams.switch().map (threads) =>
@@ -56,6 +58,9 @@ module.exports = class Threads
             $pointsIcon: new Icon()
             $commentsIcon: new Icon()
             $textIcon: new Icon()
+            $deck: if thread.playerDeck then new DeckCards {
+              @model, @router, deck: thread.playerDeck.deck, cardsPerRow: 4
+            }
             $icon: if thread.data.clan then new ClanBadge() else null
           }
         return _map _range(cols), (colIndex) ->
@@ -84,12 +89,13 @@ module.exports = class Threads
       @loadMore()
 
   getTopStream: (skip = 0) =>
-    @model.thread.getAll {
-      @category
-      @sort
-      skip
-      limit: SCROLL_THREAD_LOAD_COUNT
-    }
+    @filter.flatMapLatest (filter) =>
+      @model.thread.getAll {
+        categories: [filter.filter]
+        sort: filter.sort
+        skip
+        limit: SCROLL_THREAD_LOAD_COUNT
+      }
 
   loadMore: =>
     @state.set
@@ -111,11 +117,12 @@ module.exports = class Threads
         _flatten threads
 
   render: =>
-    {me, chunkedThreads, language, category,
+    {me, chunkedThreads, language, filter,
       expandedId, isLoading} = @state.getValue()
 
-    isLite = @model.experiment.get('threads') is 'lite' and category isnt 'clan'
-    isControl = not isLite or category is 'clan'
+    isLite = @model.experiment.get('threads') is 'lite' and
+              filter.filter isnt 'clan'
+    isControl = not isLite or filter.filter is 'clan'
 
     z '.z-threads', {
       className: z.classKebab {isLite, isControl}
@@ -131,15 +138,16 @@ module.exports = class Threads
                 @router.go '/user-of-week'
             },
               z 'span.title', @model.l.get 'threads.userOfWeek'
-              ' Austin '
-              "(#{@model.l.get 'threads.winner'})"
+              z 'div',
+                ' clashconantonio '
+                "(#{@model.l.get 'threads.winner'})"
               z '.description',
                 @model.l.get 'threads.learnMore'
           z '.columns',
             _map chunkedThreads, (threads) =>
               z '.column',
                 _map threads, (properties) =>
-                  {thread, $pointsIcon, $commentsIcon, $icon, $textIcon,
+                  {thread, $pointsIcon, $commentsIcon, $icon, $textIcon, $deck,
                     $threadPreview} = properties
 
                   mediaAttachment = thread.attachments?[0]
@@ -147,7 +155,7 @@ module.exports = class Threads
                   isExpanded = expandedId is thread.id
 
                   @router.link z 'a.thread', {
-                    href: "/thread/#{thread.id}"
+                    href: @model.thread.getPath(thread)
                     className: z.classKebab {isExpanded}
                   },
                     z '.content',
@@ -168,12 +176,24 @@ module.exports = class Threads
                                                    then null
                                                    else thread.id
                       else if isLite
-                        z '.text-icon',
-                          z $textIcon,
-                            icon: 'text'
-                            size: '30px'
-                            isTouchTarget: false
-                            color: colors.$white
+                        if $deck
+                          games = thread.playerDeck.wins +
+                                    thread.playerDeck.losses
+                          winRate = FormatService.percentage(
+                            thread.playerDeck.wins / games
+                          )
+                          z '.deck',
+                            z $deck, {cardMarginPx: 0}
+                            z '.win-rate', winRate
+                        else
+                          z '.text-icon',
+                            z $textIcon,
+                              icon: if thread.category is 'deckGuide' \
+                                    then 'cards'
+                                    else 'text'
+                              size: '30px'
+                              isTouchTarget: false
+                              color: colors.$white
                       z '.info',
                         z '.title', thread.title
                         z '.bottom',

@@ -329,12 +329,6 @@ module.exports = class ProfileInfo
                     text: @model.l.get 'profileInfo.moreDetailsButtonText'
                     onclick: =>
                       @router.go "/user/id/#{user?.id}/chests"
-                if player?.data?.shopOffers
-                  z 'div',
-                    z @$shopOffersButton,
-                      text: @model.l.get 'profileChests.viewShopOffers'
-                      onclick: =>
-                        @router.go '/addon/clash-royale/shop-offers'
         # legacy
         else if player?.data?.chestCycle
           z '.block',

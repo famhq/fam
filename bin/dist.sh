@@ -19,19 +19,19 @@ if [ -z $LAST_TAG ]; then
   exit 0
 fi
 
-echo "building last tag $LAST_TAG"
-git checkout $LAST_TAG
-./node_modules/gulp/bin/gulp.js dist
-
-echo "saving last tag build"
-mkdir ./_tmp_dist
-cp -r ./dist/* ./_tmp_dist
+# echo "building last tag $LAST_TAG"
+# git checkout $LAST_TAG
+# ./node_modules/gulp/bin/gulp.js dist
+#
+# echo "saving last tag build"
+# mkdir ./_tmp_dist
+# cp -r ./dist/* ./_tmp_dist
 
 echo "building current branch"
 git checkout $CURRENT_BRANCH
 ./node_modules/gulp/bin/gulp.js dist
 
-echo "restoring last tag dist"
-cp -r ./dist/* ./_tmp_dist
-cp -r ./_tmp_dist/* ./dist
-rm -r ./_tmp_dist
+# echo "restoring last tag dist"
+# cp -r ./dist/* ./_tmp_dist
+# cp -r ./_tmp_dist/* ./dist
+# rm -r ./_tmp_dist

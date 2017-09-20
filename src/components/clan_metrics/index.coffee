@@ -25,24 +25,29 @@ module.exports = class ClanInfo
   render: =>
     {clan, me} = @state.getValue()
 
-
     metrics =
       info: _filter [
         {
           name: @model.l.get 'clanInfo.weekDonations'
-          value: FormatService.number clan?.data?.donations
+          value: FormatService.number(
+            clan?.data?.donationsPerWeek or
+            clan?.data?.donations or 0 # legacy
+          )
         }
         {
           name: @model.l.get 'clanInfo.type'
-          value: _startCase clan?.data?.type
+          value: @model.l.get "clanInfo.type#{_startCase clan?.data?.type}"
         }
         {
           name: @model.l.get 'clanInfo.minTrophies'
-          value: FormatService.number clan?.data?.minTrophies
+          value: FormatService.number(
+            clan?.data?.requiredTrophies or
+            clan?.data?.minTrophies or 0 # legacy
+          )
         }
         {
           name: @model.l.get 'clanInfo.region'
-          value: clan?.data?.region
+          value: clan?.data?.location?.name or clan?.data?.region # legacy
         }
         if clan?.password
           {

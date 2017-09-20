@@ -5,6 +5,8 @@ Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Threads = require '../../components/threads'
+FilterThreadsDialog = require '../../components/filter_threads_dialog'
+BottomBar = require '../../components/bottom_bar'
 Icon = require '../../components/icon'
 Fab = require '../../components/fab'
 colors = require '../../colors'
@@ -12,43 +14,64 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class RecruitingPage
+module.exports = class ForumPage
   constructor: ({@model, requests, @router, serverData}) ->
+    @isFilterThreadsDialogVisible = new Rx.BehaviorSubject false
+    filter = new Rx.BehaviorSubject {
+      sort: 'popular'
+      filter: 'all'
+    }
+
     @$head = new Head({
       @model
       requests
       serverData
       meta: {
-        title: @model.l.get 'general.recruiting'
-        description: @model.l.get 'general.recruiting'
+        title: @model.l.get 'general.forum'
+        description: @model.l.get 'general.forum'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$fab = new Fab()
     @$addIcon = new Icon()
+    @$filterIcon = new Icon()
+    @$filterThreadsDialog = new FilterThreadsDialog {
+      @model, filter, isVisible: @isFilterThreadsDialogVisible
+    }
+    @$bottomBar = new BottomBar {@model, @router, requests}
 
-    filter = new Rx.BehaviorSubject {sort: 'new', filter: 'clan'}
     @$threads = new Threads {@model, @router, filter}
 
     @state = z.state
       windowSize: @model.window.getSize()
+      isFilterThreadsDialogVisible: @isFilterThreadsDialogVisible
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, isFilterThreadsDialogVisible} = @state.getValue()
 
-    z '.p-recruiting', {
+    z '.p-forum', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: @model.l.get 'general.recruiting'
+        title: @model.l.get 'general.forum'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topRightButton:
+          z @$filterIcon,
+            color: colors.$primary500
+            icon: 'filter'
+            onclick: =>
+              @isFilterThreadsDialogVisible.onNext true
       }
       @$threads
+      @$bottomBar
+
+      if isFilterThreadsDialogVisible
+        z @$filterThreadsDialog
 
       z '.fab',
         z @$fab,
@@ -60,4 +83,4 @@ module.exports = class RecruitingPage
             color: colors.$white
           }
           onclick: =>
-            @router.go '/new-thread/clan'
+            @router.go '/new-thread'

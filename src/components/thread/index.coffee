@@ -18,6 +18,7 @@ ClanMetrics = require '../clan_metrics'
 ThreadComment = require '../thread_comment'
 ThreadPreview = require '../thread_preview'
 DeckCards = require '../deck_cards'
+PlayerDeckStats = require '../player_deck_stats'
 Spinner = require '../spinner'
 FormattedText = require '../formatted_text'
 Fab = require '../fab'
@@ -54,13 +55,26 @@ module.exports = class Thread
       else
         Rx.Observable.just null
 
-    @$deckCards = new DeckCards {@model, @router, deck}
     @$clanBadge = new ClanBadge()
     @$threadPreview = new ThreadPreview {@model, thread}
 
     clan = thread.flatMapLatest (thread) =>
       if thread?.data?.clan
         @model.clan.getById thread.data?.clan.id
+      else
+        Rx.Observable.just null
+
+    playerDeck = thread.flatMapLatest (thread) =>
+      if thread?.data?.playerDeckId
+        @model.clashRoyalePlayerDeck.getById thread.data.playerDeckId
+        .map (playerDeck) =>
+          {
+            playerDeck
+            $deck: new DeckCards {
+              @model, @router, deck: playerDeck.deck, cardsPerRow: 8
+            }
+            $deckStats: new PlayerDeckStats {@model, @router, playerDeck}
+          }
       else
         Rx.Observable.just null
 
@@ -81,6 +95,7 @@ module.exports = class Thread
       $clanMetrics: clan.map (clanObj) =>
         if clanObj then new ClanMetrics {@model, @router, clan} else null
       clan: clan
+      playerDeck: playerDeck
       windowSize: @model.window.getSize()
       threadComments: thread.flatMapLatest (thread) =>
         if thread?.id
@@ -98,7 +113,7 @@ module.exports = class Thread
 
 
   render: =>
-    {me, thread, $body, threadComments, isVideoVisible, windowSize,
+    {me, thread, $body, threadComments, isVideoVisible, windowSize, playerDeck,
       selectedProfileDialogUser, clan, $clanMetrics} = @state.getValue()
 
     headerAttachment = _find thread?.attachments, {type: 'video'}
@@ -124,7 +139,7 @@ module.exports = class Thread
                         then z @$buttonBack, {
                           color: colors.$primary500
                           onclick: =>
-                            @router.go '/social/threads'
+                            @router.go '/forum'
                         }
         $topRightButton:
           z '.z-thread_top-right',
@@ -177,12 +192,13 @@ module.exports = class Thread
             z '.title',
               thread?.title
 
-            if thread?.data?.deckId
+            if playerDeck
               z '.deck', {
-                onclick: =>
-                  @state.set isDeckDialogVisible: true
+                # onclick: =>
+                #   @state.set isDeckDialogVisible: true
               },
-                z @$deckCards, {cardWidth: 45}
+                z playerDeck.$deck, {cardWidth: 45}
+                z playerDeck.$deckStats
 
             z '.body', $body
 
@@ -211,24 +227,32 @@ module.exports = class Thread
             z '.vote',
               z '.upvote',
                 z @$upvoteIcon,
-                  icon: 'upvote'
+                  icon: if @model.experiment.get('threadThumbs') is 'visible' \
+                        then 'thumb-up'
+                        else 'upvote'
                   size: '18px'
                   color: if hasVotedUp \
                          then colors.$primary500
                          else colors.$white
                   onclick: =>
-                    @model.signInDialog.openIfGuest me
-                    .then =>
-                      @model.thread.voteById thread.id, {vote: 'up'}
+                    unless hasVotedUp
+                      @model.signInDialog.openIfGuest me
+                      .then =>
+                        @model.thread.voteById thread.id, {vote: 'up'}
               z '.downvote',
                 z @$downvoteIcon,
-                  icon: 'downvote'
+                  icon: if @model.experiment.get('threadThumbs') is 'visible' \
+                        then 'thumb-down'
+                        else 'downvote'
                   size: '18px'
                   color: if hasVotedDown \
                          then colors.$primary500
                          else colors.$white
                   onclick: =>
-                    @model.thread.voteById thread.id, {vote: 'down'}
+                    unless hasVotedDown
+                      @model.signInDialog.openIfGuest me
+                      .then =>
+                        @model.thread.voteById thread.id, {vote: 'down'}
             z '.score',
               "#{FormatService.number points} #{@model.l.get('thread.points')}"
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'

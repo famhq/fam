@@ -7,17 +7,17 @@ if window?
   require './index.styl'
 
 module.exports = class ThreadReply
-  constructor: ({@model, @router, threadId}) ->
+  constructor: ({@model, @router, thread}) ->
     @bodyValue = new Rx.BehaviorSubject ''
 
     @$compose = new Compose {@model, @router, @bodyValue}
 
     @state = z.state
       me: @model.user.getMe()
-      threadId: threadId
+      thread: thread
 
   render: =>
-    {me, threadId} = @state.getValue()
+    {me, thread} = @state.getValue()
 
     z '.z-thread-reply',
       z @$compose,
@@ -27,8 +27,8 @@ module.exports = class ThreadReply
           .then =>
             @model.threadComment.create {
               body: @bodyValue.getValue()
-              parentId: threadId
+              parentId: thread.id
               parentType: 'thread'
             }
           .then =>
-            @router.go "/thread/#{threadId}", {reset: true}
+            @router.go @model.thread.getPath(thread), {reset: true}

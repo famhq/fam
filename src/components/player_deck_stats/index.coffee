@@ -29,7 +29,7 @@ module.exports = class PlayerDeckStats
     )
 
 
-    z '.z-user-deck-stats',
+    z '.z-player-deck-stats',
       z '.stat',
         z '.name', @model.l.get 'deckInfo.winLossDraw'
         z '.value',

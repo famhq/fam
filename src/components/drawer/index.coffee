@@ -26,12 +26,10 @@ module.exports = class Drawer
     @$avatar = new Avatar()
     @$adsenseAd = new AdsenseAd()
     me = @model.user.getMe()
-    hasConversations = @model.conversation.getAll().map (conversations) ->
-      not _isEmpty conversations
 
-    meAndHasConversations = Rx.Observable.combineLatest(
+    meAndLanguage = Rx.Observable.combineLatest(
       me
-      hasConversations
+      @model.l.getLanguage()
       (vals...) -> vals
     )
 
@@ -61,7 +59,7 @@ module.exports = class Drawer
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
 
-      menuItems: meAndHasConversations.map ([me, hasConversations]) =>
+      menuItems: meAndLanguage.map ([me, language]) =>
         _filter([
           {
             path: '/profile'
@@ -77,20 +75,25 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'clan'
           }
-          # {
-          #   path: '/cards'
-          #   title: 'Cards'
-          #   $icon: new Icon()
-          #   $ripple: new Ripple()
-          #   iconName: 'cards'
-          # }
           {
             path: '/social'
-            title: @model.l.get 'general.social'
+            title:
+              if language is 'es' and @model.experiment.get('forum') is 'visible'
+              then @model.l.get 'general.chat'
+              else @model.l.get 'general.social'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'chat'
           }
+          if language is 'es' and @model.experiment.get('forum') is 'visible'
+            {
+              path: '/forum'
+              title: @model.l.get 'general.forum'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'rss'
+            }
+
           {
             isDivider: true
           }
@@ -138,10 +141,20 @@ module.exports = class Drawer
           #   $ripple: new Ripple()
           #   iconName: 'video'
           # }
-          if me?.flags.isModerator
-            {
-              isDivider: true
-            }
+          {
+            isDivider: true
+          }
+          {
+            onclick: =>
+              @model.portal.call 'browser.openWindow', {
+                url: 'https://github.com/starfirehq/starfire-sdk'
+                target: '_system'
+              }
+            title: @model.l.get 'general.developers'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'developers'
+          }
           if me?.flags.isModerator
             {
               path: '/mod-hub'

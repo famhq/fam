@@ -3,6 +3,8 @@ Rx = require 'rx-lite'
 
 Compose = require '../compose'
 ClanBadge = require '../clan_badge'
+DeckCards = require '../deck_cards'
+PlayerDeckStats = require '../player_deck_stats'
 Spinner = require '../spinner'
 config = require '../../config'
 
@@ -10,7 +12,7 @@ if window?
   require './index.styl'
 
 module.exports = class NewThread
-  constructor: ({@model, @router, category, thread}) ->
+  constructor: ({@model, @router, category, thread, id}) ->
     @titleValueStreams ?= new Rx.BehaviorSubject ''
     @bodyValueStreams ?= new Rx.ReplaySubject 1
     @attachmentsValueStreams ?= new Rx.ReplaySubject 1
@@ -41,6 +43,11 @@ module.exports = class NewThread
       @model.user.getMe()
       (vals...) -> vals
     )
+    categoryAndId = Rx.Observable.combineLatest(
+      category
+      id
+      (vals...) -> vals
+    )
 
     @state = z.state
       me: @model.user.getMe()
@@ -49,6 +56,19 @@ module.exports = class NewThread
       attachmentsValue: @attachmentsValueStreams.switch()
       category: category
       thread: thread
+      attachedContent: categoryAndId.flatMapLatest ([category, id]) =>
+        if category is 'deckGuide'
+          @model.clashRoyalePlayerDeck.getById id
+          .map (playerDeck) =>
+            {
+              playerDeck
+              $deck: new DeckCards {
+                @model, @router, deck: playerDeck.deck, cardsPerRow: 8
+              }
+              $deckStats: new PlayerDeckStats {@model, @router, playerDeck}
+            }
+        else
+          Rx.Observable.just null
       clan: categoryAndMe.flatMapLatest ([category, me]) =>
         if category is 'clan'
           @model.player.getByUserIdAndGameId me.id, config.CLASH_ROYALE_ID
@@ -63,7 +83,7 @@ module.exports = class NewThread
         if clan then clan else false
 
   render: =>
-    {me, titleValue, bodyValue, attachmentsValue, clan,
+    {me, titleValue, bodyValue, attachmentsValue, attachedContent, clan,
       category, thread} = @state.getValue()
 
     if clan
@@ -72,6 +92,9 @@ module.exports = class NewThread
           id: clan.id
           name: clan.data.name
           badge: clan.data.badge
+    else if category is 'deckGuide'
+      data =
+        playerDeckId: attachedContent?.playerDeck?.id
     else
       data = {}
 
@@ -91,6 +114,10 @@ module.exports = class NewThread
                 @model.l.get 'newThread.link'
               else
                 z @$spinner
+          else if category is 'deckGuide'
+            z '.z-new-thread_head',
+              z attachedContent?.$deck
+              z attachedContent?.$deckStats
         onDone: (e) =>
           if category is 'clan' and not clan
             return Promise.resolve null
@@ -108,7 +135,7 @@ module.exports = class NewThread
               @model.thread.updateById thread.id, newThread
             else
               @model.thread.create newThread
-          .then ({id}) =>
+          .then (thread) =>
             @bodyValueStreams.onNext Rx.Observable.just null
             @attachmentsValueStreams.onNext Rx.Observable.just null
-            @router.go "/thread/#{id}", {reset: true}
+            @router.go @model.thread.getPath(thread), {reset: true}

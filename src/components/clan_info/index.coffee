@@ -65,38 +65,6 @@ module.exports = class ClanInfo
     isClaimed = clan?.creatorId
     hasPermission = clan?.group?.userIds?.indexOf(me?.id) isnt -1
 
-    metrics =
-      info: _filter [
-        {
-          name: @model.l.get 'clanInfo.weekDonations'
-          value: FormatService.number(
-            clan?.data?.donationsPerWeek or
-            clan?.data?.donations or 0 # legacy
-          )
-        }
-        {
-          name: @model.l.get 'clanInfo.type'
-          value: @model.l.get "clanInfo.type#{_startCase clan?.data?.type}"
-        }
-        {
-          name: @model.l.get 'clanInfo.minTrophies'
-          value: FormatService.number(
-            clan?.data?.requiredTrophies or
-            clan?.data?.minTrophies or 0 # legacy
-          )
-        }
-        {
-          name: @model.l.get 'clanInfo.region'
-          value: clan?.data?.location?.name or
-            clan?.data?.region # legacy
-        }
-        if clan?.password
-          {
-            name: @model.l.get 'general.password'
-            value: clan?.password
-          }
-      ]
-
     memberCount = clan?.data?.memberList?.length or
       clan?.players?.length # legacy
 

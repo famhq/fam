@@ -6,6 +6,7 @@ Head = require '../../components/head'
 Addon = require '../../components/addon'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
+Icon = require '../../components/icon'
 colors = require '../../colors'
 
 if window?
@@ -37,6 +38,8 @@ module.exports = class AddonPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$addon = new Addon {@model, @router, serverData, addon, testUrl}
+    @$thumbsUpIcon = new Icon()
+    @$thumbsDownIcon = new Icon()
 
     @state = z.state
       windowSize: @model.window.getSize()
@@ -46,6 +49,9 @@ module.exports = class AddonPage
 
   render: =>
     {windowSize, addon} = @state.getValue()
+
+    hasVotedUp = false
+    hasVotedDown = false
 
     z '.p-addon', {
       style:
@@ -59,6 +65,30 @@ module.exports = class AddonPage
           onclick: =>
             @router.go '/addons'
         }
+        # $topRightButton:
+        #   z '.p-addon_vote',
+        #     z @$thumbsUpIcon,
+        #       icon: 'thumb-up'
+        #       color: if hasVotedUp \
+        #              then colors.$primary500
+        #              else colors.$white
+        #       size: '18px'
+        #       onclick: =>
+        #         unless hasVotedUp
+        #           @model.signInDialog.openIfGuest me
+        #           .then =>
+        #             @model.addon.voteById addon.id, {vote: 'up'}
+        #     z @$thumbsUpIcon,
+        #       icon: 'thumb-down'
+        #       color: if hasVotedDown \
+        #              then colors.$primary500
+        #              else colors.$white
+        #       size: '18px'
+        #       onclick: =>
+        #         unless hasVotedDown
+        #           @model.signInDialog.openIfGuest me
+        #           .then =>
+        #             @model.addon.voteById addon.id, {vote: 'down'}
         title: @model.l.get "#{addon?.key}.title", {file: 'addons'}
       }
       @$addon

@@ -58,6 +58,7 @@ Pages =
   ProfilePage: require './pages/profile'
   ProfileChestsPage: require './pages/profile_chests'
   SocialPage: require './pages/social'
+  ForumPage: require './pages/forum'
   RecruitingPage: require './pages/recruiting'
   ShopOffersPage: require './pages/shop_offers'
   StarPage: require './pages/star'
@@ -172,7 +173,7 @@ module.exports = class App
     route '/events', 'EventsPage'
     route '/event/:id', 'EventPage'
     route '/event/:id/edit', 'EditEventPage'
-    route '/thread/:id', 'ThreadPage'
+    route ['/thread/:id', '/thread/:id/v/:title'], 'ThreadPage'
     route '/thread/:id/edit', 'EditThreadPage'
     route '/thread/:id/reply', 'ThreadReplyPage'
     route '/decks-new', 'DecksNewPage'
@@ -196,7 +197,7 @@ module.exports = class App
     route '/group-invites', 'GroupInvitesPage'
     route [
       '/newThread', '/newThread/:category',
-      '/new-thread', '/new-thread/:category'
+      '/new-thread', '/new-thread/:category', '/new-thread/:category/:id'
     ], 'NewThreadPage'
     route ['/addDeck', '/add-deck'], 'AddDeckPage'
     route '/cards', 'CardsPage'
@@ -208,6 +209,7 @@ module.exports = class App
     route '/players/search', 'PlayersSearchPage'
     route '/policies', 'PoliciesPage'
     route ['/social', '/social/:tab'], 'SocialPage'
+    route '/forum', 'ForumPage'
     route '/recruiting', 'RecruitingPage'
     route '/stars', 'StarsPage'
     route '/star/:username', 'StarPage'

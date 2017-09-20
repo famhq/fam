@@ -25,16 +25,15 @@ module.exports = class MarkdownEditor
       @imageData
       @model
       @overlay$
-      onUpload: ({key, width, height}) =>
+      onUpload: ({smallUrl, largeUrl, key, width, height}) =>
         {attachments} = @state.getValue()
 
         attachments or= []
-        url = "#{config.USER_CDN_URL}/cm/#{key}.small.png"
         @attachmentsValueStreams.onNext Rx.Observable.just(attachments.concat [
-          {type: 'image', src: url}
+          {type: 'image', src: smallUrl, smallSrc: smallUrl, largeSrc: largeUrl}
         ])
         @setModifier {
-          pattern: "![](#{url} =#{width}x#{height})"
+          pattern: "![](#{largeUrl} =#{width}x#{height})"
         }
     }
 

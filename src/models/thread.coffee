@@ -1,4 +1,5 @@
 _defaults = require 'lodash/defaults'
+_kebabCase = require 'lodash/kebabCase'
 
 module.exports = class Thread
   namespace: 'threads'
@@ -9,10 +10,10 @@ module.exports = class Thread
     ga? 'send', 'event', 'social_interaction', 'thread', diff.category
     @auth.call "#{@namespace}.create", diff, {invalidateAll: true}
 
-  getAll: ({category, sort, skip, limit, ignoreCache} = {}) =>
+  getAll: ({categories, sort, skip, limit, ignoreCache} = {}) =>
     language = @l.getLanguageStr()
     @auth.stream "#{@namespace}.getAll", {
-      category, language, skip, limit, sort
+      categories, language, skip, limit, sort
     }, {
       ignoreCache
     }
@@ -34,6 +35,10 @@ module.exports = class Thread
     @auth.call "#{@namespace}.deleteById", {id}, {
       invalidateAll: true
     }
+
+  getPath: (thread) ->
+    formattedTitle = _kebabCase thread?.title
+    "/thread/#{thread?.id}/v/#{formattedTitle}"
 
   hasPermission: (thread, user, {level} = {}) ->
     userId = user?.id

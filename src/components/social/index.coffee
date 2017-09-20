@@ -13,11 +13,14 @@ if window?
   require './index.styl'
 
 module.exports = class Social
-  constructor: ({@model, @router, pageTitle, selectedIndex}) ->
+  constructor: (args) ->
+    {@model, @router, pageTitle, selectedIndex,
+      threadsFilter, isFilterThreadsDialogVisible} = args
+
 
     @$groups = new Groups {@model, @router}
     @$conversations = new Conversations {@model, @router}
-    @$threads = new Threads {@model, @router}
+    @$threads = new Threads {@model, @router, filter: threadsFilter}
     @$tabs = new Tabs {@model, selectedIndex}
     @$groupsIcon = new Icon()
     @$feedIcon = new Icon()
@@ -43,12 +46,13 @@ module.exports = class Social
         }
       ]
       pos = if lang is 'es' then 0 else 1
-      tabs.splice pos, 0, {
-        $menuIcon: @$feedIcon
-        menuIconName: 'rss'
-        $menuText: @model.l.get 'communityPage.menuNews'
-        $el: @$threads
-      }
+      if lang isnt 'es' or @model.experiment.get('forum') isnt 'visible'
+        tabs.splice pos, 0, {
+          $menuIcon: @$feedIcon
+          menuIconName: 'rss'
+          $menuText: @model.l.get 'communityPage.menuNews'
+          $el: @$threads
+        }
       tabs
 
     selectedIndexAndTabs = Rx.Observable.combineLatest(

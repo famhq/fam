@@ -13,10 +13,12 @@ GROUPS_IN_DRAWER = 2
 
 module.exports = class BottomBar
   constructor: ({@model, @router, requests}) ->
-    @state = z.state {requests}
+    @state = z.state
+      requests: requests
+      language: @model.l.getLanguage()
 
   render: =>
-    {requests} = @state.getValue()
+    {requests, language} = @state.getValue()
     currentPath = requests?.req.path
 
     @menuItems = _filter [
@@ -32,19 +34,12 @@ module.exports = class BottomBar
         route: '/clan'
         text: @model.l.get 'general.clan'
       }
-      # if window? and @model.l.language is 'es'
-      #   {
-      #     $icon: new Icon()
-      #     icon: 'video'
-      #     route: '/videos'
-      #     text: 'Videos'
-      #   }
-      {
-        $icon: new Icon()
-        icon: 'friends'
-        route: '/players'
-        text: @model.l.get 'drawer.menuItemPlayers'
-      }
+      # {
+      #   $icon: new Icon()
+      #   icon: 'friends'
+      #   route: '/players'
+      #   text: @model.l.get 'drawer.menuItemPlayers'
+      # }
       {
         $icon: new Icon()
         icon: 'ellipsis'
@@ -55,8 +50,20 @@ module.exports = class BottomBar
         $icon: new Icon()
         icon: 'chat'
         route: '/social'
-        text: @model.l.get 'general.social'
+        text:
+          if language is 'es' and @model.experiment.get('forum') is 'visible'
+          then @model.l.get 'general.chat'
+          else @model.l.get 'general.social'
       }
+
+      if window? and language is 'es' and
+          @model.experiment.get('forum') is 'visible'
+        {
+          $icon: new Icon()
+          icon: 'rss'
+          route: '/forum'
+          text: @model.l.get 'general.forum'
+        }
     ]
 
     z '.z-bottom-bar',

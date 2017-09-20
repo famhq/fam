@@ -72,6 +72,8 @@ addons = [
   # but hardcoded until then.
   # htmldino: 005862d0-a474-4329-9b6d-20cf31c46be0
   # t.lombart97: 93d9d6b7-aec2-4ae1-a1a2-b76bb81ddb98
+  # the1nk: e27297be-ee97-4216-b854-cfc0d15811b5
+  # tzelon: 18ec096a-0826-458e-8d8e-114ba3292cc2
 ]
 
 module.exports = class Addon
@@ -91,3 +93,6 @@ module.exports = class Addon
   getAll: ->
     Rx.Observable.just addons
     # @auth.stream "#{@namespace}.getAll", {}
+
+  voteById: (id, {vote}) =>
+    @auth.call "#{@namespace}.voteById", {id, vote}, {invalidateAll: true}

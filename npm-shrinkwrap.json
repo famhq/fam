@@ -3393,7 +3393,7 @@
     "portal-gun": {
       "version": "0.4.1",
       "from": "git://github.com/claydotio/portal-gun.git",
-      "resolved": "git://github.com/claydotio/portal-gun.git#6585488d293426a383edcb1e813759f4540255e1",
+      "resolved": "git://github.com/claydotio/portal-gun.git#b7656e00a90289ceba9e97da9e1ce63e20da9606",
       "dependencies": {
         "promiz": {
           "version": "1.0.3",

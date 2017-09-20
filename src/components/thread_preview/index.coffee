@@ -55,5 +55,5 @@ module.exports = class ThreadPreview
             webkitallowfullscreen: true
       else if imageAttachment
         z 'img.image', {
-          src: imageAttachment.src
+          src: imageAttachment.largeSrc or imageAttachment.src
         }

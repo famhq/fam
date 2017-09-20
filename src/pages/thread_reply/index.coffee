@@ -8,8 +8,8 @@ if window?
 
 module.exports = class ThreadReplyPage
   constructor: ({model, requests, @router, serverData}) ->
-    threadId = requests.map ({route}) ->
-      route.params.id
+    thread = requests.flatMapLatest ({route}) ->
+      model.thread.getById route.params.id
 
     @$head = new Head({
       model
@@ -20,7 +20,7 @@ module.exports = class ThreadReplyPage
         description: 'Reply to Thread'
       }
     })
-    @$threadReply = new ThreadReply {model, @router, threadId}
+    @$threadReply = new ThreadReply {model, @router, thread}
 
     @state = z.state
       windowSize: model.window.getSize()
