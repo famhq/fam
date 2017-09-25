@@ -50,14 +50,10 @@ module.exports = class BottomBar
         $icon: new Icon()
         icon: 'chat'
         route: '/social'
-        text:
-          if language is 'es' and @model.experiment.get('forum') is 'visible'
-          then @model.l.get 'general.chat'
-          else @model.l.get 'general.social'
+        text: @model.l.get 'general.chat'
       }
 
-      if window? and language is 'es' and
-          @model.experiment.get('forum') is 'visible'
+      if window? and language is 'es'
         {
           $icon: new Icon()
           icon: 'rss'

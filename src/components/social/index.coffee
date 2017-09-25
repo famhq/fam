@@ -6,7 +6,6 @@ Conversations = require '../../components/conversations'
 Threads = require '../../components/threads'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
-Fab = require '../../components/fab'
 colors = require '../../colors'
 
 if window?
@@ -25,8 +24,6 @@ module.exports = class Social
     @$groupsIcon = new Icon()
     @$feedIcon = new Icon()
     @$conversationsIcon = new Icon()
-    @$addIcon = new Icon()
-    @$fab = new Fab()
 
     language = @model.l.getLanguage()
 
@@ -45,15 +42,6 @@ module.exports = class Social
           $el: @$conversations
         }
       ]
-      pos = if lang is 'es' then 0 else 1
-      if lang isnt 'es' or @model.experiment.get('forum') isnt 'visible'
-        tabs.splice pos, 0, {
-          $menuIcon: @$feedIcon
-          menuIconName: 'rss'
-          $menuText: @model.l.get 'communityPage.menuNews'
-          $el: @$threads
-        }
-      tabs
 
     selectedIndexAndTabs = Rx.Observable.combineLatest(
       selectedIndex, tabs, (vals...) -> vals
@@ -74,18 +62,3 @@ module.exports = class Social
       z @$tabs,
         isBarFixed: false
         tabs: tabs
-      if selectedIndex is 2 or (selectedIndex is 0 and language is 'es')
-        z '.fab',
-          z @$fab,
-            colors:
-              c500: colors.$primary500
-            $icon: z @$addIcon, {
-              icon: 'add'
-              isTouchTarget: false
-              color: colors.$white
-            }
-            onclick: =>
-              if selectedIndex is 0
-                @router.go '/new-thread'
-              else
-                @router.go '/new-thread/clan'

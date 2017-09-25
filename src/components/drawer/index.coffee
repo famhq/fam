@@ -77,15 +77,12 @@ module.exports = class Drawer
           }
           {
             path: '/social'
-            title:
-              if language is 'es' and @model.experiment.get('forum') is 'visible'
-              then @model.l.get 'general.chat'
-              else @model.l.get 'general.social'
+            title: @model.l.get 'general.chat'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'chat'
           }
-          if language is 'es' and @model.experiment.get('forum') is 'visible'
+          if language is 'es'
             {
               path: '/forum'
               title: @model.l.get 'general.forum'

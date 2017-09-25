@@ -79,13 +79,6 @@ module.exports = class SocialPage
         isFlat: true
         $topLeftButton:
           z @$buttonMenu, {color: colors.$primary500}
-        $topRightButton:
-          if language is 'es' and selectedIndex is 0 and @model.experiment.get('forum') isnt 'visible'
-            z @$filterIcon,
-              color: colors.$primary500
-              icon: 'filter'
-              onclick: =>
-                @isFilterThreadsDialogVisible.onNext true
       }
       @$social
       @$bottomBar
