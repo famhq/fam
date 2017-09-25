@@ -235,11 +235,16 @@ module.exports = class Portal
       console.log pt
       pt
 
-  clashRoyaleMatchGetAllByTag: ({tag}) =>
-    @clashRoyaleMatch.getAllByPlayerId tag, config.CLASH_ROYALE_ID
+  clashRoyaleMatchGetAllByTag: ({tag, limit, cursor}) =>
+    @clashRoyaleMatch.getAllByPlayerId tag, {
+      limit, cursor
+    }
     .take(1).toPromise()
-    .then (matches) ->
-      _map matches, 'data'
+    .then ({results, cursor}) ->
+      {
+        results: _map results, 'data'
+        cursor
+      }
 
   clashRoyaleDeckGetAllByTag: ({tag}) =>
     @clashRoyalePlayerDeck.getAllByPlayerId tag, config.CLASH_ROYALE_ID

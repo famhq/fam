@@ -130,14 +130,14 @@ module.exports = class ProfileInfo
           name: @model.l.get 'profileInfo.statWins'
           value: FormatService.number(
             player?.data?.wins or
-            player?.data?.stats.wins # legacy
+            player?.data?.stats?.wins # legacy
           )
         }
         {
           name: @model.l.get 'profileInfo.statLosses'
           value: FormatService.number(
             player?.data?.losses or
-            player?.data?.stats.losses # legacy
+            player?.data?.stats?.losses # legacy
           )
         }
         {
@@ -155,28 +155,28 @@ module.exports = class ProfileInfo
           name: @model.l.get 'profileInfo.statThreeCrowns'
           value: FormatService.number(
             player?.data?.threeCrownWins or
-            player?.data?.stats.threeCrowns # legacy
+            player?.data?.stats?.threeCrowns # legacy
           )
         }
         {
           name: @model.l.get 'profileInfo.statCardsFound'
           value: FormatService.number(
             player?.data?.cards?.length or
-            player?.data?.stats.cardsFound # legacy
+            player?.data?.stats?.cardsFound # legacy
           )
         }
         {
           name: @model.l.get 'profileInfo.statMaxTrophies'
           value: FormatService.number(
             player?.data?.bestTrophies or
-            player?.data?.stats.maxTrophies # legacy
+            player?.data?.stats?.maxTrophies # legacy
           )
         }
         {
           name: @model.l.get 'profileInfo.statTotalDonations'
           value: FormatService.number(
             player?.data?.totalDonations or
-            player?.data?.stats.totalDonations # legacy
+            player?.data?.stats?.totalDonations # legacy
           )
         }
       ]
@@ -190,7 +190,7 @@ module.exports = class ProfileInfo
                      then player?.lastDataUpdateTime
                      else player?.lastMatchesUpdateTime
 
-    canRefresh = @model.player.canRefresh player, hasUpdatedPlayer
+    canRefresh = @model.player.canRefresh player, hasUpdatedPlayer, isRefreshing
 
     z '.z-profile-info',
       z '.header',
@@ -257,6 +257,8 @@ module.exports = class ProfileInfo
                     if canRefresh
                       tag = player?.id
                       @state.set isRefreshing: true
+                      # re-rendering with new state isn't instantaneous, this is
+                      canRefresh = false
                       @model.clashRoyaleAPI.refreshByPlayerId tag
                       .then =>
                         @state.set hasUpdatedPlayer: true, isRefreshing: false

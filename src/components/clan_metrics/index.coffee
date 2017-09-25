@@ -1,6 +1,8 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
+_upperFirst = require 'lodash/upperFirst'
+_camelCase = require 'lodash/camelCase'
 _find = require 'lodash/find'
 _filter = require 'lodash/filter'
 Rx = require 'rx-lite'
@@ -36,7 +38,9 @@ module.exports = class ClanInfo
         }
         {
           name: @model.l.get 'clanInfo.type'
-          value: @model.l.get "clanInfo.type#{_startCase clan?.data?.type}"
+          value: @model.l.get(
+            "clanInfo.type#{_upperFirst _camelCase clan?.data?.type}"
+          )
         }
         {
           name: @model.l.get 'clanInfo.minTrophies'

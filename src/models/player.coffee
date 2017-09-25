@@ -25,11 +25,12 @@ module.exports = class Player
   verifyMe: ({gold, lo}) =>
     @auth.call "#{@namespace}.verifyMe", {gold, lo}, {invalidateAll: true}
 
-  canRefresh: (player, hasUpdated) ->
+  canRefresh: (player, hasUpdated, isRefreshing) ->
     lastUpdate = if player?.lastQueuedTime > player?.lastDataUpdateTime \
                  then player?.lastQueuedTime
                  else player?.lastDataUpdateTime
 
     msSinceUpdate = new Date() - new Date(lastUpdate)
-    canRefresh = not hasUpdated and (not player?.lastQueuedTime or
-                    msSinceUpdate >= MIN_TIME_UNTIL_NEXT_UPDATE_MS)
+    canRefresh = not hasUpdated and
+                  not isRefreshing and (not player?.lastQueuedTime or
+                  msSinceUpdate >= MIN_TIME_UNTIL_NEXT_UPDATE_MS)
