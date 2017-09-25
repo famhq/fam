@@ -157,8 +157,9 @@ module.exports = class Model
     @imageViewOverlay = new ImageViewOverlay()
     @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {
-      @user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck, @modal,
-      @installOverlay, @getAppDialog
+      @user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck,
+      @clanRecordType, @gameRecordType, @modal, @installOverlay, @getAppDialog
+
     }
     @window = new Window {cookieSubject, @experiment}
 

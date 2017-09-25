@@ -30,7 +30,8 @@ module.exports = class Portal
     WEB: 'web'
 
   setModels: (props) =>
-    {@user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck
+    {@user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck,
+      @gameRecordType, @clanRecordType,
       @modal, @installOverlay, @getAppDialog} = props
     null
 
@@ -78,6 +79,18 @@ module.exports = class Portal
     @portal.on 'clashRoyale.player.getByTag', @clashRoyalePlayerGetByTag
     @portal.on 'clashRoyale.match.getAllByTag', @clashRoyaleMatchGetAllByTag
     @portal.on 'clashRoyale.deck.getAllByTag', @clashRoyaleDeckGetAllByTag
+    @portal.on(
+      'clashRoyale.user.getAllByPlayerTag'
+      @clashRoyaleUserGetAllByPlayerTag
+    )
+    @portal.on(
+      'clashRoyale.userRecord.getAllByTag'
+      @clashRoyaleUserRecordGetAllByTag
+    )
+    @portal.on(
+      'clashRoyale.clanRecord.getAllByTag'
+      @clashRoyaleClanRecordGetAllByTag
+    )
     @portal.on 'forum.share', @forumShare
 
     @portal.on 'browser.openWindow', ({url, target, options}) ->
@@ -215,6 +228,13 @@ module.exports = class Portal
       player.data
     .take(1).toPromise()
 
+  clashRoyaleUserGetAllByPlayerTag: ({playerTag}) =>
+    @user.getAllByPlayerIdAndGameId playerTag, config.CLASH_ROYALE_ID
+    .take(1).toPromise()
+    .then (pt) ->
+      console.log pt
+      pt
+
   clashRoyaleMatchGetAllByTag: ({tag}) =>
     @clashRoyaleMatch.getAllByPlayerId tag, config.CLASH_ROYALE_ID
     .take(1).toPromise()
@@ -223,6 +243,18 @@ module.exports = class Portal
 
   clashRoyaleDeckGetAllByTag: ({tag}) =>
     @clashRoyalePlayerDeck.getAllByPlayerId tag, config.CLASH_ROYALE_ID
+    .take(1).toPromise()
+
+  clashRoyaleUserRecordGetAllByTag: ({tag}) =>
+    @gameRecordType.getAllByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID, {
+      embed: ['meValues']
+    }
+    .take(1).toPromise()
+
+  clashRoyaleClanRecordGetAllByTag: ({tag}) =>
+    @clanRecordType.getAllByClanIdAndGameId tag, config.CLASH_ROYALE_ID, {
+      embed: ['clanValues']
+    }
     .take(1).toPromise()
 
   forumShare: ->

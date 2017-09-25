@@ -62,6 +62,9 @@ module.exports = class ProfileInfo
       player: player
     }
 
+  beforeUnmount: =>
+    @state.set isRefreshing: false, hasUpdatedPlayer: false
+
   getWinRateFromStats: (stats) ->
     winsAndLosses = stats?.wins + stats?.losses
     winRate = FormatService.percentage(

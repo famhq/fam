@@ -3,24 +3,6 @@ _find = require 'lodash/find'
 
 addons = [
   {
-    id: '401472e2-d9b2-4a30-9dd3-b1434e1c5e17'
-    key: 'cardMaker'
-    url: 'https://www.clashroyalecardmaker.com/?lang={lang}'
-    iconUrl: 'https://www.clashroyalecardmaker.com/android-icon-192x192.png'
-    creator:
-      username: 'dabolus'
-      name: 'Dabolus'
-  }
-  {
-    id: 'f537f4b0-08cb-453c-8122-ae80e4163226'
-    key: 'shopOffers'
-    url: '/shop-offers'
-    iconUrl: 'https://cdn.wtf/d/images/starfire/chests/legendary_chest.png'
-    creator:
-      username: 'austin'
-      name: 'Austin'
-  }
-  {
     id: '8787842f-bc03-4070-a541-39062be97fdc'
     key: 'chestSimulator'
     metaDescription: 'Open Clash Royale Chests online for free.
@@ -32,10 +14,46 @@ addons = [
       name: 'Austin'
   }
   {
+    id: 'e27297be-ee97-4216-b854-cfc0d15811b5'
+    key: 'deckGenerator'
+    url: 'https://starfire.clashstat.com/deckgen/?lang={lang}'
+    iconUrl: 'https://cdn.wtf/d/images/starfire/addons/random_deck.png'
+    creator:
+      username: 'the1nk'
+      name: 'The1nk'
+  }
+  {
+    id: '401472e2-d9b2-4a30-9dd3-b1434e1c5e17'
+    key: 'cardMaker'
+    url: 'https://www.clashroyalecardmaker.com/?lang={lang}'
+    iconUrl: 'https://www.clashroyalecardmaker.com/android-icon-192x192.png'
+    creator:
+      username: 'dabolus'
+      name: 'Dabolus'
+  }
+  {
+    id: '5c35294e-7315-44c2-ae1b-0cdc65c73a5c'
+    key: 'cardChanceCalculator'
+    url: 'https://pixelcrux.com/Clash_Royale/Card_Chance/Starfire'
+    iconUrl: 'https://pixelcrux.com/Clash_Royale/Card_Chance/Icon.png'
+    creator:
+      username: 'pixelcrux'
+      name: 'Pixel Crux'
+  }
+  {
     id: 'db0593b5-114f-43db-9d98-0b0a88ce3d12'
     key: 'forumSignature'
     url: '/forum-signature'
     iconUrl: 'https://cdn.wtf/d/images/starfire/cards/archers_small.png'
+    creator:
+      username: 'austin'
+      name: 'Austin'
+  }
+  {
+    id: 'f537f4b0-08cb-453c-8122-ae80e4163226'
+    key: 'shopOffers'
+    url: '/shop-offers'
+    iconUrl: 'https://cdn.wtf/d/images/starfire/chests/legendary_chest.png'
     creator:
       username: 'austin'
       name: 'Austin'

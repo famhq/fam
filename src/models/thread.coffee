@@ -14,9 +14,7 @@ module.exports = class Thread
     language = @l.getLanguageStr()
     @auth.stream "#{@namespace}.getAll", {
       categories, language, skip, limit, sort
-    }, {
-      ignoreCache
-    }
+    }, {ignoreCache}
 
   getById: (id, {ignoreCache} = {}) =>
     language = @l.getLanguageStr()

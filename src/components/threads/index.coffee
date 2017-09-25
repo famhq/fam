@@ -18,6 +18,7 @@ Icon = require '../icon'
 ClanBadge = require '../clan_badge'
 DeckCards = require '../deck_cards'
 ThreadPreview = require '../thread_preview'
+ThreadVoteButton = require '../thread_vote_button'
 Spinner = require '../spinner'
 FormatService = require '../../services/format'
 
@@ -56,6 +57,8 @@ module.exports = class Threads
             thread
             $threadPreview: new ThreadPreview {@model, thread}
             $pointsIcon: new Icon()
+            $threadUpvoteButton: new ThreadVoteButton {@model}
+            $threadDownvoteButton: new ThreadVoteButton {@model}
             $commentsIcon: new Icon()
             $textIcon: new Icon()
             $deck: if thread.playerDeck then new DeckCards {
@@ -148,15 +151,29 @@ module.exports = class Threads
               z '.column',
                 _map threads, (properties) =>
                   {thread, $pointsIcon, $commentsIcon, $icon, $textIcon, $deck,
+                    $threadUpvoteButton, $threadDownvoteButton,
                     $threadPreview} = properties
 
                   mediaAttachment = thread.attachments?[0]
                   mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
                   isExpanded = expandedId is thread.id
+                  hasVotedUp = thread.myVote?.vote is 1
+                  hasVotedDown = thread.myVote?.vote is -1
 
-                  @router.link z 'a.thread', {
+                  z 'a.thread', {
                     href: @model.thread.getPath(thread)
                     className: z.classKebab {isExpanded}
+                    onclick: (e) =>
+                      e.preventDefault()
+                      # set cache manually so we don't have to re-fetch
+                      req = {
+                        body:
+                          id: thread.id
+                          language: language
+                        path: 'threads.getById'
+                      }
+                      @model.exoid.setDataCache req, thread
+                      @router.go @model.thread.getPath(thread)
                   },
                     z '.content',
                       if thread.data.clan
@@ -213,14 +230,29 @@ module.exports = class Threads
                                   isTouchTarget: false
                                   color: colors.$tertiary300
                                   size: '14px'
+
                             z '.points',
-                              thread.upvotes or 0
                               z '.icon',
-                                z $pointsIcon,
-                                  icon: 'add-circle'
+                                z $threadUpvoteButton, {
+                                  vote: 'up'
+                                  hasVoted: hasVotedUp
+                                  threadId: thread.id
                                   isTouchTarget: false
                                   color: colors.$tertiary300
                                   size: '14px'
+                                }
+
+                              thread.upvotes or 0
+
+                              z '.icon',
+                                z $threadDownvoteButton, {
+                                  vote: 'down'
+                                  hasVoted: hasVotedDown
+                                  threadId: thread.id
+                                  isTouchTarget: false
+                                  color: colors.$tertiary300
+                                  size: '14px'
+                                }
                     if isExpanded
                       z '.preview',
                         z $threadPreview

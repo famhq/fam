@@ -27,6 +27,38 @@ files = _mapValues files, (val, file) ->
   pt: require "../lang/pt/#{file}_pt"
   pl: require "../lang/pl/#{file}_pl"
 
+relativeTimeFormats =
+  en:
+    future: 'in %s'
+    past: '%s'
+    s: '1s'
+    ss: '%ss'
+    m: '1m'
+    mm: '%dm'
+    h: '1h'
+    hh: '%dh'
+    d: '1d'
+    dd: '%dd'
+    M: '1M'
+    MM: '%dM'
+    y: '1Y'
+    yy: '%dY'
+  es:
+    future: 'in %s'
+    past: '%s'
+    s: '1s'
+    ss: '%ss'
+    m: '1m'
+    mm: '%dm'
+    h: '1h'
+    hh: '%dh'
+    d: '1d'
+    dd: '%dd'
+    M: '1S'
+    MM: '%dS'
+    y: '1A'
+    yy: '%dA'
+
 class Language
   constructor: ({language}) ->
     @language = new Rx.BehaviorSubject language
@@ -34,7 +66,8 @@ class Language
 
   setLanguage: (language) =>
     @language.onNext language
-    moment.locale language
+    relativeTime = relativeTimeFormats[language]
+    moment.locale language, if relativeTime then {relativeTime} else undefined
 
     # change from 'a few seconds ago'
     justNowStr = @get 'time.justNow'

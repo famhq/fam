@@ -3,6 +3,8 @@
   "cardMaker.description":"Créez toutes les cartes imaginaires que vous souhaitez !",
   "shopOffers.title":"Offres du magasin",
   "shopOffers.description":"Regardez quelles offres vous aurez prochainement dans la boutique",
+  "deckGenerator.title":"Random Deck Generator",
+  "deckGenerator.description":"Get a random deck with your available cards",
   "wiki.title":"Wiki",
   "wiki.description":"Connaissances de base de Clash royale",
   "chestSimulator.title":"Simulateur de coffres",

@@ -3,10 +3,12 @@
   "cardMaker.description":"당신이 원하는 카드를 만들어 보세요!",
   "shopOffers.title":"특가 상품",
   "shopOffers.description":"다음에 나올 특가 상품들을 확인하세요",
-  "wiki.title":"사전",
+  "deckGenerator.title":"Random Deck Generator",
+  "deckGenerator.description":"Get a random deck with your available cards",
+  "wiki.title":"위키",
   "wiki.description":"클래시로얄에 대한 지식 베이스",
   "chestSimulator.title":"상자 시뮬레이터",
   "chestSimulator.description":"가짜 상자 열기",
-  "forumSignature.title":"포럼에 서명 해주세요",
-  "forumSignature.description":"포럼을 위한 서명을 해 주세요"
+  "forumSignature.title":"사용자 지정 포럼 서명 만들기",
+  "forumSignature.description":"포럼 사용자 지정 서명 제작"
 }

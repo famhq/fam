@@ -21,6 +21,7 @@ DeckCards = require '../deck_cards'
 PlayerDeckStats = require '../player_deck_stats'
 Spinner = require '../spinner'
 FormattedText = require '../formatted_text'
+ThreadVoteButton = require '../thread_vote_button'
 Fab = require '../fab'
 ProfileDialog = require '../profile_dialog'
 FormatService = require '../../services/format'
@@ -36,10 +37,10 @@ module.exports = class Thread
     @$clanSpinner = new Spinner()
     @$spinner = new Spinner()
     @$replyIcon = new Icon()
-    @$upvoteIcon = new Icon()
-    @$downvoteIcon = new Icon()
     @$editIcon = new Icon()
     @$deleteIcon = new Icon()
+    @$threadUpvoteButton = new ThreadVoteButton {@model}
+    @$threadDownvoteButton = new ThreadVoteButton {@model}
 
     @$fab = new Fab()
     @$avatar = new Avatar()
@@ -226,33 +227,13 @@ module.exports = class Thread
           z '.g-grid',
             z '.vote',
               z '.upvote',
-                z @$upvoteIcon,
-                  icon: if @model.experiment.get('threadThumbs') is 'visible' \
-                        then 'thumb-up'
-                        else 'upvote'
-                  size: '18px'
-                  color: if hasVotedUp \
-                         then colors.$primary500
-                         else colors.$white
-                  onclick: =>
-                    unless hasVotedUp
-                      @model.signInDialog.openIfGuest me
-                      .then =>
-                        @model.thread.voteById thread.id, {vote: 'up'}
+                z @$threadUpvoteButton, {
+                  vote: 'up', hasVoted: hasVotedUp, threadId: thread?.id
+                }
               z '.downvote',
-                z @$downvoteIcon,
-                  icon: if @model.experiment.get('threadThumbs') is 'visible' \
-                        then 'thumb-down'
-                        else 'downvote'
-                  size: '18px'
-                  color: if hasVotedDown \
-                         then colors.$primary500
-                         else colors.$white
-                  onclick: =>
-                    unless hasVotedDown
-                      @model.signInDialog.openIfGuest me
-                      .then =>
-                        @model.thread.voteById thread.id, {vote: 'down'}
+                z @$threadDownvoteButton, {
+                  vote: 'down', hasVoted: hasVotedDown, threadId: thread?.id
+                }
             z '.score',
               "#{FormatService.number points} #{@model.l.get('thread.points')}"
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'

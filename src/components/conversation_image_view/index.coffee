@@ -33,11 +33,10 @@ module.exports = class ConversationImageView
 
     windowHeight = windowSize.height - appBarHeight
 
-    if imageData.width
+    if imageData.aspectRatio
       imageAspectRatio = imageData.aspectRatio
       windowAspectRatio = windowSize.width / windowHeight
 
-      # 3:1, 1:1
       if imageAspectRatio > windowAspectRatio
         imageWidth = windowSize.width
         imageHeight = imageWidth / imageAspectRatio

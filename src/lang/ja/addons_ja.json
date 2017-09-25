@@ -1,8 +1,10 @@
 {
-  "cardMaker.title":"カード メーカー",
+  "cardMaker.title":"カードメーカー",
   "cardMaker.description":"架空のカードを作成！",
   "shopOffers.title":"ショップオファー",
   "shopOffers.description":"ショップにどんなオファーが来るか見られます",
+  "deckGenerator.title":"ランダムにデッキを作成",
+  "deckGenerator.description":"あなたの持っているカードからランダムにデッキを組みます",
   "wiki.title":"Wiki",
   "wiki.description":"Knowledgebase of Clash Royale facts",
   "chestSimulator.title":"宝箱シミュレーター",

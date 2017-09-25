@@ -24,8 +24,10 @@ module.exports = class Icon
     isClickable = Boolean onclick
 
     z 'div.z-icon', {
-      className: z.classKebab {isAlignedTop, isAlignedLeft, isAlignedRight,
-                                isTouchTarget, isClickable, @hasRipple}
+      className: z.classKebab {
+        isAlignedTop, isAlignedLeft, isAlignedRight,
+        isAlignedBottom, isTouchTarget, isClickable, @hasRipple
+      }
       onclick: onclick
       style:
         minWidth: if isTouchTarget then touchWidth else '100%'
