@@ -23,9 +23,11 @@ module.exports = class Addon
     @state = z.state
       addon: addon
       testUrl: testUrl
+      windowSize: @model.window.getSize()
+      appBarHeight: @model.window.getAppBarHeight()
 
   render: =>
-    {addon, testUrl} = @state.getValue()
+    {addon, testUrl, windowSize, appBarHeight} = @state.getValue()
 
     z '.z-addon',
       if addon?.id is 'f537f4b0-08cb-453c-8122-ae80e4163226'
@@ -37,3 +39,5 @@ module.exports = class Addon
       else
         z 'iframe.iframe',
           src: testUrl or addon?.url.replace '{lang}', @model.l.getLanguageStr()
+          style:
+            height: "#{windowSize.height - appBarHeight}px"

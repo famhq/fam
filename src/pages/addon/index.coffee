@@ -43,15 +43,16 @@ module.exports = class AddonPage
 
     @state = z.state
       windowSize: @model.window.getSize()
+      me: @model.user.getMe()
       addon: addon
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, addon} = @state.getValue()
+    {windowSize, addon, me} = @state.getValue()
 
-    hasVotedUp = false
-    hasVotedDown = false
+    hasVotedUp = addon?.myVote?.vote is 1
+    hasVotedDown = addon?.myVote?.vote is -1
 
     z '.p-addon', {
       style:
@@ -65,30 +66,30 @@ module.exports = class AddonPage
           onclick: =>
             @router.go '/addons'
         }
-        # $topRightButton:
-        #   z '.p-addon_vote',
-        #     z @$thumbsUpIcon,
-        #       icon: 'thumb-up'
-        #       color: if hasVotedUp \
-        #              then colors.$primary500
-        #              else colors.$white
-        #       size: '18px'
-        #       onclick: =>
-        #         unless hasVotedUp
-        #           @model.signInDialog.openIfGuest me
-        #           .then =>
-        #             @model.addon.voteById addon.id, {vote: 'up'}
-        #     z @$thumbsUpIcon,
-        #       icon: 'thumb-down'
-        #       color: if hasVotedDown \
-        #              then colors.$primary500
-        #              else colors.$white
-        #       size: '18px'
-        #       onclick: =>
-        #         unless hasVotedDown
-        #           @model.signInDialog.openIfGuest me
-        #           .then =>
-        #             @model.addon.voteById addon.id, {vote: 'down'}
+        $topRightButton:
+          z '.p-addon_vote',
+            z @$thumbsUpIcon,
+              icon: 'thumb-up'
+              color: if hasVotedUp \
+                     then colors.$primary500
+                     else colors.$white
+              size: '18px'
+              onclick: =>
+                unless hasVotedUp
+                  @model.signInDialog.openIfGuest me
+                  .then =>
+                    @model.addon.voteById addon.id, {vote: 'up'}
+            z @$thumbsDownIcon,
+              icon: 'thumb-down'
+              color: if hasVotedDown \
+                     then colors.$primary500
+                     else colors.$white
+              size: '18px'
+              onclick: =>
+                unless hasVotedDown
+                  @model.signInDialog.openIfGuest me
+                  .then =>
+                    @model.addon.voteById addon.id, {vote: 'down'}
         title: @model.l.get "#{addon?.key}.title", {file: 'addons'}
       }
       @$addon
