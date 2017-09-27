@@ -158,7 +158,7 @@ module.exports = class Thread
                   onclick: =>
                     @model.thread.deleteById thread.id
                     .then =>
-                      @router.go '/social'
+                      @router.go '/forum'
             ]
       }
       z '.content',
