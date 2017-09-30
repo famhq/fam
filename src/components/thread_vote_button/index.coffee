@@ -18,9 +18,7 @@ module.exports = class ThreadVoteButton
 
     z '.z-thread-vote-button',
       z @$icon,
-        icon: if @model.experiment.get('threadThumbs') is 'visible' \
-              then "thumb-#{vote}"
-              else "#{vote}vote"
+        icon: "thumb-#{vote}"
         size: size
         isTouchTarget: isTouchTarget
         color: if hasVoted \
