@@ -66,10 +66,11 @@ module.exports = class Addons extends Base
                     @router.go "/addon/clash-royale/#{_kebabCase(addon.key)}"
                   else
                     @model.portal.call 'browser.openWindow', {
-                      url: addon.url
+                      url: addon.url.replace '{lang}', @model.l.getLanguageStr()
+                      target: '_blank'
                       options: if isNewIAB
                         statusbar: {
-                          color: '#ffffffff'
+                          color: colors.$primary700
                         }
                         toolbar: {
                           height: 56

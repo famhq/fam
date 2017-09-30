@@ -16,5 +16,7 @@
   "chestSimulator.title": "Chest simulator",
   "chestSimulator.description": "Open fake chests",
   "forumSignature.title": "Custom forum signature",
-  "forumSignature.description": "Generate a custom signature for forums"
+  "forumSignature.description": "Generate a custom signature for forums",
+  "battleHistory.title": "Battle History",
+  "battleHistory.description": "View your recent battles"
 }

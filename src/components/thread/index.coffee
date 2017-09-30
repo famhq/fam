@@ -17,6 +17,7 @@ ClanBadge = require '../clan_badge'
 ClanMetrics = require '../clan_metrics'
 ThreadComment = require '../thread_comment'
 ThreadPreview = require '../thread_preview'
+ConversationInput = require '../conversation_input'
 DeckCards = require '../deck_cards'
 PlayerDeckStats = require '../player_deck_stats'
 Spinner = require '../spinner'
@@ -79,6 +80,18 @@ module.exports = class Thread
       else
         Rx.Observable.just null
 
+    @message = new Rx.BehaviorSubject ''
+    @overlay = new Rx.BehaviorSubject null
+    @isPostLoading = new Rx.BehaviorSubject false
+    @$conversationInput = new ConversationInput {
+      @model
+      @message
+      @overlay$
+      @isPostLoading
+      onPost: @postMessage
+      onResize: -> null
+    }
+
     @state = z.state
       me: @model.user.getMe()
       selectedProfileDialogUser: @selectedProfileDialogUser
@@ -97,6 +110,7 @@ module.exports = class Thread
         if clanObj then new ClanMetrics {@model, @router, clan} else null
       clan: clan
       playerDeck: playerDeck
+      isPostLoading: @isPostLoading
       windowSize: @model.window.getSize()
       threadComments: thread.flatMapLatest (thread) =>
         if thread?.id
@@ -112,10 +126,31 @@ module.exports = class Thread
         else
           Rx.Observable.just null
 
+  postMessage: =>
+    {me, isPostLoading, thread} = @state.getValue()
+
+    if isPostLoading
+      return
+
+    messageBody = @message.getValue()
+    @isPostLoading.onNext true
+
+    @model.signInDialog.openIfGuest me
+    .then =>
+      @model.threadComment.create {
+        body: messageBody
+        parentId: thread.id
+        parentType: 'thread'
+      }
+      .then =>
+        @isPostLoading.onNext false
+      .catch =>
+        @isPostLoading.onNext false
 
   render: =>
     {me, thread, $body, threadComments, isVideoVisible, windowSize, playerDeck,
-      selectedProfileDialogUser, clan, $clanMetrics} = @state.getValue()
+      selectedProfileDialogUser, clan, $clanMetrics,
+      isPostLoading} = @state.getValue()
 
     headerAttachment = _find thread?.attachments, {type: 'video'}
     headerImageSrc = headerAttachment?.previewSrc
@@ -240,6 +275,11 @@ module.exports = class Thread
               "#{FormatService.number thread?.commentCount} "
               @model.l.get 'thread.comments'
 
+        if @model.experiment.get('threadInlineComment') is 'visible'
+          z '.reply',
+            @$conversationInput
+
+
         z '.comments',
           if threadComments and _isEmpty threadComments
             z '.no-comments', @model.l.get 'thread.noComments'
@@ -252,17 +292,18 @@ module.exports = class Thread
           else
             @$spinner
 
-      z '.fab',
-        z @$fab,
-          colors:
-            c500: colors.$primary500
-          $icon: z @$replyIcon, {
-            icon: 'reply'
-            isTouchTarget: false
-            color: colors.$white
-          }
-          onclick: =>
-            @router.go "/thread/#{thread.id}/reply"
+      if @model.experiment.get('threadInlineComment') isnt 'visible'
+        z '.fab',
+          z @$fab,
+            colors:
+              c500: colors.$primary500
+            $icon: z @$replyIcon, {
+              icon: 'reply'
+              isTouchTarget: false
+              color: colors.$white
+            }
+            onclick: =>
+              @router.go "/thread/#{thread.id}/reply"
 
       if selectedProfileDialogUser
         z @$profileDialog

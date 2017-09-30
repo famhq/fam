@@ -231,9 +231,6 @@ module.exports = class Portal
   clashRoyaleUserGetAllByPlayerTag: ({playerTag}) =>
     @user.getAllByPlayerIdAndGameId playerTag, config.CLASH_ROYALE_ID
     .take(1).toPromise()
-    .then (pt) ->
-      console.log pt
-      pt
 
   clashRoyaleMatchGetAllByTag: ({tag, limit, cursor}) =>
     @clashRoyaleMatch.getAllByPlayerId tag, {

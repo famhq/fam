@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_upperFirst = require 'lodash/upperFirst'
 Rx = require 'rx-lite'
 supportsWebP = window? and require 'supports-webp'
 
@@ -22,6 +23,7 @@ module.exports = class ConversationInput
 
     @imageData = new Rx.BehaviorSubject null
     @hasText = new Rx.BehaviorSubject false
+    @isTextareaFocused ?= new Rx.BehaviorSubject false
 
     @$conversationImagePreview = new ConversationImagePreview {
       @imageData
@@ -111,7 +113,7 @@ module.exports = class ConversationInput
   render: =>
     {currentPanel, mePlayer, me} = @state.getValue()
 
-    isVerified = mePlayer?.isVerified
+    isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV
 
     z '.z-conversation-input', {
       className: z.classKebab {"is-#{currentPanel}-panel": true}
@@ -126,9 +128,11 @@ module.exports = class ConversationInput
           if @panels[currentPanel].requireVerified and not isVerified
             z '.require-verified',
                 z '.title',
-                  'Verify your account to unlock ' + @panels[currentPanel].name
+                  @model.l.get(
+                    "conversationInput.unlock#{_upperFirst currentPanel}"
+                  )
                 z '.description',
-                  '(Claim a clan, or have your clan leader do it)'
+                  @model.l.get 'conversationInput.unlockDescription'
           @panels[currentPanel].$el
 
         z '.bottom-icons',  {

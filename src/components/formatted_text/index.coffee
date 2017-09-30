@@ -23,6 +23,16 @@ module.exports = class FormattedText
   get$: ({text, model}) =>
     {windowSize} = @state.getValue()
 
+    isSticker = text?.match /^:[a-z_]+:$/
+
+    if isSticker
+      sticker = text.replace /:/g, ''
+      return z '.sticker',
+        style:
+          backgroundImage:
+            "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
+
+
     remark()
     .use vdom, {
       components:

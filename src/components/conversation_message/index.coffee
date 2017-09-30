@@ -51,17 +51,9 @@ module.exports = class ConversationMessage
 
     {user, body, time, card, id, clientId} = message
 
-    isSticker = body.match /^:[a-z_]+:$/
     avatarSize = if windowSize.width > 840 \
                  then '56px'
                  else '40px'
-
-    if isSticker
-      sticker = body.replace /:/g, ''
-      $body = z '.sticker',
-        style:
-          backgroundImage:
-            "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
 
     onclick = =>
       unless isTextareaFocused
@@ -79,7 +71,7 @@ module.exports = class ConversationMessage
     z '.z-conversation-message', {
       # re-use elements in v-dom
       key: "message-#{id or clientId}"
-      className: z.classKebab {isSticker, isGrouped, isMe}
+      className: z.classKebab {isGrouped, isMe}
       oncontextmenu: (e) ->
         e?.preventDefault()
         oncontextmenu?()
