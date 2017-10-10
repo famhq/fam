@@ -278,10 +278,8 @@ module.exports = class Thread
               "#{FormatService.number thread?.commentCount} "
               @model.l.get 'thread.comments'
 
-        if @model.experiment.get('threadInlineComment') is 'visible'
-          z '.reply',
-            @$conversationInput
-
+        z '.reply',
+          @$conversationInput
 
         z '.comments',
           if threadComments and _isEmpty threadComments
@@ -294,19 +292,6 @@ module.exports = class Thread
               ]
           else
             @$spinner
-
-      if @model.experiment.get('threadInlineComment') isnt 'visible'
-        z '.fab',
-          z @$fab,
-            colors:
-              c500: colors.$primary500
-            $icon: z @$replyIcon, {
-              icon: 'reply'
-              isTouchTarget: false
-              color: colors.$white
-            }
-            onclick: =>
-              @router.go "/thread/#{thread.id}/reply"
 
       if selectedProfileDialogUser
         z @$profileDialog

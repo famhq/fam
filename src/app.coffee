@@ -45,7 +45,6 @@ Pages =
   GroupManageMemberPage: require './pages/group_manage_member'
   EditThreadPage: require './pages/edit_thread'
   ThreadPage: require './pages/thread'
-  ThreadReplyPage: require './pages/thread_reply'
   NewThreadPage: require './pages/new_thread'
   AddDeckPage: require './pages/add_deck'
   DeckPage: require './pages/deck'
@@ -188,7 +187,6 @@ module.exports = class App
     route '/event/:id/edit', 'EditEventPage'
     route ['/thread/:id', '/thread/:id/v/:title'], 'ThreadPage'
     route '/thread/:id/edit', 'EditThreadPage'
-    route '/thread/:id/reply', 'ThreadReplyPage'
     route '/decks-new', 'DecksNewPage'
 
     route ['/forum-signature', '/forumSignature'], 'ForumSignaturePage'
