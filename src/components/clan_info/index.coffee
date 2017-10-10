@@ -12,6 +12,7 @@ AdsenseAd = require '../adsense_ad'
 RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
 ClanMetrics = require '../clan_metrics'
+VerifyAccountDialog = require '../verify_account_dialog'
 FormatService = require '../../services/format'
 config = require '../../config'
 colors = require '../../colors'
@@ -20,9 +21,7 @@ if window?
   require './index.styl'
 
 module.exports = class ClanInfo
-  constructor: (options) ->
-    {@model, @router, clan, @isClaimClanDialogVisible,
-      @isJoinGroupDialogVisible} = options
+  constructor: ({@model, @router, clan, @overlay$}) ->
     @$trophyIcon = new Icon()
     @$donationsIcon = new Icon()
     @$membersIcon = new Icon()
@@ -39,14 +38,14 @@ module.exports = class ClanInfo
       isVisible: isRequestNotificationCardVisible
     }
 
+    @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
+
     @$clanMetrics = new ClanMetrics {@model, @router, clan}
 
     me = @model.user.getMe()
 
     @state = z.state {
       isRequestNotificationCardVisible
-      @isClaimClanDialogVisible
-      # isSplitsInfoCardVisible: window? and not localStorage?['hideClanSplitsInfo']
       me: me
       hasUpdatedClan: false
       mePlayer: me.flatMapLatest ({id}) =>
@@ -61,6 +60,7 @@ module.exports = class ClanInfo
     mePlayerIsVerified = mePlayer?.isVerified
     clanPlayer = _find clan?.data?.memberList, {tag: "##{mePlayer?.id}"}
     isLeader = clanPlayer?.role in ['coLeader', 'leader']
+    isCreator = clan?.creatorId is me?.id
 
     isClaimed = clan?.creatorId
     hasPermission = clan?.group?.userIds?.indexOf(me?.id) isnt -1
@@ -137,7 +137,15 @@ module.exports = class ClanInfo
                 onclick: =>
                   @model.signInDialog.openIfGuest me
                   .then =>
-                    @isClaimClanDialogVisible.onNext true
+                    @overlay$.onNext @$verifyAccountDialog
+          else if isCreator and isClaimed and not clan.password
+            z '.claim-button',
+              z @$claimButton,
+                text: @model.l.get 'claimClanDialog.setPassword'
+                onclick: =>
+                  @model.signInDialog.openIfGuest me
+                  .then =>
+                    @overlay$.onNext @$verifyAccountDialog
           else if clanPlayer and hasPermission
             z '.claim-button',
               z @$claimButton,
@@ -151,7 +159,7 @@ module.exports = class ClanInfo
                 onclick: =>
                   @model.signInDialog.openIfGuest me
                   .then =>
-                    @isJoinGroupDialogVisible.onNext true
+                    @overlay$.onNext @$verifyAccountDialog
       z '.content',
         if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
           z '.ad',

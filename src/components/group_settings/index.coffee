@@ -45,7 +45,7 @@ module.exports = class Settings
 
     @isPrivateStreams = new Rx.ReplaySubject 1
     @isPrivateStreams.onNext (group?.map (group) ->
-      group.mode is 'private') or Rx.Observable.just null
+      group.privacy is 'private') or Rx.Observable.just null
 
     @$actionBar = new ActionBar {@model}
     @$leaveIcon = new Icon()

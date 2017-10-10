@@ -11,8 +11,8 @@ module.exports = class ClashRoyalePlayerDeck
   getByDeckId: (deckId) =>
     @auth.stream "#{@namespace}.getByDeckId", {deckId}
 
-  getById: (id) =>
-    @auth.stream "#{@namespace}.getById", {id}
+  getByDeckIdAndPlayerId: (deckId, playerId) =>
+    @auth.stream "#{@namespace}.getByDeckIdAndPlayerId", {deckId, playerId}
 
   incrementByDeckId: (deckId, {state} = {}) =>
     @auth.call "#{@namespace}.incrementByDeckId", {deckId, state}, {

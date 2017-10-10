@@ -8,13 +8,19 @@
   "cardChanceCalculator.title":"Calculadora de Oportunidades de Cartas",
   "cardChanceCalculator.description":"Checa cuáles son las posibilidades que consigas una carta legendaria de un cofre",
   "shopCardPrices.title":"Calculadora para las Cartas de la Tienda",
-  "shopCardPrices.description":"Encuentra rápidamente cuánto oro te costará comprar cierta cantidad de cartas dada su rareza de la tienda.",
+  "shopCardPrices.description":"Encuentre rápidamente cuánto costará comprar un cierto número de tarjetas de una rareza dada de la tienda.",
   "deckBuilder.title":"Constructor de Mazos",
-  "deckBuilder.description":"Arma mazos de batalla para Clash Royale, checa tus estadísticas y otra información acerca de ellas, al igual que compartirlas con los demás.",
+  "deckBuilder.description":"Construir al azar mazos de batalla para Clash Royale luego analizarlos, compartirlos e importarlos al juego",
   "wiki.title":"Guía",
   "wiki.description":"Datos de Clash Royale",
   "chestSimulator.title":"Simulador de Cofre",
   "chestSimulator.description":"Abrir cofres falsos",
   "forumSignature.title":"Firma de foro personalizada",
-  "forumSignature.description":"Generar una firma personalizada para los foros"
+  "forumSignature.description":"Generar una firma personalizada para los foros",
+  "battleHistory.title":"Battle History",
+  "battleHistory.description":"View your recent battles",
+  "popularDecks.title":"Popular Decks",
+  "popularDecks.description":"View popular decks and their win rates",
+  "topTouchdownCards.title":"Top Touchdown Cards",
+  "topTouchdownCards.description":"See the best and worst cards in the new 2v2 touchdown mode!"
 }

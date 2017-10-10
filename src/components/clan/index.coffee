@@ -29,24 +29,10 @@ module.exports = class Clan
       @model, @router, selectedProfileDialogUser
     }
 
-    isClaimClanDialogVisible = new Rx.BehaviorSubject false
-
-    @$claimClanDialog = new ClaimClanDialog {
-      @model, @router
-      isVisible: isClaimClanDialogVisible
-      clan
-    }
-
-    isJoinGroupDialogVisible = new Rx.BehaviorSubject false
-
-    @$joinGroupDialog = new JoinGroupDialog {
-      @model, @router
-      isVisible: isJoinGroupDialogVisible
-      clan
-    }
+    @overlay$ = new Rx.BehaviorSubject null
 
     @$clanInfo = new ClanInfo {
-      @model, @router, clan, isClaimClanDialogVisible, isJoinGroupDialogVisible
+      @model, @router, clan, @overlay$
     }
     @$clanMembers = new ClanMembers {
       @model, @router, clan, selectedProfileDialogUser
@@ -55,13 +41,11 @@ module.exports = class Clan
 
     @state = z.state
       me: me
-      isClaimClanDialogVisible: isClaimClanDialogVisible
-      isJoinGroupDialogVisible: isJoinGroupDialogVisible
+      overlay$: @overlay$
       selectedProfileDialogUser: selectedProfileDialogUser
 
   render: ({isOtherClan} = {}) =>
-    {me, selectedProfileDialogUser, isClaimClanDialogVisible,
-      isJoinGroupDialogVisible} = @state.getValue()
+    {me, selectedProfileDialogUser, overlay$} = @state.getValue()
 
     z '.z-clan',
       z @$tabs,
@@ -91,8 +75,5 @@ module.exports = class Clan
       if selectedProfileDialogUser
         @$selectedProfileDialog
 
-      if isClaimClanDialogVisible
-        @$claimClanDialog
-
-      if isJoinGroupDialogVisible
-        @$joinGroupDialog
+      if overlay$
+        overlay$

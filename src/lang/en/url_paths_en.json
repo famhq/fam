@@ -1,0 +1,14 @@
+{
+  "addon": "/addon",
+  "addonKey": "/addon/clash-royale/{key}",
+  "addons": "/addons",
+  "add-event": "/add-event",
+  "clan": "/clan",
+  "conversation": "/conversation/{conversationId}",
+  "conversations": "/conversations",
+
+  "friends": "/friends",
+  "friendsAction": "/friends/{action}",
+  "new-conversation": "/new-conversation",
+  "videos": "/videos"
+}

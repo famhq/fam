@@ -158,7 +158,18 @@ module.exports = class GroupChatPage
                   onclick: =>
                     @model.portal.call 'browser.openWindow', {
                       url:
-                        'https://www.youtube.com/channel/UCjmGtPZMS9kSLheN4MYO2XQ'
+                        'https://www.youtube.com/withzack'
+                      target: '_system'
+                  }
+            else if group?.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
+              z '.icon',
+                z @$linkIcon,
+                  icon: 'external-link'
+                  color: colors.$primary500
+                  onclick: =>
+                    @model.portal.call 'browser.openWindow', {
+                      url:
+                        'https://www.youtube.com/boplayhard'
                       target: '_system'
                   }
 

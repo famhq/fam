@@ -493,9 +493,9 @@ EXHIBIT B. Attribution Information
 
 Attribution Copyright Notice: Copyright (c) 2016-2017 Starfire Games Inc. All Rights Reserved.
 
-Attribution Phrase (not exceeding 10 words): Powered by Starfi.re
+Attribution Phrase (not exceeding 10 words): Powered by Starfire
 
-Attribution URL: https://starfi.re
+Attribution URL: https://starfire.games
 
 Graphic Image as provided in the Covered Code:
 https://cdn.wtf/d/images/starfire/powered_by.png

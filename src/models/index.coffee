@@ -157,7 +157,7 @@ module.exports = class Model
     @imageViewOverlay = new ImageViewOverlay()
     @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {
-      @user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck,
+      @user, @game, @player, @clan, @clashRoyaleMatch, @clashRoyalePlayerDeck,
       @clanRecordType, @gameRecordType, @modal, @installOverlay, @getAppDialog
 
     }
@@ -173,6 +173,8 @@ module.exports = class Model
         @l.setLanguage 'es'
       else if me.country is 'IT'
         @l.setLanguage 'it'
+      else if me.country is 'BR'
+        @l.setLanguage 'pt'
       else if me.country is 'FR'
         @l.setLanguage 'fr'
 

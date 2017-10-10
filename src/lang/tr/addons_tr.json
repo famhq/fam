@@ -8,13 +8,19 @@
   "cardChanceCalculator.title":"Card Chance Calculator",
   "cardChanceCalculator.description":"See what the odds are that you will get a Legendary card from a chest",
   "shopCardPrices.title":"Shop Card Price Calculator",
-  "shopCardPrices.description":"Quickly find how much gold it will cost to buy a certain number of cards of a given rarity from the shop.",
+  "shopCardPrices.description":"Quickly find how much it will cost to buy a certain number of cards of a given rarity from the shop.",
   "deckBuilder.title":"Deck Builder",
-  "deckBuilder.description":"Build Clash Royale Battle Decks and view statistics and other information about them as well as share them with others.",
+  "deckBuilder.description":"Build or randomize Clash Royale Battle Decks then analyze them, share them, and import them to the game",
   "wiki.title":"Wiki",
   "wiki.description":"Knowledgebase of Clash Royale facts",
   "chestSimulator.title":"Chest simulator",
   "chestSimulator.description":"Open fake chests",
   "forumSignature.title":"Custom forum signature",
-  "forumSignature.description":"Generate a custom signature for forums"
+  "forumSignature.description":"Generate a custom signature for forums",
+  "battleHistory.title":"Battle History",
+  "battleHistory.description":"View your recent battles",
+  "popularDecks.title":"Popular Decks",
+  "popularDecks.description":"View popular decks and their win rates",
+  "topTouchdownCards.title":"Top Touchdown Cards",
+  "topTouchdownCards.description":"See the best and worst cards in the new 2v2 touchdown mode!"
 }

@@ -159,6 +159,19 @@ module.exports = class App
             })
           return @$cachedPages[pageKey]
 
+    # if on starfire and not in app, create loginToken
+    # pass loginToken to starfire.games as 301 (hopefully). loginToken expires
+    # after a minute. {token, userId} ttl, scylla
+    # if can't 301 login token, just 301 and have a forgot password feature
+
+    # starfire.games/clash-royale/profile/....
+    # starfire.games/clash-royale/chest-cycle
+    # starfire.games/clash-royale/forum
+    # starfire.games/clash-royale/thread/shortId/this-is-the-title
+
+    # starfire.games/es/clash-royale/foro
+    # starfire.games/es/clash-royale/ciclo-de-cofres
+
 
     # route '/', 'HomePage'
     route ['/friends/:action', '/friends'], 'FriendsPage'
@@ -218,7 +231,8 @@ module.exports = class App
     route '/privacy', 'PrivacyPage'
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'
-      '/clash-royale-player/:playerId'
+      '/clash-royale/player/:playerId'
+      '/clash-royale-player/:playerId' # legacy
     ], 'ProfilePage'
     route [
       '/user/id/:id/chests'
@@ -244,7 +258,7 @@ module.exports = class App
     isIos = /iPad|iPhone|iPod/.test userAgent
     isNative = Environment.isGameApp(config.GAME_KEY)
     isPageAvailable = (me?.isMember or not request?.$page?.isPrivate)
-    defaultInstallMessage = 'Add Starfi.re to your homescreen to quickly
+    defaultInstallMessage = 'Add Starfire to your homescreen to quickly
                             access all features anytime'
 
     z 'html',

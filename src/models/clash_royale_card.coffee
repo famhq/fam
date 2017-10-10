@@ -14,8 +14,13 @@ module.exports = class ClashRoyaleCard
   getByKey: (key) =>
     @auth.stream "#{@namespace}.getByKey", {key}
 
+  getTop: ({gameType}) =>
+    @auth.stream "#{@namespace}.getTop", {gameType}
+
   getChestCards: ({arena, chest}) =>
     @auth.call "#{@namespace}.getChestCards", {arena, chest}
 
   getNameTranslation: (key, language) =>
-    @l.get "crCard.#{_camelCase key}", {file: 'cards'}
+    unless key
+      return ''
+    @l.get "crCard.#{_camelCase key.replace(/\./, '')}", {file: 'cards'}

@@ -39,6 +39,7 @@ module.exports = class ProfileDecks
       me: @model.user.getMe()
       language: @model.l.getLanguage()
       hidePostDeckCard: localStorage?.hidePostDeckCard
+      player: player
       isPrivate: playerDecks
       .catch (err) ->
         ga? 'send', 'event', 'deck_err', err.message
@@ -50,7 +51,6 @@ module.exports = class ProfileDecks
         else
           false
       currentDeck: playerDecks.map (playerDecks) =>
-        # playerDeck = _find playerDecks, {isCurrentDeck: true}
         playerDeck = playerDecks?[0]
         if playerDeck?.deck
           {
@@ -61,12 +61,9 @@ module.exports = class ProfileDecks
         else
           null
       otherDecks: playerDecks.map (playerDecks) =>
-        # playerDecks = _filter playerDecks, ({isCurrentDeck}) ->
-        #   not isCurrentDeck
-        # _filter _map playerDecks, (playerDeck) ->
         otherDecks = _takeRight(playerDecks, playerDecks?.length - 1)
         _filter _map otherDecks, (playerDeck) =>
-          if playerDeck?.deck and not _isEmpty playerDeck?.deck?.cardIds
+          if playerDeck?.deck and not _isEmpty playerDeck?.deck?.cards
             {
               playerDeck: playerDeck
               $deck: new DeckCards {deck: playerDeck?.deck}
@@ -78,7 +75,7 @@ module.exports = class ProfileDecks
     }
 
   render: =>
-    {me, currentDeck, otherDecks, language,
+    {me, player, currentDeck, otherDecks, language,
       hidePostDeckCard, isPrivate} = @state.getValue()
 
     currentDeckGamesPlayed = currentDeck?.playerDeck?.wins +
@@ -86,7 +83,8 @@ module.exports = class ProfileDecks
     currentDeckWinRate = currentDeck?.playerDeck?.wins / currentDeckGamesPlayed
     shouldShowPostDeckCard = currentDeckGamesPlayed >= MIN_GAMES_FOR_GUIDE and
                              currentDeckWinRate >= MIN_WIN_RATE_FOR_GUIDE and
-                             language is 'es' and not hidePostDeckCard
+                             language in config.COMMUNITY_LANGUAGES and
+                             not hidePostDeckCard
 
     z '.z-profile-decks',
       if isPrivate
@@ -126,7 +124,6 @@ module.exports = class ProfileDecks
                 z currentDeck?.$stats
 
               if shouldShowPostDeckCard
-                # TODO: localstorage and translation
                 z @$postDeckCard, {
                   isHighlighted: true
                   text: @model.l.get 'profileDecks.postGuide'
@@ -138,9 +135,10 @@ module.exports = class ProfileDecks
                   submit:
                     text: @model.l.get 'addGuidePage.title'
                     onclick: =>
-                      console.log currentDeck
+                      {deckId} = currentDeck.playerDeck
+                      id = "#{deckId}:#{player.id}"
                       @router.go(
-                        "/new-thread/deckGuide/#{currentDeck.playerDeck.id}"
+                        "/new-thread/deckGuide/#{id}"
                       )
                 }
 

@@ -35,9 +35,7 @@ module.exports = class ShopOffers
     shopOffers = _map player?.data?.shopOffers, (days, chest) ->
       {days, chest}
     shopOffers = _sortBy shopOffers, 'days'
-    lastUpdateTime = if player?.lastDataUpdateTime > player?.lastMatchesUpdateTime \
-                     then player?.lastDataUpdateTime
-                     else player?.lastMatchesUpdateTime
+    lastUpdateTime = player?.lastUpdateTime
 
     z '.z-shop-offers',
       @model.l.get 'shopOffers.rip'

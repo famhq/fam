@@ -11,7 +11,7 @@ if window?
   require './index.styl'
 
 module.exports = class JoinGroupDialog
-  constructor: ({@model, @router, @isVisible, clan}) ->
+  constructor: ({@model, @router, clan, @overlay$}) ->
 
     @clanPasswordValue = new Rx.BehaviorSubject ''
     @clanPasswordError = new Rx.BehaviorSubject null
@@ -27,7 +27,7 @@ module.exports = class JoinGroupDialog
       error: null
 
   cancel: =>
-    @isVisible.onNext false
+    @overlay$.onNext null
 
   join: (e) =>
     e?.preventDefault()
@@ -40,7 +40,7 @@ module.exports = class JoinGroupDialog
     @model.clan.joinById clan?.id, {clanPassword}
     .then =>
       @state.set isLoading: false, error: null
-      @isVisible.onNext false
+      @overlay$.onNext null
     .catch (err) =>
       @state.set
         error: @model.l.get 'joinGroupDialog.error'
@@ -52,9 +52,9 @@ module.exports = class JoinGroupDialog
     z '.z-join-group-dialog',
       z @$dialog,
         onLeave: =>
-          @isVisible.onNext false
+          @overlay$.onNext null
         isVanilla: true
-        $title: 'Join group'
+        $title: @model.l.get 'general.verify'
         $content:
           z '.z-join-group-dialog_dialog',
             z 'form.content', {

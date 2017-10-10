@@ -1,0 +1,28 @@
+@require 'zorium-paper/base'
+
+@require '../../vars'
+
+.z-top-touchdown-cards
+  padding: 16px
+  width: 100%
+
+  > .g-grid
+    > .card-row, > .header
+      display: flex
+      align-items: center
+      width: 100%
+
+      > .card
+        width: 50px
+
+      > .name
+        font-title()
+        margin-left: 16px
+
+      > .win-rate
+        margin-left: auto
+
+    > .header
+      > .name, > .win-rate
+        font-subhead()
+        color: getColor('$primary500')

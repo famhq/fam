@@ -11,7 +11,7 @@ if window?
   require './index.styl'
 
 module.exports = class DecksPage
-  installMessage: 'Add Starfi.re to your homescreen to quickly access
+  installMessage: 'Add Starfire to your homescreen to quickly access
                   these guides anytime'
 
   constructor: ({@model, requests, @router, serverData}) ->

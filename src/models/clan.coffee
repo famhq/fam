@@ -9,7 +9,9 @@ module.exports = class Clan
     @auth.stream "#{@namespace}.getById", {id, embed}
 
   claimById: (id) =>
-    @auth.call "#{@namespace}.claimById", {id}
+    @auth.call "#{@namespace}.claimById", {id}, {
+      invalidateAll: true
+    }
 
   updateById: (id, {clanPassword}) =>
     @auth.call "#{@namespace}.updateById", {id, clanPassword}, {

@@ -50,7 +50,7 @@ else
 isomorphic =
   # hardcoded while we just have one game
   CLASH_ROYALE_ID: '319a9065-e3dc-4d02-ad30-62047716a88f'
-  WITH_ZACK_GROUP_ID: 'e4495c00-977b-4632-8e7c-01b352401b4f' # TODO: remove?
+  COMMUNITY_LANGUAGES: ['es', 'pt']
 
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
   USER_CDN_URL: 'https://cdn.wtf/images/starfire'
@@ -64,9 +64,6 @@ isomorphic =
     serverEnv.STRIPE_PUBLISHABLE_KEY or
     process.env.STRIPE_PUBLISHABLE_KEY
   GIPHY_API_KEY: process.env.GIPHY_API_KEY
-  HEYZAP_PUBLISHER_KEY: process.env.HEYZAP_PUBLISHER_KEY
-  APPODEAL_APP_KEY_IOS: 'c3a318f7434718b1ddbb61250fdcea763cda8d48a5641b66'
-  APPODEAL_APP_KEY_ANDROID: '6f824145960b73231717a2a242b3dfd75db3d399779cddb4'
   FB_ID: process.env.STARFIRE_FB_ID
   API_URL: API_URL
   PUBLIC_API_URL: process.env.PUBLIC_RADIOACTIVE_API_URL

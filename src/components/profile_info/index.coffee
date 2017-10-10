@@ -6,6 +6,7 @@ _snakeCase = require 'lodash/snakeCase'
 _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
 _filter = require 'lodash/filter'
+_find = require 'lodash/find'
 Rx = require 'rx-lite'
 Environment = require 'clay-environment'
 moment = require 'moment'
@@ -55,6 +56,10 @@ module.exports = class ProfileInfo
       isRequestNotificationCardVisible
       hasUpdatedPlayer: false
       isRefreshing: false
+      isAutoRefresh: player.flatMapLatest (player) =>
+        @model.player.getIsAutoRefreshByPlayerIdAndGameId(
+          player.id, config.CLASH_ROYALE_ID
+        )
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
       user: user
       me: @model.user.getMe()
@@ -99,27 +104,28 @@ module.exports = class ProfileInfo
         name: @model.l.get 'profileInfo.statCrownsLost'
         value: FormatService.number stats?.crownsLost
       }
-      {
-        name: @model.l.get 'profileInfo.statCurrentWinStreak'
-        value: FormatService.number stats?.currentWinStreak
-      }
-      {
-        name: @model.l.get 'profileInfo.statCurrentLossStreak'
-        value: FormatService.number stats?.currentLossStreak
-      }
-      {
-        name: @model.l.get 'profileInfo.statMaxWinStreak'
-        value: FormatService.number stats?.maxWinStreak
-      }
-      {
-        name: @model.l.get 'profileInfo.statMaxLossStreak'
-        value: FormatService.number stats?.maxLossStreak
-      }
+      # {
+      #   name: @model.l.get 'profileInfo.statCurrentWinStreak'
+      #   value: FormatService.number stats?.currentWinStreak
+      # }
+      # {
+      #   name: @model.l.get 'profileInfo.statCurrentLossStreak'
+      #   value: FormatService.number stats?.currentLossStreak
+      # }
+      # {
+      #   name: @model.l.get 'profileInfo.statMaxWinStreak'
+      #   value: FormatService.number stats?.maxWinStreak
+      # }
+      # {
+      #   name: @model.l.get 'profileInfo.statMaxLossStreak'
+      #   value: FormatService.number stats?.maxLossStreak
+      # }
     ]
 
   render: =>
-    {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing
-      isSplitsInfoCardVisible, user, me, followingIds} = @state.getValue()
+    {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing,
+      isAutoRefresh, isSplitsInfoCardVisible, user, me,
+      followingIds} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
     isFollowing = followingIds and followingIds.indexOf(user?.id) isnt -1
@@ -129,15 +135,13 @@ module.exports = class ProfileInfo
         {
           name: @model.l.get 'profileInfo.statWins'
           value: FormatService.number(
-            player?.data?.wins or
-            player?.data?.stats?.wins # legacy
+            player?.data?.wins
           )
         }
         {
           name: @model.l.get 'profileInfo.statLosses'
           value: FormatService.number(
-            player?.data?.losses or
-            player?.data?.stats?.losses # legacy
+            player?.data?.losses
           )
         }
         {
@@ -146,7 +150,7 @@ module.exports = class ProfileInfo
         }
         {
           name: @model.l.get 'profileInfo.statFavoriteCard'
-          value: _startCase(
+          value: @model.clashRoyaleCard.getNameTranslation(
             player?.data?.currentFavouriteCard?.name or
             player?.data?.stats?.favoriteCard # legacy
           )
@@ -180,15 +184,16 @@ module.exports = class ProfileInfo
           )
         }
       ]
-      ladder: @getTypeStats player?.data?.splits?.PvP or
-        player?.data?.splits?.ladder
-      grandChallenge: @getTypeStats player?.data?.splits?.grandChallenge
-      classicChallenge: @getTypeStats player?.data?.splits?.classicChallenge
-      '2v2': @getTypeStats player?.data?.splits?['2v2']
+      ladder: @getTypeStats _find player?.counters, {gameType: 'PvP'}
+      grandChallenge: @getTypeStats _find player?.counters, {
+        gameType: 'grandChallenge'
+      }
+      classicChallenge: @getTypeStats _find player?.counters, {
+        gameType: 'classicChallenge'
+      }
+      '2v2': @getTypeStats _find player?.counters, {gameType: '2v2'}
 
-    lastUpdateTime = if player?.lastDataUpdateTime > player?.lastMatchesUpdateTime \
-                     then player?.lastDataUpdateTime
-                     else player?.lastMatchesUpdateTime
+    lastUpdateTime = player?.lastUpdateTime
 
     canRefresh = @model.player.canRefresh player, hasUpdatedPlayer, isRefreshing
 
@@ -243,40 +248,50 @@ module.exports = class ProfileInfo
               @model.l.get 'profileInfo.lastUpdatedTime'
               ' '
               moment(lastUpdateTime).fromNowModified()
+            z '.auto-refresh',
+              @model.l.get 'profileInfo.autoRefresh'
+              z 'span.status',
+                if isAutoRefresh
+                  @model.l.get 'general.on'
+                else
+                  z 'span', {
+                    onclick: =>
+                      @overlay$.onNext @$verifyAccountDialog
+                  },
+                    @model.l.get 'general.off'
             z '.refresh',
-              if isRefreshing
-                '...'
-              else
-                z @$refreshIcon,
-                  icon: 'refresh'
-                  isTouchTarget: false
-                  color: if canRefresh \
-                         then colors.$primary500
-                         else colors.$tertiary300
-                  onclick: =>
-                    if canRefresh
-                      tag = player?.id
-                      @state.set isRefreshing: true
-                      # re-rendering with new state isn't instantaneous, this is
-                      canRefresh = false
-                      @model.clashRoyaleAPI.refreshByPlayerId tag
-                      .then =>
-                        @state.set hasUpdatedPlayer: true, isRefreshing: false
-                    else
-                      @overlay$.onNext z @$dialog, {
-                        isVanilla: true
-                        $title: @model.l.get 'profileInfo.waitTitle'
-                        $content: @model.l.get 'profileInfo.waitDescription', {
-                          replacements:
-                            number: '10'
-                        }
-                        onLeave: =>
-                          @overlay$.onNext null
-                        submitButton:
-                          text: @model.l.get 'installOverlay.closeButtonText'
-                          onclick: =>
-                            @overlay$.onNext null
+              z @$refreshIcon,
+                icon: if isRefreshing then 'ellipsis' else 'refresh'
+                isTouchTarget: false
+                color: if canRefresh \
+                       then colors.$primary500
+                       else colors.$tertiary300
+                onclick: =>
+                  if isRefreshing
+                    return
+                  if canRefresh
+                    tag = player?.id
+                    @state.set isRefreshing: true
+                    # re-rendering with new state isn't instantaneous, this is
+                    canRefresh = false
+                    @model.clashRoyaleAPI.refreshByPlayerId tag
+                    .then =>
+                      @state.set hasUpdatedPlayer: true, isRefreshing: false
+                  else
+                    @overlay$.onNext z @$dialog, {
+                      isVanilla: true
+                      $title: @model.l.get 'profileInfo.waitTitle'
+                      $content: @model.l.get 'profileInfo.waitDescription', {
+                        replacements:
+                          number: '10'
                       }
+                      onLeave: =>
+                        @overlay$.onNext null
+                      submitButton:
+                        text: @model.l.get 'installOverlay.closeButtonText'
+                        onclick: =>
+                          @overlay$.onNext null
+                    }
 
           if isMe and player and not player?.isVerified
             z '.verify-button',

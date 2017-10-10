@@ -1,10 +1,9 @@
 z = require 'zorium'
 Rx = require 'rx-lite'
+_find = require 'lodash/find'
 
-Dialog = require '../dialog'
-PrimaryInput = require '../primary_input'
-FlatButton = require '../flat_button'
-Icon = require '../icon'
+ClaimClanDialog = require '../claim_clan_dialog'
+JoinGroupDialog = require '../join_group_dialog'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -13,95 +12,30 @@ if window?
 
 module.exports = class VerifyAccountDialog
   constructor: ({@model, @router, @overlay$}) ->
-
-    player = @model.user.getMe().flatMapLatest ({id}) =>
+    me = @model.user.getMe()
+    player = me.flatMapLatest ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
-      .map (player) ->
-        return player or {}
 
-    @goldValue = new Rx.BehaviorSubject ''
-    @goldError = new Rx.BehaviorSubject null
-    @$goldInput = new PrimaryInput
-      value: @goldValue
-      error: @goldError
+    clan = player.flatMapLatest (player) =>
+      if player?.data?.clan?.tag
+        @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
+        .map (clan) -> clan or false
+      else
+        Rx.Observable.just false
 
-    @hiValueStreams = new Rx.ReplaySubject null
-    @hiValueStreams.onNext player.map (player) ->
-      player?.hi
-    @hiError = new Rx.BehaviorSubject null
-    @$hiInput = new PrimaryInput
-      valueStreams: @hiValueStreams
-      error: @hiError
+    @$joinGroupDialog = new JoinGroupDialog {@model, @router, @overlay$, clan}
+    @$claimClanDialog = new ClaimClanDialog {@model, @router, @overlay$, clan}
 
-    @loValue = new Rx.BehaviorSubject ''
-    @loError = new Rx.BehaviorSubject null
-    @$loInput = new PrimaryInput
-      value: @loValue
-      error: @loError
-
-    @$dialog = new Dialog()
-
-    @state = z.state
-      isLoading: false
-      error: null
-
-  cancel: =>
-    @overlay$.onNext null
-
-  verify: (e) =>
-    e?.preventDefault()
-
-
-    gold = @goldValue.getValue()
-    lo = @loValue.getValue()
-
-    @state.set isLoading: true
-    @model.player.verifyMe {gold, lo}
-    .then =>
-      @state.set isLoading: false, error: null
-      @overlay$.onNext null
-    .catch (err) =>
-      @state.set
-        error: err?.info
-        isLoading: false
+    @state = z.state {clan, player}
 
   render: =>
-    {step, isLoading, error} = @state.getValue()
+    {clan, player} = @state.getValue()
+
+    clanPlayer = _find clan?.data?.memberList, {tag: "##{player?.id}"}
+    isLeader = clanPlayer?.role in ['coLeader', 'leader']
 
     z '.z-verify-account-dialog',
-      z @$dialog,
-        onLeave: =>
-          @overlay$.onNext null
-        isVanilla: true
-        $title: @model.l.get 'clanInfo.verifySelf'
-        $content:
-          z '.z-verify-account-dialog_dialog',
-            z 'form.content', {
-              onsubmit: @verify
-            },
-              z '.error', error
-              z '.input',
-                z @$goldInput, {
-                  type: 'number'
-                  hintText: @model.l.get 'verifyAccountDialog.currentGold'
-                }
-              z '.description',
-                @model.l.get 'verifyAccountDialog.profileIdDescription'
-              z '.input',
-                z '.hi',
-                  z @$hiInput, {
-                    type: 'number'
-                    hintText: 'Pt 1'
-                  }
-                z '.hyphen', '-'
-                z @$loInput, {
-                  type: 'number'
-                  hintText: 'Pt 2'
-                }
-        cancelButton:
-          text: @model.l.get 'general.cancel'
-          onclick: @cancel
-        submitButton:
-          text: if isLoading then @model.l.get 'general.loading' \
-                else @model.l.get 'general.verify'
-          onclick: @verify
+      if isLeader
+        @$claimClanDialog
+      else if clanPlayer
+        @$joinGroupDialog

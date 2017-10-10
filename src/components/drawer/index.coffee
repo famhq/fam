@@ -82,7 +82,7 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'chat'
           }
-          if language is 'es'
+          if language in config.COMMUNITY_LANGUAGES
             {
               path: '/forum'
               title: @model.l.get 'general.forum'

@@ -67,8 +67,11 @@ module.exports = class Thread
         Rx.Observable.just null
 
     playerDeck = thread.flatMapLatest (thread) =>
-      if thread?.data?.playerDeckId
-        @model.clashRoyalePlayerDeck.getById thread.data.playerDeckId
+      if thread?.data?.playerId
+        @model.clashRoyalePlayerDeck.getByDeckIdAndPlayerId(
+          thread.data.deckId
+          thread.data.playerId
+        )
         .map (playerDeck) =>
           {
             playerDeck

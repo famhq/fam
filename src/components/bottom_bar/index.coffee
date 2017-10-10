@@ -5,6 +5,7 @@ _filter = require 'lodash/filter'
 Icon = require '../icon'
 Ripple = require '../ripple'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -53,7 +54,7 @@ module.exports = class BottomBar
         text: @model.l.get 'general.chat'
       }
 
-      if window? and language is 'es'
+      if window? and language in config.COMMUNITY_LANGUAGES
         {
           $icon: new Icon()
           icon: 'rss'

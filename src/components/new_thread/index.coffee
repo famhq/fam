@@ -54,13 +54,17 @@ module.exports = class NewThread
       titleValue: @titleValueStreams.switch()
       bodyValue: @bodyValueStreams.switch()
       attachmentsValue: @attachmentsValueStreams.switch()
+      language: @model.l.getLanguage()
       category: category
       thread: thread
       attachedContent: categoryAndId.flatMapLatest ([category, id]) =>
         if category is 'deckGuide'
-          @model.clashRoyalePlayerDeck.getById id
+          [deckId, playerId] = decodeURIComponent(id).split ':'
+          @model.clashRoyalePlayerDeck.getByDeckIdAndPlayerId deckId, playerId
           .map (playerDeck) =>
             {
+              playerId
+              deckId
               playerDeck
               $deck: new DeckCards {
                 @model, @router, deck: playerDeck.deck, cardsPerRow: 8
@@ -84,7 +88,7 @@ module.exports = class NewThread
 
   render: =>
     {me, titleValue, bodyValue, attachmentsValue, attachedContent, clan,
-      category, thread} = @state.getValue()
+      category, thread, language} = @state.getValue()
 
     if clan
       data =
@@ -94,7 +98,8 @@ module.exports = class NewThread
           badge: clan.data.badge
     else if category is 'deckGuide'
       data =
-        playerDeckId: attachedContent?.playerDeck?.id
+        playerId: attachedContent?.playerId
+        deckId: attachedContent?.deckId
     else
       data = {}
 
@@ -130,6 +135,8 @@ module.exports = class NewThread
               attachments: attachmentsValue
               category: category
               data: data
+              language: language
+              gameId: config.CLASH_ROYALE_ID
             }
             if thread
               @model.thread.updateById thread.id, newThread

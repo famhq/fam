@@ -13,6 +13,11 @@ module.exports = class Player
       playerId, gameId, embed
     }
 
+  getIsAutoRefreshByPlayerIdAndGameId: (playerId, gameId) =>
+    @auth.stream "#{@namespace}.getIsAutoRefreshByPlayerIdAndGameId", {
+      playerId, gameId
+    }
+
   getTop: =>
     @auth.stream "#{@namespace}.getTop", {}
 
@@ -22,13 +27,11 @@ module.exports = class Player
   search: (playerId) =>
     @auth.call "#{@namespace}.search", {playerId}
 
-  verifyMe: ({gold, lo}) =>
-    @auth.call "#{@namespace}.verifyMe", {gold, lo}, {invalidateAll: true}
+  # verifyMe: ({gold, lo}) =>
+  #   @auth.call "#{@namespace}.verifyMe", {gold, lo}, {invalidateAll: true}
 
   canRefresh: (player, hasUpdated, isRefreshing) ->
-    lastUpdate = if player?.lastQueuedTime > player?.lastDataUpdateTime \
-                 then player?.lastQueuedTime
-                 else player?.lastDataUpdateTime
+    lastUpdate = player?.lastUpdateTime
 
     msSinceUpdate = new Date() - new Date(lastUpdate)
     canRefresh = not hasUpdated and

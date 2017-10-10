@@ -95,3 +95,10 @@ module.exports = class ProfileLanding
               @state.set isInfoDialogVisible: false
           onLeave: =>
             @state.set isInfoDialogVisible: false
+          # submitButton:
+          #   text: 'Open game profile'
+          #   onclick: =>
+          #     @model.portal.call 'browser.openWindow', {
+          #       url: 'clashroyale://playerProfile'
+          #       target: '_system'
+          #     }

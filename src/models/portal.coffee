@@ -30,7 +30,7 @@ module.exports = class Portal
     WEB: 'web'
 
   setModels: (props) =>
-    {@user, @game, @player, @clashRoyaleMatch, @clashRoyalePlayerDeck,
+    {@user, @game, @player, @clan, @clashRoyaleMatch, @clashRoyalePlayerDeck,
       @gameRecordType, @clanRecordType,
       @modal, @installOverlay, @getAppDialog} = props
     null
@@ -77,6 +77,7 @@ module.exports = class Portal
     # SDK
     @portal.on 'clashRoyale.player.getMe', @clashRoyalePlayerGetMe
     @portal.on 'clashRoyale.player.getByTag', @clashRoyalePlayerGetByTag
+    @portal.on 'clashRoyale.clan.getByTag', @clashRoyaleClanGetByTag
     @portal.on 'clashRoyale.match.getAllByTag', @clashRoyaleMatchGetAllByTag
     @portal.on 'clashRoyale.deck.getAllByTag', @clashRoyaleDeckGetAllByTag
     @portal.on(
@@ -226,6 +227,14 @@ module.exports = class Portal
       unless player
         throw {statusCode: 404, info: 'player not found'}
       player.data
+    .take(1).toPromise()
+
+  clashRoyaleClanGetByTag: ({tag}) =>
+    @clan.getById tag
+    .map (clan) ->
+      unless clan
+        throw {statusCode: 404, info: 'clan not found'}
+      clan.data
     .take(1).toPromise()
 
   clashRoyaleUserGetAllByPlayerTag: ({playerTag}) =>
