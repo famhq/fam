@@ -15,11 +15,12 @@ module.exports = class Dialog
     @$submitButton = new FlatButton()
 
   render: (props) =>
-    {$content, $title, cancelButton, submitButton, isVanilla, onLeave} = props
+    {$content, $title, cancelButton, submitButton, isVanilla,
+      isWide, onLeave} = props
     $content ?= ''
     onLeave ?= (-> null)
 
-    z '.z-dialog', {className: z.classKebab {isVanilla}},
+    z '.z-dialog', {className: z.classKebab {isVanilla, isWide}},
       z '.backdrop', onclick: ->
         onLeave()
 

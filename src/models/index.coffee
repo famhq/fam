@@ -60,6 +60,9 @@ module.exports = class Model
     serverHeaders ?= {}
 
     cache = window?[SERIALIZATION_KEY] or {}
+    window?[SERIALIZATION_KEY] = null
+    # maybe this means less memory used for long caches?
+    document?.querySelector('.model')?.innerHTML = ''
     # isExpired = if serialization.expires?
     #   # Because of potential clock skew we check around the value
     #   delta = Math.abs(Date.now() - serialization.expires)

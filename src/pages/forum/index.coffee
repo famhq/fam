@@ -10,6 +10,7 @@ BottomBar = require '../../components/bottom_bar'
 Icon = require '../../components/icon'
 Fab = require '../../components/fab'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -48,6 +49,17 @@ module.exports = class ForumPage
       isFilterThreadsDialogVisible: @isFilterThreadsDialogVisible
 
   renderHead: => @$head
+
+  afterMount: =>
+    @model.user.getMe().flatMapLatest ({id}) =>
+      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      .map (mePlayer) =>
+        if mePlayer?.isVerified
+          @model.player.setAutoRefreshByPlayerIdAndGameId(
+            mePlayer.id, config.CLASH_ROYALE_ID
+          )
+    .take(1)
+    .subscribe()
 
   render: =>
     {windowSize, isFilterThreadsDialogVisible} = @state.getValue()

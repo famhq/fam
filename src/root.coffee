@@ -64,11 +64,12 @@ window.onerror = (message, file, line, column, error) ->
 # ROUTING SETUP #
 #################
 setCookies = (currentCookies) ->
+  host = window.location.host
   (cookies) ->
     _map cookies, (value, key) ->
       unless currentCookies[key] is value
         document.cookie = cookie.serialize \
-          key, value, CookieService.getCookieOpts()
+          key, value, CookieService.getCookieOpts(host)
     currentCookies = cookies
 
 navigator.serviceWorker?.register '/service_worker.js'

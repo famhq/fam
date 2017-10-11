@@ -11,7 +11,8 @@ module.exports = class Head
     @state = z.state
       meta: meta
       serverData: serverData
-      modelSerialization: model.getSerializationStream()
+      modelSerialization: unless window?
+        model.getSerializationStream()
 
   render: =>
     {meta, serverData, modelSerialization} = @state.getValue()

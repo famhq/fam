@@ -142,7 +142,7 @@ module.exports = class Threads
             },
               z 'span.title', @model.l.get 'threads.userOfWeek'
               z 'div',
-                ' clashconantonio '
+                ' oswaldm '
                 "(#{@model.l.get 'threads.winner'})"
               z '.description',
                 @model.l.get 'threads.learnMore'

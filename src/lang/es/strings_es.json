@@ -259,7 +259,7 @@
   "profileInfo.subhead2V2":"2c2",
   "profileInfo.waitTitle":"Espera un momento",
   "profileInfo.waitDescription":"Puede actualizar una vez cada {number} minutos",
-  "profileInfo.autoRefresh":"Autorefrescar: ",
+  "profileInfo.autoRefresh":"Autorefrescar",
   "profileGraphs.trophies":"Trofeos",
   "profileGraphs.donations":"Donaciones",
   "profileGraphs.clanChestCrowns":"Coronas de cofre de clan",

@@ -19,6 +19,7 @@ ClanBadge = require '../clan_badge'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 VerifyAccountDialog = require '../verify_account_dialog'
+AutoRefreshDialog = require '../auto_refresh_dialog'
 AdsenseAd = require '../adsense_ad'
 FormatService = require '../../services/format'
 config = require '../../config'
@@ -41,6 +42,8 @@ module.exports = class ProfileInfo
     @$clanBadge = new ClanBadge()
     @$dialog = new Dialog()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
+    @$autoRefreshDialog = new AutoRefreshDialog {@model, @router, @overlay$}
+    @$autoRefreshInfoIcon = new Icon()
     @$adsenseAd = new AdsenseAd()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
@@ -248,17 +251,27 @@ module.exports = class ProfileInfo
               @model.l.get 'profileInfo.lastUpdatedTime'
               ' '
               moment(lastUpdateTime).fromNowModified()
-            z '.auto-refresh',
+            z '.auto-refresh', {
+              onclick: =>
+                @overlay$.onNext @$autoRefreshDialog
+            },
               @model.l.get 'profileInfo.autoRefresh'
-              z 'span.status',
-                if isAutoRefresh
+              ': '
+              if isAutoRefresh
+                z '.status',
                   @model.l.get 'general.on'
-                else
-                  z 'span', {
-                    onclick: =>
-                      @overlay$.onNext @$verifyAccountDialog
-                  },
-                    @model.l.get 'general.off'
+              else
+                [
+                  z '.status',
+                    z 'div',
+                      @model.l.get 'general.off'
+                  z '.info',
+                    z @$autoRefreshInfoIcon,
+                      icon: 'help'
+                      isTouchTarget: false
+                      size: '14px'
+                      color: colors.$white
+                ]
             z '.refresh',
               z @$refreshIcon,
                 icon: if isRefreshing then 'ellipsis' else 'refresh'

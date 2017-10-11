@@ -95,12 +95,34 @@ then app.use express.static(gulpPaths.dist, {maxAge: '4h'})
 else app.use express.static(gulpPaths.build, {maxAge: '4h'})
 
 app.use (req, res, next) ->
+  # migrate to starfire.games
+  # check if native app
+  userAgent = req.headers['user-agent']
+  host = req.headers.host
+  accessToken = req.query.accessToken
+  isNativeApp = userAgent?.indexOf('starfire') isnt -1
+  isBot = /bot|crawler|spider|crawling/i.test(userAgent)
+  isLegacyHost = host.indexOf('starfi.re') isnt -1 or
+                  host.indexOf('redtritium.com') isnt -1
+  if isLegacyHost and req.cookies?.accessToken and not isNativeApp and not isBot
+    return res.redirect(
+      301
+      'https://starfire.games' + req.path +
+        '?accessToken=' + req.cookies?.accessToken
+    )
+  else if isLegacyHost and not isNativeApp
+    return res.redirect(301, 'https://starfire.games' + req.path)
+  else if accessToken and not isLegacyHost and not isNativeApp
+    res.cookie('accessToken', accessToken, CookieService.getCookieOpts(host))
+    return res.redirect(301, 'https://starfire.games' + req.path)
+  # end migrate
+
   hasSent = false
   setCookies = (currentCookies) ->
     (cookies) ->
       _map cookies, (value, key) ->
         if currentCookies[key] isnt value and not hasSent
-          res.cookie(key, value, CookieService.getCookieOpts())
+          res.cookie(key, value, CookieService.getCookieOpts(host))
       currentCookies = cookies
 
   cookieSubject = new Rx.BehaviorSubject req.cookies

@@ -30,7 +30,6 @@ Pages =
   EventPage: require './pages/event'
   EventsPage: require './pages/events'
   FacebookLoginPage: require './pages/facebook_login'
-  ForumSignaturePage: require './pages/forum_signature'
   GroupPage: require './pages/group'
   GroupChatPage: require './pages/group_chat'
   GroupMembersPage: require './pages/group_members'
@@ -46,11 +45,7 @@ Pages =
   EditThreadPage: require './pages/edit_thread'
   ThreadPage: require './pages/thread'
   NewThreadPage: require './pages/new_thread'
-  AddDeckPage: require './pages/add_deck'
   DeckPage: require './pages/deck'
-  DecksNewPage: require './pages/decks_new'
-  CardPage: require './pages/card'
-  CardsPage: require './pages/cards'
   ModHubPage: require './pages/mod_hub'
   PlayersPage: require './pages/players'
   PlayersSearchPage: require './pages/players_search'
@@ -187,10 +182,6 @@ module.exports = class App
     route '/event/:id/edit', 'EditEventPage'
     route ['/thread/:id', '/thread/:id/v/:title'], 'ThreadPage'
     route '/thread/:id/edit', 'EditThreadPage'
-    route '/decks-new', 'DecksNewPage'
-
-    route ['/forum-signature', '/forumSignature'], 'ForumSignaturePage'
-
     route '/group/:id', 'GroupPage'
     route '/group/:id/chat', 'GroupChatPage'
     route '/group/:id/members', 'GroupMembersPage'
@@ -200,7 +191,7 @@ module.exports = class App
     route '/group/:id/manage-channels', 'GroupManageChannelsPage'
     route '/group/:id/new-channel', 'GroupAddChannelPage'
     route(
-      '/group/:id/edit-channel/:conversationId', 'GroupEditChannelPage'
+      '/group/:id/chat/:conversationId/edit', 'GroupEditChannelPage'
     )
     route '/group/:id/settings', 'GroupSettingsPage'
     route '/group/:id/add-records', 'GroupAddRecordsPage'
@@ -210,16 +201,16 @@ module.exports = class App
       '/newThread', '/newThread/:category',
       '/new-thread', '/new-thread/:category', '/new-thread/:category/:id'
     ], 'NewThreadPage'
-    route ['/addDeck', '/add-deck'], 'AddDeckPage'
-    route '/cards', 'CardsPage'
     route '/deck/:id', 'DeckPage'
-    route ['/card/:id', '/clashRoyale/card/:key'], 'CardPage'
     route '/facebook-login/:type', 'FacebookLoginPage'
-    route ['/modHub', '/mod-hub'], 'ModHubPage'
+    route '/mod-hub', 'ModHubPage'
+
+
+    # here
     route '/players', 'PlayersPage'
     route '/players/search', 'PlayersSearchPage'
     route '/policies', 'PoliciesPage'
-    route ['/social', '/social/:tab'], 'SocialPage'
+    route ['/social', '/social/:tab'], 'SocialPage' # use chat
     route '/forum', 'ForumPage'
     route '/recruiting', 'RecruitingPage'
     route '/stars', 'StarsPage'
@@ -233,15 +224,11 @@ module.exports = class App
       '/clash-royale-player/:playerId' # legacy
     ], 'ProfilePage'
     route [
-      '/user/id/:id/chests'
-      '/user/:username/chests'
+      '/user/id/:id/chests' # legacy
+      '/user/:username/chests' # legacy
+      '/player/:playerId/chests' # legacy
     ], 'ProfileChestsPage'
-    route ['/editProfile', '/edit-profile'], 'EditProfilePage'
-    route [
-      '/user/id/:id/shop-offers'
-      '/user/:username/shop-offers'
-      '/shop-offers'
-    ], 'ShopOffersPage'
+    route '/edit-profile', 'EditProfilePage'
     route '/*', 'FourOhFourPage'
     routes
 

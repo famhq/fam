@@ -18,6 +18,15 @@ module.exports = class Player
       playerId, gameId
     }
 
+  setAutoRefreshByPlayerIdAndGameId: (playerId, gameId) =>
+    @auth.call "#{@namespace}.setAutoRefreshByGameId", {gameId}, {
+      invalidateSingle:
+        body:
+          gameId: gameId
+          playerId: playerId
+        path: "#{@namespace}.getIsAutoRefreshByPlayerIdAndGameId"
+    }
+
   getTop: =>
     @auth.stream "#{@namespace}.getTop", {}
 

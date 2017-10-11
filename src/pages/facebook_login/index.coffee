@@ -1,5 +1,5 @@
 z = require 'zorium'
-_defaults = require 'defaults'
+_defaults = require 'lodash/defaults'
 Environment = require 'clay-environment'
 
 Head = require '../../components/head'

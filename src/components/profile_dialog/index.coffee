@@ -206,10 +206,7 @@ module.exports = class ProfileDialog
           @selectedProfileDialogUser.onNext null
         $content:
           z '.z-profile-dialog_dialog',
-            z '.header', {
-                # onclick: =>
-                #   @router.go "/profile/#{user.id}"
-            },
+            z '.header',
               z '.avatar',
                 z @$avatar, {user, bgColor: colors.$grey100, size: '72px'}
               z '.about',

@@ -87,12 +87,15 @@ module.exports = class Auth
     .flatMapLatest =>
       @exoid.stream path, body, options
 
-  call: (path, body, {invalidateAll} = {}) =>
+  call: (path, body, {invalidateAll, invalidateSingle} = {}) =>
     @waitValidAuthCookie.take(1).toPromise()
     .then =>
       @exoid.call path, body
     .then (response) =>
       if invalidateAll
-        console.log 'INVALIDATING'
+        console.log 'Invalidating all'
         @exoid.invalidateAll()
+      else if invalidateSingle
+        console.log 'Invalidating single', invalidateSingle
+        @exoid.invalidate invalidateSingle
       response

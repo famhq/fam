@@ -8,6 +8,8 @@
   left: 0
   width: 100%
   height: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
   display: flex
   align-items: center
   justify-content: center
@@ -35,6 +37,10 @@
         > .action
           &.is-full-width
             width: 100%
+
+  &.is-wide
+    > .dialog
+      max-width: 320px
 
   > .backdrop
     position: fixed
