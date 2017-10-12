@@ -17,7 +17,8 @@
     "b-assert": "^0.1.2",
     "browser-builtins": "^3.3.1",
     "clay-coffeescript-style-guide": "^1.1.0",
-    "coffee-loader": "^0.7.2",
+    "coffee-loader": "^0.7.3",
+    "coffee-script": "^1.12.7",
     "coffeelint": "^1.13.1",
     "cors": "^2.7.1",
     "css-loader": "^0.25.0",
@@ -52,6 +53,7 @@
     "webpack": "^1.12.4",
     "webpack-dev-server": "^1.12.1",
     "webpack-stream": "^2.1.0",
+    "webpack-visualizer-plugin": "^0.1.11",
     "zock": "^0.2.5"
   },
   "dependencies": {
@@ -61,7 +63,6 @@
     "chartist": "^0.10.1",
     "clay-environment": "^0.4.1",
     "clay-request": "git://github.com/claydotio/clay-request.git",
-    "coffee-script": "^1.10.0",
     "compression": "^1.6.0",
     "cookie": "^0.2.3",
     "cookie-parser": "^1.4.0",

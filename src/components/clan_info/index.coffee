@@ -11,6 +11,7 @@ Icon = require '../icon'
 AdsenseAd = require '../adsense_ad'
 RequestNotificationsCard = require '../request_notifications_card'
 PrimaryButton = require '../primary_button'
+SecondaryButton = require '../secondary_button'
 ClanMetrics = require '../clan_metrics'
 VerifyAccountDialog = require '../verify_account_dialog'
 FormatService = require '../../services/format'
@@ -27,6 +28,7 @@ module.exports = class ClanInfo
     @$membersIcon = new Icon()
     @$refreshIcon = new Icon()
     @$claimButton = new PrimaryButton()
+    @$chatButton = new SecondaryButton()
     @$adsenseAd = new AdsenseAd()
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
@@ -130,7 +132,9 @@ module.exports = class ClanInfo
                       .then =>
                         @state.set hasUpdatedClan: true, isRefreshing: false
 
-          if isLeader and not isClaimed
+          if (isLeader and not isClaimed) or
+              (isCreator and isClaimed and not clan.password) or
+              (clanPlayer and isClaimed and not isLeader)
             z '.claim-button',
               z @$claimButton,
                 text: @model.l.get 'clanInfo.claimClan'
@@ -138,28 +142,13 @@ module.exports = class ClanInfo
                   @model.signInDialog.openIfGuest me
                   .then =>
                     @overlay$.onNext @$verifyAccountDialog
-          else if isCreator and isClaimed and not clan.password
+
+          if clanPlayer and hasPermission
             z '.claim-button',
-              z @$claimButton,
-                text: @model.l.get 'claimClanDialog.setPassword'
-                onclick: =>
-                  @model.signInDialog.openIfGuest me
-                  .then =>
-                    @overlay$.onNext @$verifyAccountDialog
-          else if clanPlayer and hasPermission
-            z '.claim-button',
-              z @$claimButton,
+              z @$chatButton,
                 text: @model.l.get 'clanInfo.clanChat'
                 onclick: =>
                   @router.go "/group/#{clan.groupId}/chat"
-          else if clanPlayer and isClaimed
-            z '.claim-button',
-              z @$claimButton,
-                text: @model.l.get 'clanInfo.verifySelf'
-                onclick: =>
-                  @model.signInDialog.openIfGuest me
-                  .then =>
-                    @overlay$.onNext @$verifyAccountDialog
       z '.content',
         if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
           z '.ad',

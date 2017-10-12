@@ -52,6 +52,7 @@ module.exports = class GetAppDialog
               z @$visitForumButton,
                 text: @model.l.get 'general.forum'
                 onclick: =>
+                  @overlay$.onNext null
                   @router.go '/forum'
 
             z 'div', @model.l.get 'profileInfo.autoRefreshVisitForumDescription'

@@ -15,7 +15,7 @@ webpackStream = require 'webpack-stream'
 # istanbul = require 'gulp-coffee-istanbul'
 WebpackDevServer = require 'webpack-dev-server'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
-# Visualizer = require('webpack-visualizer-plugin')
+Visualizer = require('webpack-visualizer-plugin')
 
 config = require './src/config'
 paths = require './gulp_paths'

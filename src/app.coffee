@@ -221,6 +221,7 @@ module.exports = class App
     route [
       '/', '/profile', '/user/id/:id', '/user/:username'
       '/clash-royale/player/:playerId'
+      '/pt/clash-royale/player/:playerId/embed'
       '/clash-royale-player/:playerId' # legacy
     ], 'ProfilePage'
     route [
