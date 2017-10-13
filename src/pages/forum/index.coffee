@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -51,7 +51,7 @@ module.exports = class ForumPage
   renderHead: => @$head
 
   afterMount: =>
-    @model.user.getMe().flatMapLatest ({id}) =>
+    @model.user.getMe().switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (mePlayer) =>
         if mePlayer?.isVerified
@@ -77,7 +77,7 @@ module.exports = class ForumPage
             color: colors.$primary500
             icon: 'filter'
             onclick: =>
-              @isFilterThreadsDialogVisible.onNext true
+              @isFilterThreadsDialogVisible.next true
       }
       @$threads
       @$bottomBar

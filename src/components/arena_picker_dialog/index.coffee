@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 Dialog = require '../dialog'
@@ -25,7 +25,7 @@ module.exports = class ArenaPickerDialog
       z @$dialog,
         isVanilla: true
         onLeave: =>
-          @overlay$.onNext null
+          @overlay$.next null
         $content:
           z '.z-arena-picker-dialog_dialog',
             z '.title', @model.l.get 'arenaPickerDialog.title'
@@ -34,10 +34,10 @@ module.exports = class ArenaPickerDialog
                 z '.arena', {
                   onclick: =>
                     @onPickFn? arena
-                    @overlay$.onNext null
+                    @overlay$.next null
                 },
                   arenaName
         cancelButton:
           text: @model.l.get 'general.cancel'
           onclick: =>
-            @overlay$.onNext null
+            @overlay$.next null

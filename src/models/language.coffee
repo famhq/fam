@@ -1,6 +1,6 @@
 _reduce = require 'lodash/reduce'
 _defaultsDeep = require 'lodash/defaultsDeep'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 moment = require 'moment'
 _mapValues = require 'lodash/mapValues'
 
@@ -66,7 +66,7 @@ class Language
     @setLanguage language
 
   setLanguage: (language) =>
-    @language.onNext language
+    @language.next language
     relativeTime = relativeTimeFormats[language]
     moment.locale language, if relativeTime then {relativeTime} else undefined
 

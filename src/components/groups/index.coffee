@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 Environment = require 'clay-environment'
 
@@ -16,7 +16,7 @@ if window?
 module.exports = class Groups
   constructor: ({@model, @router}) ->
     myGroups = @model.group.getAll({filter: 'mine'})
-    publicGroups = @model.l.getLanguage().flatMapLatest (language) =>
+    publicGroups = @model.l.getLanguage().switchMap (language) =>
       @model.group.getAll({filter: 'public', language})
     myGroupsAndPublicGroups = Rx.Observable.combineLatest(
       myGroups
@@ -43,7 +43,7 @@ module.exports = class Groups
 
     language = @model.l.getLanguage()
     @isTranslateCardVisibleStreams = new Rx.ReplaySubject 1
-    @isTranslateCardVisibleStreams.onNext language.map (lang) ->
+    @isTranslateCardVisibleStreams.next language.map (lang) ->
       needTranslations = ['es', 'it', 'fr', 'ja', 'ko', 'zh',
                           'pt', 'de', 'pl', 'tr']
       isNeededLanguage = lang in needTranslations
@@ -115,8 +115,8 @@ module.exports = class Groups
                   text: @model.l.get 'translateCard.cancelText'
                   onclick: =>
                     localStorage['hideTranslateCard'] = '1'
-                    @isTranslateCardVisibleStreams.onNext(
-                      Rx.Observable.just false
+                    @isTranslateCardVisibleStreams.next(
+                      Rx.Observable.of false
                     )
                 submit:
                   text: @model.l.get 'translateCard.submit'

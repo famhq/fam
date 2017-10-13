@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -30,7 +30,7 @@ module.exports = class ProfileChestsPage
     )
 
     me = @model.user.getMe()
-    user = usernameAndId.flatMapLatest ([username, id]) =>
+    user = usernameAndId.switchMap ([username, id]) =>
       if username
         @model.user.getByUsername username
       else if id
@@ -38,7 +38,7 @@ module.exports = class ProfileChestsPage
       else
         @model.user.getMe()
 
-    player = user.flatMapLatest ({id}) =>
+    player = user.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (player) ->
         return player or {}

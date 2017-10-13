@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 moment = require 'moment'
 supportsWebP = window? and require 'supports-webp'
 _map = require 'lodash/map'
@@ -46,7 +46,7 @@ module.exports = class ThreadComment
     isSticker = body.match /^:[a-z_]+:$/
 
     onclick = =>
-      @selectedProfileDialogUser.onNext creator
+      @selectedProfileDialogUser.next creator
 
     z '.z-thread-comment', {
       # re-use elements in v-dom

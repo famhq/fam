@@ -17,4 +17,4 @@ module.exports = class OfflineOverlay
           text: @model.l.get 'offlineOverlay.closeButtonText'
           isFullWidth: false
           onclick: =>
-            @isOffline.onNext false
+            @isOffline.next false

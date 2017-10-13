@@ -45,4 +45,4 @@ module.exports = class RequestNotificationsCard
               localStorage?['hideNotificationCard'] = '1'
               @state.set state: 'turnedOn'
             else
-              @isVisible.onNext false
+              @isVisible.next false

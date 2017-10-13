@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 Thread = require '../../components/thread'
@@ -16,7 +16,7 @@ module.exports = class ThreadPage
   constructor: ({@model, requests, @router, serverData}) ->
     # allow reset beforeUnmount so stale thread doesn't show when loading new
     @thread = new Rx.BehaviorSubject null
-    loadedThread = requests.flatMapLatest ({route}) =>
+    loadedThread = requests.switchMap ({route}) =>
       @model.thread.getById route.params.id
     thread = Rx.Observable.merge @thread, loadedThread
 
@@ -37,7 +37,7 @@ module.exports = class ThreadPage
   renderHead: => @$head
 
   beforeUnmount: =>
-    @thread.onNext {}
+    @thread.next {}
 
   render: =>
     {windowSize, $el} = @state.getValue()

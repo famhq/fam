@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -42,9 +42,9 @@ module.exports = class SignInDialog
   join: (e) =>
     e?.preventDefault()
     @state.set isLoading: true
-    @usernameError.onNext null
-    @emailError.onNext null
-    @passwordError.onNext null
+    @usernameError.next null
+    @emailError.next null
+    @passwordError.next null
 
     @model.auth.join {
       username: @usernameValue.getValue()
@@ -68,14 +68,14 @@ module.exports = class SignInDialog
         when 'email' then @emailError
         when 'password' then @passwordError
         else @usernameError
-      errorSubject.onNext @model.l.get err.info.langKey
+      errorSubject.next @model.l.get err.info.langKey
       @state.set isLoading: false
 
   signIn: (e) =>
     e?.preventDefault()
     @state.set isLoading: true
-    @usernameError.onNext null
-    @passwordError.onNext null
+    @usernameError.next null
+    @passwordError.next null
 
     @model.auth.login {
       username: @usernameValue.getValue()
@@ -98,7 +98,7 @@ module.exports = class SignInDialog
         when 'password' then @passwordError
         else @usernameError
 
-      errorSubject.onNext @model.l.get err.info.langKey
+      errorSubject.next @model.l.get err.info.langKey
       @state.set isLoading: false
 
   cancel: =>

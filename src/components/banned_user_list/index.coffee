@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 colors = require '../../colors'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
@@ -30,7 +30,7 @@ module.exports = class BannedUserList
         _map bans, ({$avatar, banInfo}) =>
           z '.user', {
             onclick: =>
-              @selectedProfileDialogUser.onNext banInfo.user
+              @selectedProfileDialogUser.next banInfo.user
           },
             z '.avatar',
               z $avatar,

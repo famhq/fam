@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _camelCase = require 'lodash/camelCase'
 
 Head = require '../../components/head'
@@ -18,7 +18,7 @@ module.exports = class AddonPage
   constructor: ({@model, requests, @router, serverData}) ->
     key = requests.map ({route}) ->
       route.params.key
-    addon = key.flatMapLatest (key) =>
+    addon = key.switchMap (key) =>
       @model.addon.getByKey _camelCase key
     testUrl = requests.map ({req}) ->
       req.query.testUrl

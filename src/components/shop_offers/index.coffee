@@ -1,7 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _sortBy = require 'lodash/sortBy'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 moment = require 'moment'
 

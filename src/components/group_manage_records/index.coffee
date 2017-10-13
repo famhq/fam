@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 PrimaryInput = require '../primary_input'
@@ -28,7 +28,7 @@ timeScaleOptions = [
 
 module.exports = class GroupManageRecords
   constructor: ({@model, group}) ->
-    recordTypes = group.flatMapLatest (group) =>
+    recordTypes = group.switchMap (group) =>
       @model.groupRecordType.getAllByGroupId group.id
 
     @nameValue = new Rx.BehaviorSubject ''
@@ -56,9 +56,9 @@ module.exports = class GroupManageRecords
     )
     .map ([isNameFocused, name, timeScale, group]) =>
       if name and timeScale and not isNameFocused
-        @nameValue.onNext ''
+        @nameValue.next ''
         setTimeout =>
-          @timeScaleValue.onNext ''
+          @timeScaleValue.next ''
         , 100
         @state.set isLoading: true
         @model.groupRecordType.create {

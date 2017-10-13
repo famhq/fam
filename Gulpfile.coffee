@@ -38,7 +38,10 @@ webpackBase =
     exprContextRegExp: /$^/
     exprContextCritical: false
   resolve:
+    # packageAlias: false # think we need if we install local node modules
     extensions: ['.coffee', '.js', '.json', '']
+  # node:
+  #   fs: 'empty'
   output:
     filename: 'bundle.js'
     publicPath: '/'

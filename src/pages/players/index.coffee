@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'

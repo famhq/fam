@@ -17,7 +17,7 @@ if window?
 
 module.exports = class ProfileMatches
   constructor: ({@model, @router, user, player}) ->
-    matches = user.flatMapLatest ({id}) =>
+    matches = user.switchMap ({id}) =>
       @model.clashRoyaleMatch.getAllByUserId id, {sort: 'recent'}
 
     @state = z.state {

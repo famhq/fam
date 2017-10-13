@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 Icon = require '../icon'
@@ -35,7 +35,7 @@ module.exports = class ChannelDrawer
 
     z '.z-channel-drawer', {
       onclick: =>
-        @isOpen.onNext false
+        @isOpen.next false
     },
       z '.drawer', {
         onclick: (e) ->
@@ -49,7 +49,7 @@ module.exports = class ChannelDrawer
             @router.go "/group/#{group?.id}/chat/#{id}", {
               ignoreHistory: true
             }
-            @isOpen.onNext false
+            @isOpen.next false
         }
 
         if hasAdminPermission

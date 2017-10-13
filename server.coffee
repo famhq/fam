@@ -9,7 +9,7 @@ helmet = require 'helmet'
 z = require 'zorium'
 Promise = require 'bluebird'
 request = require 'clay-request'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 cookieParser = require 'cookie-parser'
 fs = require 'fs'
 socketIO = require 'socket.io-client'
@@ -126,7 +126,7 @@ app.use (req, res, next) ->
       currentCookies = cookies
 
   cookieSubject = new Rx.BehaviorSubject req.cookies
-  cookieSubject.subscribeOnNext setCookies(req.cookies)
+  cookieSubject.do(setCookies(req.cookies)).subscribe()
 
   # for client to access
   CookieService.set(

@@ -16,5 +16,5 @@ module.exports = class AddToHomeSheet
           text: @model.l.get 'addToHomeSheet.submitButton'
           onclick: =>
             @model.portal.call 'app.install'
-            @isVisible.onNext false
+            @isVisible.next false
       }

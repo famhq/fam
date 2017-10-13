@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
 Environment = require 'clay-environment'
@@ -105,7 +105,7 @@ module.exports = class App
       setTimeout ->
         isNative = Environment.isGameApp(config.GAME_KEY)
         if not isNative and not localStorage['lastAddToHomePromptTime']
-          addToHomeSheetIsVisible.onNext true
+          addToHomeSheetIsVisible.next true
           localStorage['lastAddToHomePromptTime'] = Date.now()
       , TIME_UNTIL_ADD_TO_HOME_PROMPT_MS
 
@@ -119,12 +119,12 @@ module.exports = class App
       pushNotificationSheetIsOpen: @model.pushNotificationSheet.isOpen()
       installOverlayIsOpen: @model.installOverlay.isOpen()
       imageViewOverlayImageData: @model.imageViewOverlay.getImageData()
-      hideDrawer: @requests.flatMapLatest (request) ->
+      hideDrawer: @requests.switchMap (request) ->
         hideDrawer = request.$page?.hideDrawer
         if hideDrawer?.map
         then hideDrawer
-        else Rx.Observable.just (hideDrawer or false)
-      request: @requests.doOnNext ({$page, req}) ->
+        else Rx.Observable.of (hideDrawer or false)
+      request: @requests.do ({$page, req}) ->
         if $page instanceof Pages['FourOhFourPage']
           res?.status? 404
     }

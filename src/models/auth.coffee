@@ -1,6 +1,6 @@
 _defaults = require 'lodash/defaults'
 _pick = require 'lodash/pick'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 config = require '../config'
 
@@ -21,7 +21,7 @@ module.exports = class Auth
             .then ->
               return {accessToken: currentCookies[config.AUTH_COOKIE]}
           .catch =>
-            # @cookieSubject.onNext _defaults {
+            # @cookieSubject.next _defaults {
             #   "#{config.AUTH_COOKIE}": null
             # }, currentCookies
             @exoid.call 'auth.login'
@@ -33,7 +33,7 @@ module.exports = class Auth
   setAccessToken: (accessToken) =>
     @cookieSubject.take(1).toPromise()
     .then (currentCookies) =>
-      @cookieSubject.onNext _defaults {
+      @cookieSubject.next _defaults {
         "#{config.AUTH_COOKIE}": accessToken
       }, currentCookies
 
@@ -84,7 +84,7 @@ module.exports = class Auth
       'isStreamed', 'limit'
     ]
     @waitValidAuthCookie
-    .flatMapLatest =>
+    .switchMap =>
       @exoid.stream path, body, options
 
   call: (path, body, {invalidateAll, invalidateSingle} = {}) =>

@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 uuid = require 'uuid'
 _sortBy = require 'lodash/sortBy'
 _merge = require 'lodash/merge'
@@ -18,7 +18,7 @@ module.exports = class ChatMessage
   create: (diff, localDiff) =>
     clientId = uuid.v4()
 
-    @clientChangesStream[diff.conversationId]?.onNext(
+    @clientChangesStream[diff.conversationId]?.next(
       _merge diff, {clientId}, localDiff
     )
     ga? 'send', 'event', 'social_interaction', 'chat_message', "#{diff.type}"

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _isEmpty = require 'lodash/isEmpty'
 
 UserList = require '../user_list'
@@ -23,11 +23,11 @@ module.exports = class FindFriends
     # TODO: add infinite scroll
     # tried comblineLatest w/ debounce stream and onscrollbottom stream,
     # couldn't get it working
-    users = @searchValue.debounce(SEARCH_DEBOUNCE).flatMapLatest (query) =>
+    users = @searchValue.debounceTime(SEARCH_DEBOUNCE).switchMap (query) =>
       if query
         @model.user.searchByUsername query
       else
-        Rx.Observable.just []
+        Rx.Observable.of []
 
     @$icon = new Icon()
     @$clear = new Icon()
@@ -46,13 +46,13 @@ module.exports = class FindFriends
     @$$el.querySelector('.input').focus()
 
   clear: =>
-    @searchValue.onNext ''
+    @searchValue.next ''
     @$$el.querySelector('.input').focus()
 
   render: ({onclick, onBack, showCurrentFriends} = {}) =>
     showCurrentFriends ?= false
     onBack ?= =>
-      @isFindFriendsVisible.onNext Rx.Observable.just false
+      @isFindFriendsVisible.next Rx.Observable.of false
 
     {searchValue, users, windowSize} = @state.getValue()
 

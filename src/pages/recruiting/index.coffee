@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'

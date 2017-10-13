@@ -12,7 +12,7 @@ module.exports = class PushToken
     @auth.call "#{@namespace}.updateByToken", {token}
 
   setCurrentPushToken: (pushToken) =>
-    @pushToken.onNext pushToken
+    @pushToken.next pushToken
 
   getCurrentPushToken: =>
     @pushToken

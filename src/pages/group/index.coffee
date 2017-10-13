@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _filter = require 'lodash/filter'
 
 Head = require '../../components/head'
@@ -29,7 +29,7 @@ module.exports = class GroupPage
 
     overlay$ = new Rx.BehaviorSubject null
 
-    group = requests.flatMapLatest ({route}) =>
+    group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
     @$head = new Head({

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -20,12 +20,12 @@ module.exports = class ClanPage
       if route.params.id then route.params.id else false
 
     me = @model.user.getMe()
-    player = me.flatMapLatest ({id}) =>
+    player = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
     playerAndId = Rx.Observable.combineLatest(player, id, (vals...) -> vals)
 
-    clan = playerAndId.flatMapLatest ([player, id]) =>
+    clan = playerAndId.switchMap ([player, id]) =>
       if id
         @model.clan.getById id
         .map (clan) -> clan or false
@@ -33,7 +33,7 @@ module.exports = class ClanPage
         @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
         .map (clan) -> clan or false
       else
-        Rx.Observable.just false
+        Rx.Observable.of false
 
     @$head = new Head({
       @model

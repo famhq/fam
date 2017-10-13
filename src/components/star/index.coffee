@@ -53,7 +53,7 @@ module.exports = class Star
           z @$donateButton,
             text: @model.l.get 'general.donate'
             onclick: =>
-              @isDonateDialogVisible.onNext true
+              @isDonateDialogVisible.next true
 
       z '.divider'
 

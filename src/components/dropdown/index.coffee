@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _kebabCase = require 'lodash/kebabCase'
 
@@ -45,14 +45,14 @@ module.exports = class Dropdown
         value: value
         oninput: z.ev (e, $$el) =>
           if @valueStreams
-            @valueStreams.onNext Rx.Observable.just $$el.value
+            @valueStreams.next Rx.Observable.of $$el.value
           else
-            @value.onNext $$el.value
+            @value.next $$el.value
           $$el.blur()
         onfocus: z.ev (e, $$el) =>
-          @isFocused.onNext true
+          @isFocused.next true
         onblur: z.ev (e, $$el) =>
-          @isFocused.onNext false
+          @isFocused.next false
       },
         _map options, (option) ->
           z 'option.option', {

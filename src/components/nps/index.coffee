@@ -1,7 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _range = require 'lodash/range'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 Dialog = require '../dialog'
@@ -61,7 +61,7 @@ module.exports = class Nps
       return
 
     unless npsValue >= 0 and npsValue <= 10
-      return @npsError.onNext @model.l.get 'nps.num1to10'
+      return @npsError.next @model.l.get 'nps.num1to10'
 
     @state.set isLoading: true
     localStorage?['hasGivenFeedback'] = '1'
@@ -144,13 +144,13 @@ module.exports = class Nps
                     max: NPS_MAX
                     value: npsValue
                     onchange: (e) =>
-                      @npsValue.onNext e.currentTarget.value
+                      @npsValue.next e.currentTarget.value
                       @state.set npsSet: true
                 z '.numbers',
                   _map _range(NPS_MIN, NPS_MAX + 1), (number) =>
                     z '.number', {
                       onclick: =>
-                        @npsValue.onNext number
+                        @npsValue.next number
                         @state.set npsSet: true
                     },
                       number

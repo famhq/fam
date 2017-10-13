@@ -33,7 +33,7 @@ module.exports = class PlayerList
             if onclick
               onclick player
             else if player.player?.verifiedUser
-              @selectedProfileDialogUser.onNext player.player?.verifiedUser
+              @selectedProfileDialogUser.next player.player?.verifiedUser
             else
               @router.go "/clash-royale/player/#{player.tag?.replace('#', '')}"
         },

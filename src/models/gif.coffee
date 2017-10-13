@@ -1,5 +1,5 @@
 request = require 'clay-request'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 config = require '../config'
 

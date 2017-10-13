@@ -22,7 +22,7 @@ module.exports = class ConversationInputStickers
         _map config.STICKERS, (sticker) =>
           z '.sticker',
             onclick: (e) =>
-              @message.onNext ":#{sticker}:"
+              @message.next ":#{sticker}:"
               @onPost()
             style:
               backgroundImage:

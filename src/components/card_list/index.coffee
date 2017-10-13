@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
 
@@ -27,7 +27,7 @@ getCardSizeInfo = ->
 module.exports = class CardList extends Base
   constructor: ({cards, cardsPerRow, @selectedCardStreams}) ->
     unless cards.map
-      cards = Rx.Observable.just cards
+      cards = Rx.Observable.of cards
 
     @cardSizeInfo = getCardSizeInfo()
     @cachedCards = []
@@ -74,7 +74,7 @@ module.exports = class CardList extends Base
             z $el,
               onclick: (card) =>
                 onCardClick card
-                @selectedCardStreams.onNext Rx.Observable.just card
+                @selectedCardStreams.next Rx.Observable.of card
               width: cardWidth - 8
             if selectedCard?.key is card.key
               z '.selected',

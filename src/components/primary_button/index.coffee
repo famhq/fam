@@ -1,6 +1,6 @@
 z = require 'zorium'
 _defaults = require 'lodash/defaults'
-Button = require 'zorium-paper/button'
+Button = require '../button'
 colors = require '../../colors'
 
 if window?

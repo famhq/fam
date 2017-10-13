@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Compose = require '../compose'
 ClanBadge = require '../clan_badge'
@@ -16,15 +16,15 @@ module.exports = class NewThread
     @titleValueStreams ?= new Rx.BehaviorSubject ''
     @bodyValueStreams ?= new Rx.ReplaySubject 1
     @attachmentsValueStreams ?= new Rx.ReplaySubject 1
-    @attachmentsValueStreams.onNext new Rx.BehaviorSubject []
-    category ?= Rx.Observable.just null
+    @attachmentsValueStreams.next new Rx.BehaviorSubject []
+    category ?= Rx.Observable.of null
 
     if thread
-      @titleValueStreams.onNext thread.map (thread) -> thread?.title
-      @bodyValueStreams.onNext thread.map (thread) -> thread?.body
+      @titleValueStreams.next thread.map (thread) -> thread?.title
+      @bodyValueStreams.next thread.map (thread) -> thread?.body
     else
-      @titleValueStreams.onNext new Rx.BehaviorSubject ''
-      @bodyValueStreams.onNext new Rx.BehaviorSubject ''
+      @titleValueStreams.next new Rx.BehaviorSubject ''
+      @bodyValueStreams.next new Rx.BehaviorSubject ''
 
 
     @$clanBadge = new ClanBadge()
@@ -57,7 +57,7 @@ module.exports = class NewThread
       language: @model.l.getLanguage()
       category: category
       thread: thread
-      attachedContent: categoryAndId.flatMapLatest ([category, id]) =>
+      attachedContent: categoryAndId.switchMap ([category, id]) =>
         if category is 'deckGuide'
           [deckId, playerId] = decodeURIComponent(id).split ':'
           @model.clashRoyalePlayerDeck.getByDeckIdAndPlayerId deckId, playerId
@@ -72,17 +72,17 @@ module.exports = class NewThread
               $deckStats: new PlayerDeckStats {@model, @router, playerDeck}
             }
         else
-          Rx.Observable.just null
-      clan: categoryAndMe.flatMapLatest ([category, me]) =>
+          Rx.Observable.of null
+      clan: categoryAndMe.switchMap ([category, me]) =>
         if category is 'clan'
           @model.player.getByUserIdAndGameId me.id, config.CLASH_ROYALE_ID
-          .flatMapLatest (player) =>
+          .switchMap (player) =>
             if player?.data?.clan?.tag
               @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
             else
-              Rx.Observable.just false
+              Rx.Observable.of false
         else
-          Rx.Observable.just null
+          Rx.Observable.of null
       .map (clan) ->
         if clan then clan else false
 
@@ -143,6 +143,6 @@ module.exports = class NewThread
             else
               @model.thread.create newThread
           .then (thread) =>
-            @bodyValueStreams.onNext Rx.Observable.just null
-            @attachmentsValueStreams.onNext Rx.Observable.just null
+            @bodyValueStreams.next Rx.Observable.of null
+            @attachmentsValueStreams.next Rx.Observable.of null
             @router.go @model.thread.getPath(thread), {reset: true}

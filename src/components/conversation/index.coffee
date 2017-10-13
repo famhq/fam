@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _last = require 'lodash/last'
@@ -52,20 +52,20 @@ module.exports = class Conversation extends Base
 
     lastConversationId = null
 
-    loadedMessages = conversationAndMe.flatMapLatest (resp) =>
+    loadedMessages = conversationAndMe.switchMap (resp) =>
       [conversation, me] = resp
 
       if lastConversationId isnt conversation.id
-        isLoading.onNext true
+        isLoading.next true
 
       lastConversationId = conversation.id
 
       (if conversation
         @model.chatMessage.getAllByConversationId(conversation.id)
       else
-        Rx.Observable.just null)
+        Rx.Observable.of null)
       .map (messages) =>
-        isLoading.onNext false
+        isLoading.next false
         isLoaded = not _isEmpty @state.getValue().messages
         # HACK: give time for $formattedMessage to resolve
         {isScrolledBottom} = @state.getValue()
@@ -84,13 +84,13 @@ module.exports = class Conversation extends Base
         messages
       .catch (err) ->
         console.log err
-        Rx.Observable.just []
+        Rx.Observable.of []
     .share()
 
     messages = Rx.Observable.merge @messages, loadedMessages
 
     @isScrolledBottomStreams = new Rx.ReplaySubject 1
-    @isScrolledBottomStreams.onNext Rx.Observable.just false
+    @isScrolledBottomStreams.next Rx.Observable.of false
 
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
@@ -164,7 +164,7 @@ module.exports = class Conversation extends Base
     isScrolledBottom = Rx.Observable.fromEvent @$$messages, 'scroll'
     .map (e) =>
       e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10
-    @isScrolledBottomStreams.onNext isScrolledBottom
+    @isScrolledBottomStreams.next isScrolledBottom
 
   beforeUnmount: =>
     # to update conversations page, etc...
@@ -176,7 +176,7 @@ module.exports = class Conversation extends Base
       # for group data
       setImmediate =>
         @model.exoid.invalidateAll()
-    @messages.onNext []
+    @messages.next []
 
     @model.portal.call 'push.setContextId', {
       contextId: null
@@ -214,11 +214,11 @@ module.exports = class Conversation extends Base
     # lineBreaks =  messageBody.split(/\r\n|\r|\n/).length
     # if messageBody.length > MAX_CHARACTERS or
     #     lineBreaks > MAX_LINES
-    #   @error.onNext 'Message is too long'
+    #   @error.next 'Message is too long'
     #   return
 
     if not isPostLoading and messageBody
-      @isPostLoading.onNext true
+      @isPostLoading.next true
 
       type = if conversation?.group?.type is 'public' \
              then 'public'
@@ -234,9 +234,9 @@ module.exports = class Conversation extends Base
       }, {user: me, time: Date.now()}
       .then =>
         # @model.user.emit('chatMessage').catch log.error
-        @isPostLoading.onNext false
+        @isPostLoading.next false
       .catch =>
-        @isPostLoading.onNext false
+        @isPostLoading.next false
 
   render: =>
     {me, isLoading, message, isTextareaFocused, isLoaded, followingIds,

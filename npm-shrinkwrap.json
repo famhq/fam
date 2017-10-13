@@ -1,5 +1,5 @@
 {
-  "name": "zorium-seed",
+  "name": "starfire",
   "requires": true,
   "lockfileVersion": 1,
   "dependencies": {
@@ -275,7 +275,6 @@
     },
     "assert-none-missing": {
       "version": "git://github.com/claydotio/assert-none-missing.git#94894a113ea356fbc07da9f8aa280670e1af8f24",
-      "integrity": "sha1-poChuER8YTtN0szRKbHBCOAZq0k=",
       "requires": {
         "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz"
       }
@@ -910,7 +909,6 @@
     },
     "clay-request": {
       "version": "git://github.com/claydotio/clay-request.git#f4680bfbca45a58b073b698ea7338587bf7fd5c1",
-      "integrity": "sha1-KQxC9/YIkNvxydcHga6eXi8wtmI=",
       "requires": {
         "bluebird": "https://registry.npmjs.org/bluebird/-/bluebird-2.11.0.tgz",
         "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
@@ -2164,7 +2162,7 @@
       }
     },
     "exoid": {
-      "version": "git://github.com/claydotio/exoid.git#f1d1a36f1375c4cca74d16bbc8f66afb5303455b",
+      "version": "git://github.com/claydotio/exoid.git#57c440d847a7a3a1d079c09b6d0024caafe0f026",
       "requires": {
         "clay-request": "0.4.5",
         "coffee-script": "1.12.7",
@@ -2172,7 +2170,7 @@
         "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
         "loga": "https://registry.npmjs.org/loga/-/loga-0.1.4.tgz",
         "node-uuid": "https://registry.npmjs.org/node-uuid/-/node-uuid-1.4.7.tgz",
-        "rx-lite": "https://registry.npmjs.org/rx-lite/-/rx-lite-4.0.8.tgz"
+        "rxjs": "5.4.3"
       },
       "dependencies": {
         "bluebird": {
@@ -3992,8 +3990,7 @@
       "dev": true
     },
     "iscroll": {
-      "version": "git://github.com/claydotio/iscroll.git#77035dff799fa1bda7b0eccf036504b4d198d430",
-      "integrity": "sha1-oWU2/1Hm+nXwh17/Vt++zu+uvZQ="
+      "version": "git://github.com/claydotio/iscroll.git#77035dff799fa1bda7b0eccf036504b4d198d430"
     },
     "isemail": {
       "version": "https://registry.npmjs.org/isemail/-/isemail-1.2.0.tgz",
@@ -4498,16 +4495,17 @@
       }
     },
     "location-router": {
-      "version": "https://registry.npmjs.org/location-router/-/location-router-0.1.2.tgz",
-      "integrity": "sha1-Gz8YCnrv46U3ufcwu2nk5DsuqY0=",
+      "version": "git://github.com/claydotio/location-router.git#5464bb0644243fc5dc7799c2e958c7f15f1f4689",
       "requires": {
         "coffee-script": "1.12.7",
-        "lodash": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz",
-        "qs": "https://registry.npmjs.org/qs/-/qs-5.2.1.tgz"
+        "lodash": "3.10.1",
+        "qs": "https://registry.npmjs.org/qs/-/qs-5.2.1.tgz",
+        "rxjs": "5.4.3"
       },
       "dependencies": {
         "lodash": {
-          "version": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz",
+          "version": "3.10.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz",
           "integrity": "sha1-W/Rejkm6QYnhfUgnid/RW9FAt7Y="
         }
       }
@@ -4940,7 +4938,8 @@
       }
     },
     "lower-case": {
-      "version": "https://registry.npmjs.org/lower-case/-/lower-case-1.1.4.tgz",
+      "version": "1.1.4",
+      "resolved": "https://registry.npmjs.org/lower-case/-/lower-case-1.1.4.tgz",
       "integrity": "sha1-miyr0bno4K6ZOkv31YdcOcQujqw="
     },
     "lru-cache": {
@@ -5639,10 +5638,11 @@
       }
     },
     "param-case": {
-      "version": "https://registry.npmjs.org/param-case/-/param-case-1.1.2.tgz",
+      "version": "1.1.2",
+      "resolved": "https://registry.npmjs.org/param-case/-/param-case-1.1.2.tgz",
       "integrity": "sha1-3LCRpDwlm5Io8cNB57akTqC/l0M=",
       "requires": {
-        "sentence-case": "https://registry.npmjs.org/sentence-case/-/sentence-case-1.1.3.tgz"
+        "sentence-case": "1.1.3"
       }
     },
     "parse-asn1": {
@@ -5923,7 +5923,6 @@
     },
     "portal-gun": {
       "version": "git://github.com/claydotio/portal-gun.git#b7656e00a90289ceba9e97da9e1ce63e20da9606",
-      "integrity": "sha1-Eu/NdY4f4ibrzkJlfZ94TXzeO2Y=",
       "requires": {
         "promiz": "https://registry.npmjs.org/promiz/-/promiz-1.0.3.tgz",
         "uuid": "2.0.3"
@@ -6851,9 +6850,13 @@
       "integrity": "sha1-Ia3H2A8CACr1Da6X/Z2/JIdV9WY=",
       "dev": true
     },
-    "rx-lite": {
-      "version": "https://registry.npmjs.org/rx-lite/-/rx-lite-4.0.8.tgz",
-      "integrity": "sha1-Cx4Rr4vESDbwSmQH6S2kJGe3lEQ="
+    "rxjs": {
+      "version": "5.4.3",
+      "resolved": "https://registry.npmjs.org/rxjs/-/rxjs-5.4.3.tgz",
+      "integrity": "sha512-fSNi+y+P9ss+EZuV0GcIIqPUK07DEaMRUtLJvdcvMyFjc9dizuDjere+A4V7JrLGnm9iCc+nagV/4QdMTkqC4A==",
+      "requires": {
+        "symbol-observable": "1.0.4"
+      }
     },
     "safe-buffer": {
       "version": "5.1.1",
@@ -6922,10 +6925,11 @@
       }
     },
     "sentence-case": {
-      "version": "https://registry.npmjs.org/sentence-case/-/sentence-case-1.1.3.tgz",
+      "version": "1.1.3",
+      "resolved": "https://registry.npmjs.org/sentence-case/-/sentence-case-1.1.3.tgz",
       "integrity": "sha1-gDSq/CFFdy06vhUJqkLJ4QQtwTk=",
       "requires": {
-        "lower-case": "https://registry.npmjs.org/lower-case/-/lower-case-1.1.4.tgz"
+        "lower-case": "1.1.4"
       }
     },
     "sequencify": {
@@ -7484,6 +7488,11 @@
         "whet.extend": "https://registry.npmjs.org/whet.extend/-/whet.extend-0.9.9.tgz"
       }
     },
+    "symbol-observable": {
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/symbol-observable/-/symbol-observable-1.0.4.tgz",
+      "integrity": "sha1-Kb9hXUqnEhvdiYsi1LP5vE4qoD0="
+    },
     "tapable": {
       "version": "https://registry.npmjs.org/tapable/-/tapable-0.1.10.tgz",
       "integrity": "sha1-KcNXB8K3DlDQdIK10gLo7URtr9Q=",
@@ -8032,15 +8041,17 @@
       "integrity": "sha1-4eWv+70WrnaN0mdDlLmtMCJlMUA="
     },
     "vdom-parser": {
-      "version": "https://registry.npmjs.org/vdom-parser/-/vdom-parser-1.4.1.tgz",
+      "version": "1.4.1",
+      "resolved": "https://registry.npmjs.org/vdom-parser/-/vdom-parser-1.4.1.tgz",
       "integrity": "sha1-tmFo/Su+yBl0++X9Lk5nd9/Bc+0="
     },
     "vdom-to-html": {
-      "version": "https://registry.npmjs.org/vdom-to-html/-/vdom-to-html-2.3.1.tgz",
+      "version": "2.3.1",
+      "resolved": "https://registry.npmjs.org/vdom-to-html/-/vdom-to-html-2.3.1.tgz",
       "integrity": "sha1-FHYmc2dtG5z7PxjX61ZvUnVGUZ0=",
       "requires": {
         "escape-html": "https://registry.npmjs.org/escape-html/-/escape-html-1.0.3.tgz",
-        "param-case": "https://registry.npmjs.org/param-case/-/param-case-1.1.2.tgz",
+        "param-case": "1.1.2",
         "xtend": "https://registry.npmjs.org/xtend/-/xtend-4.0.1.tgz"
       }
     },
@@ -8906,33 +8917,23 @@
       }
     },
     "zorium": {
-      "version": "git://github.com/claydotio/zorium.git#cf67a02b146210200a33fc095307ea6065243a95",
-      "integrity": "sha1-gT49gLBDCchssmC07x8+AtqKmYg=",
+      "version": "git://github.com/claydotio/zorium.git#7eed861e51814290d0d37a6a322621c35217d8e6",
       "requires": {
         "coffee-script": "1.12.7",
         "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
         "promiz": "https://registry.npmjs.org/promiz/-/promiz-1.0.5.tgz",
-        "qs": "https://registry.npmjs.org/qs/-/qs-2.4.2.tgz",
-        "rx-lite": "https://registry.npmjs.org/rx-lite/-/rx-lite-4.0.8.tgz",
-        "vdom-parser": "https://registry.npmjs.org/vdom-parser/-/vdom-parser-1.4.1.tgz",
-        "vdom-to-html": "https://registry.npmjs.org/vdom-to-html/-/vdom-to-html-2.3.1.tgz",
+        "qs": "2.4.2",
+        "rxjs": "5.4.3",
+        "vdom-parser": "1.4.1",
+        "vdom-to-html": "2.3.1",
         "virtual-dom": "https://registry.npmjs.org/virtual-dom/-/virtual-dom-2.1.1.tgz"
       },
       "dependencies": {
         "qs": {
-          "version": "https://registry.npmjs.org/qs/-/qs-2.4.2.tgz",
+          "version": "2.4.2",
+          "resolved": "https://registry.npmjs.org/qs/-/qs-2.4.2.tgz",
           "integrity": "sha1-9854jld33wtQENp/fE5zujJHD1o="
         }
-      }
-    },
-    "zorium-paper": {
-      "version": "git://github.com/claydotio/zorium-paper.git#a5e217f37f6307d3264c56dd2e0d44dce60aa519",
-      "integrity": "sha1-TvHLmaKM6Q1jXe1ejEMiobDXQ3I=",
-      "requires": {
-        "coffee-script": "1.12.7",
-        "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
-        "rx-lite": "https://registry.npmjs.org/rx-lite/-/rx-lite-4.0.8.tgz",
-        "zorium": "git://github.com/claydotio/zorium.git#cf67a02b146210200a33fc095307ea6065243a95"
       }
     }
   }

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _find = require 'lodash/find'
 
 Head = require '../../components/head'
@@ -19,7 +19,7 @@ module.exports = class GroupChatPage
   # hideDrawer: true # FIXME
 
   constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) =>
+    group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
     conversationId = requests.map ({route}) ->
@@ -40,11 +40,11 @@ module.exports = class GroupChatPage
 
     currentConversationId = null
     conversation = groupAndConversationIdAndMe
-    .flatMapLatest ([group, conversationId, me]) =>
+    .switchMap ([group, conversationId, me]) =>
       # side effect
       if conversationId isnt currentConversationId
         # is set to false when messages load in conversation component
-        isLoading.onNext true
+        isLoading.next true
 
       currentConversationId = conversationId
       hasMemberPermission = @model.group.hasPermission group, me
@@ -68,7 +68,7 @@ module.exports = class GroupChatPage
       if hasMemberPermission and conversationId
         @model.conversation.getById conversationId
       else
-        Rx.Observable.just null
+        Rx.Observable.of null
 
     @$head = new Head({
       @model
@@ -134,7 +134,7 @@ module.exports = class GroupChatPage
       z @$appBar, {
         title: z '.p-group-chat_title', {
           onclick: =>
-            @isChannelDrawerOpen.onNext not isChannelDrawerOpen
+            @isChannelDrawerOpen.next not isChannelDrawerOpen
         },
           z '.group', group?.name
           z '.channel',

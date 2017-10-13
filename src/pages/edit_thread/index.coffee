@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 NewThread = require '../../components/new_thread'
@@ -12,11 +12,11 @@ module.exports = class EditThreadPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    thread = requests.flatMapLatest ({route}) =>
+    thread = requests.switchMap ({route}) =>
       if route.params.id
         @model.thread.getById route.params.id
       else
-        Rx.Observable.just null
+        Rx.Observable.of null
 
     @$head = new Head({
       @model

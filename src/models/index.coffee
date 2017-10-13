@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Exoid = require 'exoid'
 request = require 'clay-request'
 _isEmpty = require 'lodash/isEmpty'

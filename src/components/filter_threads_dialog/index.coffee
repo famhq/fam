@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
@@ -24,7 +24,7 @@ module.exports = class FilterThreadsDialog
 
   updateFilter: =>
     {selectedSort, selectedFilter} = @state.getValue()
-    @filter.onNext {
+    @filter.next {
       sort: selectedSort
       filter: selectedFilter
     }
@@ -46,7 +46,7 @@ module.exports = class FilterThreadsDialog
       z @$dialog,
         isVanilla: true
         onLeave: =>
-          @isVisible.onNext false
+          @isVisible.next false
         # $title: @model.l.get 'general.filter'
         $content:
           z '.z-filter-threads-dialog_dialog',
@@ -60,7 +60,7 @@ module.exports = class FilterThreadsDialog
                   value: key
                   checked: selectedSort is key
                   onchange: =>
-                    @selectedSort.onNext key
+                    @selectedSort.next key
                 z '.text',
                   @model.l.get "filterThreadsDialog.sort#{pascalKey}"
 
@@ -74,16 +74,16 @@ module.exports = class FilterThreadsDialog
                   value: key
                   checked: selectedFilter is key
                   onchange: =>
-                    @selectedFilter.onNext key
+                    @selectedFilter.next key
                 z '.text',
                   @model.l.get "filterThreadsDialog.filter#{pascalKey}"
 
         cancelButton:
           text: @model.l.get 'general.cancel'
           onclick: =>
-            @isVisible.onNext false
+            @isVisible.next false
         submitButton:
           text: @model.l.get 'general.done'
           onclick: =>
             @updateFilter()
-            @isVisible.onNext false
+            @isVisible.next false

@@ -3,7 +3,7 @@ _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
 _find = require 'lodash/find'
 _filter = require 'lodash/filter'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 moment = require 'moment'
 
@@ -50,7 +50,7 @@ module.exports = class ClanInfo
       isRequestNotificationCardVisible
       me: me
       hasUpdatedClan: false
-      mePlayer: me.flatMapLatest ({id}) =>
+      mePlayer: me.switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       clan: clan
     }
@@ -141,7 +141,7 @@ module.exports = class ClanInfo
                 onclick: =>
                   @model.signInDialog.openIfGuest me
                   .then =>
-                    @overlay$.onNext @$verifyAccountDialog
+                    @overlay$.next @$verifyAccountDialog
 
           if clanPlayer and hasPermission
             z '.claim-button',

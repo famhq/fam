@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 CookieService = require '../services/cookie'
@@ -19,8 +19,8 @@ module.exports = class Window
 
   updateSize: =>
     unless @isPaused
-      @size.onNext @getSizeVal()
-      @breakpoint.onNext @getBreakpointVal()
+      @size.next @getSizeVal()
+      @breakpoint.next @getBreakpointVal()
 
   getSizeVal: =>
     resolution = CookieService.get @cookieSubject, 'resolution'

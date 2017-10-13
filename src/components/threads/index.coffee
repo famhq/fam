@@ -1,6 +1,6 @@
 z = require 'zorium'
 moment = require 'moment'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
 _filter = require 'lodash/filter'
@@ -92,7 +92,7 @@ module.exports = class Threads
       @loadMore()
 
   getTopStream: (skip = 0) =>
-    @filter.flatMapLatest (filter) =>
+    @filter.switchMap (filter) =>
       @model.thread.getAll {
         categories: [filter.filter]
         sort: filter.sort
@@ -115,7 +115,7 @@ module.exports = class Threads
 
   appendThreadStream: (threadStream) =>
     @threadStreamCache = @threadStreamCache.concat [threadStream]
-    @threadStreams.onNext \
+    @threadStreams.next \
       Rx.Observable.combineLatest @threadStreamCache, (threads...) ->
         _flatten threads
 

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 TabsBar = require '../../components/tabs_bar'
@@ -71,7 +71,7 @@ module.exports = class Tabs
     checkIsReady()
 
   beforeUnmount: (keepEl = false) =>
-    @mountDisposable?.dispose()
+    @mountDisposable?.unsubscribe()
     clearInterval @scrollInterval
     @iScrollContainer?.destroy()
     @$$el?.removeEventListener 'touchstart', @onTouchStart
@@ -80,10 +80,10 @@ module.exports = class Tabs
       @$$el = null
 
   onTouchStart: =>
-    @isPageScrolling.onNext true
+    @isPageScrolling.next true
 
   onTouchEnd: =>
-    @isPageScrolling.onNext false
+    @isPageScrolling.next false
 
   toggle: (mode) =>
     if mode is 'enable' and @isPaused
@@ -123,7 +123,7 @@ module.exports = class Tabs
     # the scroll listener in IScroll (iscroll-probe.js) is really slow
     # interval looks 100x better
     @iScrollContainer.on 'scrollStart', =>
-      @isPageScrolling.onNext true
+      @isPageScrolling.next true
       unless hideTabBar
         @$$selector = document.querySelector '.z-tabs-bar .selector'
         @scrollInterval = setInterval(
@@ -133,21 +133,22 @@ module.exports = class Tabs
 
     @iScrollContainer.on 'scrollEnd', =>
       {selectedIndex} = @state.getValue()
-      @isPageScrolling.onNext false
+      @isPageScrolling.next false
 
       clearInterval @scrollInterval
       newIndex = @iScrollContainer.currentPage.pageX
       @state.set x: @iScrollContainer?.x
       # landing on new tab
       if selectedIndex isnt newIndex
-        @selectedIndex.onNext newIndex
+        @selectedIndex.next newIndex
 
-    @mountDisposable = @selectedIndex.subscribeOnNext (index) =>
+    @mountDisposable = @selectedIndex.do((index) =>
       if @iScrollContainer.pages?[index]
         @iScrollContainer.goToPage index, 0, 500
       unless hideTabBar
         @$$selector = document.querySelector '.z-tabs-bar .selector'
         updateSelectorPosition()
+    ).subscribe()
 
   render: (options) =>
     {tabs, barColor, barBgColor, barInactiveColor, isBarFixed, isBarFlat,

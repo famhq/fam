@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 moment = require 'moment'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
@@ -57,12 +57,12 @@ module.exports = class ConversationMessage
 
     onclick = =>
       unless isTextareaFocused
-        @selectedProfileDialogUser.onNext _defaults {
+        @selectedProfileDialogUser.next _defaults {
           chatMessageId: id
         }, user
 
     oncontextmenu = =>
-      @selectedProfileDialogUser.onNext _defaults {
+      @selectedProfileDialogUser.next _defaults {
         chatMessageId: id
       }, user
 

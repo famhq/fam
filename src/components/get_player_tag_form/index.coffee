@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _take = require 'lodash/take'
 Environment = require 'clay-environment'
 
@@ -45,7 +45,7 @@ module.exports = class ProfileLanding
       @state.set isLoading: false
     .catch (err) =>
       console.log err?.info
-      @playerTagError.onNext(
+      @playerTagError.next(
         err?.info or @model.l.get 'playersSearch.playerTagError'
       )
       @state.set isLoading: false

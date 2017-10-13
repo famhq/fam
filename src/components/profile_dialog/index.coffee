@@ -35,11 +35,11 @@ module.exports = class ProfileDialog
     @state = z.state
       me: me
       user: @selectedProfileDialogUser
-      clashRoyaleData: @selectedProfileDialogUser.flatMapLatest (user) =>
+      clashRoyaleData: @selectedProfileDialogUser.switchMap (user) =>
         if user
           @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
         else
-          Rx.Observable.just null
+          Rx.Observable.of null
       group: group
       isFlagLoading: false
       isFlagged: false
@@ -47,7 +47,7 @@ module.exports = class ProfileDialog
 
   afterMount: =>
     @router.onBack =>
-      @selectedProfileDialogUser.onNext null
+      @selectedProfileDialogUser.next null
 
   beforeUnmount: =>
     @router.onBack null
@@ -68,7 +68,7 @@ module.exports = class ProfileDialog
         isVisible: not isMe
         onclick: =>
           @router.go "/user/id/#{user?.id}"
-          @selectedProfileDialogUser.onNext null
+          @selectedProfileDialogUser.next null
       }
       {
         icon: 'chat-bubble'
@@ -87,7 +87,7 @@ module.exports = class ProfileDialog
             .then (conversation) =>
               @state.set isConversationLoading: false
               @router.go "/conversation/#{conversation.id}"
-              @selectedProfileDialogUser.onNext null
+              @selectedProfileDialogUser.next null
       }
       unless user?.flags?.isModerator
         {
@@ -103,7 +103,7 @@ module.exports = class ProfileDialog
               @model.userData.unblockByUserId user?.id
             else
               @model.userData.blockByUserId user?.id
-            @selectedProfileDialogUser.onNext null
+            @selectedProfileDialogUser.next null
         }
       # {
       #   icon: 'warning'
@@ -116,7 +116,7 @@ module.exports = class ProfileDialog
       #     else @model.l.get 'profileDialog.report'
       #   isVisible: not isMe
       #   onclick: =>
-      #     @selectedProfileDialogUser.onNext null
+      #     @selectedProfileDialogUser.next null
       #     # @state.set isFlagLoading: true
       #     # @model.threadComment.flag user?.chatMessageId
       #     # .then =>
@@ -148,7 +148,7 @@ module.exports = class ProfileDialog
             @model.mod.banByUserId user?.id, {
               duration: '24h', groupId: group?.id
             }
-          @selectedProfileDialogUser.onNext null
+          @selectedProfileDialogUser.next null
       }
       {
         icon: 'perma-ban'
@@ -167,7 +167,7 @@ module.exports = class ProfileDialog
               duration: 'permanent'
               groupId: group?.id
             }
-          @selectedProfileDialogUser.onNext null
+          @selectedProfileDialogUser.next null
       }
       {
         icon: 'ip-ban'
@@ -187,7 +187,7 @@ module.exports = class ProfileDialog
             @model.mod.banByUserId user?.id, {
               type: 'ip', duration: 'permanent', groupId: group?.id
             }
-          @selectedProfileDialogUser.onNext null
+          @selectedProfileDialogUser.next null
       }
       {
         icon: 'delete'
@@ -196,14 +196,14 @@ module.exports = class ProfileDialog
         isVisible: true
         onclick: =>
           @model.chatMessage.deleteById user?.chatMessageId
-          @selectedProfileDialogUser.onNext null
+          @selectedProfileDialogUser.next null
       }
     ]
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
       z @$dialog,
         onLeave: =>
-          @selectedProfileDialogUser.onNext null
+          @selectedProfileDialogUser.next null
         $content:
           z '.z-profile-dialog_dialog',
             z '.header',
@@ -220,7 +220,7 @@ module.exports = class ProfileDialog
                     isAlignedTop: true
                     isAlignedRight: true
                     onclick: =>
-                      @selectedProfileDialogUser.onNext null
+                      @selectedProfileDialogUser.next null
 
             z 'ul.content',
               _map userOptions, ({icon, $icon, text, onclick, isVisible}) ->

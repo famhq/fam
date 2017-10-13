@@ -7,7 +7,7 @@ _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 moment = require 'moment'
 
@@ -59,7 +59,7 @@ module.exports = class ProfileInfo
       isRequestNotificationCardVisible
       hasUpdatedPlayer: false
       isRefreshing: false
-      isAutoRefresh: player.flatMapLatest (player) =>
+      isAutoRefresh: player.switchMap (player) =>
         @model.player.getIsAutoRefreshByPlayerIdAndGameId(
           player.id, config.CLASH_ROYALE_ID
         )
@@ -253,7 +253,7 @@ module.exports = class ProfileInfo
               moment(lastUpdateTime).fromNowModified()
             z '.auto-refresh', {
               onclick: =>
-                @overlay$.onNext @$autoRefreshDialog
+                @overlay$.next @$autoRefreshDialog
             },
               @model.l.get 'profileInfo.autoRefresh'
               ': '
@@ -291,7 +291,7 @@ module.exports = class ProfileInfo
                     .then =>
                       @state.set hasUpdatedPlayer: true, isRefreshing: false
                   else
-                    @overlay$.onNext z @$dialog, {
+                    @overlay$.next z @$dialog, {
                       isVanilla: true
                       $title: @model.l.get 'profileInfo.waitTitle'
                       $content: @model.l.get 'profileInfo.waitDescription', {
@@ -299,11 +299,11 @@ module.exports = class ProfileInfo
                           number: '10'
                       }
                       onLeave: =>
-                        @overlay$.onNext null
+                        @overlay$.next null
                       submitButton:
                         text: @model.l.get 'installOverlay.closeButtonText'
                         onclick: =>
-                          @overlay$.onNext null
+                          @overlay$.next null
                     }
 
           if isMe and player and not player?.isVerified
@@ -311,7 +311,7 @@ module.exports = class ProfileInfo
               z @$verifyAccountButton,
                 text: @model.l.get 'clanInfo.verifySelf'
                 onclick: =>
-                  @overlay$.onNext @$verifyAccountDialog
+                  @overlay$.next @$verifyAccountDialog
           else if not isMe
             z '.follow-button',
               z @$followButton,

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 Star = require '../../components/star'
@@ -17,7 +17,7 @@ module.exports = class StarPage
   constructor: ({model, requests, @router, serverData}) ->
     username = requests.map ({route}) ->
       route.params.username
-    star = username.flatMapLatest (username) ->
+    star = username.switchMap (username) ->
       model.star.getByUsername username
 
     @isDonateDialogVisible = new Rx.BehaviorSubject null

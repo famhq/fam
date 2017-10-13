@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Icon = require '../icon'
 ActionBar = require '../action_bar'
@@ -17,13 +17,13 @@ module.exports = class GroupEditChannel
     me = @model.user.getMe()
 
     @nameValueStreams = new Rx.ReplaySubject 1
-    @nameValueStreams.onNext (conversation?.map (conversation) ->
-      conversation.name) or Rx.Observable.just null
+    @nameValueStreams.next (conversation?.map (conversation) ->
+      conversation.name) or Rx.Observable.of null
     @nameError = new Rx.BehaviorSubject null
 
     @descriptionValueStreams = new Rx.ReplaySubject 1
-    @descriptionValueStreams.onNext (conversation?.map (conversation) ->
-      conversation.description) or Rx.Observable.just null
+    @descriptionValueStreams.next (conversation?.map (conversation) ->
+      conversation.description) or Rx.Observable.of null
     @descriptionError = new Rx.BehaviorSubject null
 
     @$actionBar = new ActionBar {@model}
@@ -51,7 +51,7 @@ module.exports = class GroupEditChannel
       return
 
     @state.set isSaving: true
-    @nameError.onNext null
+    @nameError.next null
 
     fn = (diff) =>
       if isNewChannel

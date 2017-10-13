@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _sumBy = require 'lodash/sumBy'
 _take = require 'lodash/take'
@@ -20,7 +20,7 @@ module.exports = class GroupManageMemberRecords
       user
       (vals...) -> vals
     )
-    records = groupAndUser.flatMapLatest ([group, user]) =>
+    records = groupAndUser.switchMap ([group, user]) =>
       @model.groupRecord.getAllByUserIdAndGroupId {
         groupId: group.id
         userId: user.id
@@ -84,7 +84,7 @@ module.exports = class GroupManageMemberRecords
               isFullWidth: false
               onclick: =>
                 @$updateRecordDialog.setValue thisWeekValue or ''
-                @overlay$.onNext(
+                @overlay$.next(
                   z @$updateRecordDialog, {
                     recordType
                     onSave: (value) =>

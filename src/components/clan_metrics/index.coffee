@@ -5,7 +5,7 @@ _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
 _find = require 'lodash/find'
 _filter = require 'lodash/filter'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Icon = require '../icon'
 FormatService = require '../../services/format'

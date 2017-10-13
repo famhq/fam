@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -32,7 +32,7 @@ module.exports = class ProfilePage
     )
 
     me = @model.user.getMe()
-    user = usernameAndId.flatMapLatest ([username, id]) =>
+    user = usernameAndId.switchMap ([username, id]) =>
       if username
         @hasBottomBanner = true
         @model.user.getByUsername username
@@ -46,13 +46,13 @@ module.exports = class ProfilePage
     routePlayerId = requests. map ({route}) ->
       if route.params.playerId then route.params.playerId else false
 
-    player = routePlayerId.flatMapLatest (playerId) =>
+    player = routePlayerId.switchMap (playerId) =>
       if playerId
         @model.player.getByPlayerIdAndGameId(
           playerId, config.CLASH_ROYALE_ID
         )
       else
-        user.flatMapLatest ({id}) =>
+        user.switchMap ({id}) =>
           @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
           .map (player) ->
             return player or {}
@@ -151,7 +151,7 @@ module.exports = class ProfilePage
               icon: 'share'
               color: colors.$primary500
               onclick: =>
-                @isShareSheetVisible.onNext true
+                @isShareSheetVisible.next true
           if isMe and isTagSet
             z @$settingsIcon, {
               icon: 'settings'

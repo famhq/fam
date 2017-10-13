@@ -66,7 +66,7 @@ module.exports = class Button
     backgroundColor ?= @getBackgroundColor colors, isRaised, isHovered,
                                            isActive, isDark
 
-    z '.zp-button',
+    z '.z-button',
       className: z.classKebab {
         isRaised
         isFlat

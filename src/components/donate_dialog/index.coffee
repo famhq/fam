@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 FormatService = require '../../services/format'
@@ -59,7 +59,7 @@ module.exports = class DonateDialog
                 else @model.l.get 'stripeDialog.title'
         isVanilla: true
         onLeave: =>
-          @isVisible.onNext false
+          @isVisible.next false
         $content:
           z '.z-donate-dialog_dialog',
             if step is 'pay'
@@ -75,7 +75,7 @@ module.exports = class DonateDialog
                   type: 'range'
                   defaultValue: Math.floor AMOUNTS.length / 2
                   oninput: z.ev (e, $$el) =>
-                    @amountValue.onNext AMOUNTS[$$el.value]
+                    @amountValue.next AMOUNTS[$$el.value]
                   min: 0
                   max: AMOUNTS.length - 1
                   step: 1
@@ -84,7 +84,7 @@ module.exports = class DonateDialog
         cancelButton:
           text: 'cancel'
           onclick: =>
-            @isVisible.onNext false
+            @isVisible.next false
         submitButton:
           text: if isLoading \
                 then 'loading...'
@@ -99,7 +99,7 @@ module.exports = class DonateDialog
               @$stripeDialogInner.purchase {product}
               .then =>
                 @state.set isLoading: false
-                @isVisible.onNext false
+                @isVisible.next false
               .catch =>
                 @state.set isLoading: false
 

@@ -17,7 +17,7 @@ class CookieService
   set: (cookieSubject, key, value) ->
     cookieSubject.take(1).toPromise()
     .then (currentCookies) ->
-      cookieSubject.onNext _defaults {
+      cookieSubject.next _defaults {
         "#{key}": value
       }, currentCookies
 

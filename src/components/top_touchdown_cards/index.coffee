@@ -1,6 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Spinner = require '../spinner'
 Card = require '../card'

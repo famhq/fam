@@ -71,7 +71,7 @@ module.exports = class TabsBar
                 onclick: (e) =>
                   e.preventDefault()
                   e.stopPropagation()
-                  @selectedIndex.onNext(i)
+                  @selectedIndex.next(i)
                 if hasIcon
                   z '.icon',
                     z item.$menuIcon,

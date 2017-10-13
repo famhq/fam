@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 AdsenseAd = require '../adsense_ad'
@@ -47,7 +47,7 @@ module.exports = class PlayersSearch
       @state.set isLoading: false
     .catch (err) =>
       console.log err
-      @playerTagError.onNext @model.l.get 'playersSearch.playerTagError'
+      @playerTagError.next @model.l.get 'playersSearch.playerTagError'
       @state.set isLoading: false
 
   render: =>

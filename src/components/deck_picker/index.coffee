@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _range = require 'lodash/range'
 _filter = require 'lodash/filter'
@@ -46,9 +46,9 @@ module.exports = class DeckPicker
             newCards = _filter selectedCards, (selectedCard) ->
               card.id isnt selectedCard?.id
             if @selectedCardsStreams
-              @selectedCardsStreams.onNext Rx.Observable.just newCards
+              @selectedCardsStreams.next Rx.Observable.of newCards
             else
-              @selectedCards.onNext newCards
+              @selectedCards.next newCards
       z '.cards',
         z '.scroller',
           z @$allCards, {
@@ -56,7 +56,7 @@ module.exports = class DeckPicker
               if selectedCards.length < CARDS_PER_DECK
                 newCards = selectedCards.concat [card]
                 if @selectedCardsStreams
-                  @selectedCardsStreams.onNext Rx.Observable.just newCards
+                  @selectedCardsStreams.next Rx.Observable.of newCards
                 else
-                  @selectedCards.onNext newCards
+                  @selectedCards.next newCards
           }

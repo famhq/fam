@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 module.exports = class Drawer
   constructor: ->
@@ -8,10 +8,10 @@ module.exports = class Drawer
     @_isOpen
 
   open: =>
-    @_isOpen.onNext true
+    @_isOpen.next true
     # prevent body scrolling while viewing menu
     document.body.style.overflow = 'hidden'
 
   close: =>
-    @_isOpen.onNext false
+    @_isOpen.next false
     document.body.style.overflow = 'auto'

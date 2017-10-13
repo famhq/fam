@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -27,7 +27,7 @@ module.exports = class JoinGroupDialog
       error: null
 
   cancel: =>
-    @overlay$.onNext null
+    @overlay$.next null
 
   join: (e) =>
     e?.preventDefault()
@@ -40,7 +40,7 @@ module.exports = class JoinGroupDialog
     @model.clan.joinById clan?.id, {clanPassword}
     .then =>
       @state.set isLoading: false, error: null
-      @overlay$.onNext null
+      @overlay$.next null
     .catch (err) =>
       @state.set
         error: @model.l.get 'joinGroupDialog.error'
@@ -52,7 +52,7 @@ module.exports = class JoinGroupDialog
     z '.z-join-group-dialog',
       z @$dialog,
         onLeave: =>
-          @overlay$.onNext null
+          @overlay$.next null
         isVanilla: true
         $title: @model.l.get 'general.verify'
         $content:

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 Dialog = require '../dialog'
@@ -32,7 +32,7 @@ module.exports = class CardPickerDialog
       z @$dialog,
         isVanilla: true
         onLeave: =>
-          @overlay$.onNext null
+          @overlay$.next null
         $content:
           z '.z-card-picker-dialog_dialog',
             z '.title', @model.l.get 'cardPickerDialog.title'
@@ -41,10 +41,10 @@ module.exports = class CardPickerDialog
                 z '.card', {
                   onclick: =>
                     @onPickFn? card
-                    @overlay$.onNext null
+                    @overlay$.next null
                 },
                   z '.image', z $card, {width: 50}
         cancelButton:
           text: @model.l.get 'general.cancel'
           onclick: =>
-            @overlay$.onNext null
+            @overlay$.next null

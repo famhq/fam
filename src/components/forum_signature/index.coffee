@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _max = require 'lodash/max'
 _map = require 'lodash/map'
 
@@ -22,11 +22,11 @@ module.exports = class ForumSignature
     forumSignature = @model.dynamicImage.getMeByImageKey IMAGE_KEY
 
     @selectedColorStreams = new Rx.ReplaySubject 1
-    @selectedColorStreams.onNext forumSignature.map ({data}) ->
+    @selectedColorStreams.next forumSignature.map ({data}) ->
       data?.color
 
     @selectedFavoriteCardStreams = new Rx.ReplaySubject 1
-    @selectedFavoriteCardStreams.onNext forumSignature.map ({data}) ->
+    @selectedFavoriteCardStreams.next forumSignature.map ({data}) ->
       {key: data?.favoriteCard}
 
     cards = @model.clashRoyaleCard.getAll()
@@ -108,8 +108,8 @@ module.exports = class ForumSignature
                     "#{color}": true
                   }
                   onclick: =>
-                    @selectedColorStreams.onNext(
-                      Rx.Observable.just color
+                    @selectedColorStreams.next(
+                      Rx.Observable.of color
                     )
                     @state.set isImageVisible: false
                     @model.dynamicImage.upsertMeByImageKey IMAGE_KEY, {

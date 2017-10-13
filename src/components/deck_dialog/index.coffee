@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 Dialog = require '../dialog'
@@ -27,7 +27,7 @@ module.exports = class DeckDialog
       z @$dialog,
         isVanilla: true
         onLeave: =>
-          @overlay$.onNext null
+          @overlay$.next null
         $content:
           z '.z-deck-dialog_dialog',
             z '.title', deck?.title
@@ -36,4 +36,4 @@ module.exports = class DeckDialog
         cancelButton:
           text: @model.l.get 'general.cancel'
           onclick: =>
-            @overlay$.onNext null
+            @overlay$.next null

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -25,7 +25,7 @@ module.exports = class ClaimClanDialog
     me = @model.user.getMe()
     clanAndMe = Rx.Observable.combineLatest(clan, me, (vals...) -> vals)
     @step = new Rx.ReplaySubject 1
-    @step.onNext clanAndMe.map ([clan, me]) ->
+    @step.next clanAndMe.map ([clan, me]) ->
       isClaimedByMe = clan and me and clan.creatorId is me.id
       if isClaimedByMe then 'setPassword'
       else if clan and me then 'claim'
@@ -38,7 +38,7 @@ module.exports = class ClaimClanDialog
       error: null
 
   cancel: =>
-    @overlay$.onNext null
+    @overlay$.next null
 
   claim: (e) =>
     e?.preventDefault()
@@ -50,7 +50,7 @@ module.exports = class ClaimClanDialog
     @state.set isLoading: true
     @model.clan.claimById clan?.id
     .then =>
-      @step.onNext Rx.Observable.just 'setPassword'
+      @step.next Rx.Observable.of 'setPassword'
       @state.set isLoading: false, error: null
     .catch (err) =>
       @state.set error: 'Unable to verify', isLoading: false
@@ -68,7 +68,7 @@ module.exports = class ClaimClanDialog
     @model.clan.updateById clan?.id, {clanPassword}
     .then =>
       @state.set isLoading: false, error: null
-      @overlay$.onNext null
+      @overlay$.next null
     .catch (err) =>
       @state.set error: 'Unable to use that as a password', isLoading: false
 
@@ -78,7 +78,7 @@ module.exports = class ClaimClanDialog
     z '.z-claim-clan-dialog',
       z @$dialog,
         onLeave: =>
-          @overlay$.onNext null
+          @overlay$.next null
         isVanilla: true
         $title: if step is 'setPassword' \
                 then @model.l.get 'claimClanDialog.setPassword'

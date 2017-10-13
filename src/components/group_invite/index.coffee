@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 FindFriends = require '../find_friends'
 HeadsUp = require '../heads_up'
@@ -27,7 +27,7 @@ module.exports = class GroupInvite
         onBack: =>
           @router.back()
         onclick: (user) =>
-          @headsUpNotification.onNext {
+          @headsUpNotification.next {
             title: @model.l.get 'groupInvite.headsUpNotificationTitle'
             details: @model.l.get 'groupInvite.headsUpNotificationDetails'
             ttlMs: HEADS_UP_TTL_MS

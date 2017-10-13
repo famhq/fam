@@ -1,8 +1,4 @@
-@require 'zorium-paper/base'
-
 @require '../../vars'
-
-json('zorium-paper/colors.json')
 
 .z-heads-up
   position: fixed
@@ -23,10 +19,10 @@ json('zorium-paper/colors.json')
     transform: translate(0, 0)
 
   > .inner
-    zp-shadow-2()
+    shadow-2()
     display: inline-block
     border-radius: 24px
-    background: $white
+    background: getColor('$white')
     pointer-events: auto
     max-width: 100%
 

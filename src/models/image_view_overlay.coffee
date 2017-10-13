@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 module.exports = class ImageViewOverlay
   constructor: ->
@@ -8,4 +8,4 @@ module.exports = class ImageViewOverlay
     @imageData
 
   setImageData: (imageData) =>
-    @imageData.onNext imageData
+    @imageData.next imageData

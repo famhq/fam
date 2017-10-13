@@ -12,7 +12,7 @@ if window?
 
 module.exports = class Addon
   constructor: ({@model, @router, addon, testUrl}) ->
-    player = @model.user.getMe().flatMapLatest ({id}) =>
+    player = @model.user.getMe().switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (player) ->
         return player or {}

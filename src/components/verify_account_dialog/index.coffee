@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _find = require 'lodash/find'
 
 ClaimClanDialog = require '../claim_clan_dialog'
@@ -13,15 +13,15 @@ if window?
 module.exports = class VerifyAccountDialog
   constructor: ({@model, @router, @overlay$}) ->
     me = @model.user.getMe()
-    player = me.flatMapLatest ({id}) =>
+    player = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
-    clan = player.flatMapLatest (player) =>
+    clan = player.switchMap (player) =>
       if player?.data?.clan?.tag
         @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
         .map (clan) -> clan or false
       else
-        Rx.Observable.just false
+        Rx.Observable.of false
 
     @$joinGroupDialog = new JoinGroupDialog {@model, @router, @overlay$, clan}
     @$claimClanDialog = new ClaimClanDialog {@model, @router, @overlay$, clan}

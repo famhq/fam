@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 module.exports = class InstallOverlay
   constructor: ->
@@ -13,11 +13,11 @@ module.exports = class InstallOverlay
   setPrompt: (@prompt) => null
 
   open: =>
-    @_isOpen.onNext true
+    @_isOpen.next true
     # prevent body scrolling while viewing menu
     document.body.style.overflow = 'hidden'
 
   close: =>
-    @_isOpen.onNext false
+    @_isOpen.next false
     @onAction null
     document.body.style.overflow = 'auto'

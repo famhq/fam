@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 Icon = require '../icon'
@@ -29,7 +29,7 @@ module.exports = class MarkdownEditor
         {attachments} = @state.getValue()
 
         attachments or= []
-        @attachmentsValueStreams.onNext Rx.Observable.just(attachments.concat [
+        @attachmentsValueStreams.next Rx.Observable.of(attachments.concat [
           {type: 'image', src: smallUrl, smallSrc: smallUrl, largeSrc: largeUrl}
         ])
         @setModifier {
@@ -69,7 +69,7 @@ module.exports = class MarkdownEditor
         title: 'Card'
         pattern: "[$1](https://#{config.HOST}/clashRoyale/card/$0)"
         onclick: =>
-          @overlay$.onNext @$cardPickerDialog
+          @overlay$.next @$cardPickerDialog
           @$cardPickerDialog.onPick (card) =>
             @setModifier {
               pattern: "[#{card.name}]" +
@@ -102,9 +102,9 @@ module.exports = class MarkdownEditor
 
   setValue: (value, {updateDom} = {}) =>
     if @valueStreams
-      @valueStreams.onNext Rx.Observable.just value
+      @valueStreams.next Rx.Observable.of value
     else
-      @value.onNext value
+      @value.next value
 
     if updateDom
       @$$textarea.value = value
@@ -160,13 +160,13 @@ module.exports = class MarkdownEditor
                     img = new Image()
                     img.src = dataUrl
                     img.onload = =>
-                      @imageData.onNext {
+                      @imageData.next {
                         file
                         dataUrl
                         width: img.width
                         height: img.height
                       }
-                      @overlay$.onNext @$conversationImagePreview
+                      @overlay$.next @$conversationImagePreview
                 }
 
       overlay$

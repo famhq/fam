@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -28,7 +28,7 @@ module.exports = class SocialPage
     # hacky way to get /threads to go to 2nd tab
     tabHack = requests.map ({route}) ->
       if route.params.tab is 'threads'
-        selectedIndex.onNext 0
+        selectedIndex.next 0
 
     @$head = new Head({
       @model

@@ -1,6 +1,6 @@
 z = require 'zorium'
 moment = require 'moment'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Tabs = require '../tabs'
 UserHeader = require '../user_header'

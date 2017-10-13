@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 SecondaryButton = require '../secondary_button'
 VerifyAccountDialog = require '../verify_account_dialog'
@@ -18,7 +18,7 @@ module.exports = class GetAppDialog
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
 
     @state = z.state
-      mePlayer: @model.user.getMe().flatMapLatest ({id}) =>
+      mePlayer: @model.user.getMe().switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
   render: =>
@@ -29,7 +29,7 @@ module.exports = class GetAppDialog
         isVanilla: true
         isWide: true
         onLeave: =>
-          @overlay$.onNext null
+          @overlay$.next null
         $title: @model.l.get 'profileInfo.autoRefresh'
         $content:
           z '.z-auto-refresh-dialog_dialog',
@@ -44,7 +44,7 @@ module.exports = class GetAppDialog
                 z @$verifyAccountButton,
                   text: @model.l.get 'clanInfo.verifySelf'
                   onclick: =>
-                    @overlay$.onNext @$verifyAccountDialog
+                    @overlay$.next @$verifyAccountDialog
             z '.step',
               z '.number', '2'
               z '.info', @model.l.get 'profileInfo.autoRefreshVisitForum'
@@ -52,11 +52,11 @@ module.exports = class GetAppDialog
               z @$visitForumButton,
                 text: @model.l.get 'general.forum'
                 onclick: =>
-                  @overlay$.onNext null
+                  @overlay$.next null
                   @router.go '/forum'
 
             z 'div', @model.l.get 'profileInfo.autoRefreshVisitForumDescription'
         cancelButton:
           text: @model.l.get 'installOverlay.closeButtonText'
           onclick: =>
-            @overlay$.onNext null
+            @overlay$.next null

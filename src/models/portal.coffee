@@ -216,7 +216,7 @@ module.exports = class Portal
 
   clashRoyalePlayerGetMe: =>
     @user.getMe()
-    .flatMapLatest (me) =>
+    .switchMap (me) =>
       @player.getByUserIdAndGameId me?.id, config.CLASH_ROYALE_ID
       .map (player) -> player.data
     .take(1).toPromise()

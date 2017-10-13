@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _find = require 'lodash/find'
 
 Head = require '../../components/head'
@@ -16,7 +16,7 @@ module.exports = class ConversationPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    conversation = requests.flatMapLatest ({route}) =>
+    conversation = requests.switchMap ({route}) =>
       @model.conversation.getById route.params.conversationId
 
     selectedProfileDialogUser = new Rx.BehaviorSubject null

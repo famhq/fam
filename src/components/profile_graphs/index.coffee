@@ -19,7 +19,7 @@ module.exports = class ProfileGraphs
     @$communityButton = new PrimaryButton()
     @$adsenseAd = new AdsenseAd()
 
-    recordTypes = player.flatMapLatest ({id}) =>
+    recordTypes = player.switchMap ({id}) =>
       @model.gameRecordType.getAllByPlayerIdAndGameId(
         id
         config.CLASH_ROYALE_ID

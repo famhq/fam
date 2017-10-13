@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _find = require 'lodash/find'
 _filter = require 'lodash/filter'
@@ -15,7 +15,7 @@ if window?
 
 module.exports = class GroupAddRecords
   constructor: ({@model, @router, group}) ->
-    groupRecordTypes = group.flatMapLatest (group) =>
+    groupRecordTypes = group.switchMap (group) =>
       @model.groupRecordType.getAllByGroupId group.id, {
         embed: ['userValues']
       }

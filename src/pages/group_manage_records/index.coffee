@@ -13,7 +13,7 @@ module.exports = class GroupManageRecordsPage
   hideDrawer: true
 
   constructor: ({model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) ->
+    group = requests.switchMap ({route}) ->
       model.group.getById route.params.id
 
     @$head = new Head({

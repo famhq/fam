@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 module.exports = class SignInDialog
   constructor: ->
@@ -26,16 +26,16 @@ module.exports = class SignInDialog
     @_mode
 
   setMode: (mode) =>
-    @_mode.onNext mode
+    @_mode.next mode
 
   open: (mode) =>
     mode ?= 'join'
     @setMode mode
-    @_isOpen.onNext true
+    @_isOpen.next true
     # prevent body scrolling while viewing menu
     document.body.style.overflow = 'hidden'
 
   close: =>
-    @_isOpen.onNext false
+    @_isOpen.next false
     @onLoggedIn null
     document.body.style.overflow = 'auto'

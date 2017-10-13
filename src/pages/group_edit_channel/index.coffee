@@ -10,10 +10,10 @@ module.exports = class GroupEditChannelPage
   hideDrawer: true
 
   constructor: ({model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) ->
+    group = requests.switchMap ({route}) ->
       model.group.getById route.params.id
 
-    conversation = requests.flatMapLatest ({route}) ->
+    conversation = requests.switchMap ({route}) ->
       model.conversation.getById route.params.conversationId
 
     @$head = new Head({

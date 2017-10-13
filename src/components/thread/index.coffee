@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 moment = require 'moment'
 _map = require 'lodash/map'
 _find = require 'lodash/find'
@@ -51,22 +51,22 @@ module.exports = class Thread
       @model, @router, @selectedProfileDialogUser
     }
 
-    deck = thread.flatMapLatest (thread) =>
+    deck = thread.switchMap (thread) =>
       if thread?.data?.deckId
         @model.clashRoyaleDeck.getById thread.data.deckId
       else
-        Rx.Observable.just null
+        Rx.Observable.of null
 
     @$clanBadge = new ClanBadge()
     @$threadPreview = new ThreadPreview {@model, thread}
 
-    clan = thread.flatMapLatest (thread) =>
+    clan = thread.switchMap (thread) =>
       if thread?.data?.clan
         @model.clan.getById thread.data?.clan.id
       else
-        Rx.Observable.just null
+        Rx.Observable.of null
 
-    playerDeck = thread.flatMapLatest (thread) =>
+    playerDeck = thread.switchMap (thread) =>
       if thread?.data?.playerId
         @model.clashRoyalePlayerDeck.getByDeckIdAndPlayerId(
           thread.data.deckId
@@ -81,7 +81,7 @@ module.exports = class Thread
             $deckStats: new PlayerDeckStats {@model, @router, playerDeck}
           }
       else
-        Rx.Observable.just null
+        Rx.Observable.of null
 
     @message = new Rx.BehaviorSubject ''
     @overlay = new Rx.BehaviorSubject null
@@ -115,7 +115,7 @@ module.exports = class Thread
       playerDeck: playerDeck
       isPostLoading: @isPostLoading
       windowSize: @model.window.getSize()
-      threadComments: thread.flatMapLatest (thread) =>
+      threadComments: thread.switchMap (thread) =>
         if thread?.id
           @model.threadComment.getAllByParentIdAndParentType {
             parentId: thread.id
@@ -127,7 +127,7 @@ module.exports = class Thread
                 @model, @router, threadComment, @selectedProfileDialogUser
               }
         else
-          Rx.Observable.just null
+          Rx.Observable.of null
 
   postMessage: =>
     {me, isPostLoading, thread} = @state.getValue()
@@ -136,7 +136,7 @@ module.exports = class Thread
       return
 
     messageBody = @message.getValue()
-    @isPostLoading.onNext true
+    @isPostLoading.next true
 
     @model.signInDialog.openIfGuest me
     .then =>
@@ -146,9 +146,9 @@ module.exports = class Thread
         parentType: 'thread'
       }
       .then =>
-        @isPostLoading.onNext false
+        @isPostLoading.next false
       .catch =>
-        @isPostLoading.onNext false
+        @isPostLoading.next false
 
   render: =>
     {me, thread, $body, threadComments, isVideoVisible, windowSize, playerDeck,
@@ -220,7 +220,7 @@ module.exports = class Thread
                 z @$avatar, {user: thread?.creator, size: '20px'}
               z '.name', {
                 onclick: =>
-                  @selectedProfileDialogUser.onNext thread?.creator
+                  @selectedProfileDialogUser.next thread?.creator
               },
                 @model.user.getDisplayName thread?.creator
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'

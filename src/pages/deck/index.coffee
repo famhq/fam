@@ -13,7 +13,7 @@ module.exports = class DeckPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    deck = requests.flatMapLatest ({route}) =>
+    deck = requests.switchMap ({route}) =>
       @model.clashRoyaleDeck.getById route.params.id
 
     @$head = new Head({

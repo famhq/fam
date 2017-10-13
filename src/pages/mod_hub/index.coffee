@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _filter = require 'lodash/filter'
 Environment = require 'clay-environment'
 
@@ -41,7 +41,7 @@ module.exports = class ModHubPage
     me = @model.user.getMe()
     # @messagesStreams = new Rx.ReplaySubject 1
     # # https://github.com/ReactiveX/RxJS/issues/1121
-    # @messagesStreams.onNext @model.mod.getAllReportedMessages().share()
+    # @messagesStreams.next @model.mod.getAllReportedMessages().share()
 
     @$refreshIcon = new Icon()
     @$profileDialog = new ProfileDialog {
@@ -118,7 +118,7 @@ module.exports = class ModHubPage
         #         # messageUpdates.take(1).toPromise().then =>
         #         #   @state.set isLoading: false
         #
-        #         @messagesStreams.onNext messageUpdates
+        #         @messagesStreams.next messageUpdates
         title: 'Mod Hub'
 
       z @$tabs,

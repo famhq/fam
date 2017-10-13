@@ -1,7 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _upperFirst = require 'lodash/upperFirst'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 supportsWebP = window? and require 'supports-webp'
 
 Icon = require '../icon'
@@ -30,7 +30,7 @@ module.exports = class ConversationInput
       @overlay$
       @model
       onUpload: ({key, width, height}) =>
-        @message.onNext "![](#{config.USER_CDN_URL}/cm/#{key}.small.png" +
+        @message.next "![](#{config.USER_CDN_URL}/cm/#{key}.small.png" +
                           " =#{width}x#{height})"
         @onPost()
     }
@@ -89,7 +89,7 @@ module.exports = class ConversationInput
     @state = z.state
       currentPanel: @currentPanel
       me: me
-      mePlayer: me.flatMapLatest ({id}) =>
+      mePlayer: me.switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
   post: =>
@@ -97,8 +97,8 @@ module.exports = class ConversationInput
 
     post = =>
       @onPost()
-      @message.onNext ''
-      @hasText.onNext false
+      @message.next ''
+      @hasText.next false
 
     if me?.isMember
       post()
@@ -146,7 +146,7 @@ module.exports = class ConversationInput
               z '.icon',
                 z $icon, {
                   onclick: onclick or =>
-                    @currentPanel.onNext panel
+                    @currentPanel.next panel
                   icon: icon
                   color: if currentPanel is panel \
                          then colors.$white
@@ -162,13 +162,13 @@ module.exports = class ConversationInput
                         img = new Image()
                         img.src = dataUrl
                         img.onload = =>
-                          @imageData.onNext {
+                          @imageData.next {
                             file
                             dataUrl
                             width: img.width
                             height: img.height
                           }
-                          @overlay$.onNext @$conversationImagePreview
+                          @overlay$.next @$conversationImagePreview
                     }
             z '.powered-by-giphy'
           ]

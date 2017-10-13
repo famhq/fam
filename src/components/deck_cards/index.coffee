@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
 
@@ -25,7 +25,7 @@ getCardSizeInfo = ->
 module.exports = class DeckCards extends Base
   constructor: ({deck, cardsPerRow}) ->
     unless deck.map
-      deck = Rx.Observable.just deck
+      deck = Rx.Observable.of deck
 
     @cardSizeInfo = getCardSizeInfo()
     @cachedCards = []

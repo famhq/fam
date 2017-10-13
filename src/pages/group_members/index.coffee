@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 GroupMembers = require '../../components/group_members'
@@ -15,7 +15,7 @@ module.exports = class GroupManageMemberPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.flatMapLatest ({route}) =>
+    group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
     @$head = new Head({

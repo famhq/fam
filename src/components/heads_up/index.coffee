@@ -28,7 +28,7 @@ module.exports = class HeadsUp
         @slideOut()
 
   beforeUnmount: =>
-    @mountDisposible.dispose()
+    @mountDisposible.unsubscribe()
 
   slideIn: =>
     @state.set isVisible: true

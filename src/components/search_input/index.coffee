@@ -25,7 +25,7 @@ module.exports = class SearchInput
     @state.set _isFocused: false
 
   clear: =>
-    @searchValue.onNext ''
+    @searchValue.next ''
 
   render: (options = {}) =>
     {placeholder, isFocused, onBack, height, bgColor,
@@ -91,4 +91,4 @@ module.exports = class SearchInput
           style:
             backgroundColor: bgColor
           oninput: z.ev (e, $$el) =>
-            @searchValue.onNext $$el.value
+            @searchValue.next $$el.value

@@ -3,7 +3,7 @@ require './polyfill'
 _map = require 'lodash/map'
 z = require 'zorium'
 log = require 'loga'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 cookie = require 'cookie'
 FastClick = require 'fastclick'
 LocationRouter = require 'location-router'
@@ -80,7 +80,7 @@ init = ->
   FastClick.attach document.body
   currentCookies = cookie.parse(document.cookie)
   cookieSubject = new Rx.BehaviorSubject currentCookies
-  cookieSubject.subscribeOnNext setCookies(currentCookies)
+  cookieSubject.do(setCookies(currentCookies)).subscribe()
 
   CookieService.set(
     cookieSubject, 'resolution', "#{window.innerWidth}x#{window.innerHeight}"
@@ -108,11 +108,11 @@ init = ->
   model.portal.listen()
 
   onOnline = ->
-    isOffline.onNext false
+    isOffline.next false
     console.log 'online invalidate'
     model.exoid.invalidateAll()
   onOffline = ->
-    isOffline.onNext true
+    isOffline.next true
 
   router = new RouterService {
     model: model
@@ -194,7 +194,7 @@ init = ->
       if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
         model.portal.call 'push.setBadgeNumber', {number: 0}
 
-      currentNotification.onNext {
+      currentNotification.next {
         title: _original?.additionalData?.title or _original.title
         message: _original?.additionalData?.message or _original.message
         type: _original?.additionalData?.type
@@ -236,9 +236,10 @@ init = ->
     else
       null
   .then ->
-    requests.subscribeOnNext ({path}) ->
+    requests.do(({path}) ->
       if window?
         ga? 'send', 'pageview', path
+    ).subscribe()
 
     # nextTick prevents white flash
     setTimeout ->

@@ -4,7 +4,7 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _takeRight = require 'lodash/takeRight'
 _isEmpty = require 'lodash/isEmpty'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 FormatService = require '../../services/format'
 DeckCards = require '../deck_cards'
@@ -32,7 +32,7 @@ module.exports = class ProfileDecks
       (vals...) -> vals
     )
 
-    playerDecks = playerAndType.flatMapLatest ([{id}, type]) =>
+    playerDecks = playerAndType.switchMap ([{id}, type]) =>
       @model.clashRoyalePlayerDeck.getAllByPlayerId id, {type, sort: 'recent'}
 
     @state = z.state {
@@ -44,7 +44,7 @@ module.exports = class ProfileDecks
       .catch (err) ->
         ga? 'send', 'event', 'deck_err', err.message
         error = JSON.parse err.message
-        Rx.Observable.just true
+        Rx.Observable.of true
       .map (result) ->
         if result is true
           true

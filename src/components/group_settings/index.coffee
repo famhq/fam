@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
 
@@ -29,23 +29,23 @@ module.exports = class Settings
 
     me = @model.user.getMe()
     @nameValueStreams = new Rx.ReplaySubject 1
-    @nameValueStreams.onNext (group?.map (group) ->
-      group.name) or Rx.Observable.just null
+    @nameValueStreams.next (group?.map (group) ->
+      group.name) or Rx.Observable.of null
     @nameError = new Rx.BehaviorSubject null
 
     @descriptionValueStreams = new Rx.ReplaySubject 1
-    @descriptionValueStreams.onNext (group?.map (group) ->
-      group.description) or Rx.Observable.just null
+    @descriptionValueStreams.next (group?.map (group) ->
+      group.description) or Rx.Observable.of null
     @descriptionError = new Rx.BehaviorSubject null
 
     @passwordValueStreams = new Rx.ReplaySubject 1
-    @passwordValueStreams.onNext (group?.map (group) ->
-      group.password) or Rx.Observable.just null
+    @passwordValueStreams.next (group?.map (group) ->
+      group.password) or Rx.Observable.of null
     @passwordError = new Rx.BehaviorSubject null
 
     @isPrivateStreams = new Rx.ReplaySubject 1
-    @isPrivateStreams.onNext (group?.map (group) ->
-      group.privacy is 'private') or Rx.Observable.just null
+    @isPrivateStreams.next (group?.map (group) ->
+      group.privacy is 'private') or Rx.Observable.of null
 
     @$actionBar = new ActionBar {@model}
     @$leaveIcon = new Icon()
@@ -74,7 +74,7 @@ module.exports = class Settings
       description: @descriptionValueStreams.switch()
       password: @passwordValueStreams.switch()
       isPrivate: @isPrivateStreams.switch()
-      notificationTypes: group.flatMapLatest (group) =>
+      notificationTypes: group.switchMap (group) =>
         @model.userGroupData.getMeByGroupId(group.id).map (data) ->
           _map notificationTypes, (type) ->
             isSelected = new Rx.BehaviorSubject(
@@ -104,7 +104,7 @@ module.exports = class Settings
       return
 
     @state.set isSaving: true
-    @passwordError.onNext null
+    @passwordError.next null
 
     @model.group.updateById group.id, {name, description, password, isPrivate}
     .then =>

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Head = require '../../components/head'
 Tabs = require '../../components/tabs'
@@ -18,7 +18,7 @@ if window?
 module.exports = class FriendsPage
   constructor: ({@model, @router, requests, serverData}) ->
     @isFindFriendsVisible = new Rx.ReplaySubject 1
-    @isFindFriendsVisible.onNext(
+    @isFindFriendsVisible.next(
       requests.map ({route}) ->
         route.params.action is 'find'
     )
@@ -134,4 +134,4 @@ module.exports = class FriendsPage
             color: colors.$white
           }
           onclick: =>
-            @isFindFriendsVisible.onNext Rx.Observable.just true
+            @isFindFriendsVisible.next Rx.Observable.of true

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -12,7 +12,7 @@ module.exports = class GroupUpdateRecordDialog
     @$dialog = new Dialog()
 
   setValue: (value) =>
-    @value.onNext value
+    @value.next value
 
   render: ({recordType, onSave} = {}) =>
     z '.z-group-update-record-dialog',
@@ -26,9 +26,9 @@ module.exports = class GroupUpdateRecordDialog
         cancelButton:
           text: @model.l.get 'general.cancel'
           onclick: =>
-            @overlay$.onNext null
+            @overlay$.next null
         submitButton:
           text: 'save'
           onclick: =>
             onSave? @value.getValue()
-            @overlay$.onNext null
+            @overlay$.next null

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 Icon = require '../icon'
@@ -36,10 +36,10 @@ module.exports = class ConversationInputTextarea
   setMessage: (message) =>
     currentValue = @message.getValue()
     if not currentValue and message
-      @hasText.onNext true
+      @hasText.next true
     else if currentValue and not message
-      @hasText.onNext false
-    @message.onNext message
+      @hasText.next false
+    @message.next message
 
   postMessage: (e) =>
     {isPostLoading} = @state.getValue()
@@ -114,7 +114,7 @@ module.exports = class ConversationInputTextarea
             unless Environment.isGameApp config.GAME_KEY
               @model.window.pauseResizing()
             clearTimeout @blurTimeout
-            @isTextareaFocused.onNext true
+            @isTextareaFocused.next true
             @onResize?()
           onblur: (e) =>
             @toggleIScroll? 'enable'
@@ -123,7 +123,7 @@ module.exports = class ConversationInputTextarea
               unless isFocused
                 unless Environment.isGameApp config.GAME_KEY
                   @model.window.resumeResizing()
-                @isTextareaFocused.onNext false
+                @isTextareaFocused.next false
             , 350
 
         z '.right-icons',

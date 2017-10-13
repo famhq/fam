@@ -1,5 +1,5 @@
 {
-  "name": "zorium-seed",
+  "name": "starfire",
   "private": true,
   "scripts": {
     "dist": "./bin/dist.sh",
@@ -73,7 +73,7 @@
     "helmet": "^0.14.0",
     "http-hash": "^2.0.0",
     "iscroll": "git://github.com/claydotio/iscroll.git",
-    "location-router": "^0.1.2",
+    "location-router": "git://github.com/claydotio/location-router.git",
     "lodash": "^4.17.2",
     "loga": "^0.1.4",
     "moment": "^2.13.0",
@@ -84,7 +84,7 @@
     "qs": "^5.2.0",
     "remark": "^6.2.0",
     "remark-vdom": "^3.1.0",
-    "rx-lite": "^4.0.8",
+    "rxjs": "^5.4.3",
     "semver": "^5.3.0",
     "setimmediate": "^1.0.5",
     "smoothscroll-polyfill": "^0.3.4",
@@ -92,8 +92,7 @@
     "supports-webp": "^1.0.3",
     "transition-event": "^1.0.0",
     "whatwg-fetch": "^0.10.1",
-    "zorium": "git://github.com/claydotio/zorium.git",
-    "zorium-paper": "git://github.com/claydotio/zorium-paper.git"
+    "zorium": "git://github.com/claydotio/zorium.git"
   },
   "directories": {
     "test": "test"

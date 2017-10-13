@@ -27,7 +27,7 @@ module.exports = class UserList
             if onclick
               onclick user.userInfo
             else
-              @selectedProfileDialogUser.onNext user.userInfo
+              @selectedProfileDialogUser.next user.userInfo
         },
           z '.avatar',
             z user.$avatar,

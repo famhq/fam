@@ -50,8 +50,8 @@ module.exports = class ConversationImagePreview
           color: colors.$white
           isTouchTarget: true
           onclick: =>
-            @imageData.onNext null
-            @overlay$.onNext null
+            @imageData.next null
+            @overlay$.next null
       z '.fab',
         z @$uploadImageFab,
           colors:
@@ -68,5 +68,5 @@ module.exports = class ConversationImagePreview
               .then ({smallUrl, largeUrl, key}) =>
                 @onUpload arguments[0]
                 @state.set isUploading: false
-                @imageData.onNext null
-                @overlay$.onNext null
+                @imageData.next null
+                @overlay$.next null

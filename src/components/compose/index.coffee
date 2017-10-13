@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Icon = require '../icon'
 ActionBar = require '../action_bar'
@@ -32,15 +32,15 @@ module.exports = class Compose
 
   setTitle: (e) =>
     if @titleValueStreams
-      @titleValueStreams.onNext Rx.Observable.just e.target.value
+      @titleValueStreams.next Rx.Observable.of e.target.value
     else
-      @titleValue.onNext e.target.value
+      @titleValue.next e.target.value
 
   setBody: (e) =>
     if @bodyValueStreams
-      @bodyValueStreams.onNext Rx.Observable.just e.target.value
+      @bodyValueStreams.next Rx.Observable.of e.target.value
     else
-      @bodyValue.onNext e.target.value
+      @bodyValue.next e.target.value
 
   render: ({isReply, onDone, $head}) =>
     {me, isLoading, titleValue} = @state.getValue()

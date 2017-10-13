@@ -1,6 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 colors = require '../../colors'
 
@@ -66,7 +66,7 @@ module.exports = class ShareSheet
 
     z '.z-share-sheet', {
       onclick: =>
-        @isVisible.onNext null
+        @isVisible.next null
     },
       z @$sheet,
         $content:

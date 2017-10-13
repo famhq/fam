@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 _defaults = require 'lodash/defaults'
 
 allColors = require '../../colors'
@@ -61,13 +61,13 @@ module.exports = class Input
         value: value
         oninput: z.ev (e, $$el) =>
           if @valueStreams
-            @valueStreams.onNext Rx.Observable.just $$el.value
+            @valueStreams.next Rx.Observable.of $$el.value
           else
-            @value.onNext $$el.value
+            @value.next $$el.value
         onfocus: z.ev (e, $$el) =>
-          @isFocused.onNext true
+          @isFocused.next true
         onblur: z.ev (e, $$el) =>
-          @isFocused.onNext false
+          @isFocused.next false
       z '.underline-wrapper',
         z '.underline',
           style:

@@ -10,7 +10,7 @@ if window?
 module.exports = class DeckInfo
   constructor: ({@model, @router, deck}) ->
     me = @model.user.getMe()
-    playerDeck = deck.flatMapLatest (deck) =>
+    playerDeck = deck.switchMap (deck) =>
       @model.clashRoyalePlayerDeck.getByDeckId deck.id
 
     @$deckCards = new DeckCards {

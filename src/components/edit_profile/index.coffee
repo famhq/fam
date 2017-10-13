@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 Avatar = require '../avatar'
@@ -23,16 +23,16 @@ module.exports = class EditProfile
     me = @model.user.getMe()
 
     @usernameValueStreams = new Rx.ReplaySubject 1
-    @usernameValueStreams.onNext me.map (me) ->
+    @usernameValueStreams.next me.map (me) ->
       me.username
     @usernameError = new Rx.BehaviorSubject null
 
     @playerTagValueStreams = new Rx.ReplaySubject 1
-    currentPlayerTag = me.flatMapLatest ({id}) =>
+    currentPlayerTag = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (player) ->
         player?.id
-    @playerTagValueStreams.onNext currentPlayerTag
+    @playerTagValueStreams.next currentPlayerTag
     @playerTagError = new Rx.BehaviorSubject null
 
     @$actionBar = new ActionBar {@model}
@@ -70,12 +70,12 @@ module.exports = class EditProfile
       return
 
     @state.set isSaving: true
-    @usernameError.onNext null
+    @usernameError.next null
 
     (if username and username isnt me?.username
       @model.user.setUsername username
       .catch (err) =>
-        @usernameError.onNext JSON.stringify err
+        @usernameError.next JSON.stringify err
     else
       Promise.resolve null)
     .then =>

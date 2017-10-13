@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 Groups = require '../../components/groups'
 Conversations = require '../../components/conversations'
@@ -50,7 +50,7 @@ module.exports = class Social
     @state = z.state
       selectedIndex: selectedIndexAndTabs.map ([index, tabs]) ->
         # side effect
-        pageTitle.onNext tabs[index].$menuText
+        pageTitle.next tabs[index].$menuText
         index
       tabs: tabs
       language: language

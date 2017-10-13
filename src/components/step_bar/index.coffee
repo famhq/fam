@@ -29,7 +29,7 @@ module.exports = class StepBar
         z '.previous', {
           onclick: =>
             if step > 1
-              @step.onNext step - 1
+              @step.next step - 1
         },
           if step isnt 1
             @model.l.get 'stepBar.back'
@@ -46,7 +46,7 @@ module.exports = class StepBar
               if step is steps
                 save.onclick()
               else
-                @step.onNext step + 1
+                @step.next step + 1
         },
           if isLoading
           then @model.l.get 'general.loading'

@@ -1,4 +1,4 @@
-Rx = require 'rx-lite'
+Rx = require 'rxjs'
 
 module.exports = class Product
   constructor: ({@auth}) ->
@@ -7,7 +7,7 @@ module.exports = class Product
   getAll: ({itemId, key} = {}) =>
     @auth.stream "#{PATH}/products"
 
-  setAllCached: (allCached) => @allCached.onNext allCached
+  setAllCached: (allCached) => @allCached.next allCached
 
   getAllCached: =>
     @allCached

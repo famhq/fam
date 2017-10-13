@@ -16,7 +16,7 @@ module.exports = class ClanGraphs
   constructor: ({@model, @router, clan}) ->
     @$communityButton = new PrimaryButton()
 
-    recordTypes = clan.flatMapLatest ({id}) =>
+    recordTypes = clan.switchMap ({id}) =>
       @model.clanRecordType.getAllByClanIdAndGameId(
         id
         config.CLASH_ROYALE_ID

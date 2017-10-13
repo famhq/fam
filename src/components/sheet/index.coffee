@@ -17,16 +17,16 @@ module.exports = class Sheet
 
   afterMount: =>
     @router.onBack =>
-      @isVisible.onNext false
+      @isVisible.next false
 
   # beforeUnmount: =>
-  #   @isVisible.onNext false
+  #   @isVisible.next false
 
   render: ({icon, message, submitButton, $content}) =>
     z '.z-sheet',
       z '.overlay',
         onclick: =>
-          @isVisible.onNext false
+          @isVisible.next false
       z '.sheet',
         z '.inner',
           if $content
@@ -45,7 +45,7 @@ module.exports = class Sheet
                   text: @model.l.get 'general.notNow'
                   isFullWidth: false
                   onclick: =>
-                    @isVisible.onNext false
+                    @isVisible.next false
                 z @$submitButton, _defaults submitButton, {
                   isFullWidth: false
                   colors: {cText: colors.$primary500}
