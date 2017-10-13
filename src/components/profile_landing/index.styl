@@ -60,6 +60,33 @@
       text-align: left
       margin-top: 20px
 
+    > .features
+      max-width: 700px
+      margin: 16px auto 0 auto
+
+      > .feature
+        display: flex
+        padding: 8px 0
+
+        &.chat-and-forum
+          padding-top: 0 // this image isn't exactly square, so even up padding
+
+        > .image
+          width: 100px
+          height: 100px
+          background-size: 100%
+
+        > .info
+          flex: 1
+          margin-left: 16px
+
+          > .name
+            font-subhead()
+
+          > .description
+            font-body1()
+            color: getColor('$tertiary300')
+
     > .terms
       font-caption1()
       color: getColor('$tertiary300')

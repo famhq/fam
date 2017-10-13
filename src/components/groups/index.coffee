@@ -77,6 +77,8 @@ module.exports = class Groups
       ja: '日本語'
       zh: '中文'
       de: 'deutsche'
+      es: 'español'
+      pt: 'português'
 
     z '.z-groups',
       if unreadGroupInvites
@@ -109,7 +111,8 @@ module.exports = class Groups
                   z 'div',
                     z 'p', @model.l.get 'translateCard.request1'
                     z 'p', @model.l.get 'translateCard.request2', {
-                      language: translation[language]
+                      replacements:
+                        language: translation[language]
                     }
                 cancel:
                   text: @model.l.get 'translateCard.cancelText'

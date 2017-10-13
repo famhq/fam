@@ -32,6 +32,7 @@
     "gulp-manifest": "^0.1.1",
     "gulp-mocha": "^2.1.3",
     "gulp-rename": "^1.2.2",
+    "gulp-util": "^3.0.8",
     "json-loader": "^0.5.2",
     "karma": "^0.13.15",
     "karma-chrome-launcher": "^0.2.1",
@@ -91,6 +92,8 @@
     "socket.io-client": "^1.7.3",
     "supports-webp": "^1.0.3",
     "transition-event": "^1.0.0",
+    "vdom-parser": "^1.4.1",
+    "virtual-dom": "^2.1.1",
     "whatwg-fetch": "^0.10.1",
     "zorium": "git://github.com/claydotio/zorium.git"
   },

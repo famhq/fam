@@ -26,7 +26,7 @@ class RouterService
 
   openLink: (url) =>
     isAbsoluteUrl = url?.match /^(?:[a-z]+:)?\/\//i
-    starfireRegex = new RegExp "https?://#{config.HOST}", 'i'
+    starfireRegex = new RegExp "https?://(#{config.HOST}|starfi.re)", 'i'
     isStarfire = url?.match starfireRegex
     if not isAbsoluteUrl or isStarfire
       path = if isStarfire \

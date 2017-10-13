@@ -5,10 +5,11 @@ config = require '../config'
 
 class PushService
   init: ({model}) ->
-    onReply = (reply) ->
+    onReply = ([reply]) ->
+      payload = reply.additionalData.payload or reply.additionalData.data
       model.chatMessage.create {
         body: reply.additionalData.inlineReply
-        conversationId: reply.additionalData.data.conversationId
+        conversationId: payload.conversationId
       }
     model.portal.call 'push.registerAction', {
       action: 'reply'

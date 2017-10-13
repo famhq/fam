@@ -162,7 +162,7 @@ module.exports = class Conversation extends Base
     @$$messages = @$$el?.querySelector('.messages')
     # TODO: make sure this is being disposed of correctly
     isScrolledBottom = Rx.Observable.fromEvent @$$messages, 'scroll'
-    .map (e) =>
+    .map (e) ->
       e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10
     @isScrolledBottomStreams.next isScrolledBottom
 

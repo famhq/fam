@@ -5,6 +5,7 @@ _defaultsDeep = require 'lodash/defaultsDeep'
 _mapValues = require 'lodash/mapValues'
 log = require 'loga'
 gulp = require 'gulp'
+gutil = require 'gulp-util'
 webpack = require 'webpack'
 mocha = require 'gulp-mocha'
 manifest = require 'gulp-manifest'
@@ -15,8 +16,8 @@ webpackStream = require 'webpack-stream'
 # istanbul = require 'gulp-coffee-istanbul'
 WebpackDevServer = require 'webpack-dev-server'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
-UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
-Visualizer = require('webpack-visualizer-plugin')
+# UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
+# Visualizer = require('webpack-visualizer-plugin')
 
 config = require './src/config'
 paths = require './gulp_paths'
@@ -38,10 +39,7 @@ webpackBase =
     exprContextRegExp: /$^/
     exprContextCritical: false
   resolve:
-    # packageAlias: false # think we need if we install local node modules
     extensions: ['.coffee', '.js', '.json', '']
-  # node:
-  #   fs: 'empty'
   output:
     filename: 'bundle.js'
     publicPath: '/'
@@ -139,7 +137,9 @@ gulp.task 'dev:webpack-server', ->
   webpackOptions =
     publicPath: "#{config.WEBPACK_DEV_URL}/"
     hot: true
+    headers: 'Access-Control-Allow-Origin': '*'
     noInfo: true
+    disableHostCheck: true
 
   if config.DEV_USE_HTTPS
     console.log 'using https'
@@ -208,18 +208,18 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   scriptsConfig = _defaultsDeep {
     # devtool: 'source-map'
     plugins: [
-      new Visualizer()
+      # new Visualizer()
       # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       new webpack.ContextReplacementPlugin(
         /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
       )
-      new UglifyJSPlugin
-        uglifyOptions:
-          mangle:
-            reserved: ['process']
-      # new webpack.optimize.UglifyJsPlugin
-      #   mangle:
-      #     except: ['process']
+      # new UglifyJSPlugin
+      #   uglifyOptions:
+      #     mangle:
+      #       reserved: ['process']
+      new webpack.optimize.UglifyJsPlugin
+        mangle:
+          except: ['process']
       new ExtractTextPlugin 'bundle.css'
     ]
     output:
@@ -239,7 +239,7 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   gulp.src paths.root
   .pipe webpackStream scriptsConfig, null, (err, stats) ->
     if err
-      console.trace err
+      gutil.log err
       return
     statsJson = JSON.stringify {hash: stats.toJson().hash}
     fs.writeFileSync "#{__dirname}/#{paths.dist}/stats.json", statsJson

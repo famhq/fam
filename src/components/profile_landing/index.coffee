@@ -5,7 +5,6 @@ Environment = require 'clay-environment'
 
 SecondaryButton = require '../secondary_button'
 GetPlayerTagForm = require '../get_player_tag_form'
-PlayerList = require '../player_list'
 config = require '../../config'
 
 TOP_PLAYER_COUNT = 20
@@ -20,14 +19,6 @@ module.exports = class ProfileLanding
     @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}
     @$findPlayerButton = new SecondaryButton()
     @$loginButton = new SecondaryButton()
-
-    @$playerList = new PlayerList {
-      @model
-      @router
-      @selectedProfileDialogUser
-      players: @model.player.getTop().map (players) ->
-        _take players, TOP_PLAYER_COUNT
-    }
 
     @state = z.state
       me: me
@@ -62,13 +53,36 @@ module.exports = class ProfileLanding
               onclick: =>
                 @model.signInDialog.open 'signIn'
 
-        # TODO: replace with info about starfire
-        z '.subhead', @model.l.get 'playersPage.playersTop'
-        z @$playerList, {
-          onclick: ({player}) =>
-            userId = player?.userId
-            @router.go "/user/id/#{userId}"
-        }
+        z '.features',
+          z '.feature',
+            z '.image',
+              style:
+                backgroundImage:
+                  "url(#{config.CDN_URL}/chests/super_magical_chest.png)"
+            z '.info',
+              z 'h2.name', @model.l.get 'profileLanding.chestCycleTitle'
+              z '.description',
+                @model.l.get 'profileLanding.chestCycleDescription'
+
+          z '.feature',
+            z '.image',
+              style:
+                backgroundImage:
+                  "url(#{config.CDN_URL}/clash_royale/arena_11.png)"
+            z '.info',
+              z 'h2.name', @model.l.get 'profileLanding.statsTitle'
+              z '.description',
+                @model.l.get 'profileLanding.statsDescription'
+
+          z '.feature.chat-and-forum',
+            z '.image',
+              style:
+                backgroundImage:
+                  "url(#{config.CDN_URL}/clash_royale/thumbs_emote.png)"
+            z '.info',
+              z 'h2.name', @model.l.get 'profileLanding.chatAndForumTitle'
+              z '.description',
+                @model.l.get 'profileLanding.chatAndForumDescription'
 
         z '.terms',
           z 'p',
