@@ -15,6 +15,7 @@ config = require '../config'
 
 files = {strings: null, cards: null, addons: null}
 
+# also update gulpfile ContextReplacementPlugin for moment
 files = _mapValues files, (val, file) ->
   en: require "../lang/en/#{file}_en"
   es: require "../lang/es/#{file}_es"

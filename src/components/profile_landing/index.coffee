@@ -62,6 +62,7 @@ module.exports = class ProfileLanding
               onclick: =>
                 @model.signInDialog.open 'signIn'
 
+        # TODO: replace with info about starfire
         z '.subhead', @model.l.get 'playersPage.playersTop'
         z @$playerList, {
           onclick: ({player}) =>

@@ -15,6 +15,7 @@ webpackStream = require 'webpack-stream'
 # istanbul = require 'gulp-coffee-istanbul'
 WebpackDevServer = require 'webpack-dev-server'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
+UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
 Visualizer = require('webpack-visualizer-plugin')
 
 config = require './src/config'
@@ -204,11 +205,18 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   scriptsConfig = _defaultsDeep {
     # devtool: 'source-map'
     plugins: [
-      # new Visualizer()
+      new Visualizer()
       # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
-      new webpack.optimize.UglifyJsPlugin
-        mangle:
-          except: ['process']
+      new webpack.ContextReplacementPlugin(
+        /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
+      )
+      new UglifyJSPlugin
+        uglifyOptions:
+          mangle:
+            reserved: ['process']
+      # new webpack.optimize.UglifyJsPlugin
+      #   mangle:
+      #     except: ['process']
       new ExtractTextPlugin 'bundle.css'
     ]
     output:

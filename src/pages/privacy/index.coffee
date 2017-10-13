@@ -11,7 +11,6 @@ if window?
 
 module.exports = class PrivacyPage
   constructor: ({@model, requests, @router, serverData}) ->
-    @$editButton = new Button()
     @$head = new Head({
       @model
       requests
