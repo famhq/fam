@@ -69,6 +69,7 @@ module.exports = class App
   constructor: ({requests, @serverData, @model, @router, isOffline}) ->
     @$cachedPages = []
     routes = @model.window.getBreakpoint().map @getRoutes
+            .publishReplay(1).refCount()
 
     requestsAndRoutes = Rx.Observable.combineLatest(
       requests, routes, (vals...) -> vals
@@ -78,6 +79,7 @@ module.exports = class App
       route = routes.get req.path
       $page = route.handler?()
       {req, route, $page: $page}
+    .publishReplay(1).refCount()
 
     gameKey = requests.map ({route}) ->
       route?.params.gameKey or config.DEFAULT_GAME_KEY
@@ -147,14 +149,13 @@ module.exports = class App
 
       paths = _flatten _map routeKeys, (routeKey) =>
         if routeKey is '404'
-          return ['/:gameKey/*'] # /* will still just look for a gameKey
+          # /* will still just look for a gameKey
+          return _map languages, (lang) ->
+            if lang is 'en' then '/:gameKey/*' else "/#{lang}/:gameKey/*"
         _values @model.l.getAllPathsByRouteKey routeKey, isGamePath
 
       _map paths, (path) =>
         routes.set path, =>
-          # @serverData ?= {}
-          # @serverData?.routeKey = routeKey
-          # @serverData?.isGamePath = isGamePath
           unless @$cachedPages[pageKey]
             @$cachedPages[pageKey] = new Page({
               @model
@@ -209,9 +210,11 @@ module.exports = class App
     routeGame 'userOfWeek', 'UserOfWeekPage'
     routeGame 'privacy', 'PrivacyPage'
     routeGame [
-      'profile', 'player', 'user', 'userById'
+      'profile', 'player', 'playerEmbed', 'user', 'userById'
     ], 'ProfilePage'
-    routeGame 'chestCycleByPlayerId', 'ProfileChestsPage'
+    routeGame [
+      'chestCycleByPlayerId', 'chestCycleByPlayerIdEmbed'
+    ], 'ProfileChestsPage'
     routeGame 'editProfile', 'EditProfilePage'
 
     route ['home', 'siteHome'], 'ProfilePage'

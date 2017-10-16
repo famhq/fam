@@ -28,7 +28,7 @@ module.exports = class BottomBar
       {
         $icon: new Icon()
         icon: 'profile'
-        route: @router.get 'profile', {gameKey}
+        route: @router.get 'home', {gameKey}
         text: @model.l.get 'general.profile'
         isDefault: true
       }
@@ -68,14 +68,14 @@ module.exports = class BottomBar
 
     z '.z-bottom-bar',
       _map @menuItems, ({$icon, icon, route, text, isDefault}) =>
-        isHome = isDefault and currentPath in [
-          @router.get 'siteHome'
-          @router.get 'home', {gameKey}
-          '/'
-        ]
-        isSelected = currentPath and (currentPath.indexOf(route) isnt -1 or (
-          isHome
-        ))
+        if isDefault
+          isSelected =  currentPath in [
+            @router.get 'siteHome'
+            @router.get 'home', {gameKey}
+            '/'
+          ]
+        else
+          isSelected = currentPath and currentPath.indexOf(route) isnt -1
 
         z '.menu-item', {
           className: z.classKebab {isSelected}

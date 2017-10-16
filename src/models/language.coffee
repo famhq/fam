@@ -91,7 +91,7 @@ class Language
     _keys files.paths
 
   getAllUrlLanguages: ->
-    ['en', 'es']
+    ['en', 'es', 'pt']
 
   # some of this would probably make more sense in router...
   getNonGamePages: ->

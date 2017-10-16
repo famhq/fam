@@ -20,8 +20,7 @@ class RouterService
     unless ignoreHistory
       @history.push(route or window?.location.pathname)
 
-    # TODO: handle for other languages...
-    if route is '/' or route is '/profile' or reset
+    if @history[0] is '/' or @history[0] is @get('siteHome') or reset
       @history = [route]
 
     if route

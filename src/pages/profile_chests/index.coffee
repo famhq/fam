@@ -1,5 +1,6 @@
 z = require 'zorium'
 Rx = require 'rxjs'
+_find = require 'lodash/find'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -16,33 +17,16 @@ module.exports = class ProfileChestsPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    username = requests.map ({route}) ->
-      if route.params.username then route.params.username else false
+    playerId = requests.map ({route}) ->
+      if route.params.playerId then route.params.playerId else false
 
-    id = requests.map ({route}) ->
-      if route.params.id then route.params.id else false
-
-    usernameAndId = Rx.Observable.combineLatest(
-      username
-      id
-      (vals...) -> vals
-    )
-
-    me = @model.user.getMe()
-    user = usernameAndId.switchMap ([username, id]) =>
-      if username
-        @model.user.getByUsername username
-      else if id
-        @model.user.getById id
-      else
-        @model.user.getMe()
-
-    player = user.switchMap ({id}) =>
-      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+    player = playerId.switchMap (playerId) =>
+      @model.player.getByPlayerIdAndGameId playerId, config.CLASH_ROYALE_ID
       .map (player) ->
         return player or {}
 
-    meAndPlayer = Rx.Observable.combineLatest(me, player, (vals...) -> vals)
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$spinner = new Spinner()
 
@@ -50,20 +34,23 @@ module.exports = class ProfileChestsPage
       @model
       requests
       serverData
-      meta: meAndPlayer.map ([me, player]) =>
+      meta: player.map (player) =>
         playerName = player?.data?.name
+        smcCount = _find(player?.data?.upcomingChests.items, {
+          name: 'Super Magical Chest'
+        })?.index
         {
           title: "#{playerName}'s #{@model.l.get 'profileChestsPage.title'}"
           description:
-            if player?.data?.chestCycle?.countUntil # FIXME
-              "+#{player?.data?.chestCycle.countUntil.superMagical + 1} until " +
+            if smcCount?
+              "+#{smcCount} until " +
               'Super Magical Chest'
             else
               'Track my chest cycle'
           twitter:
-            image: "#{config.PUBLIC_API_URL}/di/crChestCycle/#{me?.id}.png"
+            image: "#{config.PUBLIC_API_URL}/di/crChestCycle/#{player?.id}.png"
           openGraph:
-            image: "#{config.PUBLIC_API_URL}/di/crChestCycle/#{me?.id}.png"
+            image: "#{config.PUBLIC_API_URL}/di/crChestCycle/#{player?.id}.png"
         }
     })
     @$appBar = new AppBar {@model}
@@ -73,11 +60,12 @@ module.exports = class ProfileChestsPage
     @state = z.state
       windowSize: @model.window.getSize()
       player: player
+      gameKey: gameKey
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, player} = @state.getValue()
+    {windowSize, player, gameKey} = @state.getValue()
 
     z '.p-profile-chests', {
       style:
@@ -86,7 +74,11 @@ module.exports = class ProfileChestsPage
       z @$appBar, {
         title: @model.l.get 'profileChestsPage.title'
         style: 'primary'
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonBack, {
+          color: colors.$primary500
+          onclick: =>
+            @router.go 'player', {gameKey, playerId: player?.id}
+        }
       }
       if player
         @$profileChest

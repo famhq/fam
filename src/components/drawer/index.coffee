@@ -64,7 +64,7 @@ module.exports = class Drawer
       menuItems: meAndLanguageAndGameKey.map ([me, language, gameKey]) =>
         _filter([
           {
-            path: @router.get 'profile', {gameKey}
+            path: @router.get 'home', {gameKey}
             title: @model.l.get 'drawer.menuItemProfile'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -282,12 +282,14 @@ module.exports = class Drawer
                   if isDivider
                     return z 'li.divider'
 
-                  isHome = menuItem.isDefault and currentPath in [
-                    @router.get 'siteHome'
-                    @router.get 'home', {gameKey}
-                    '/'
-                  ]
-                  isSelected = currentPath?.indexOf(path) is 0 or isHome
+                  if menuItem.isDefault
+                    isSelected = currentPath in [
+                      @router.get 'siteHome'
+                      @router.get 'home', {gameKey}
+                      '/'
+                    ]
+                  else
+                    isSelected = currentPath?.indexOf(path) is 0
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}
                   },

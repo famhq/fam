@@ -45,7 +45,7 @@ module.exports = class ProfileChests
           ontouchstart: (e) ->
             e?.stopPropagation()
         },
-          if player?.data.upcomingChests
+          if player?.data?.upcomingChests
             upcomingChests = _filter player?.data.upcomingChests.items, (item) ->
               item.index? and item.index < 8
             _map upcomingChests, ({name, index}) =>
@@ -59,22 +59,6 @@ module.exports = class ProfileChests
                   if index is 0
                   then @model.l.get('general.next')
                   else "+#{index}"
-          else if player?.data.chestCycle # LEGACY TODO: rm after mid sept
-            _map player?.data.chestCycle.chests, (chest, i) =>
-              if i is player?.data.chestCycle.countUntil.superMagical
-                chest = 'super_magical'
-              else if i is player?.data.chestCycle.countUntil.legendary
-                chest = 'legendary'
-              else if i is player?.data.chestCycle.countUntil.epic
-                chest = 'epic'
-              z '.chest',
-                z 'img',
-                  src: "#{config.CDN_URL}/chests/#{chest}_chest.png"
-                  width: 90
-                  height: 90
-                z '.count',
-                  if i is 0 then @model.l.get('general.next') else "+#{i + 1}"
-
 
         if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
           z '.ad',
@@ -92,12 +76,9 @@ module.exports = class ProfileChests
           _map _chunk(goodChests, 3), (chunk) =>
             z '.row',
               _map chunk, (chest) =>
-                if player?.data.upcomingChests
-                  index = _find(player?.data.upcomingChests.items, ({name}) ->
-                    _camelCase(name) is "#{chest}Chest"
-                  )?.index
-                else if player?.data.chestCycle?.countUntil # legacy
-                  index = player?.data.chestCycle.countUntil[chest]
+                index = _find(player?.data?.upcomingChests.items, ({name}) ->
+                  _camelCase(name) is "#{chest}Chest"
+                )?.index
                 if index?
                   z '.chest',
                     z '.image',

@@ -115,16 +115,14 @@ redirects =
 
 _map redirects, (newPath, oldPath) ->
   app.use oldPath, (req, res) ->
+    goPath = newPath
     if oldPath.indexOf('*') isnt -1
       oldPathRegex = new RegExp oldPath.replace('*', '(.*?)$')
       matches = oldPathRegex.exec req.originalUrl
-      newPath = newPath.replace '*', matches[1]
+      goPath = goPath.replace '*', matches[1]
     _map req.params, (value, key) ->
-      newPath = newPath.replace ":#{key}", value
-    res.redirect(
-      301
-      newPath
-    )
+      goPath = goPath.replace ":#{key}", value
+    res.redirect 301, goPath
 
 # end legacy
 
