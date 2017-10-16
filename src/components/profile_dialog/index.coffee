@@ -13,7 +13,8 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileDialog
-  constructor: ({@model, @router, @selectedProfileDialogUser, group}) ->
+  constructor: (options) ->
+    {@model, @router, @selectedProfileDialogUser, group, gameKey} = options
     @$dialog = new Dialog()
     @$avatar = new Avatar()
 
@@ -36,6 +37,7 @@ module.exports = class ProfileDialog
     @state = z.state
       me: me
       user: @selectedProfileDialogUser
+      gameKey: gameKey
       clashRoyaleData: @selectedProfileDialogUser.switchMap (user) =>
         if user
           @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
@@ -55,7 +57,7 @@ module.exports = class ProfileDialog
 
   render: =>
     {me, user, platform, isFlagLoading, isFlagged, group, clashRoyaleData,
-      isConversationLoading} = @state.getValue()
+      isConversationLoading, gameKey} = @state.getValue()
 
     isBlocked = @model.user.isBlocked me, user?.id
     isMe = user?.id is me?.id
@@ -68,7 +70,7 @@ module.exports = class ProfileDialog
         text: @model.l.get 'general.profile'
         isVisible: not isMe
         onclick: =>
-          @router.go "/user/id/#{user?.id}"
+          @router.go 'userById', {gameKey, id: user?.id}
           @selectedProfileDialogUser.next null
       }
       {
@@ -87,7 +89,7 @@ module.exports = class ProfileDialog
             }
             .then (conversation) =>
               @state.set isConversationLoading: false
-              @router.go "/conversation/#{conversation.id}"
+              @router.go 'conversation', {gameKey, id: conversation.id}
               @selectedProfileDialogUser.next null
       }
       unless user?.flags?.isModerator

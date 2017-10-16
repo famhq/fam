@@ -8,12 +8,13 @@ if window?
   require './index.styl'
 
 module.exports = class PlayersFollowing
-  constructor: ({@model, @router, @selectedProfileDialogUser}) ->
+  constructor: ({@model, @router, @selectedProfileDialogUser, gameKey}) ->
     players = @model.player.getMeFollowing()
 
     @$playerList = new PlayerList {
       @model
       @router
+      gameKey
       @selectedProfileDialogUser
       players: players
     }
@@ -21,7 +22,7 @@ module.exports = class PlayersFollowing
     @state = z.state {players}
 
   render: =>
-    {players} = @state.getValue()
+    {players, gameKey} = @state.getValue()
 
     z '.z-players-following',
       z '.g-grid',
@@ -37,6 +38,6 @@ module.exports = class PlayersFollowing
             z @$playerList, {
               onclick: ({player}) =>
                 userId = player?.userId
-                @router.go "/user/id/#{userId}"
+                @router.go 'userById', {gameKey, id: userId}
             }
           ]

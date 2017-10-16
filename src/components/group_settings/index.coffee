@@ -15,7 +15,7 @@ if window?
   require './index.styl'
 
 module.exports = class Settings
-  constructor: ({@model, @portal, @router, group}) ->
+  constructor: ({@model, @portal, @router, group, gameKey}) ->
     notificationTypes = [
       {
         name: @model.l.get 'groupSettings.chatMessage'
@@ -68,6 +68,7 @@ module.exports = class Settings
     @state = z.state
       me: me
       group: group
+      gameKey: gameKey
       isSaving: false
       isLeaveGroupLoading: false
       name: @nameValueStreams.switch()
@@ -87,17 +88,17 @@ module.exports = class Settings
             }, type
 
   leaveGroup: =>
-    {isLeaveGroupLoading, group} = @state.getValue()
+    {isLeaveGroupLoading, group, gameKey} = @state.getValue()
 
     unless isLeaveGroupLoading
       @state.set isLeaveGroupLoading: true
       @model.group.leaveById group.id
       .then =>
         @state.set isLeaveGroupLoading: false
-        @router.go '/social'
+        @router.go 'chat', {gameKey}
 
   save: =>
-    {group, name, description, password,
+    {group, name, description, password, gameKey,
       isPrivate, isSaving} = @state.getValue()
 
     if isSaving
@@ -109,10 +110,10 @@ module.exports = class Settings
     @model.group.updateById group.id, {name, description, password, isPrivate}
     .then =>
       @state.set isSaving: false
-      @router.go "/group/#{group?.id}/chat"
+      @router.go 'groupChat', {gameKey}
 
   render: =>
-    {me, notificationTypes, group, isLeaveGroupLoading, isSaving,
+    {me, notificationTypes, group, isLeaveGroupLoading, isSaving, gameKey,
       isPrivate} = @state.getValue()
 
     items = []
@@ -137,7 +138,7 @@ module.exports = class Settings
           icon: 'edit'
           text: 'Manage Records'
           onclick: =>
-            @router.go "/group/#{group?.id}/manage-records"
+            @router.go 'groupManageRecords', {gameKey}
         }
       ]
 

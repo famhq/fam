@@ -17,7 +17,7 @@ if window?
 MAX_TITLE_LENGTH = 60
 
 module.exports = class Stars extends Base
-  constructor: ({@model, @router, sort, filter}) ->
+  constructor: ({@model, @router, sort, filter, gameKey}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -26,6 +26,7 @@ module.exports = class Stars extends Base
 
     @state = z.state
       me: @model.user.getMe()
+      gameKey: gameKey
       stars: stars.map (stars) ->
         _map stars, (star) ->
           {
@@ -35,7 +36,7 @@ module.exports = class Stars extends Base
           }
 
   render: =>
-    {me, stars} = @state.getValue()
+    {me, stars, gameKey} = @state.getValue()
 
     z '.z-stars',
       z 'h2.title', @model.l.get 'stars.recommended'
@@ -46,7 +47,9 @@ module.exports = class Stars extends Base
           _map stars, ({star, $plusIcon, $avatar}) =>
             [
               @router.link z 'a.star', {
-                href: "/star/#{star.user.username}"
+                href: @router.get 'star', {
+                  gameKey, username: star.user.username
+                }
               },
                 z '.avatar',
                   z $avatar, {user: star.user}

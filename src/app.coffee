@@ -2,6 +2,9 @@ z = require 'zorium'
 Rx = require 'rxjs'
 HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
+_map = require 'lodash/map'
+_values = require 'lodash/values'
+_flatten = require 'lodash/flatten'
 Environment = require 'clay-environment'
 
 Drawer = require './components/drawer'
@@ -76,6 +79,9 @@ module.exports = class App
       $page = route.handler?()
       {req, route, $page: $page}
 
+    gameKey = requests.map ({route}) ->
+      route?.params.gameKey or config.DEFAULT_GAME_KEY
+
     # used if state / requests fails to work
     $backupPage = if @serverData?
       @getRoutes().get(@serverData.req.path).handler?()
@@ -85,7 +91,7 @@ module.exports = class App
     addToHomeSheetIsVisible = new Rx.BehaviorSubject false
 
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
-    @$drawer = new Drawer {@model, @router}
+    @$drawer = new Drawer {@model, @router, gameKey}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router}
     @$installOverlay = new InstallOverlay {@model, @router}
@@ -130,15 +136,25 @@ module.exports = class App
     }
 
   getRoutes: (breakpoint) =>
+    # can have breakpoint (mobile/desktop) specific routes
     routes = new HttpHash()
+    languages = @model.l.getAllUrlLanguages()
 
-    route = (paths, pageKey) =>
+    route = (routeKeys, pageKey, isGamePath) =>
       Page = Pages[pageKey]
-      if typeof paths is 'string'
-        paths = [paths]
+      if typeof routeKeys is 'string'
+        routeKeys = [routeKeys]
 
-      _forEach paths, (path) =>
+      paths = _flatten _map routeKeys, (routeKey) =>
+        if routeKey is '404'
+          return ['/:gameKey/*'] # /* will still just look for a gameKey
+        _values @model.l.getAllPathsByRouteKey routeKey, isGamePath
+
+      _map paths, (path) =>
         routes.set path, =>
+          # @serverData ?= {}
+          # @serverData?.routeKey = routeKey
+          # @serverData?.isGamePath = isGamePath
           unless @$cachedPages[pageKey]
             @$cachedPages[pageKey] = new Page({
               @model
@@ -149,80 +165,57 @@ module.exports = class App
             })
           return @$cachedPages[pageKey]
 
-    # if on starfire and not in app, create loginToken
-    # pass loginToken to starfire.games as 301 (hopefully). loginToken expires
-    # after a minute. {token, userId} ttl, scylla
-    # if can't 301 login token, just 301 and have a forgot password feature
+    routeGame = (routeKeys, pageKey) ->
+      route routeKeys, pageKey, true
 
-    # starfire.games/clash-royale/profile/....
-    # starfire.games/clash-royale/chest-cycle
-    # starfire.games/clash-royale/forum
-    # starfire.games/clash-royale/thread/shortId/this-is-the-title
-
-    # starfire.games/es/clash-royale/foro
-    # starfire.games/es/clash-royale/ciclo-de-cofres
-
-
-    # route '/', 'HomePage'
-    route ['/friends/:action', '/friends'], 'FriendsPage'
-    route '/videos', 'VideosPage'
-    route ['/addon', '/addon/clash-royale/:key'], 'AddonPage'
-    route '/addons', 'AddonsPage'
-    route '/clan', 'ClanPage'
-    route '/conversation/:conversationId', 'ConversationPage'
-    route '/conversations', 'ConversationsPage'
-    route '/new-conversation', 'NewConversationPage'
-    route ['/thread/:id', '/thread/:id/v/:title'], 'ThreadPage'
-    route '/thread/:id/edit', 'EditThreadPage'
-    route '/group/:id', 'GroupPage'
-    route '/group/:id/chat', 'GroupChatPage'
-    route '/group/:id/members', 'GroupMembersPage'
-    route '/group/:id/chat/:conversationId', 'GroupChatPage'
-    route '/group/:id/invite', 'GroupInvitePage'
-    route '/group/:id/manage/:userId', 'GroupManageMemberPage'
-    route '/group/:id/manage-channels', 'GroupManageChannelsPage'
-    route '/group/:id/new-channel', 'GroupAddChannelPage'
-    route(
-      '/group/:id/chat/:conversationId/edit', 'GroupEditChannelPage'
-    )
-    route '/group/:id/settings', 'GroupSettingsPage'
-    route '/group/:id/add-records', 'GroupAddRecordsPage'
-    route '/group/:id/manage-records', 'GroupManageRecordsPage'
-    route '/group-invites', 'GroupInvitesPage'
-    route [
-      '/newThread', '/newThread/:category',
-      '/new-thread', '/new-thread/:category', '/new-thread/:category/:id'
+    routeGame ['friendsWithAction', 'friends'], 'FriendsPage'
+    routeGame 'videos', 'VideosPage'
+    routeGame ['mod', 'modByKey'], 'AddonPage'
+    routeGame 'mods', 'AddonsPage'
+    routeGame 'clan', 'ClanPage'
+    routeGame 'conversation', 'ConversationPage'
+    routeGame 'conversations', 'ConversationsPage'
+    routeGame 'newConversation', 'NewConversationPage'
+    routeGame ['thread', 'threadWithTitle'], 'ThreadPage'
+    routeGame 'threadEdit', 'EditThreadPage'
+    routeGame 'group', 'GroupPage'
+    routeGame 'groupChat', 'GroupChatPage'
+    routeGame 'groupMembers', 'GroupMembersPage'
+    routeGame 'groupChatConversation', 'GroupChatPage'
+    routeGame 'groupInvite', 'GroupInvitePage'
+    routeGame 'groupInvites', 'GroupInvitesPage'
+    routeGame 'groupManage', 'GroupManageMemberPage'
+    routeGame 'groupManageConversations', 'GroupManageChannelsPage'
+    routeGame 'groupNewConversation', 'GroupAddChannelPage'
+    routeGame 'groupEditConversation', 'GroupEditChannelPage'
+    routeGame 'groupSettings', 'GroupSettingsPage'
+    routeGame 'groupAddRecords', 'GroupAddRecordsPage'
+    routeGame 'groupManageRecords', 'GroupManageRecordsPage'
+    routeGame [
+      'newThread', 'newThreadWithCategory', 'newThreadWithCategoryAndId'
     ], 'NewThreadPage'
-    route '/deck/:id', 'DeckPage'
-    route '/facebook-login/:type', 'FacebookLoginPage'
-    route '/mod-hub', 'ModHubPage'
-
-
-    # here
-    route '/players', 'PlayersPage'
-    route '/players/search', 'PlayersSearchPage'
-    route '/policies', 'PoliciesPage'
-    route ['/social', '/social/:tab'], 'SocialPage' # use chat
-    route '/forum', 'ForumPage'
-    route '/recruiting', 'RecruitingPage'
-    route '/stars', 'StarsPage'
-    route '/star/:username', 'StarPage'
-    route '/tos', 'TosPage'
-    route '/user-of-week', 'UserOfWeekPage'
-    route '/privacy', 'PrivacyPage'
-    route [
-      '/', '/profile', '/user/id/:id', '/user/:username'
-      '/clash-royale/player/:playerId'
-      '/pt/clash-royale/player/:playerId/embed'
-      '/clash-royale-player/:playerId' # legacy
+    routeGame 'deck', 'DeckPage'
+    routeGame 'facebookLogin', 'FacebookLoginPage'
+    routeGame 'modHub', 'ModHubPage'
+    routeGame 'players', 'PlayersPage'
+    routeGame 'playersSearch', 'PlayersSearchPage'
+    routeGame 'policies', 'PoliciesPage'
+    routeGame ['chat', 'chatWithTab'], 'SocialPage'
+    routeGame 'forum', 'ForumPage'
+    routeGame 'recruit', 'RecruitingPage'
+    routeGame 'star', 'StarPage'
+    routeGame 'stars', 'StarsPage'
+    routeGame 'termsOfService', 'TosPage'
+    routeGame 'userOfWeek', 'UserOfWeekPage'
+    routeGame 'privacy', 'PrivacyPage'
+    routeGame [
+      'profile', 'player', 'user', 'userById'
     ], 'ProfilePage'
-    route [
-      '/user/id/:id/chests' # legacy
-      '/user/:username/chests' # legacy
-      '/player/:playerId/chests' # legacy
-    ], 'ProfileChestsPage'
-    route '/edit-profile', 'EditProfilePage'
-    route '/*', 'FourOhFourPage'
+    routeGame 'chestCycleByPlayerId', 'ProfileChestsPage'
+    routeGame 'editProfile', 'EditProfilePage'
+
+    route ['home', 'siteHome'], 'ProfilePage'
+    route '404', 'FourOhFourPage'
     routes
 
   render: =>

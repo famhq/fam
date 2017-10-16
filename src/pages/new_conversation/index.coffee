@@ -12,6 +12,8 @@ module.exports = class NewConversationPage
   constructor: ({model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) ->
       model.group.getById route.params.id
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$head = new Head({
       model
@@ -22,7 +24,9 @@ module.exports = class NewConversationPage
         description: model.l.get 'newConversationPage.title'
       }
     })
-    @$newConversation = new NewConversation {model, @router, serverData, group}
+    @$newConversation = new NewConversation {
+      model, @router, serverData, group, gameKey
+    }
 
     @state = z.state
       windowSize: model.window.getSize()

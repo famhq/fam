@@ -11,18 +11,23 @@ if window?
   require './index.styl'
 
 module.exports = class PlayersTop
-  constructor: ({@model, @router, @selectedProfileDialogUser}) ->
+  constructor: ({@model, @router, @selectedProfileDialogUser, gameKey}) ->
     @$searchInput = new SearchInput {@model}
     @$adsenseAd = new AdsenseAd()
 
     @$playerList = new PlayerList {
       @model
       @router
+      gameKey
       @selectedProfileDialogUser
       players: @model.player.getTop()
     }
 
+    @state = z.state {gameKey}
+
   render: =>
+    {gameKey} = @state.getValue()
+
     z '.z-players-top',
       z '.g-grid',
         z '.search',
@@ -31,7 +36,7 @@ module.exports = class PlayersTop
             height: '36px'
             bgColor: colors.$tertiary500
             onclick: =>
-              @router.go '/players/search'
+              @router.go 'playersSearch', {gameKey}
             placeholder: @model.l.get 'playersSearchPage.title'
           }
 
@@ -50,5 +55,5 @@ module.exports = class PlayersTop
         z @$playerList, {
           onclick: ({player}) =>
             userId = player?.userId
-            @router.go "/user/id/#{userId}"
+            @router.go 'userById', {gameKey, id: userId}
         }

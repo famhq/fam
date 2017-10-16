@@ -8,18 +8,19 @@ if window?
   require './index.styl'
 
 module.exports = class GroupInfo
-  constructor: ({@model, @router, group}) ->
+  constructor: ({@model, @router, group, gameKey}) ->
     @$groupHeader = new GroupHeader {group}
     @$joinButton = new PrimaryButton()
 
     @state = z.state {
       group
+      gameKey: gameKey
       me: @model.user.getMe()
       isJoinLoading: false
     }
 
   join: (group) =>
-    {me} = @state.getValue()
+    {me, gameKey} = @state.getValue()
 
     @model.signInDialog.openIfGuest me
     .then =>
@@ -32,7 +33,7 @@ module.exports = class GroupInfo
       .catch -> null
       .then =>
         @state.set isJoinLoading: false
-        @router.go "/group/#{group.id}/chat"
+        @router.go 'groupChat', {gameKey, id: group.id}
 
   render: =>
     {me, group, isJoinLoading} = @state.getValue()

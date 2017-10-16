@@ -3,6 +3,10 @@ _defaultsDeep = require 'lodash/defaultsDeep'
 Rx = require 'rxjs'
 moment = require 'moment'
 _mapValues = require 'lodash/mapValues'
+_keys = require 'lodash/keys'
+_reduce = require 'lodash/reduce'
+_findKey = require 'lodash/findKey'
+_filter = require 'lodash/filter'
 
 config = require '../config'
 
@@ -13,7 +17,7 @@ config = require '../config'
 # friendspage
 # profile page share
 
-files = {strings: null, cards: null, addons: null}
+files = {strings: null, cards: null, addons: null, paths: null}
 
 # also update gulpfile ContextReplacementPlugin for moment
 files = _mapValues files, (val, file) ->
@@ -83,9 +87,36 @@ class Language
 
   getLanguageStr: => @language.getValue()
 
-  get: (strKey, {replacements, file} = {}) =>
-    file ?= 'strings'
+  getAll: ->
+    _keys files.paths
+
+  getAllUrlLanguages: ->
+    ['en', 'es']
+
+  # some of this would probably make more sense in router...
+  getNonGamePages: ->
+    [
+      'policies', 'privacy', 'termsOfService'
+    ]
+
+  getRouteKeyByValue: (routeValue) =>
     language = @language.getValue()
+    _findKey(files['paths'][language], (route) ->
+      route is routeValue) or _findKey(files['paths']['en'], (route) ->
+        route is routeValue)
+
+  getAllPathsByRouteKey: (routeKey, isGamePath) =>
+    languages = @getAllUrlLanguages()
+    _reduce languages, (paths, language) ->
+      path = files['paths'][language]?[routeKey]
+      if path
+        paths[language] = path
+      paths
+    , {}
+
+  get: (strKey, {replacements, file, language} = {}) =>
+    file ?= 'strings'
+    language ?= @language.getValue()
     baseResponse = files[file][language]?[strKey] or
                     files[file]['en']?[strKey] or ''
 

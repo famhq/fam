@@ -13,6 +13,9 @@ module.exports = class PlayersSearchPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -24,7 +27,7 @@ module.exports = class PlayersSearchPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$playersSearch = new PlayersSearch {@model, @router, serverData}
+    @$playersSearch = new PlayersSearch {@model, @router, serverData, gameKey}
 
     @state = z.state
       windowSize: @model.window.getSize()

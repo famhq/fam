@@ -13,6 +13,9 @@ module.exports = class GroupEditChannelPage
     group = requests.switchMap ({route}) ->
       model.group.getById route.params.id
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     conversation = requests.switchMap ({route}) ->
       model.conversation.getById route.params.conversationId
 
@@ -26,7 +29,7 @@ module.exports = class GroupEditChannelPage
       }
     })
     @$groupEditChannel = new GroupEditChannel {
-      model, @router, serverData, group, conversation
+      model, @router, serverData, group, conversation, gameKey
     }
 
     @state = z.state

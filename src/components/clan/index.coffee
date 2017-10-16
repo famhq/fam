@@ -15,7 +15,7 @@ if window?
   require './index.styl'
 
 module.exports = class Clan
-  constructor: ({@model, @router, clan}) ->
+  constructor: ({@model, @router, clan, gameKey}) ->
     me = @model.user.getMe()
 
     @$tabs = new Tabs {@model}
@@ -26,16 +26,16 @@ module.exports = class Clan
     selectedProfileDialogUser = new Rx.BehaviorSubject false
 
     @$selectedProfileDialog = new ProfileDialog {
-      @model, @router, selectedProfileDialogUser
+      @model, @router, selectedProfileDialogUser, gameKey
     }
 
     @overlay$ = new Rx.BehaviorSubject null
 
     @$clanInfo = new ClanInfo {
-      @model, @router, clan, @overlay$
+      @model, @router, clan, @overlay$, gameKey
     }
     @$clanMembers = new ClanMembers {
-      @model, @router, clan, selectedProfileDialogUser
+      @model, @router, clan, selectedProfileDialogUser, gameKey
     }
     @$clanGraphs = new ClanGraphs {@model, @router, clan}
 

@@ -14,7 +14,6 @@ if window?
 
 module.exports = class ShopOffersPage
   hideDrawer: true
-  hasBottomBanner: true
 
   constructor: ({@model, requests, @router, serverData}) ->
     username = requests.map ({route}) ->

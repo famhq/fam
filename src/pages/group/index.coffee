@@ -32,6 +32,9 @@ module.exports = class GroupPage
     group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -46,9 +49,9 @@ module.exports = class GroupPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$tabs = new Tabs {@model, selectedIndex}
-    @$groupInfo = new GroupInfo {@model, @router, group}
+    @$groupInfo = new GroupInfo {@model, @router, group, gameKey}
     @$groupMembers = new GroupMembers {
-      @model, @router, group, selectedProfileDialogUser
+      @model, @router, group, selectedProfileDialogUser, gameKey
     }
     @$editIcon = new Icon()
     @$settingsIcon = new Icon()
@@ -63,11 +66,13 @@ module.exports = class GroupPage
       @router
       selectedProfileDialogUser
       group
+      gameKey
     }
 
     @state = z.state
       group: group
       me: @model.user.getMe()
+      gameKey: gameKey
       selectedProfileDialogUser: selectedProfileDialogUser
       windowSize: @model.window.getSize()
       selectedIndex: selectedIndex
@@ -75,7 +80,7 @@ module.exports = class GroupPage
   renderHead: => @$head
 
   render: =>
-    {group, me, selectedProfileDialogUser, selectedIndex,
+    {group, me, selectedProfileDialogUser, selectedIndex, gameKey
       windowSize} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
@@ -97,7 +102,7 @@ module.exports = class GroupPage
                 icon: 'settings'
                 color: colors.$primary500
                 onclick: =>
-                  @router.go "/group/#{group?.id}/settings"
+                  @router.go 'groupSettings', {gameKey, id: group?.id}
 
       }
       # don't load prematurely, or 4 tabs will go to 2 and break vDomKey
@@ -134,7 +139,7 @@ module.exports = class GroupPage
             onclick: =>
               tab = TABS[selectedIndex]
               if tab is 'members' and hasAdminPermission
-                @router.go "/group/#{group?.id}/invite"
+                @router.go 'groupInvite', {gameKey, id: group?.id}
 
       if selectedProfileDialogUser
         z @$profileDialog

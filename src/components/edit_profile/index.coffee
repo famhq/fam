@@ -17,9 +17,7 @@ if window?
   require './index.styl'
 
 module.exports = class EditProfile
-  hasBottomBanner: true
-
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, gameKey}) ->
     me = @model.user.getMe()
 
     @usernameValueStreams = new Rx.ReplaySubject 1
@@ -55,6 +53,7 @@ module.exports = class EditProfile
 
     @state = z.state
       me: me
+      gameKey: gameKey
       avatarImage: null
       avatarDataUrl: null
       avatarUploadError: null
@@ -64,7 +63,7 @@ module.exports = class EditProfile
       isSaving: false
 
   save: =>
-    {avatarImage, username, playerTag,
+    {avatarImage, username, playerTag, gameKey,
       me, isSaving, currentPlayerTag} = @state.getValue()
     if isSaving
       return
@@ -86,7 +85,7 @@ module.exports = class EditProfile
         @upload avatarImage
     .then =>
       @state.set isSaving: false
-      @router.go '/profile'
+      @router.go 'profile', {gameKey}
 
   upload: (file) =>
     @model.user.setAvatarImage file
@@ -99,7 +98,8 @@ module.exports = class EditProfile
       @state.set avatarUploadError: err?.detail or JSON.stringify err
 
   render: =>
-    {me, avatarUploadError, avatarDataUrl, isSaving} = @state.getValue()
+    {me, avatarUploadError, avatarDataUrl,
+      isSaving, gameKey} = @state.getValue()
 
     z '.z-edit-profile',
       z @$actionBar, {
@@ -149,4 +149,4 @@ module.exports = class EditProfile
           text: @model.l.get 'editProfile.logoutButtonText'
           onclick: =>
             @model.auth.logout()
-            @router.go '/'
+            @router.go 'home', {gameKey}

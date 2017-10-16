@@ -12,6 +12,9 @@ if window?
 
 module.exports = class StarsPage
   constructor: ({@model, requests, @router, serverData}) ->
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -25,7 +28,7 @@ module.exports = class StarsPage
     @$buttonMenu = new ButtonMenu {@model}
     @$bottomBar = new BottomBar {@model, @router, requests}
 
-    @$stars = new Stars {@model, @router, sort: 'popular'}
+    @$stars = new Stars {@model, @router, sort: 'popular', gameKey}
 
     @state = z.state
       windowSize: @model.window.getSize()

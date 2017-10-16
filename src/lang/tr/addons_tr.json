@@ -22,5 +22,7 @@
   "popularDecks.title":"Popular Decks",
   "popularDecks.description":"View popular decks and their win rates",
   "topTouchdownCards.title":"Top Touchdown Cards",
-  "topTouchdownCards.description":"See the best and worst cards in the new 2v2 touchdown mode!"
+  "topTouchdownCards.description":"See the best and worst cards in the new 2v2 touchdown mode!",
+  "openTournaments.title":"Open tournaments",
+  "openTournaments.description":"View free, open tournaments to join in-game"
 }

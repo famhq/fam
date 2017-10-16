@@ -12,7 +12,7 @@ if window?
   require './index.styl'
 
 module.exports = class Profile
-  constructor: ({@model, @router, user, player, @overlay$}) ->
+  constructor: ({@model, @router, user, player, @overlay$, gameKey}) ->
     me = @model.user.getMe()
 
     @$tabs = new Tabs {@model}
@@ -21,10 +21,18 @@ module.exports = class Profile
     @$decksIcon = new Icon()
     @$graphIcon = new Icon()
 
-    @$profileInfo = new ProfileInfo {@model, @router, user, player, @overlay$}
-    @$profileDecks = new ProfileDecks {@model, @router, user, player}
-    @$profileMatches = new ProfileMatches {@model, @router, user, player}
-    @$profileGraphs = new ProfileGraphs {@model, @router, user, player}
+    @$profileInfo = new ProfileInfo {
+      @model, @router, user, player, @overlay$, gameKey
+    }
+    @$profileDecks = new ProfileDecks {
+      @model, @router, user, player, gameKey
+    }
+    @$profileMatches = new ProfileMatches {
+      @model, @router, user, player, gameKey
+    }
+    @$profileGraphs = new ProfileGraphs {
+      @model, @router, user, player, gameKey
+    }
 
     @state = z.state
       me: me

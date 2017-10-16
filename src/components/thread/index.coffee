@@ -31,7 +31,7 @@ if window?
   require './index.styl'
 
 module.exports = class Thread
-  constructor: ({@model, @router, thread, @isInline}) ->
+  constructor: ({@model, @router, thread, @isInline, gameKey}) ->
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
 
@@ -48,7 +48,7 @@ module.exports = class Thread
 
     @selectedProfileDialogUser = new Rx.BehaviorSubject false
     @$profileDialog = new ProfileDialog {
-      @model, @router, @selectedProfileDialogUser
+      @model, @router, @selectedProfileDialogUser, gameKey
     }
 
     deck = thread.switchMap (thread) =>
@@ -102,6 +102,7 @@ module.exports = class Thread
       isDeckDialogVisible: false
       isCardDialogVisible: false
       isVideoVisible: false
+      gameKey: gameKey
       $body: new FormattedText {
         text: thread.map (thread) ->
           thread?.body
@@ -152,7 +153,7 @@ module.exports = class Thread
 
   render: =>
     {me, thread, $body, threadComments, isVideoVisible, windowSize, playerDeck,
-      selectedProfileDialogUser, clan, $clanMetrics,
+      selectedProfileDialogUser, clan, $clanMetrics, gameKey,
       isPostLoading} = @state.getValue()
 
     headerAttachment = _find thread?.attachments, {type: 'video'}
@@ -178,7 +179,7 @@ module.exports = class Thread
                         then z @$buttonBack, {
                           color: colors.$primary500
                           onclick: =>
-                            @router.go '/forum'
+                            @router.go 'forum', {gameKey}
                         }
         $topRightButton:
           z '.z-thread_top-right',
@@ -188,7 +189,7 @@ module.exports = class Thread
                   icon: 'edit'
                   color: colors.$primary500
                   onclick: =>
-                    @router.go "/thread/#{thread.id}/edit"
+                    @router.go 'threadEdit', {gameKey, id: thread.id}
               if me?.flags?.isModerator
                 z @$deleteIcon,
                   icon: 'delete'
@@ -196,7 +197,7 @@ module.exports = class Thread
                   onclick: =>
                     @model.thread.deleteById thread.id
                     .then =>
-                      @router.go '/forum'
+                      @router.go 'forum', {gameKey}
             ]
       }
       z '.content',

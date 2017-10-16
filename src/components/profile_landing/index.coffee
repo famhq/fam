@@ -13,7 +13,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileLanding
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, gameKey}) ->
     me = @model.user.getMe()
 
     @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}
@@ -22,9 +22,10 @@ module.exports = class ProfileLanding
 
     @state = z.state
       me: me
+      gameKey: gameKey
 
   render: =>
-    {me} = @state.getValue()
+    {me, gameKey} = @state.getValue()
 
     z '.z-profile-landing',
       z '.header-background'
@@ -45,7 +46,7 @@ module.exports = class ProfileLanding
               text: @model.l.get 'playersSearch.trackButtonText'
               isFullWidth: true
               onclick: =>
-                @router.go '/players/search'
+                @router.go 'playersSearch', {gameKey}
           z '.button',
             z @$loginButton,
               text: @model.l.get 'general.signIn'
@@ -88,5 +89,5 @@ module.exports = class ProfileLanding
           z 'p',
             @model.l.get 'profileLanding.terms2'
             z 'a', {
-              href: '/policies'
+              href: @router.get 'policies'
             }, ' TOS'

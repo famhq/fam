@@ -22,7 +22,7 @@ if window?
   require './index.styl'
 
 module.exports = class ClanInfo
-  constructor: ({@model, @router, clan, @overlay$}) ->
+  constructor: ({@model, @router, clan, @overlay$, gameKey}) ->
     @$trophyIcon = new Icon()
     @$donationsIcon = new Icon()
     @$membersIcon = new Icon()
@@ -50,13 +50,14 @@ module.exports = class ClanInfo
       isRequestNotificationCardVisible
       me: me
       hasUpdatedClan: false
+      gameKey: gameKey
       mePlayer: me.switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       clan: clan
     }
 
   render: =>
-    {isSplitsInfoCardVisible, clan, mePlayer, me,
+    {isSplitsInfoCardVisible, clan, mePlayer, me, gameKey,
       hasUpdatedClan, isRefreshing} = @state.getValue()
 
     mePlayerIsVerified = mePlayer?.isVerified
@@ -148,7 +149,7 @@ module.exports = class ClanInfo
               z @$chatButton,
                 text: @model.l.get 'clanInfo.clanChat'
                 onclick: =>
-                  @router.go "/group/#{clan.groupId}/chat"
+                  @router.go 'groupChat', {gameKey, id: clan.groupId}
       z '.content',
         if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
           z '.ad',

@@ -1,6 +1,8 @@
 _defaults = require 'lodash/defaults'
 _kebabCase = require 'lodash/kebabCase'
 
+config = require '../config'
+
 module.exports = class Thread
   namespace: 'threads'
 
@@ -34,9 +36,14 @@ module.exports = class Thread
       invalidateAll: true
     }
 
-  getPath: (thread) ->
+  getPath: (thread, router) ->
+    # TODO: switch thread to use gameKey and use gameKey from that
     formattedTitle = _kebabCase thread?.title
-    "/thread/#{thread?.id}/v/#{formattedTitle}"
+    router.get 'threadWithTitle', {
+      id: thread?.id
+      gameKey: config.DEFAULT_GAME_KEY
+      title: formattedTitle
+    }
 
   hasPermission: (thread, user, {level} = {}) ->
     userId = user?.id

@@ -12,7 +12,7 @@ if window?
   require './index.styl'
 
 module.exports = class PlayersSearch
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, gameKey}) ->
     me = @model.user.getMe()
 
     @playerTagValue = new Rx.BehaviorSubject ''
@@ -27,13 +27,14 @@ module.exports = class PlayersSearch
 
     @state = z.state
       me: me
+      gameKey: gameKey
       isLoading: false
 
   onSearch: (e) =>
     e?.preventDefault()
     playerTag = @playerTagValue.getValue()
 
-    {me} = @state.getValue()
+    {me, gameKey} = @state.getValue()
 
     @state.set isLoading: true
 
@@ -42,7 +43,7 @@ module.exports = class PlayersSearch
       @model.player.search playerTag
     .then (player) =>
       userId = player?.userId
-      @router.go "/user/id/#{userId}"
+      @router.go 'userById', {gameKey, id: userId}
     .then =>
       @state.set isLoading: false
     .catch (err) =>

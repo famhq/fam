@@ -1,21 +1,35 @@
 z = require 'zorium'
 Environment = require 'clay-environment'
 _merge = require 'lodash/merge'
+_map = require 'lodash/map'
+_mapValues = require 'lodash/mapValues'
 
 config = require '../../config'
 colors = require '../../colors'
 rubikCss = require './rubik'
 
 module.exports = class Head
-  constructor: ({model, meta, serverData}) ->
+  constructor: ({@model, meta, requests, serverData}) ->
+    route = requests.map ({route}) -> route
+
     @state = z.state
       meta: meta
       serverData: serverData
+      route: route
+      routeKey: route.map (route) =>
+        if route?.src
+          routeKey = @model.l.getRouteKeyByValue route.src
       modelSerialization: unless window?
-        model.getSerializationStream()
+        @model.getSerializationStream()
 
   render: =>
-    {meta, serverData, modelSerialization} = @state.getValue()
+    {meta, serverData, route, routeKey, modelSerialization} = @state.getValue()
+
+    paths = _mapValues @model.l.getAllPathsByRouteKey(routeKey), (path) ->
+      pathVars = path.match /:([a-zA-Z0-9-]+)/g
+      _map pathVars, (pathVar) ->
+        path = path.replace pathVar, route.params[pathVar.substring(1)]
+      path
 
     userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
@@ -137,6 +151,16 @@ module.exports = class Head
 
       # Android
       z 'link', {rel: 'manifest', href: "#{meta.manifestUrl}"}
+
+      # TODO: have these update with the router, not just on pageload
+      # maybe route should do a head re-render, so it doesn'th ave to do it for
+      # every render
+      _map paths, (path, lang) ->
+        z 'link', {
+          rel: 'alternate'
+          href: "https://#{config.HOST}#{path}"
+          hreflang: lang
+        }
 
       # serialization
       z 'script.model',

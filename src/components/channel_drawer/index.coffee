@@ -14,7 +14,7 @@ DRAWER_RIGHT_PADDING = 56
 DRAWER_MAX_WIDTH = 336
 
 module.exports = class ChannelDrawer
-  constructor: ({@model, @router, @isOpen, group, conversation}) ->
+  constructor: ({@model, @router, @isOpen, group, conversation, gameKey}) ->
     me = @model.user.getMe()
 
     @$channelList = new ChannelList {@model, @router, group}
@@ -26,10 +26,11 @@ module.exports = class ChannelDrawer
       isOpen: @isOpen
       group: group
       conversation: conversation
+      gameKey: gameKey
       me: @model.user.getMe()
 
   render: =>
-    {isOpen, group, me, conversation} = @state.getValue()
+    {isOpen, group, gameKey, me, conversation} = @state.getValue()
 
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
@@ -46,9 +47,9 @@ module.exports = class ChannelDrawer
         z @$channelList, {
           selectedConversationId: conversation?.id
           onclick: (e, {id}) =>
-            @router.go "/group/#{group?.id}/chat/#{id}", {
-              ignoreHistory: true
-            }
+            @router.go 'groupChatConversation', {
+              gameKey, id: group?.id, conversationId: id
+            }, {ignoreHistory: true}
             @isOpen.next false
         }
 
@@ -57,7 +58,7 @@ module.exports = class ChannelDrawer
             z '.divider'
             z '.manage-channels', {
               onclick: =>
-                @router.go "/group/#{group?.id}/manage-channels"
+                @router.go 'groupManageConversations', {gameKey, id: group?.id}
             },
               z '.icon',
                 z @$manageChannelsSettingsIcon,

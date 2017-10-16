@@ -15,6 +15,9 @@ module.exports = class GroupInvitePage
     group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
+    gameKey = requests.map ({route}) ->
+      route?.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -28,6 +31,7 @@ module.exports = class GroupInvitePage
     @$buttonBack = new ButtonBack {@router}
     @$groupList = new GroupList {
       @router
+      gameKey
       groups: @model.group.getAll {filter: 'invited'}
     }
 

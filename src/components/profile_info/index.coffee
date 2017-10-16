@@ -29,7 +29,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileInfo
-  constructor: ({@model, @router, user, player, @overlay$}) ->
+  constructor: ({@model, @router, user, player, @overlay$, gameKey}) ->
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
@@ -42,7 +42,9 @@ module.exports = class ProfileInfo
     @$clanBadge = new ClanBadge()
     @$dialog = new Dialog()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
-    @$autoRefreshDialog = new AutoRefreshDialog {@model, @router, @overlay$}
+    @$autoRefreshDialog = new AutoRefreshDialog {
+      @model, @router, @overlay$, gameKey
+    }
     @$autoRefreshInfoIcon = new Icon()
     @$adsenseAd = new AdsenseAd()
 
@@ -66,6 +68,7 @@ module.exports = class ProfileInfo
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
       user: user
       me: @model.user.getMe()
+      gameKey: gameKey
       followingIds: @model.userFollower.getAllFollowingIds()
       player: player
     }
@@ -127,7 +130,7 @@ module.exports = class ProfileInfo
 
   render: =>
     {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing,
-      isAutoRefresh, isSplitsInfoCardVisible, user, me,
+      isAutoRefresh, isSplitsInfoCardVisible, user, me, gameKey,
       followingIds} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
@@ -361,39 +364,10 @@ module.exports = class ProfileInfo
                   z @$moreDetailsButton,
                     text: @model.l.get 'profileInfo.moreDetailsButtonText'
                     onclick: =>
-                      @router.go "/user/id/#{user?.id}/chests"
-        # legacy
-        else if player?.data?.chestCycle
-          z '.block',
-            z '.g-grid',
-              z '.title', @model.l.get 'profileChests.chestsTitle'
-              z '.chests', {
-                ontouchstart: (e) ->
-                  e?.stopPropagation()
-              },
-                _map _take(player?.data.chestCycle.chests, 10), (chest, i) ->
-                  if i is player?.data.chestCycle.countUntil.superMagical
-                    chest = 'super_magical'
-                  else if i is player?.data.chestCycle.countUntil.legendary
-                    chest = 'legendary'
-                  else if i is player?.data.chestCycle.countUntil.epic
-                    chest = 'epic'
-                  z 'img.chest',
-                    src: "#{config.CDN_URL}/chests/#{chest}_chest.png"
-                    width: 90
-                    height: 90
-              z '.chests-button',
-                z 'div',
-                  z @$moreDetailsButton,
-                    text: @model.l.get 'profileInfo.moreDetailsButtonText'
-                    onclick: =>
-                      @router.go "/user/id/#{user?.id}/chests"
-                z 'div',
-                  z @$shopOffersButton,
-                    text: @model.l.get 'profileChests.viewShopOffers'
-                    onclick: =>
-                      @router.go '/addon/clash-royale/shop-offers'
-
+                      @router.go 'chestCycleByPlayerId', {
+                        gameKey: gameKey
+                        playerId: player?.id
+                      }
 
         z '.block',
           _map metrics, (stats, key) =>

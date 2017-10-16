@@ -22,6 +22,8 @@ module.exports = class ForumPage
       sort: 'popular'
       filter: 'all'
     }
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$head = new Head({
       @model
@@ -46,6 +48,7 @@ module.exports = class ForumPage
 
     @state = z.state
       windowSize: @model.window.getSize()
+      gameKey: gameKey
       isFilterThreadsDialogVisible: @isFilterThreadsDialogVisible
 
   renderHead: => @$head
@@ -62,7 +65,7 @@ module.exports = class ForumPage
     .subscribe()
 
   render: =>
-    {windowSize, isFilterThreadsDialogVisible} = @state.getValue()
+    {windowSize, isFilterThreadsDialogVisible, gameKey} = @state.getValue()
 
     z '.p-forum', {
       style:
@@ -95,4 +98,4 @@ module.exports = class ForumPage
             color: colors.$white
           }
           onclick: =>
-            @router.go '/new-thread'
+            @router.go 'newThread', {gameKey}

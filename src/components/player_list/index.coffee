@@ -10,8 +10,10 @@ if window?
   require './index.styl'
 
 module.exports = class PlayerList
-  constructor: ({@model, @router, players, @selectedProfileDialogUser}) ->
+  constructor: (options) ->
+    {@model, @router, players, @selectedProfileDialogUser, gameKey} = options
     @state = z.state
+      gameKey: gameKey
       players: players.map (players) ->
         _map players, (player) ->
           {
@@ -22,12 +24,13 @@ module.exports = class PlayerList
           }
 
   render: ({onclick} = {}) =>
-    {players} = @state.getValue()
+    {players, gameKey} = @state.getValue()
 
     z '.z-player-list',
       _map players, ({$avatar, $trophyIcon, $verifiedIcon, player}) =>
+        path = @router.get 'player', {gameKey, id: player.tag?.replace('#', '')}
         z 'a.player', {
-          href: "/clash-royale/player/#{player.tag?.replace('#', '')}"
+          href: path
           onclick: (e) =>
             e?.preventDefault()
             if onclick
@@ -35,7 +38,7 @@ module.exports = class PlayerList
             else if player.player?.verifiedUser
               @selectedProfileDialogUser.next player.player?.verifiedUser
             else
-              @router.go "/clash-royale/player/#{player.tag?.replace('#', '')}"
+              @router.goPath path
         },
           if player.rank
             z '.rank', "##{player.rank}"

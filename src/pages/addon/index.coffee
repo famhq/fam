@@ -18,6 +18,8 @@ module.exports = class AddonPage
   constructor: ({@model, requests, @router, serverData}) ->
     key = requests.map ({route}) ->
       route.params.key
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
     addon = key.switchMap (key) =>
       @model.addon.getByKey _camelCase key
     testUrl = requests.map ({req}) ->
@@ -45,11 +47,12 @@ module.exports = class AddonPage
       windowSize: @model.window.getSize()
       me: @model.user.getMe()
       addon: addon
+      gameKey: gameKey
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, addon, me} = @state.getValue()
+    {windowSize, addon, me, gameKey} = @state.getValue()
 
     hasVotedUp = addon?.myVote?.vote is 1
     hasVotedDown = addon?.myVote?.vote is -1
@@ -64,7 +67,7 @@ module.exports = class AddonPage
         $topLeftButton: z @$buttonBack, {
           color: colors.$primary500
           onclick: =>
-            @router.go '/addons'
+            @router.go 'mods', {gameKey}
         }
         $topRightButton:
           z '.p-addon_vote',

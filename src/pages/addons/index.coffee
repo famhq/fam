@@ -12,6 +12,8 @@ if window?
 
 module.exports = class AddOnsPage
   constructor: ({@model, requests, @router, serverData}) ->
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
     @$head = new Head({
       @model
       requests
@@ -25,7 +27,7 @@ module.exports = class AddOnsPage
     @$buttonMenu = new ButtonMenu {@model}
     @$bottomBar = new BottomBar {@model, @router, requests}
 
-    @$addons = new AddOns {@model, @router, sort: 'popular'}
+    @$addons = new AddOns {@model, @router, sort: 'popular', gameKey}
 
     @state = z.state
       windowSize: @model.window.getSize()

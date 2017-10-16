@@ -86,4 +86,4 @@ module.exports = class Policies
         z @$continueButton,
           text: 'Continue'
           onclick: =>
-            @router.go '/'
+            @router.goPath '/'

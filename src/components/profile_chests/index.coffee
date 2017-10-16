@@ -87,13 +87,6 @@ module.exports = class ProfileChests
               slot: 'desktop728x90'
             }
 
-
-        if player?.data.shopOffers
-          z @$shopOffersButton,
-            text: @model.l.get 'profileChests.viewShopOffers'
-            onclick: =>
-              @router.go '/addons'
-
         z '.title', @model.l.get 'profileChests.chestsUntilTitle'
         z '.chests-until',
           _map _chunk(goodChests, 3), (chunk) =>

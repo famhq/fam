@@ -34,17 +34,17 @@ module.exports = class ProfilePage
     me = @model.user.getMe()
     user = usernameAndId.switchMap ([username, id]) =>
       if username
-        @hasBottomBanner = true
         @model.user.getByUsername username
       else if id
-        @hasBottomBanner = true
         @model.user.getById id
       else
-        @hasBottomBanner = false
         @model.user.getMe()
 
     routePlayerId = requests. map ({route}) ->
       if route.params.playerId then route.params.playerId else false
+
+    gameKey = requests. map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     player = routePlayerId.switchMap (playerId) =>
       if playerId
@@ -80,8 +80,8 @@ module.exports = class ProfilePage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$profile = new Profile {@model, @router, user, player, @overlay$}
-    @$profileLanding = new ProfileLanding {@model, @router}
+    @$profile = new Profile {@model, @router, user, player, @overlay$, gameKey}
+    @$profileLanding = new ProfileLanding {@model, @router, gameKey}
     @$bottomBar = new BottomBar {@model, @router, requests}
     @$shareSheet = new ShareSheet {
       @router, @model, isVisible: @isShareSheetVisible
@@ -98,6 +98,7 @@ module.exports = class ProfilePage
       routePlayerId: routePlayerId
       isShareSheetVisible: @isShareSheetVisible
       me: me
+      gameKey: gameKey
       player: player
       requests: requests
       overlay$: @overlay$
@@ -106,7 +107,7 @@ module.exports = class ProfilePage
 
   render: =>
     {windowSize, player, me, routeUsername, routeId, routePlayerId, user,
-      isShareSheetVisible, overlay$} = @state.getValue()
+      isShareSheetVisible, overlay$, gameKey} = @state.getValue()
 
     isTagSet = player?.id
     isOtherProfile = routeId or routeUsername or routePlayerId
@@ -157,7 +158,7 @@ module.exports = class ProfilePage
               icon: 'settings'
               color: colors.$primary500
               onclick: =>
-                @router.go '/edit-profile'
+                @router.go 'editProfile', {gameKey}
               }
         isFlat: true
       }

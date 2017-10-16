@@ -22,14 +22,15 @@ if window?
 GROUPS_IN_DRAWER = 2
 
 module.exports = class Drawer
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, gameKey}) ->
     @$avatar = new Avatar()
     @$adsenseAd = new AdsenseAd()
     me = @model.user.getMe()
 
-    meAndLanguage = Rx.Observable.combineLatest(
+    meAndLanguageAndGameKey = Rx.Observable.combineLatest(
       me
       @model.l.getLanguage()
+      gameKey
       (vals...) -> vals
     )
 
@@ -43,6 +44,7 @@ module.exports = class Drawer
     @state = z.state
       isOpen: @model.drawer.isOpen()
       me: me
+      gameKey: gameKey
       myGroups: myGroups.map (groups) =>
         groups = _filter groups, (group) ->
           group?.id isnt '73ed4af0-a2f2-4371-a893-1360d3989708'
@@ -59,24 +61,25 @@ module.exports = class Drawer
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
 
-      menuItems: meAndLanguage.map ([me, language]) =>
+      menuItems: meAndLanguageAndGameKey.map ([me, language, gameKey]) =>
         _filter([
           {
-            path: '/profile'
+            path: @router.get 'profile', {gameKey}
             title: @model.l.get 'drawer.menuItemProfile'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'profile'
+            isDefault: true
           }
           {
-            path: '/clan'
+            path: @router.get 'clan', {gameKey}
             title: @model.l.get 'drawer.menuItemClan'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'clan'
           }
           {
-            path: '/social'
+            path: @router.get 'chat', {gameKey}
             title: @model.l.get 'general.chat'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -84,7 +87,7 @@ module.exports = class Drawer
           }
           if language in config.COMMUNITY_LANGUAGES
             {
-              path: '/forum'
+              path: @router.get 'forum', {gameKey}
               title: @model.l.get 'general.forum'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -95,21 +98,21 @@ module.exports = class Drawer
             isDivider: true
           }
           {
-            path: '/players'
+            path: @router.get 'players', {gameKey}
             title: @model.l.get 'drawer.menuItemPlayers'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'friends'
           }
           {
-            path: '/recruiting'
+            path: @router.get 'recruit', {gameKey}
             title: @model.l.get 'general.recruiting'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'recruit'
           }
           {
-            path: '/addons'
+            path: @router.get 'mods', {gameKey}
             title: @model.l.get 'addonsPage.title'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -154,7 +157,7 @@ module.exports = class Drawer
           }
           if me?.flags.isModerator
             {
-              path: '/mod-hub'
+              path: @router.get 'modHub', {gameKey}
               title: 'Mod hub'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -197,7 +200,7 @@ module.exports = class Drawer
 
 
   render: ({currentPath}) =>
-    {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint,
+    {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, gameKey,
       windowSize} = @state.getValue()
 
     translateX = if isOpen then '0' else "-#{drawerWidth}px"
@@ -252,16 +255,17 @@ module.exports = class Drawer
                     z '.divider'
                   ]
                 _map myGroups, ({$badge, $ripple, group}) =>
-                  isSelected = currentPath?.indexOf("/group/#{group.id}") is 0
+                  groupPath = @router.get 'group', {gameKey, id: group.id}
+                  isSelected = currentPath?.indexOf(groupPath) is 0
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}
                   },
                     z 'a.menu-item-link', {
-                      href: "/group/#{group.id}/chat"
+                      href: groupPath
                       onclick: (e) =>
                         e.preventDefault()
                         @model.drawer.close()
-                        @router.go "/group/#{group.id}/chat"
+                        @router.go 'groupChat', {gameKey, id: group.id}
                     },
                       z '.icon',
                         z $badge
@@ -278,9 +282,12 @@ module.exports = class Drawer
                   if isDivider
                     return z 'li.divider'
 
-                  isSelected = currentPath?.indexOf(path) is 0 or (
-                    path is '/profile' and currentPath is '/'
-                  )
+                  isHome = menuItem.isDefault and currentPath in [
+                    @router.get 'siteHome'
+                    @router.get 'home', {gameKey}
+                    '/'
+                  ]
+                  isSelected = currentPath?.indexOf(path) is 0 or isHome
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}
                   },
@@ -291,7 +298,7 @@ module.exports = class Drawer
                         @model.drawer.close()
                         onclick?()
                         if path
-                          @router.go path
+                          @router.goPath path
                     },
                       z '.icon',
                         z $icon,

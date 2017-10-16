@@ -10,14 +10,14 @@ if window?
   require './index.styl'
 
 module.exports = class Deck
-  constructor: ({@model, @router, deck}) ->
+  constructor: ({@model, @router, deck, gameKey}) ->
     me = @model.user.getMe()
 
     @$infoIcon = new Icon()
     @$guidesIcon = new Icon()
 
     @$deckInfo = new DeckInfo {@model, @router, deck}
-    @$deckGuides = new DeckGuides {@model, @router, deck}
+    @$deckGuides = new DeckGuides {@model, @router, deck, gameKey}
     @$tabs = new Tabs {@model}
 
     @state = z.state

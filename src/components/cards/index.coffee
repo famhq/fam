@@ -16,7 +16,7 @@ CARDS_PER_ROW = 4
 PADDING = 16
 
 module.exports = class Cards extends Base
-  constructor: ({@model, @router, sort, filter}) ->
+  constructor: ({@model, @router, sort, filter, gameKey}) ->
     @$spinner = new Spinner()
     @$addIcon = new Icon()
 
@@ -24,6 +24,7 @@ module.exports = class Cards extends Base
 
     @state = z.state
       me: @model.user.getMe()
+      gameKey: gameKey
       cards: cards.map (cards) =>
         _map cards, (card) =>
           $el = @getCached$ card.id, Card, {@model, @router, card}
@@ -34,7 +35,7 @@ module.exports = class Cards extends Base
           }
 
   render: =>
-    {me, cards} = @state.getValue()
+    {me, cards, gameKey} = @state.getValue()
 
     z '.z-cards',
       z '.cards',
@@ -60,7 +61,7 @@ module.exports = class Cards extends Base
             [
               z '.g-grid',
                 @router.link z 'a.card', {
-                  href: "/card/#{card.id}"
+                  href: @router.get 'card', {gameKey, id: card.id}
                 },
                   z '.change'
                   # z '.change', {style: {color: rankColor}},

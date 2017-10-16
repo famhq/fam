@@ -14,6 +14,9 @@ if window?
 
 module.exports = class RecruitingPage
   constructor: ({@model, requests, @router, serverData}) ->
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -33,11 +36,12 @@ module.exports = class RecruitingPage
 
     @state = z.state
       windowSize: @model.window.getSize()
+      gameKey: gameKey
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, gameKey} = @state.getValue()
 
     z '.p-recruiting', {
       style:
@@ -60,4 +64,4 @@ module.exports = class RecruitingPage
             color: colors.$white
           }
           onclick: =>
-            @router.go '/new-thread/clan'
+            @router.go 'newThreadWithCategory', {gameKey, category: 'clan'}

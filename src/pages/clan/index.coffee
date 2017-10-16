@@ -19,6 +19,9 @@ module.exports = class ClanPage
     id = requests.map ({route}) ->
       if route.params.id then route.params.id else false
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     me = @model.user.getMe()
     player = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
@@ -49,18 +52,19 @@ module.exports = class ClanPage
     @$spinner = new Spinner()
     @$settingsIcon = new Icon()
 
-    @$clan = new Clan {@model, @router, clan}
+    @$clan = new Clan {@model, @router, clan, gameKey}
     @$bottomBar = new BottomBar {@model, @router, requests}
 
     @state = z.state
       windowSize: @model.window.getSize()
       clan: clan
+      gameKey: gameKey
       me: @model.user.getMe()
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, clan, me} = @state.getValue()
+    {windowSize, clan, me, gameKey} = @state.getValue()
 
     z '.p-clan', {
       style:
@@ -76,7 +80,7 @@ module.exports = class ClanPage
               icon: 'settings'
               color: colors.$primary500
               onclick: =>
-                @router.go "/group/#{clan?.group?.id}/settings"
+                @router.go 'groupSettings', {gameKey, id: clan?.group?.id}
               }
       }
       if clan

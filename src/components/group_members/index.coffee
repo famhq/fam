@@ -8,7 +8,9 @@ if window?
   require './index.styl'
 
 module.exports = class GroupMembers
-  constructor: ({@model, @router, group, selectedProfileDialogUser}) ->
+  constructor: (options) ->
+    {@model, @router, group, selectedProfileDialogUser, gameKey} = options
+
     onlineUsers = group.map (group) ->
       _filter group?.users, ({isOnline}) ->
         isOnline
@@ -31,6 +33,7 @@ module.exports = class GroupMembers
     @state = z.state {
       me: @model.user.getMe()
       group: group
+      gameKey: gameKey
       onlineUsersCount: onlineUsers.map (users) -> users?.length
       allUsersCount: allUsers.map (users) -> users?.length
     }
@@ -48,7 +51,7 @@ module.exports = class GroupMembers
           z @$addRecordsButton, {
             text: 'Add records'
             onclick: =>
-              @router.go "/group/#{group?.id}/add-records"
+              @router.go 'groupAddRecords', {gameKey, id: group?.id}
           }
         z 'h2.title',
           'Online'

@@ -14,11 +14,10 @@ if window?
 module.exports = class Social
   constructor: (args) ->
     {@model, @router, pageTitle, selectedIndex,
-      threadsFilter, isFilterThreadsDialogVisible} = args
+      threadsFilter, isFilterThreadsDialogVisible, gameKey} = args
 
-
-    @$groups = new Groups {@model, @router}
-    @$conversations = new Conversations {@model, @router}
+    @$groups = new Groups {@model, @router, gameKey}
+    @$conversations = new Conversations {@model, @router, gameKey}
     @$threads = new Threads {@model, @router, filter: threadsFilter}
     @$tabs = new Tabs {@model, selectedIndex}
     @$groupsIcon = new Icon()

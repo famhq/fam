@@ -10,19 +10,20 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-module.exports = class GetAppDialog
-  constructor: ({@model, @router, @overlay$}) ->
+module.exports = class AutoRefreshDialog
+  constructor: ({@model, @router, @overlay$, gameKey}) ->
     @$dialog = new Dialog()
     @$verifyAccountButton = new SecondaryButton()
     @$visitForumButton = new SecondaryButton()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
 
     @state = z.state
+      gameKey: gameKey
       mePlayer: @model.user.getMe().switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
   render: =>
-    {mePlayer} = @state.getValue()
+    {gameKey, mePlayer} = @state.getValue()
 
     z '.z-auto-refresh-dialog',
       z @$dialog,
@@ -53,7 +54,7 @@ module.exports = class GetAppDialog
                 text: @model.l.get 'general.forum'
                 onclick: =>
                   @overlay$.next null
-                  @router.go '/forum'
+                  @router.go 'forum', {gameKey}
 
             z 'div', @model.l.get 'profileInfo.autoRefreshVisitForumDescription'
         cancelButton:

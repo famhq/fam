@@ -21,7 +21,7 @@ if window?
 MAX_TITLE_LENGTH = 60
 
 module.exports = class Addons extends Base
-  constructor: ({@model, @router, sort, filter}) ->
+  constructor: ({@model, @router, gameKey, sort, filter}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -30,6 +30,7 @@ module.exports = class Addons extends Base
 
     @state = z.state
       me: @model.user.getMe()
+      gameKey: gameKey
       addons: addons.map (addons) ->
         _map addons, (addon) ->
           {
@@ -38,7 +39,7 @@ module.exports = class Addons extends Base
           }
 
   render: =>
-    {me, addons} = @state.getValue()
+    {me, addons, gameKey} = @state.getValue()
 
     z '.z-addons',
       z 'h2.title', @model.l.get 'addons.discover'
@@ -49,7 +50,7 @@ module.exports = class Addons extends Base
           _map addons, ({addon, $rating}) =>
             [
               z 'a.addon', {
-                href: "/addon/clash-royale/#{_kebabCase(addon.key)}"
+                href: @router.get 'mod', {gameKey, key: _kebabCase(addon.key)}
                 onclick: (e) =>
                   e?.preventDefault()
 
@@ -63,7 +64,7 @@ module.exports = class Addons extends Base
                   ) and addon.url.substr(0, 4) is 'http'
 
                   if not isInAppBrowser
-                    @router.go "/addon/clash-royale/#{_kebabCase(addon.key)}"
+                    @router.go 'modByKey', {key: _kebabCase(addon.key), gameKey}
                   else
                     @model.portal.call 'browser.openWindow', {
                       url: addon.url.replace '{lang}', @model.l.getLanguageStr()

@@ -14,7 +14,7 @@ if window?
   require './index.styl'
 
 module.exports = class Groups
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, gameKey}) ->
     myGroups = @model.group.getAll({filter: 'mine'})
     publicGroups = @model.l.getLanguage().switchMap (language) =>
       @model.group.getAll({filter: 'public', language})
@@ -28,6 +28,7 @@ module.exports = class Groups
       @model
       @router
       groups: myGroupsAndPublicGroups
+      gameKey: gameKey
     }
     # @$suggestedGroupsList = new GroupList {
     #   @model
@@ -53,10 +54,11 @@ module.exports = class Groups
     @state = z.state
       me: @model.user.getMe()
       language: language
+      gameKey: gameKey
       isTranslateCardVisible: @isTranslateCardVisibleStreams.switch()
 
   render: =>
-    {me, isTranslateCardVisible, language} = @state.getValue()
+    {me, isTranslateCardVisible, language, gameKey} = @state.getValue()
 
     groupTypes = [
       {
@@ -83,7 +85,7 @@ module.exports = class Groups
     z '.z-groups',
       if unreadGroupInvites
         @router.link z 'a.unread-invites', {
-          href: '/group-invites'
+          href: @router.get 'groupInvites', {gameKey}
         },
           z '.icon',
             z @$unreadInvitesIcon,

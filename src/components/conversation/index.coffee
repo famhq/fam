@@ -179,7 +179,7 @@ module.exports = class Conversation extends Base
     @messages.next []
 
     @model.portal.call 'push.setContextId', {
-      contextId: null
+      contextId: 'empty'
     }
     window?.removeEventListener 'resize', @debouncedOnResize
 

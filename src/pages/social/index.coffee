@@ -17,6 +17,9 @@ TABS = ['groups', 'conversations']
 
 module.exports = class SocialPage
   constructor: ({@model, requests, @router, serverData}) ->
+    gameKey = requests.map ({route}) ->
+      route?.params.gameKey or config.DEFAULT_GAME_KEY
+
     pageTitle = new Rx.BehaviorSubject @model.l.get 'communityPage.menuText'
     selectedIndex = new Rx.BehaviorSubject 0
     @isFilterThreadsDialogVisible = new Rx.BehaviorSubject false
@@ -49,6 +52,7 @@ module.exports = class SocialPage
       selectedIndex
       threadsFilter
       @isFilterThreadsDialogVisible
+      gameKey
     }
     @$filterThreadsDialog = new FilterThreadsDialog {
       @model, filter: threadsFilter, isVisible: @isFilterThreadsDialogVisible

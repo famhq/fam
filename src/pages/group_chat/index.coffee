@@ -16,14 +16,15 @@ if window?
   require './index.styl'
 
 module.exports = class GroupChatPage
-  # hideDrawer: true # FIXME
-
   constructor: ({@model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
     conversationId = requests.map ({route}) ->
       route.params.conversationId
+
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey
 
     overlay$ = new Rx.BehaviorSubject null
     @isChannelDrawerOpen = new Rx.BehaviorSubject false
@@ -62,7 +63,9 @@ module.exports = class GroupChatPage
         ] or window?.navigator?.language?.split?('-')[0] is 'ar'
           conversationId = _find(group.conversations, {name: 'عربى'})?.id
         else
-          conversationId = _find(group.conversations, {name: 'general'})?.id
+          conversationId = _find(group.conversations, ({name, isDefault}) ->
+            isDefault or name is 'general'
+          )?.id
 
         conversationId ?= group.conversations?[0].id
       if hasMemberPermission and conversationId
@@ -98,7 +101,8 @@ module.exports = class GroupChatPage
       @model
       @router
       group
-      selectedProfileDialogUser: selectedProfileDialogUser
+      selectedProfileDialogUser
+      gameKey
     }
 
     @$channelDrawer = new ChannelDrawer {
@@ -106,12 +110,14 @@ module.exports = class GroupChatPage
       @router
       group
       conversation
+      gameKey
       isOpen: @isChannelDrawerOpen
     }
 
     @state = z.state
       windowSize: @model.window.getSize()
       group: group
+      gameKey: gameKey
       me: me
       overlay$: overlay$
       selectedProfileDialogUser: selectedProfileDialogUser
@@ -122,7 +128,7 @@ module.exports = class GroupChatPage
 
   render: =>
     {windowSize, overlay$, group, me, conversation, isChannelDrawerOpen
-      selectedProfileDialogUser} = @state.getValue()
+      selectedProfileDialogUser, gameKey} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
@@ -149,7 +155,7 @@ module.exports = class GroupChatPage
                 icon: 'settings'
                 color: colors.$primary500
                 onclick: =>
-                  @router.go "/group/#{group?.id}/settings"
+                  @router.go 'groupSettings', {gameKey, id: group?.id}
             if group?.id is 'd9070cbb-e06a-46c6-8048-cfdc4225343e'
               z '.icon',
                 z @$linkIcon,

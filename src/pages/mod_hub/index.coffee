@@ -23,6 +23,9 @@ MIN_MS_BETWEEN_REFRESH = 2000
 
 module.exports = class ModHubPage
   constructor: ({@model, requests, @router, serverData}) ->
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -45,7 +48,7 @@ module.exports = class ModHubPage
 
     @$refreshIcon = new Icon()
     @$profileDialog = new ProfileDialog {
-      @model, @portal, @router, @selectedProfileDialogUser
+      @model, @portal, @router, @selectedProfileDialogUser, gameKey
     }
 
     @$tempBanned = new BannedUserList {
@@ -71,6 +74,7 @@ module.exports = class ModHubPage
     @state = z.state
       me: me
       selectedIndex: selectedIndex
+      gameKey: gameKey
       isLoading: false
       lastRefreshTime: null
       selectedProfileDialogUser: @selectedProfileDialogUser
@@ -78,7 +82,7 @@ module.exports = class ModHubPage
   renderHead: => @$head
 
   render: =>
-    {me, selectedIndex, selectedProfileDialogUser,
+    {me, selectedIndex, selectedProfileDialogUser, gameKey
       isLoading, lastRefreshTime} = @state.getValue()
 
     if not me?.flags?.isModerator
@@ -92,7 +96,7 @@ module.exports = class ModHubPage
           z @$buttonBack,
             color: colors.$primary500
             onclick: =>
-              @router.go '/'
+              @router.go 'home', {gameKey}
         # $topRightButton:
         #   if isLoading
         #     '...'

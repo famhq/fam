@@ -11,13 +11,14 @@ if window?
 
 module.exports = class ThreadPage
   hideDrawer: true
-  hasBottomBanner: true
 
   constructor: ({@model, requests, @router, serverData}) ->
     # allow reset beforeUnmount so stale thread doesn't show when loading new
     @thread = new Rx.BehaviorSubject null
     loadedThread = requests.switchMap ({route}) =>
       @model.thread.getById route.params.id
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
     thread = Rx.Observable.merge @thread, loadedThread
 
     @$head = new Head({
@@ -29,7 +30,7 @@ module.exports = class ThreadPage
         description: 'Community'
       }
     })
-    @$thread = new Thread {@model, @router, thread}
+    @$thread = new Thread {@model, @router, thread, gameKey}
 
     @state = z.state
       windowSize: @model.window.getSize()

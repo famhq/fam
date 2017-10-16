@@ -16,12 +16,13 @@ if window?
   require './index.styl'
 
 module.exports = class PlayersPage
-  hasBottomBanner: true
-
   constructor: ({@model, requests, router, serverData}) ->
     me = @model.user.getMe()
     selectedProfileDialogUser = new Rx.BehaviorSubject null
     overlay$ = new Rx.BehaviorSubject null
+
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$head = new Head({
       @model
@@ -40,14 +41,15 @@ module.exports = class PlayersPage
     @$profileDialog = new ProfileDialog {
       @model
       router
-      selectedProfileDialogUser: selectedProfileDialogUser
+      selectedProfileDialogUser
+      gameKey
     }
 
     @$playersTop = new PlayersTop {
-      @model, router, selectedProfileDialogUser
+      @model, router, selectedProfileDialogUser, gameKey
     }
     @$playersFollowing = new PlayersFollowing {
-      @model, router, selectedProfileDialogUser
+      @model, router, selectedProfileDialogUser, gameKey
     }
 
     @$followingIcon = new Icon()

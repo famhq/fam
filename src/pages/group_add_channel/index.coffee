@@ -13,6 +13,9 @@ module.exports = class GroupAddChannelPage
     group = requests.switchMap ({route}) ->
       model.group.getById route.params.id
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       model
       requests
@@ -23,7 +26,7 @@ module.exports = class GroupAddChannelPage
       }
     })
     @$groupEditChannel = new GroupEditChannel {
-      model, @router, serverData, group
+      model, @router, serverData, group, gameKey
     }
 
     @state = z.state

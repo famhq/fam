@@ -15,6 +15,9 @@ module.exports = class GroupSettingsPage
     group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -25,7 +28,9 @@ module.exports = class GroupSettingsPage
       }
     })
     @$buttonBack = new ButtonBack {@model, @router}
-    @$groupSettings = new GroupSettings {@model, @router, serverData, group}
+    @$groupSettings = new GroupSettings {
+      @model, @router, serverData, group, gameKey
+    }
 
     @state = z.state
       windowSize: @model.window.getSize()

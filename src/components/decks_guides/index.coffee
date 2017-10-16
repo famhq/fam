@@ -17,7 +17,7 @@ CARDS_PER_ROW = 4
 PADDING = 16
 
 module.exports = class DecksGuides extends Base
-  constructor: ({@model, @router, sort}) ->
+  constructor: ({@model, @router, sort, gameKey}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -28,6 +28,7 @@ module.exports = class DecksGuides extends Base
     @state = z.state
       me: @model.user.getMe()
       windowSize: @model.window.getSize()
+      gameKey: gameKey
       guides: guides.map (guides) =>
         _map guides, (guide) =>
           if guide.deck
@@ -44,7 +45,7 @@ module.exports = class DecksGuides extends Base
   afterMount: (@$$el) => null
 
   render: =>
-    {me, guides, windowSize} = @state.getValue()
+    {me, guides, windowSize, gameKey} = @state.getValue()
 
     cardWidth = (@$$el?.children?[0]?.offsetWidth - (PADDING * 2)) /
                   CARDS_PER_ROW
@@ -62,7 +63,7 @@ module.exports = class DecksGuides extends Base
           _map guides, ({guide, $deck, $avatar}) =>
             [
               @router.link z 'a.guide', {
-                href: "/thread/#{guide.id}"
+                href: @router.get 'thread', {gameKey, id: guide.id}
               },
                 z '.g-grid',
                   z '.author',

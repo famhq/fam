@@ -30,7 +30,7 @@ SCROLL_THREAD_LOAD_COUNT = 20
 SCROLL_DEBOUNCE_MS = 50
 
 module.exports = class Threads
-  constructor: ({@model, @router, @filter}) ->
+  constructor: ({@model, @router, @filter, gameKey}) ->
     @$spinner = new Spinner()
 
     @threadStreams = new Rx.ReplaySubject(1)
@@ -45,6 +45,7 @@ module.exports = class Threads
       filter: @filter
       expandedId: null
       isLoading: false
+      gameKey: gameKey
       chunkedThreads: @threadStreams.switch().map (threads) =>
         # TODO: json file with these vars, stylus uses this
         if window?.matchMedia('(min-width: 768px)').matches
@@ -120,7 +121,7 @@ module.exports = class Threads
         _flatten threads
 
   render: =>
-    {me, chunkedThreads, language, filter,
+    {me, chunkedThreads, language, filter, gameKey,
       expandedId, isLoading} = @state.getValue()
 
     isLite = @model.experiment.get('threads') is 'lite' and
@@ -138,7 +139,7 @@ module.exports = class Threads
           if language is 'es'
             z '.user-of-week', {
               onclick: =>
-                @router.go '/user-of-week'
+                @router.go 'userOfWeek', {gameKey}
             },
               z 'span.title', @model.l.get 'threads.userOfWeek'
               z 'div',
@@ -161,7 +162,7 @@ module.exports = class Threads
                   hasVotedDown = thread.myVote?.vote is -1
 
                   z 'a.thread', {
-                    href: @model.thread.getPath(thread)
+                    href: @model.thread.getPath(thread, @router)
                     className: z.classKebab {isExpanded}
                     onclick: (e) =>
                       e.preventDefault()
@@ -173,7 +174,7 @@ module.exports = class Threads
                         path: 'threads.getById'
                       }
                       @model.exoid.setDataCache req, thread
-                      @router.go @model.thread.getPath(thread)
+                      @router.goPath @model.thread.getPath(thread, @router)
                   },
                     z '.content',
                       if thread.data.clan

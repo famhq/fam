@@ -17,22 +17,25 @@ module.exports = class BottomBar
     @state = z.state
       requests: requests
       language: @model.l.getLanguage()
+      gameKey: requests.map ({route}) ->
+        route.params.gameKey or config.DEFAULT_GAME_KEY
 
   render: =>
-    {requests, language} = @state.getValue()
+    {requests, language, gameKey} = @state.getValue()
     currentPath = requests?.req.path
 
     @menuItems = _filter [
       {
         $icon: new Icon()
         icon: 'profile'
-        route: '/profile'
+        route: @router.get 'profile', {gameKey}
         text: @model.l.get 'general.profile'
+        isDefault: true
       }
       {
         $icon: new Icon()
         icon: 'clan'
-        route: '/clan'
+        route: @router.get 'clan', {gameKey}
         text: @model.l.get 'general.clan'
       }
       # {
@@ -44,13 +47,13 @@ module.exports = class BottomBar
       {
         $icon: new Icon()
         icon: 'ellipsis'
-        route: '/addons'
+        route: @router.get 'mods', {gameKey}
         text: @model.l.get 'general.tools'
       }
       {
         $icon: new Icon()
         icon: 'chat'
-        route: '/social'
+        route: @router.get 'chat', {gameKey}
         text: @model.l.get 'general.chat'
       }
 
@@ -58,21 +61,26 @@ module.exports = class BottomBar
         {
           $icon: new Icon()
           icon: 'rss'
-          route: '/forum'
+          route: @router.get 'forum', {gameKey}
           text: @model.l.get 'general.forum'
         }
     ]
 
     z '.z-bottom-bar',
-      _map @menuItems, ({$icon, icon, route, text}) =>
+      _map @menuItems, ({$icon, icon, route, text, isDefault}) =>
+        isHome = isDefault and currentPath in [
+          @router.get 'siteHome'
+          @router.get 'home', {gameKey}
+          '/'
+        ]
         isSelected = currentPath and (currentPath.indexOf(route) isnt -1 or (
-          currentPath is '/' and route is '/profile'
+          isHome
         ))
 
         z '.menu-item', {
           className: z.classKebab {isSelected}
           onclick: =>
-            @router.go route
+            @router.goPath route
         },
           z '.icon',
             z $icon,

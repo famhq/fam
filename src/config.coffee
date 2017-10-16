@@ -50,6 +50,7 @@ else
 isomorphic =
   # hardcoded while we just have one game
   CLASH_ROYALE_ID: '319a9065-e3dc-4d02-ad30-62047716a88f'
+  DEFAULT_GAME_KEY: 'clash-royale'
   COMMUNITY_LANGUAGES: ['es', 'pt']
 
   CDN_URL: 'https://cdn.wtf/d/images/starfire'

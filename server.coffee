@@ -90,6 +90,44 @@ app.use '/setCookie', (req, res) ->
 #   catch err
 #     next err
 
+# legacy 301s. can remove in jan 2018
+redirects =
+  '/addon/clash-royale/:key': '/clash-royale/mod/:key'
+  '/addons': '/clash-royale/mods'
+  '/addon': '/clash-royale/mod'
+  '/social': '/clash-royale/chat'
+  '/social/:tab': '/clash-royale/chat'
+  '/clan': '/clash-royale/clan'
+  '/profile': '/clash-royale/profile'
+  '/recruiting': '/clash-royale/recruit'
+  '/forum': '/clash-royale/forum'
+  '/pt/clash-royale/player/:playerId/embed': '/clash-royale/player/:playerId'
+  '/clay-royale-player/:playerId': '/clash-royale/:playerId'
+  '/players': '/clash-royale/players'
+  '/player/:playerId': '/clash-royale/:playerId'
+  '/players/search': '/clash-royale/players/search'
+  '/user/:id': '/clash-royale/user/:id'
+  '/conversation/:id': '/clash-royale/conversation/:id'
+  '/thread/*': '/clash-royale/thread/*'
+  '/group/*': '/clash-royale/group/*'
+  # '/user/id/:id/chests': '/clash-royale/chest-cycle/:id' # userId != playerId
+  '/player/:playerId/chests': '/clash-royale/chest-cycle/:playerId'
+
+_map redirects, (newPath, oldPath) ->
+  app.use oldPath, (req, res) ->
+    if oldPath.indexOf('*') isnt -1
+      oldPathRegex = new RegExp oldPath.replace('*', '(.*?)$')
+      matches = oldPathRegex.exec req.originalUrl
+      newPath = newPath.replace '*', matches[1]
+    _map req.params, (value, key) ->
+      newPath = newPath.replace ":#{key}", value
+    res.redirect(
+      301
+      newPath
+    )
+
+# end legacy
+
 if config.ENV is config.ENVS.PROD
 then app.use express.static(gulpPaths.dist, {maxAge: '4h'})
 else app.use express.static(gulpPaths.build, {maxAge: '4h'})
@@ -135,10 +173,6 @@ app.use (req, res, next) ->
     req.headers?['x-forwarded-for'] or req.connection.remoteAddress
   )
 
-  router = new RouterService {
-    router: null
-    model: null
-  }
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
     timeout: 5000
@@ -146,6 +180,10 @@ app.use (req, res, next) ->
   }
   model = new Model {
     cookieSubject, io, serverHeaders: req.headers
+  }
+  router = new RouterService {
+    router: null
+    model: model
   }
   requests = new Rx.BehaviorSubject(req)
   serverData = {req, res, styles, bundlePath}

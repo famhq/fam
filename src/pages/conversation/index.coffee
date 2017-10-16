@@ -17,7 +17,9 @@ module.exports = class ConversationPage
 
   constructor: ({@model, requests, @router, serverData}) ->
     conversation = requests.switchMap ({route}) =>
-      @model.conversation.getById route.params.conversationId
+      @model.conversation.getById route.params.id
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     selectedProfileDialogUser = new Rx.BehaviorSubject null
     overlay$ = new Rx.BehaviorSubject null
@@ -34,7 +36,7 @@ module.exports = class ConversationPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$profileDialog = new ProfileDialog {
-      @model, @router, selectedProfileDialogUser
+      @model, @router, selectedProfileDialogUser, gameKey
     }
     @$conversation = new Conversation {
       @model, @router, conversation, selectedProfileDialogUser, overlay$

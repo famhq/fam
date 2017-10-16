@@ -18,6 +18,9 @@ module.exports = class GroupManageMemberPage
     group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -33,11 +36,11 @@ module.exports = class GroupManageMemberPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupMembers = new GroupMembers {
-      @model, @router, serverData, group, selectedProfileDialogUser
+      @model, @router, serverData, group, selectedProfileDialogUser, gameKey
     }
 
     @$profileDialog = new ProfileDialog {
-      @model, @router, group, selectedProfileDialogUser
+      @model, @router, group, selectedProfileDialogUser, gameKey
     }
 
     @state = z.state

@@ -1,3 +1,5 @@
+_forEach = require 'lodash/forEach'
+
 config = require '../config'
 
 ev = (fn) ->
@@ -14,15 +16,26 @@ class RouterService
     @history = []
     @onBackFn = null
 
-  go: (route, {ignoreHistory, reset} = {}) =>
+  goPath: (route, {ignoreHistory, reset} = {}) =>
     unless ignoreHistory
       @history.push(route or window?.location.pathname)
 
+    # TODO: handle for other languages...
     if route is '/' or route is '/profile' or reset
       @history = [route]
 
     if route
       @router.go route
+
+  go: (routeKey, replacements, {ignoreHistory} = {}) =>
+    path = @get routeKey, replacements
+    @goPath path, {ignoreHistory}
+
+  get: (routeKey, replacements) =>
+    route = @model.l.get routeKey, {file: 'paths'}
+    _forEach replacements, (value, key) ->
+      route = route.replace ":#{key}", value
+    route
 
   openLink: (url) =>
     isAbsoluteUrl = url?.match /^(?:[a-z]+:)?\/\//i
@@ -32,7 +45,7 @@ class RouterService
       path = if isStarfire \
              then url.replace starfireRegex, ''
              else url
-      @go path
+      @goPath path
     else
       @model.portal.call 'browser.openWindow', {
         url: url
@@ -47,15 +60,14 @@ class RouterService
     if @model.drawer.isOpen().getValue()
       return @model.drawer.close()
     if @history.length is 1 and fromNative and (
-      @history[0] is '/' or
-      @history[0] is '/profile'
+      @history[0] is '/' or @history[0] is @get 'siteHome'
     )
       @model.portal.call 'app.exit'
     else if @history.length > 1 and window.history.length > 0
       window.history.back()
       @history.pop()
     else
-      @go '/profile'
+      @goPath '/'
 
   onBack: (@onBackFn) => null
 

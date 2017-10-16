@@ -15,6 +15,8 @@ module.exports = class DeckPage
   constructor: ({@model, requests, @router, serverData}) ->
     deck = requests.switchMap ({route}) =>
       @model.clashRoyaleDeck.getById route.params.id
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$head = new Head({
       @model
@@ -27,7 +29,7 @@ module.exports = class DeckPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$deck = new Deck {@model, @router, deck}
+    @$deck = new Deck {@model, @router, deck, gameKey}
 
     @state = z.state
       deck: deck

@@ -17,7 +17,7 @@ module.exports = class Tos
         policies (including, without limitation,
         '''
         @router?.link z 'a',
-          href: '/privacy'
+          href: @router.get 'privacy'
           'Starfire\'s Privacy Policy'
         '''
         ) and procedures that may be published from time to'
