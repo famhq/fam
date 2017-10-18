@@ -12,6 +12,7 @@ Avatar = require '../avatar'
 FlatButton = require '../flat_button'
 AdsenseAd = require '../adsense_ad'
 GroupBadge = require '../group_badge'
+SetLanguageDialog = require '../set_language_dialog'
 Ripple = require '../ripple'
 colors = require '../../colors'
 config = require '../../config'
@@ -23,10 +24,12 @@ GROUPS_IN_DRAWER = 2
 
 module.exports = class Drawer
   constructor: ({@model, @router, gameKey}) ->
+    @overlay$ = new Rx.BehaviorSubject null
+
     @$avatar = new Avatar()
     @$adsenseAd = new AdsenseAd()
-    me = @model.user.getMe()
 
+    me = @model.user.getMe()
     meAndLanguageAndGameKey = Rx.Observable.combineLatest(
       me
       @model.l.getLanguage()
@@ -43,8 +46,10 @@ module.exports = class Drawer
 
     @state = z.state
       isOpen: @model.drawer.isOpen()
+      language: @model.l.getLanguage()
       me: me
       gameKey: gameKey
+      $overlay: @overlay$
       myGroups: myGroups.map (groups) =>
         groups = _filter groups, (group) ->
           group?.id isnt '73ed4af0-a2f2-4371-a893-1360d3989708'
@@ -118,29 +123,6 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'ellipsis'
           }
-          # {
-          #   path: '/events'
-          #   title: 'Tournaments'
-          #   $icon: new Icon()
-          #   $ripple: new Ripple()
-          #   iconName: 'trophy'
-          # }
-          #
-          # if me.isMember
-          #   {
-          #     path: '/friends'
-          #     title: 'Friends'
-          #     $icon: new Icon()
-          #     $ripple: new Ripple()
-          #     iconName: 'friends'
-          #   }
-          # {
-          #   path: '/videos'
-          #   title: 'Videos'
-          #   $icon: new Icon()
-          #   $ripple: new Ripple()
-          #   iconName: 'video'
-          # }
           {
             isDivider: true
           }
@@ -184,24 +166,10 @@ module.exports = class Drawer
           #   iconName: 'settings'
           # }
           ])
-          # .concat if me?.username is 'austin' then [
-          #   {
-          #     onclick: =>
-          #       @model.portal.call 'barcode.scan'
-          #       .then (code) ->
-          #         alert code
-          #         console.log code
-          #     title: 'Scan Code'
-          #     $icon: new Icon()
-          #     $ripple: new Ripple()
-          #     iconName: 'search'
-          #   }
-          # ] else []
-
 
   render: ({currentPath}) =>
     {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, gameKey,
-      windowSize} = @state.getValue()
+      language, windowSize, $overlay} = @state.getValue()
 
     translateX = if isOpen then '0' else "-#{drawerWidth}px"
     buttonColors =
@@ -238,6 +206,14 @@ module.exports = class Drawer
           z '.header',
             z '.logo'
             z '.beta'
+            z '.language', {
+              onclick: =>
+                @overlay$.next new SetLanguageDialog {
+                  @model, @router, @overlay$
+                }
+            },
+              language
+              z '.arrow'
           z '.content',
             z 'ul.menu',
               [
@@ -316,3 +292,5 @@ module.exports = class Drawer
               z @$adsenseAd, {
                 slot: 'desktop336x280'
               }
+
+      $overlay

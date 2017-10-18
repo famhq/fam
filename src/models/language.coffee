@@ -17,7 +17,7 @@ config = require '../config'
 # friendspage
 # profile page share
 
-files = {strings: null, cards: null, addons: null, paths: null}
+files = {strings: null, cards: null, addons: null, paths: null, languages: null}
 
 # also update gulpfile ContextReplacementPlugin for moment
 files = _mapValues files, (val, file) ->
@@ -71,6 +71,7 @@ class Language
 
   setLanguage: (language) =>
     @language.next language
+    localStorage?['language'] = language
     relativeTime = relativeTimeFormats[language]
     moment.locale language, if relativeTime then {relativeTime} else undefined
 
