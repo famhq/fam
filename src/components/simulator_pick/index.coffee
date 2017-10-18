@@ -34,8 +34,8 @@ module.exports = class ChestSimulatorPick
     if showAdAfter
       @model.portal.call 'admob.prepareInterstitial', {
         adId: if Environment.isiOS() \
-              then 'ca-app-pub-1232978630423169/3290506156'
-              else 'ca-app-pub-1232978630423169/1119638383'
+              then 'ca-app-pub-9043203456638369/4505810435'
+              else 'ca-app-pub-9043203456638369/8759560843'
       }
 
     @state.set loadingChest: chest

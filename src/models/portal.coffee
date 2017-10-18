@@ -214,23 +214,27 @@ module.exports = class Portal
       href: url
     }
 
-  clashRoyalePlayerGetMe: =>
+  clashRoyalePlayerGetMe: ({refreshIfStale} = {}) =>
     @user.getMe()
     .switchMap (me) =>
-      @player.getByUserIdAndGameId me?.id, config.CLASH_ROYALE_ID
+      @player.getByUserIdAndGameId me?.id, config.CLASH_ROYALE_ID, {
+        refreshIfStale
+      }
       .map (player) -> player.data
     .take(1).toPromise()
 
-  clashRoyalePlayerGetByTag: ({tag}) =>
-    @player.getByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID
+  clashRoyalePlayerGetByTag: ({tag, refreshIfStale}) =>
+    @player.getByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID, {
+      refreshIfStale
+    }
     .map (player) ->
       unless player
         throw {statusCode: 404, info: 'player not found'}
       player.data
     .take(1).toPromise()
 
-  clashRoyaleClanGetByTag: ({tag}) =>
-    @clan.getById tag
+  clashRoyaleClanGetByTag: ({tag, refreshIfStale}) =>
+    @clan.getByClanIdAndGameId tag, config.CLASH_ROYALE_ID, {refreshIfStale}
     .map (clan) ->
       unless clan
         throw {statusCode: 404, info: 'clan not found'}

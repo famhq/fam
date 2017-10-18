@@ -237,7 +237,9 @@ module.exports = class Threads
                                 z $threadUpvoteButton, {
                                   vote: 'up'
                                   hasVoted: hasVotedUp
-                                  threadId: thread.id
+                                  parent:
+                                    id: thread.id
+                                    type: 'thread'
                                   isTouchTarget: false
                                   color: colors.$tertiary300
                                   size: '14px'
@@ -249,7 +251,9 @@ module.exports = class Threads
                                 z $threadDownvoteButton, {
                                   vote: 'down'
                                   hasVoted: hasVotedDown
-                                  threadId: thread.id
+                                  parent:
+                                    id: thread.id
+                                    type: 'thread'
                                   isTouchTarget: false
                                   color: colors.$tertiary300
                                   size: '14px'

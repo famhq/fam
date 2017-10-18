@@ -10,7 +10,10 @@ module.exports = class ThreadVoteButton
     @state = z.state
       me: @model.user.getMe()
 
-  render: ({threadId, vote, hasVoted, isTouchTarget, color, size}) =>
+  render: (options) =>
+    {parent, parentType, vote, hasVoted,
+      isTouchTarget, color, size} = options
+
     {me} = @state.getValue()
 
     color ?= colors.$white
@@ -30,4 +33,7 @@ module.exports = class ThreadVoteButton
           unless hasVoted
             @model.signInDialog.openIfGuest me
             .then =>
-              @model.thread.voteById threadId, {vote: vote}
+              @model.threadVote.upsertByParent(
+                parent
+                {vote}
+              )

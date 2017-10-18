@@ -26,6 +26,9 @@ module.exports = class JoinGroupDialog
       clan: clan
       error: null
 
+  afterMount: ->
+    ga? 'send', 'event', 'verify', 'join_group', 'mount'
+
   cancel: =>
     @overlay$.next null
 
@@ -39,6 +42,7 @@ module.exports = class JoinGroupDialog
     @state.set isLoading: true
     @model.clan.joinById clan?.id, {clanPassword}
     .then =>
+      ga? 'send', 'event', 'verify', 'join_group', 'verified'
       @state.set isLoading: false, error: null
       @overlay$.next null
     .catch (err) =>

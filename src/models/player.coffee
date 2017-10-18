@@ -8,9 +8,9 @@ module.exports = class Player
   getByUserIdAndGameId: (userId, gameId, {embed} = {}) =>
     @auth.stream "#{@namespace}.getByUserIdAndGameId", {userId, gameId, embed}
 
-  getByPlayerIdAndGameId: (playerId, gameId, {embed} = {}) =>
+  getByPlayerIdAndGameId: (playerId, gameId, {embed, refreshIfStale} = {}) =>
     @auth.stream "#{@namespace}.getByPlayerIdAndGameId", {
-      playerId, gameId, embed
+      playerId, gameId, embed, refreshIfStale
     }
 
   getIsAutoRefreshByPlayerIdAndGameId: (playerId, gameId) =>

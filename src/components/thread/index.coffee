@@ -9,6 +9,7 @@ Environment = require 'clay-environment'
 
 colors = require '../../colors'
 config = require '../../config'
+Base = require '../base'
 AppBar = require '../app_bar'
 ButtonBack = require '../button_back'
 Icon = require '../icon'
@@ -30,7 +31,7 @@ FormatService = require '../../services/format'
 if window?
   require './index.styl'
 
-module.exports = class Thread
+module.exports = class Thread extends Base
   constructor: ({@model, @router, thread, @isInline, gameKey}) ->
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
@@ -118,15 +119,17 @@ module.exports = class Thread
       windowSize: @model.window.getSize()
       threadComments: thread.switchMap (thread) =>
         if thread?.id
-          @model.threadComment.getAllByParentIdAndParentType {
-            parentId: thread.id
-            parentType: 'thread'
-          }
+          @model.threadComment.getAllByThreadId thread.id
           .map (threadComments) =>
             _map threadComments, (threadComment) =>
-              new ThreadComment {
-                @model, @router, threadComment, @selectedProfileDialogUser
+              # cache, otherwise there's a flicker on invalidate
+              cacheId = "threadComment-#{threadComment.id}"
+              $el = @getCached$ cacheId, ThreadComment, {
+                @model, @router, @selectedProfileDialogUser, threadComment
               }
+              # update cached version
+              $el.setThreadComment threadComment
+              $el
         else
           Rx.Observable.of null
 
@@ -143,6 +146,7 @@ module.exports = class Thread
     .then =>
       @model.threadComment.create {
         body: messageBody
+        threadId: thread.id
         parentId: thread.id
         parentType: 'thread'
       }
@@ -267,11 +271,19 @@ module.exports = class Thread
             z '.vote',
               z '.upvote',
                 z @$threadUpvoteButton, {
-                  vote: 'up', hasVoted: hasVotedUp, threadId: thread?.id
+                  vote: 'up'
+                  hasVoted: hasVotedUp
+                  parent:
+                    id: thread?.id
+                    type: 'thread'
                 }
               z '.downvote',
                 z @$threadDownvoteButton, {
-                  vote: 'down', hasVoted: hasVotedDown, threadId: thread?.id
+                  vote: 'down'
+                  hasVoted: hasVotedDown
+                  parent:
+                    id: thread?.id
+                    type: 'thread'
                 }
             z '.score',
               "#{FormatService.number points} #{@model.l.get('thread.points')}"

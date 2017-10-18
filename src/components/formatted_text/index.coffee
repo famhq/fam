@@ -57,8 +57,8 @@ module.exports = class FormattedText
             imageAspectRatio = null
 
           if matches = localImageRegex.exec imageSrc
-            imageSrc = "#{config.USER_CDN_URL}/cm/#{matches[1]}.small.png"
-            largeImageSrc = "#{config.USER_CDN_URL}/cm/#{matches[1]}.large.png"
+            imageSrc = "#{config.USER_CDN_URL}/cm/#{matches[1]}.small.jpg"
+            largeImageSrc = "#{config.USER_CDN_URL}/cm/#{matches[1]}.large.jpg"
 
           if supportsWebP and imageSrc.indexOf('giphy.com') isnt -1
             imageSrc = imageSrc.replace /\.gif$/, '.webp'

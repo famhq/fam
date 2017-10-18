@@ -37,6 +37,9 @@ module.exports = class ClaimClanDialog
       clan: clan
       error: null
 
+  afterMount: ->
+    ga? 'send', 'event', 'verify', 'claim_clan', 'mount'
+
   cancel: =>
     @overlay$.next null
 
@@ -50,6 +53,7 @@ module.exports = class ClaimClanDialog
     @state.set isLoading: true
     @model.clan.claimById clan?.id
     .then =>
+      ga? 'send', 'event', 'verify', 'claim_clan', 'verified'
       @step.next Rx.Observable.of 'setPassword'
       @state.set isLoading: false, error: null
     .catch (err) =>
@@ -67,6 +71,7 @@ module.exports = class ClaimClanDialog
     @state.set isLoading: true
     @model.clan.updateById clan?.id, {clanPassword}
     .then =>
+      ga? 'send', 'event', 'verify', 'claim_clan', 'password_set'
       @state.set isLoading: false, error: null
       @overlay$.next null
     .catch (err) =>

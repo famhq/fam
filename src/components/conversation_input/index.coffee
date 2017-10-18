@@ -30,7 +30,7 @@ module.exports = class ConversationInput
       @overlay$
       @model
       onUpload: ({key, width, height}) =>
-        @message.next "![](#{config.USER_CDN_URL}/cm/#{key}.small.png" +
+        @message.next "![](#{config.USER_CDN_URL}/cm/#{key}.small.jpg" +
                           " =#{width}x#{height})"
         @onPost()
     }

@@ -22,10 +22,6 @@ module.exports = class Thread
     language = @l.getLanguageStr()
     @auth.stream "#{@namespace}.getById", {id, language}, {ignoreCache}
 
-  voteById: (id, {vote}) =>
-    ga? 'send', 'event', 'social_interaction', 'thread_vote', "#{id}"
-    @auth.call "#{@namespace}.voteById", {id, vote}, {invalidateAll: true}
-
   updateById: (id, diff) =>
     @auth.call "#{@namespace}.updateById", _defaults(diff, {id}), {
       invalidateAll: true

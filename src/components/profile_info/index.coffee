@@ -256,6 +256,7 @@ module.exports = class ProfileInfo
               moment(lastUpdateTime).fromNowModified()
             z '.auto-refresh', {
               onclick: =>
+                ga? 'send', 'event', 'verify', 'auto_refresh', 'click'
                 @overlay$.next @$autoRefreshDialog
             },
               @model.l.get 'profileInfo.autoRefresh'

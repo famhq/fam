@@ -1,8 +1,10 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 Rx = require 'rxjs'
+Environment = require 'clay-environment'
 
 Spinner = require '../spinner'
+AdsenseAd = require '../adsense_ad'
 Card = require '../card'
 config = require '../../config'
 colors = require '../../colors'
@@ -13,6 +15,7 @@ if window?
 module.exports = class TopTouchdownCards
   constructor: ({@model, @router}) ->
     @$spinner = new Spinner()
+    @$adsenseAd = new AdsenseAd()
 
     @state = z.state {
       language: @model.l.getLanguage()
@@ -36,13 +39,23 @@ module.exports = class TopTouchdownCards
           z '.card'
           z '.name', @model.l.get 'simulator.card'
           z '.win-rate', @model.l.get 'profileInfo.statWinRate'
-        _map topCards, ({$card, card}) =>
+        _map topCards, ({$card, card}, i) =>
           winRate = card.winRate * 100
           roundedWinRate = Math.round(winRate * 100) / 100
-          z '.card-row',
-            z '.card',
-              z $card, {width: 50}
-            z '.name',
-              @model.clashRoyaleCard.getNameTranslation card.cardId, language
-            z '.win-rate',
-              "#{roundedWinRate}%"
+          showAd = i is 10 and
+                    Environment.isMobile() and
+                    not Environment.isGameApp(config.GAME_KEY)
+          [
+            if showAd
+              z '.ad',
+                z @$adsenseAd, {
+                  slot: 'mobile300x250'
+                }
+            z '.card-row',
+              z '.card',
+                z $card, {width: 50}
+              z '.name',
+                @model.clashRoyaleCard.getNameTranslation card.cardId, language
+              z '.win-rate',
+                "#{roundedWinRate}%"
+          ]

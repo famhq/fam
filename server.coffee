@@ -104,7 +104,7 @@ redirects =
   '/pt/clash-royale/player/:playerId/embed': '/clash-royale/player/:playerId'
   '/clay-royale-player/:playerId': '/clash-royale/:playerId'
   '/players': '/clash-royale/players'
-  '/player/:playerId': '/clash-royale/:playerId'
+  '/player/:playerId': '/clash-royale/player/:playerId'
   '/players/search': '/clash-royale/players/search'
   '/user/:id': '/clash-royale/user/:id'
   '/conversation/:id': '/clash-royale/conversation/:id'

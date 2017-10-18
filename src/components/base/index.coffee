@@ -8,3 +8,6 @@ module.exports = class Base
       $component = new component args...
       @cachedComponents[id] = $component
       return $component
+
+  beforeUnmount: =>
+    @cachedComponents = []

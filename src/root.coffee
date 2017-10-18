@@ -159,8 +159,8 @@ init = ->
           position: 'bottom'
           overlap: false
           adId: if Environment.isiOS() \
-                then 'ca-app-pub-1232978630423169/7792831335'
-                else 'ca-app-pub-1232978630423169/4640778134'
+                then 'ca-app-pub-9043203456638369/9434224550'
+                else 'ca-app-pub-9043203456638369/2454362164'
         }
       , 1000
 
