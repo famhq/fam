@@ -92,8 +92,11 @@ module.exports = class App
 
     addToHomeSheetIsVisible = new Rx.BehaviorSubject false
 
+    # TODO: have all other component overlays use this
+    @overlay$ = new Rx.BehaviorSubject null
+
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
-    @$drawer = new Drawer {@model, @router, gameKey}
+    @$drawer = new Drawer {@model, @router, gameKey, @overlay$}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router}
     @$installOverlay = new InstallOverlay {@model, @router}
@@ -120,6 +123,7 @@ module.exports = class App
     @state = z.state {
       $backupPage: $backupPage
       me: me
+      $overlay: @overlay$
       isOffline: isOffline
       addToHomeSheetIsVisible: addToHomeSheetIsVisible
       signInDialogIsOpen: @model.signInDialog.isOpen()
@@ -224,7 +228,7 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
       installOverlayIsOpen, signInDialogIsOpen, pushNotificationSheetIsOpen
-      getAppDialogIsOpen, addToHomeSheetIsVisible,
+      getAppDialogIsOpen, addToHomeSheetIsVisible, $overlay
       isOffline} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
@@ -273,4 +277,6 @@ module.exports = class App
                 gameKey: config.GAME_KEY
                 onRate: =>
                   @model.portal.call 'app.rate'
+            if $overlay
+              $overlay
             z '#interstitial'

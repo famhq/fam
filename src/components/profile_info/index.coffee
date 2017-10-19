@@ -36,6 +36,7 @@ module.exports = class ProfileInfo
     @$refreshIcon = new Icon()
     @$splitsInfoCard = new UiCard()
     @$followButton = new PrimaryButton()
+    @$messageButton = new PrimaryButton()
     @$moreDetailsButton = new SecondaryButton()
     @$shopOffersButton = new SecondaryButton()
     @$verifyAccountButton = new SecondaryButton()
@@ -317,16 +318,29 @@ module.exports = class ProfileInfo
                 onclick: =>
                   @overlay$.next @$verifyAccountDialog
           else if not isMe
-            z '.follow-button',
-              z @$followButton,
-                text: if isFollowing \
+            [
+              z '.follow-button',
+                z @$followButton,
+                  text: if isFollowing \
                     then @model.l.get 'profileInfo.followButtonIsFollowingText'
                     else @model.l.get 'profileInfo.followButtonText'
-                onclick: =>
-                  if isFollowing
-                    @model.userFollower.unfollowByUserId user?.id
-                  else
-                    @model.userFollower.followByUserId user?.id
+                  onclick: =>
+                    if isFollowing
+                      @model.userFollower.unfollowByUserId user?.id
+                    else
+                      @model.userFollower.followByUserId user?.id
+              if user
+                z '.message-button',
+                  z @$messageButton,
+                    text: @model.l.get 'profileDialog.message'
+                    onclick: =>
+                      # TODO: loading msg
+                      @model.conversation.create {
+                        userIds: [user.id]
+                      }
+                      .then ({id}) =>
+                        @router.go 'conversation', {gameKey, id}
+            ]
       z '.content',
         if isRequestNotificationCardVisible and isMe
           z '.card',

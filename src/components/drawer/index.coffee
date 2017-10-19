@@ -23,9 +23,7 @@ if window?
 GROUPS_IN_DRAWER = 2
 
 module.exports = class Drawer
-  constructor: ({@model, @router, gameKey}) ->
-    @overlay$ = new Rx.BehaviorSubject null
-
+  constructor: ({@model, @router, gameKey, @overlay$}) ->
     @$avatar = new Avatar()
     @$adsenseAd = new AdsenseAd()
 
@@ -49,7 +47,6 @@ module.exports = class Drawer
       language: @model.l.getLanguage()
       me: me
       gameKey: gameKey
-      $overlay: @overlay$
       myGroups: myGroups.map (groups) =>
         groups = _filter groups, (group) ->
           group?.id isnt '73ed4af0-a2f2-4371-a893-1360d3989708'
@@ -169,7 +166,7 @@ module.exports = class Drawer
 
   render: ({currentPath}) =>
     {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, gameKey,
-      language, windowSize, $overlay} = @state.getValue()
+      language, windowSize} = @state.getValue()
 
     translateX = if isOpen then '0' else "-#{drawerWidth}px"
     buttonColors =
@@ -292,5 +289,3 @@ module.exports = class Drawer
               z @$adsenseAd, {
                 slot: 'desktop336x280'
               }
-
-      $overlay

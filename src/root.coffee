@@ -203,9 +203,9 @@ init = ->
     else if path?
       ga? 'send', 'event', 'hit_from_share', 'hit', path
       if path?.key
-        @router.go path.key, path.params
+        router.go path.key, path.params
       else if path # legacy
-        @router.goPath path
+        router.goPath path
     else
       router.go()
 

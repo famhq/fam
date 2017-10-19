@@ -1,0 +1,3 @@
+- Test using .publishReplay(1).refCount() in places where a mapped observable is subscribed to multiple times
+- Use modularized RxJS
+- Figure out a solution to load CSS dynamically and see if it's faster?
