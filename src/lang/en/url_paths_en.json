@@ -3,7 +3,6 @@
   "cards": "/cards",
   "chestCycle": "/chest-cycle",
   "chestCycleByPlayerId": "/chest-cycle/{playerId}",
-  "chestCycleByPlayerIdEmbed": "/chest-cycle/{playerId}/embed",
   "clan": "/clan",
   "chat": "/chat",
   "chatWithTab": "/chat/{tab}",

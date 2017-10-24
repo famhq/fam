@@ -61,6 +61,8 @@ module.exports = _defaults {
   '$tertiary800Text': materialColors.$white
   '$tertiary900Text': materialColors.$white
 
+  '$quaternary500': '#ff7b45'
+
   '$white4': 'rgba(255, 255, 255, 0.04)'
   '$white54': 'rgba(255, 255, 255, 0.54)'
 

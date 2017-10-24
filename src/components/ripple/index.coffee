@@ -67,7 +67,8 @@ module.exports = class Ripple
 
     onTouch = (e) =>
       $$el = e.target
-      e?.preventDefault()
+      # this prevents scrolling when touching a button/ripple in safari
+      # e?.preventDefault()
       @ripple {
         $$el
         color

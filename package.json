@@ -71,6 +71,7 @@
     "exoid": "git://github.com/claydotio/exoid.git",
     "express": "^4.13.3",
     "fastclick": "^1.0.6",
+    "fingerprintjs": "^0.5.3",
     "helmet": "^0.14.0",
     "http-hash": "^2.0.0",
     "iscroll": "git://github.com/claydotio/iscroll.git",

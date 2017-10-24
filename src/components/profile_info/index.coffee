@@ -33,6 +33,7 @@ module.exports = class ProfileInfo
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
+    @$fireIcon = new Icon()
     @$refreshIcon = new Icon()
     @$splitsInfoCard = new UiCard()
     @$followButton = new PrimaryButton()
@@ -47,7 +48,7 @@ module.exports = class ProfileInfo
       @model, @router, @overlay$, gameKey
     }
     @$autoRefreshInfoIcon = new Icon()
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
@@ -219,6 +220,16 @@ module.exports = class ProfileInfo
                 z '.clan-badge',
                   z @$clanBadge, {clan: player?.data?.clan, size: '32px'}
           z '.g-cols',
+            # z '.g-col.g-xs-3', {
+            #   onclick: =>
+            #     @router.go 'fire', {gameKey}
+            # },
+            #   z '.icon',
+            #     z @$fireIcon,
+            #       icon: 'fire'
+            #       color: colors.$secondary500
+            #   z '.text',
+            #     FormatService.number player?.fire
             z '.g-col.g-xs-4',
               z '.icon',
                 z @$trophyIcon,

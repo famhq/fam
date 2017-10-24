@@ -25,7 +25,7 @@ GROUPS_IN_DRAWER = 2
 module.exports = class Drawer
   constructor: ({@model, @router, gameKey, @overlay$}) ->
     @$avatar = new Avatar()
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     me = @model.user.getMe()
     meAndLanguageAndGameKey = Rx.Observable.combineLatest(
@@ -107,18 +107,25 @@ module.exports = class Drawer
             iconName: 'friends'
           }
           {
-            path: @router.get 'recruit', {gameKey}
-            title: @model.l.get 'general.recruiting'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'recruit'
-          }
-          {
             path: @router.get 'mods', {gameKey}
             title: @model.l.get 'addonsPage.title'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'ellipsis'
+          }
+          {
+            path: @router.get 'fire', {gameKey}
+            title: @model.l.get 'firePage.title'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'fire'
+          }
+          {
+            path: @router.get 'recruit', {gameKey}
+            title: @model.l.get 'general.recruiting'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'recruit'
           }
           {
             isDivider: true

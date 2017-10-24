@@ -49,7 +49,7 @@ module.exports = class EditProfile
       valueStreams: @playerTagValueStreams
       error: @playerTagError
 
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     @state = z.state
       me: me

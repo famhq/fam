@@ -23,7 +23,7 @@ module.exports = class PlayersSearch
     }
     @$trackButton = new PrimaryButton()
     @$dialog = new Dialog()
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     @state = z.state
       me: me

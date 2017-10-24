@@ -1,5 +1,6 @@
 _map = require 'lodash/map'
 Environment = require 'clay-environment'
+Fingerprint = require 'fingerprintjs'
 
 config = require '../config'
 
@@ -58,6 +59,7 @@ module.exports = class Portal
     @portal.on 'env.getPlatform', @getPlatform
     @portal.on 'app.install', @appInstall
     @portal.on 'app.rate', @appRate
+    @portal.on 'app.getDeviceId', @appGetDeviceId
 
     # fallbacks
     @portal.on 'app.onResume', @appOnResume
@@ -142,6 +144,9 @@ module.exports = class Portal
            then config.ITUNES_APP_URL
            else config.GOOGLE_PLAY_APP_URL
       target: '_system'
+
+  appGetDeviceId: ->
+    "#{new Fingerprint().get()}"
 
   appOnResume: (callback) =>
     if @appResumeHandler

@@ -26,7 +26,7 @@ slots =
     height: 100
 
 module.exports = class AdsenseAd
-  constructor: ->
+  constructor: ({@model}) ->
     @unique = Math.random()
 
   afterMount: ->
@@ -38,7 +38,7 @@ module.exports = class AdsenseAd
   render: ({slot} = {}) =>
     slotInfo = slots[slot]
 
-    unless slotInfo
+    if not slotInfo or not @model.ad.isVisible()
       return
 
     z '.z-adsense-ad', {

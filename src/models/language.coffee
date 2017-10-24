@@ -17,20 +17,27 @@ config = require '../config'
 # friendspage
 # profile page share
 
-files = {strings: null, cards: null, addons: null, paths: null, languages: null}
+files = {
+  strings: null
+  cards: null
+  addons: null
+  paths: null
+  languages: null
+  items: null
+}
 
 # also update gulpfile ContextReplacementPlugin for moment
 files = _mapValues files, (val, file) ->
-  en: require "../lang/en/#{file}_en"
-  es: require "../lang/es/#{file}_es"
-  it: require "../lang/it/#{file}_it"
-  fr: require "../lang/fr/#{file}_fr"
-  zh: require "../lang/zh/#{file}_zh"
-  ja: require "../lang/ja/#{file}_ja"
-  ko: require "../lang/ko/#{file}_ko"
-  de: require "../lang/de/#{file}_de"
-  pt: require "../lang/pt/#{file}_pt"
-  pl: require "../lang/pl/#{file}_pl"
+  en: try require "../lang/en/#{file}_en" catch e then null
+  es: try require "../lang/es/#{file}_es" catch e then null
+  it: try require "../lang/it/#{file}_it" catch e then null
+  fr: try require "../lang/fr/#{file}_fr" catch e then null
+  zh: try require "../lang/zh/#{file}_zh" catch e then null
+  ja: try require "../lang/ja/#{file}_ja" catch e then null
+  ko: try require "../lang/ko/#{file}_ko" catch e then null
+  de: try require "../lang/de/#{file}_de" catch e then null
+  pt: try require "../lang/pt/#{file}_pt" catch e then null
+  pl: try require "../lang/pl/#{file}_pl" catch e then null
 
 relativeTimeFormats =
   en:

@@ -13,7 +13,7 @@ if window?
 module.exports = class PlayersTop
   constructor: ({@model, @router, @selectedProfileDialogUser, gameKey}) ->
     @$searchInput = new SearchInput {@model}
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     @$playerList = new PlayerList {
       @model

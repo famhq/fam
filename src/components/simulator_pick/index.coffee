@@ -14,7 +14,7 @@ if window?
 
 module.exports = class ChestSimulatorPick
   constructor: ({@model}) ->
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
     @$spinner = new Spinner()
 
     @state = z.state

@@ -17,7 +17,7 @@ if window?
 module.exports = class ProfileGraphs
   constructor: ({@model, @router, user, player}) ->
     @$communityButton = new PrimaryButton()
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     recordTypes = player.switchMap ({id}) =>
       @model.gameRecordType.getAllByPlayerIdAndGameId(

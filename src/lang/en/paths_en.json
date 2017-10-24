@@ -3,7 +3,6 @@
   "cards": "/:gameKey/cards",
   "chestCycle": "/:gameKey/chest-cycle",
   "chestCycleByPlayerId": "/:gameKey/chest-cycle/:playerId",
-  "chestCycleByPlayerIdEmbed": "/:gameKey/chest-cycle/:playerId/embed",
   "clan": "/:gameKey/clan",
   "chat": "/:gameKey/chat",
   "chatWithTab": "/:gameKey/chat/:tab",
@@ -63,6 +62,7 @@
   "user": "/:gameKey/user/:username",
   "userById": "/:gameKey/user/id/:id",
   "videos": "/:gameKey/videos",
+  "fire": "/:gameKey/fire",
   "home": "/:gameKey",
   "siteHome": "/"
 }

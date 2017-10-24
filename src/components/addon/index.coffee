@@ -1,4 +1,5 @@
 z = require 'zorium'
+_isEmpty = require 'lodash/isEmpty'
 
 ShopOffers = require '../shop_offers'
 TopTouchdownCards = require '../top_touchdown_cards'
@@ -31,7 +32,18 @@ module.exports = class Addon
   render: =>
     {addon, testUrl, windowSize, appBarHeight} = @state.getValue()
 
-    z '.z-addon',
+    if _isEmpty(addon?.supportedLanguages) or
+          addon?.supportedLanguages.indexOf(@model.l.getLanguageStr()) isnt -1
+      language = @model.l.getLanguageStr()
+    else
+      language = 'en'
+
+    z '.z-addon', {
+      style:
+        # because safari tries to auto-expand iframes...
+        height: "#{windowSize.height - appBarHeight}px"
+        width: "#{windowSize.width}px"
+    },
       if addon?.id is 'f537f4b0-08cb-453c-8122-ae80e4163226'
         z @$shopOffers
       else if addon?.id is 'c22ef0b0-f4fb-4e9d-b065-28991390cec8'
@@ -42,6 +54,7 @@ module.exports = class Addon
         z @$forumSignature
       else
         z 'iframe.iframe',
-          src: testUrl or addon?.url.replace '{lang}', @model.l.getLanguageStr()
-          style:
-            height: "#{windowSize.height - appBarHeight}px"
+          src: testUrl or addon?.url.replace '{lang}', language
+          # because safari tries to auto-expand iframes...
+          # height: "#{windowSize.height - appBarHeight}px"
+          # width: "#{windowSize.width}px"

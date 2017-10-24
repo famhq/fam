@@ -140,9 +140,15 @@ init = ->
   model.portal.call 'networkInformation.onOffline', onOffline
   model.portal.call 'networkInformation.onOnline', onOnline
 
+
+  # TODO:
+  # model.reward.setup()
+
+
+
   # clashroyale://add_friend?tag=C8PJ28CG&token=fx379f9b
   # https://link.clashroyale.com/invite/friend/es?tag=UCCQV29Q&token=9krrx8x6&platform=android
-  if Environment.isGameApp config.GAME_KEY
+  if model.ad.isVisible() and Environment.isGameApp config.GAME_KEY
     appVersion = Environment.getAppVersion config.GAME_KEY
     if appVersion
       admobMediationSupported = semver.gte(appVersion, '1.2.4')

@@ -21,7 +21,7 @@ if window?
 
 module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
     @$shareButton = new PrimaryButton()
     @$shopOffersButton = new SecondaryButton()
 

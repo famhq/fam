@@ -15,7 +15,7 @@ if window?
 module.exports = class TopTouchdownCards
   constructor: ({@model, @router}) ->
     @$spinner = new Spinner()
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     @state = z.state {
       language: @model.l.getLanguage()

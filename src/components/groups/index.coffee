@@ -40,7 +40,7 @@ module.exports = class Groups
     @$unreadInvitesChevronIcon = new Icon()
 
     @$translateCard = new UiCard()
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     language = @model.l.getLanguage()
     @isTranslateCardVisibleStreams = new Rx.ReplaySubject 1

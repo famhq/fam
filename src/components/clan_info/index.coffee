@@ -29,7 +29,7 @@ module.exports = class ClanInfo
     @$refreshIcon = new Icon()
     @$claimButton = new PrimaryButton()
     @$chatButton = new SecondaryButton()
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
 
     isRequestNotificationCardVisible = new Rx.BehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and

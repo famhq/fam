@@ -1,12 +1,12 @@
 {
-  "en": "English",
-  "es": "Spanish",
-  "it": "Italian",
-  "fr": "French",
-  "zh": "Chinese",
-  "ja": "Japanese",
-  "ko": "Korean",
-  "de": "German",
-  "pt": "Portuguese",
-  "pl": "Polish"
+  "en":"Inglés",
+  "es":"Español",
+  "it":"Italiano",
+  "fr":"Francés",
+  "zh":"Chino",
+  "ja":"Japonés",
+  "ko":"Coreano",
+  "de":"Alemán",
+  "pt":"Portugués",
+  "pl":"Polaco"
 }

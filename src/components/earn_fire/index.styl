@@ -1,0 +1,36 @@
+@require '../../vars'
+
+.z-earn-fire
+  flex: 1
+  padding: 16px
+  width: 100%
+  box-sizing: border-box
+  overflow: auto
+  -webkit-overflow-scrolling: touch  
+
+  .subhead
+    font-subhead()
+    color: getColor('$primary500')
+    margin: 16px 0 8px 0
+
+  > .reward
+    display: flex
+    align-items: center
+    cursor: pointer
+    margin-bottom: 4px
+
+    > .image
+      width: 50px
+      height: 50px
+      background-size: cover
+
+    > .text
+      margin-left: 16px
+
+    > .amount
+      margin-left: auto
+      display: flex
+      align-items: center
+
+      > .icon
+        margin-left: 4px

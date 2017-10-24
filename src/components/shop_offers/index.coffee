@@ -17,7 +17,7 @@ if window?
 
 module.exports = class ShopOffers
   constructor: ({@model, @router, player}) ->
-    @$adsenseAd = new AdsenseAd()
+    @$adsenseAd = new AdsenseAd {@model}
     @$refreshIcon = new Icon()
     @$spinner = new Spinner()
     @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}

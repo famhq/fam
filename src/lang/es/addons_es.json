@@ -24,5 +24,7 @@
   "topTouchdownCards.title":"Mejores cartas para Touchdown",
   "topTouchdownCards.description":"¡Ver las mejores y peores cartas en el nuevo modo de juego 2vs2 touchdown!",
   "openTournaments.title":"Torneos abiertos",
-  "openTournaments.description":"Ver torneos gratis y abiertos para unirse al juego"
+  "openTournaments.description":"Ver torneos gratis y abiertos para unirse al juego",
+  "clanManager.title": "Gestor de clanes",
+  "clanManager.description": "Supervisa las donaciones, la actividad y otras estadísticas de tu clan y todos sus miembros en un único lugar"
 }

@@ -29,6 +29,7 @@ Pages =
   ConversationsPage: require './pages/conversations'
   NewConversationPage: require './pages/new_conversation'
   FacebookLoginPage: require './pages/facebook_login'
+  FirePage: require './pages/fire'
   GroupPage: require './pages/group'
   GroupChatPage: require './pages/group_chat'
   GroupMembersPage: require './pages/group_members'
@@ -165,6 +166,7 @@ module.exports = class App
               @model
               @router
               @serverData
+              @overlay$
               requests: @requests.filter ({$page}) ->
                 $page instanceof Page
             })
@@ -183,6 +185,7 @@ module.exports = class App
     routeGame 'newConversation', 'NewConversationPage'
     routeGame ['thread', 'threadWithTitle'], 'ThreadPage'
     routeGame 'threadEdit', 'EditThreadPage'
+    routeGame 'fire', 'FirePage'
     routeGame 'group', 'GroupPage'
     routeGame 'groupChat', 'GroupChatPage'
     routeGame 'groupMembers', 'GroupMembersPage'

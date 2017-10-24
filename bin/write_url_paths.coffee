@@ -31,6 +31,9 @@ _.forEach languages, (language) ->
     if nonGamePages.indexOf(langKey) is -1
       path += '/:gameKey'
     path += langPath.replace /\{([a-zA-Z0-9-]+)\}/g, ':$1'
+  newPaths.fire = if language is 'en' \
+                  then '/:gameKey/fire'
+                  else "/#{language}/:gameKey/fire"
   newPaths.home = if language is 'en' \
                   then '/:gameKey'
                   else "/#{language}/:gameKey"
