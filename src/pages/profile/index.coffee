@@ -49,7 +49,7 @@ module.exports = class ProfilePage
     player = routePlayerId.switchMap (playerId) =>
       if playerId
         @model.player.getByPlayerIdAndGameId(
-          playerId, config.CLASH_ROYALE_ID
+          playerId, config.CLASH_ROYALE_ID, {refreshIfStale: true}
         )
       else
         user.switchMap ({id}) =>

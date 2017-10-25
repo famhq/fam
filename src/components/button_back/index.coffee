@@ -7,7 +7,7 @@ module.exports = class ButtonBack
   constructor: ({@router}) ->
     @$backIcon = new Icon()
 
-  render: ({color, onclick} = {}) =>
+  render: ({color, onclick, fallbackPath} = {}) =>
     z '.z-button-back',
       z @$backIcon,
         isAlignedLeft: true
@@ -18,4 +18,4 @@ module.exports = class ButtonBack
           if onclick
             onclick()
           else
-            @router.back()
+            @router.back {fallbackPath}

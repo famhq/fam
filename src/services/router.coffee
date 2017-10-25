@@ -51,7 +51,7 @@ class RouterService
         target: '_system'
       }
 
-  back: ({fromNative} = {}) =>
+  back: ({fromNative, fallbackPath} = {}) =>
     if @onBackFn
       fn = @onBackFn()
       @onBack null
@@ -65,6 +65,8 @@ class RouterService
     else if @history.length > 1 and window.history.length > 0
       window.history.back()
       @history.pop()
+    else if fallbackPath
+      @goPath fallbackPath, {reset: true}
     else
       @goPath '/'
 

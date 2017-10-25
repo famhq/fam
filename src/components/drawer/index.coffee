@@ -119,6 +119,7 @@ module.exports = class Drawer
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'fire'
+            isNew: true
           }
           {
             path: @router.get 'recruit', {gameKey}
@@ -256,7 +257,7 @@ module.exports = class Drawer
                   z '.divider'
 
                 _map menuItems, (menuItem) =>
-                  {path, onclick, title, $icon, $ripple,
+                  {path, onclick, title, $icon, $ripple, isNew,
                     iconName, isDivider} = menuItem
 
                   if isDivider
@@ -288,6 +289,8 @@ module.exports = class Drawer
                           icon: iconName
                           color: colors.$primary500
                       title
+                      if isNew
+                        z '.new', @model.l.get 'general.new'
                       z $ripple
               ]
 

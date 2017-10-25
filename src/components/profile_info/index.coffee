@@ -208,6 +208,11 @@ module.exports = class ProfileInfo
     z '.z-profile-info',
       z '.header',
         z '.g-grid',
+          if document?.referrer
+            if document.referrer.indexOf('clashroyalearena.com') isnt -1
+              z '.referrer', 'Brought to you by Clash Royale Arena'
+            else if document.referrer.indexOf('clashroyaledicas.com') isnt -1
+              z '.referrer', 'Indicado por Clash Royale Dicas'
           z '.info',
             z '.left',
               z '.name', player?.data?.name

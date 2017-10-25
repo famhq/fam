@@ -27,7 +27,7 @@ module.exports = class SpendFire
           {
             id: 'noAdsForDay'
             name: @model.l.get 'noAdsForDay.title', {file: 'items'}
-            cost: 15
+            cost: 150
             $fireIcon: new Icon()
             $buyButton: new PrimaryButton()
             onPurchase: =>
@@ -45,7 +45,7 @@ module.exports = class SpendFire
                     then '30 BRL Google Play cartão presente'
                     else if country is 'kr'
                     then '10,000 WON Google Play 기프트 카드'
-              cost: 1500
+              cost: 15000
               isLimited: true
               $fireIcon: new Icon()
               $buyButton: new PrimaryButton()
@@ -64,7 +64,7 @@ module.exports = class SpendFire
             id: 'visa10'
             # name: @model.l.get 'googlePlay10.title', {file: 'items'}
             name: '$10 Visa gift card'
-            cost: 1500
+            cost: 15000
             isLimited: true
             $fireIcon: new Icon()
             $buyButton: new PrimaryButton()
@@ -101,14 +101,14 @@ module.exports = class SpendFire
               z item.$buyButton,
                 text:
                   z '.z-spend-fire_buy-button',
-                    z '.amount', item.cost
+                    z '.amount', FormatService.number item.cost
                     z '.icon',
                       z item.$fireIcon,
                         icon: 'fire'
                         color: colors.$quaternary500
                         isTouchTarget: false
                 isFullWidth: false
-                isDisabled: not me?.fire or me?.fire < 15
+                isDisabled: not me?.fire or me?.fire < item.cost
                 onclick: =>
                   ga? 'send', 'event', 'item', 'buy', item.id
                   (item.beforePurchase?() or Promise.resolve())

@@ -3,7 +3,6 @@ Rx = require 'rxjs'
 
 Groups = require '../../components/groups'
 Conversations = require '../../components/conversations'
-Threads = require '../../components/threads'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
 colors = require '../../colors'
@@ -12,13 +11,9 @@ if window?
   require './index.styl'
 
 module.exports = class Social
-  constructor: (args) ->
-    {@model, @router, pageTitle, selectedIndex,
-      threadsFilter, isFilterThreadsDialogVisible, gameKey} = args
-
+  constructor: ({@model, @router, pageTitle, selectedIndex, gameKey}) ->
     @$groups = new Groups {@model, @router, gameKey}
     @$conversations = new Conversations {@model, @router, gameKey}
-    @$threads = new Threads {@model, @router, filter: threadsFilter}
     @$tabs = new Tabs {@model, selectedIndex}
     @$groupsIcon = new Icon()
     @$feedIcon = new Icon()

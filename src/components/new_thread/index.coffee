@@ -145,4 +145,4 @@ module.exports = class NewThread
           .then (thread) =>
             @bodyValueStreams.next Rx.Observable.of null
             @attachmentsValueStreams.next Rx.Observable.of null
-            @router.go @model.thread.getPath(thread, @router), {reset: true}
+            @router.goPath @model.thread.getPath(thread, @router), {reset: true}

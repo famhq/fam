@@ -44,7 +44,7 @@ module.exports = class ForumPage
     }
     @$bottomBar = new BottomBar {@model, @router, requests}
 
-    @$threads = new Threads {@model, @router, filter}
+    @$threads = new Threads {@model, @router, filter, gameKey}
 
     @state = z.state
       windowSize: @model.window.getSize()

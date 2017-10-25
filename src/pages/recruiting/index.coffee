@@ -32,7 +32,7 @@ module.exports = class RecruitingPage
     @$addIcon = new Icon()
 
     filter = new Rx.BehaviorSubject {sort: 'new', filter: 'clan'}
-    @$threads = new Threads {@model, @router, filter}
+    @$threads = new Threads {@model, @router, filter, gameKey}
 
     @state = z.state
       windowSize: @model.window.getSize()

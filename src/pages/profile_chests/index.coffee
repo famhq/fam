@@ -76,8 +76,7 @@ module.exports = class ProfileChestsPage
         style: 'primary'
         $topLeftButton: z @$buttonBack, {
           color: colors.$primary500
-          onclick: =>
-            @router.go 'player', {gameKey, playerId: player?.id}
+          fallbackPath: @router.get 'player', {gameKey, playerId: player?.id}
         }
       }
       if player

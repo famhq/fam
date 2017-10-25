@@ -43,7 +43,7 @@
   "newThreadWithCategory": "/pt/:gameKey/novo-topico/:category",
   "newThreadWithCategoryAndId": "/pt/:gameKey/novo-topico/:category/:id",
   "player": "/pt/:gameKey/jogador/:playerId",
-  "playerEmbed": "/pt/:gameKey/jogador/:playerId/gravar",
+  "playerEmbed": "/pt/:gameKey/jogador/:playerId/embutir",
   "players": "/pt/:gameKey/jogadores",
   "playersSearch": "/pt/:gameKey/jogadores/busca",
   "policies": "/pt/condicoes",

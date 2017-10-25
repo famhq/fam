@@ -26,5 +26,7 @@
   "openTournaments.title": "Open tournaments",
   "openTournaments.description": "View free, open tournaments to join in-game",
   "clanManager.title": "Clan manager",
-  "clanManager.description": "Track donations, activity, and other statistics for your clan and its members all in one place"
+  "clanManager.description": "Track donations, activity, and other statistics for your clan and its members all in one place",
+  "cardCollection.title": "Card collection lookup",
+  "cardCollection.description": "View and analyze your or another player's Card Collection"
 }
