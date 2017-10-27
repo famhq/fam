@@ -20,6 +20,6 @@ Starfire is just me, [Austin](https://github.com/austinhallock), right now.
 The easiest thing you can do to help is build something cool for Clash Royale and put it up on the developer platform. As for other contributions to the frontend and backend code for Starfire, send me an email (austin@clay.io) if you need help getting everything setup (the documentation is severely lacking at this point).
 
 ### Developer platform
-There is a [developer platform](https://starfire.games/clash-royale/addons) where you can build your own tools on top of Starfire's game data and userbase (millions of users) and keep 100% of your revenue. There isn't any sort of lock-in, you can develop your own website or app outside of Starfire, etc... Adding to Starfire just gets you extra users and hopefully an easier experience developing the tool.
+There is a [developer platform](https://starfire.games/clash-royale/mods) where you can build your own tools on top of Starfire's game data and userbase (millions of users) and keep 100% of your revenue. There isn't any sort of lock-in, you can develop your own website or app outside of Starfire, etc... Adding to Starfire just gets you extra users and hopefully an easier experience developing the tool.
 
 As of September 2017, there are 4 apps on the platform - 3 built by me, and one by [Dabolus](https://github.com/Dabolus). Each gets about 50,000 users per day.
