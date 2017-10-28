@@ -100,18 +100,36 @@ module.exports = class EarnFire
     @update.next Date.now()
 
   showTips: =>
-    ###
-    - Quizzes
-      - Quizzes are pages littered with ads everywhere
-      - The hardest part is finding the right buttons to click ("start" and "next")
-      - Sometimes you have to wait for the "next" button to show
-      - Typically you don't need to get 100% correct (even if it says you do)
-        - Some of them only give credits for 80%+
-      - Unfortunately most are in English
-    - App installs
-      - Usually you have to download an app and either spend a couple minutes in it, or complete some action
-      - Sometimes they just don't work and give you credits :/ We're trying our best to filter those ones out
-    ###
+    @overlay$.next z @$tipsDialog, {
+      isVanilla: true
+      isWide: true
+      $title: @model.l.get 'earnFire.tips'
+      $content:
+        z '.z-earn-fire_tips-dialog',
+          z 'ul',
+            z 'li', @model.l.get 'earnFire.tips1'
+            z 'ul',
+              z 'li', @model.l.get 'earnFire.tips1a'
+              z 'li', @model.l.get 'earnFire.tips1b'
+              z 'li', @model.l.get 'earnFire.tips1c'
+              z 'li', @model.l.get 'earnFire.tips1d'
+              z 'ul',
+                z 'li', @model.l.get 'earnFire.tips1d1'
+              z 'li', @model.l.get 'earnFire.tips1e'
+            z 'li', @model.l.get 'earnFire.tips2'
+            z 'ul',
+              z 'li', @model.l.get 'earnFire.tips2a'
+              z 'li', @model.l.get 'earnFire.tips2b'
+            z 'li', @model.l.get 'earnFire.tips3'
+            z 'ul',
+              z 'li', @model.l.get 'earnFire.tips3a'
+      onLeave: =>
+        @overlay$.next null
+      cancelButton:
+        text: @model.l.get 'installOverlay.closeButtonText'
+        onclick: =>
+          @overlay$.next null
+    }
 
   render: =>
     {me, rewards, isInfoCardVisible, loadingOfferIndex} = @state.getValue()
@@ -204,9 +222,9 @@ module.exports = class EarnFire
                 isFullWidth: true
                 onclick: @updateRewards
 
-            # z '.tips',
-            #   z @$tipsButton,
-            #     text: @model.l.get 'earnFire.tips'
-            #     isFullWidth: true
-            #     onclick: @showTips
+            z '.tips',
+              z @$tipsButton,
+                text: @model.l.get 'earnFire.tips'
+                isFullWidth: true
+                onclick: @showTips
         ]

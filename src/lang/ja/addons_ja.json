@@ -25,8 +25,8 @@
   "topTouchdownCards.description": "クラロワダッシュで勝ちやすいカード、勝ちにくいカードはどれ？",
   "openTournaments.title": "大会を開く",
   "openTournaments.description": "ゲーム内で参加できるトーナメントを無料で参照",
-  "clanManager.title": "Clan manager",
-  "clanManager.description": "Track donations, activity, and other statistics for your clan and its members all in one place",
-  "cardCollection.title": "Card collection lookup",
-  "cardCollection.description": "View and analyze your or another player's Card Collection"
+  "clanManager.title": "クランの情報",
+  "clanManager.description": "あなたのクランとクランメンバーの寄付数、アクティビティ、および他の統計情報を分析します。",
+  "cardCollection.title": "カードコレクションを確認",
+  "cardCollection.description": "プレイヤーのカードコレクションを表示し、分析します"
 }
