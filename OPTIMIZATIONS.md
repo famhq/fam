@@ -1,3 +1,4 @@
 - Test using .publishReplay(1).refCount() in places where a mapped observable is subscribed to multiple times
 - Use modularized RxJS
 - Figure out a solution to load CSS dynamically and see if it's faster?
+- Unrelated to speed, need to swap localStorage with something else in native iOS app (gets cleared too often)

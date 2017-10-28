@@ -4,8 +4,10 @@ Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
+Icon = require '../../components/icon'
 EarnFire = require '../../components/earn_fire'
 SpendFire = require '../../components/spend_fire'
+FormatService = require '../../services/format'
 colors = require '../../colors'
 
 if window?
@@ -32,13 +34,16 @@ module.exports = class FirePage
     @$earnFire = new EarnFire {@model, @router, gameKey, @overlay$}
     @$spendFire = new SpendFire {@model, @router, gameKey, @overlay$}
 
+    @$fireIcon = new Icon()
+
     @state = z.state
       windowSize: @model.window.getSize()
+      me: @model.user.getMe()
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, me} = @state.getValue()
 
     z '.p-fire', {
       style:
@@ -48,6 +53,14 @@ module.exports = class FirePage
         title: @model.l.get 'firePage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topRightButton: z '.p-fire_top-right',
+          FormatService.number me?.fire
+          z '.icon',
+            z @$fireIcon,
+              icon: 'fire'
+              color: colors.$quaternary500
+              isTouchTarget: false
+              size: '20px'
       }
         z @$tabs,
           isBarFixed: false

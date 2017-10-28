@@ -50,7 +50,9 @@ module.exports = class Addons extends Base
           _map addons, ({addon, $rating}) =>
             [
               z 'a.addon', {
-                href: @router.get 'mod', {gameKey, key: _kebabCase(addon.key)}
+                href: @router.get 'modByKey', {
+                  gameKey, key: _kebabCase(addon.key)
+                }
                 onclick: (e) =>
                   e?.preventDefault()
 
@@ -66,8 +68,15 @@ module.exports = class Addons extends Base
                   if not isInAppBrowser
                     @router.go 'modByKey', {key: _kebabCase(addon.key), gameKey}
                   else
+                    if _isEmpty(addon?.supportedLanguages) or
+                          addon?.supportedLanguages.indexOf(
+                            @model.l.getLanguageStr()
+                          ) isnt -1
+                      language = @model.l.getLanguageStr()
+                    else
+                      language = 'en'
                     @model.portal.call 'browser.openWindow', {
-                      url: addon.url.replace '{lang}', @model.l.getLanguageStr()
+                      url: addon.url.replace '{lang}', language
                       target: '_blank'
                       options: if isNewIAB
                         statusbar: {

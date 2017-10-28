@@ -10,31 +10,36 @@
 
   > .buttons
     display: flex
-    margin-bottom: 16px
+    margin-top: 20px
 
     > .refresh, > .tips
       flex: 1
 
+  .info-card
+    margin-bottom: 16px
+
   .subhead
     font-subhead()
     color: getColor('$primary500')
-    margin: 16px 0 8px 0
+    margin: 0 0 8px 0
 
   > .reward
     display: flex
     align-items: center
     cursor: pointer
-    margin-bottom: 4px
+    margin-bottom: 8px
 
     > .image
       width: 50px
       height: 50px
       background-size: cover
+      border-radius: 50%
 
     > .text
       margin-left: 16px
 
     > .amount
+      font-title()
       margin-left: auto
       display: flex
       align-items: center

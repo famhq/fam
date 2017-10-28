@@ -192,11 +192,15 @@ init = ->
     if _isDeepLink
       return # FIXME only for fb login links
 
+    # ios fcm for now. TODO: figure out how to get it a better way
+    if not path and typeof _original?.additionalData?.path is 'string'
+      path = JSON.parse _original.additionalData.path
+
     if query?.accessToken?
       model.auth.setAccessToken query.accessToken
 
     if _isPush and _original?.additionalData?.foreground
-      model.auth.clearNetoxCache()
+      model.exoid.invalidateAll()
       if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
         model.portal.call 'push.setBadgeNumber', {number: 0}
 

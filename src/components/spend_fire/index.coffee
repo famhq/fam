@@ -27,7 +27,7 @@ module.exports = class SpendFire
           {
             id: 'noAdsForDay'
             name: @model.l.get 'noAdsForDay.title', {file: 'items'}
-            cost: 150
+            cost: 50
             $fireIcon: new Icon()
             $buyButton: new PrimaryButton()
             onPurchase: =>
@@ -86,12 +86,9 @@ module.exports = class SpendFire
 
     z '.z-spend-fire',
       z 'p', @model.l.get 'spendFire.description1'
-      z 'p', @model.l.get 'earnFire.youHave', {
-        replacements:
-          fire: FormatService.number me?.fire
-      }
       z '.items',
         _map items, (item) =>
+          isDisabled = not me?.fire or me?.fire < item.cost
           z '.item',
             z '.info',
               z '.name', item.name
@@ -105,10 +102,12 @@ module.exports = class SpendFire
                     z '.icon',
                       z item.$fireIcon,
                         icon: 'fire'
-                        color: colors.$quaternary500
+                        color: if isDisabled \
+                               then colors.$quaternary500
+                               else colors.$white
                         isTouchTarget: false
                 isFullWidth: false
-                isDisabled: not me?.fire or me?.fire < item.cost
+                isDisabled: isDisabled
                 onclick: =>
                   ga? 'send', 'event', 'item', 'buy', item.id
                   (item.beforePurchase?() or Promise.resolve())

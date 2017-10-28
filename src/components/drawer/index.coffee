@@ -6,6 +6,7 @@ _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
 _orderBy = require 'lodash/orderBy'
 Environment = require 'clay-environment'
+semver = require 'semver'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
@@ -100,13 +101,6 @@ module.exports = class Drawer
             isDivider: true
           }
           {
-            path: @router.get 'players', {gameKey}
-            title: @model.l.get 'drawer.menuItemPlayers'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'friends'
-          }
-          {
             path: @router.get 'mods', {gameKey}
             title: @model.l.get 'addonsPage.title'
             $icon: new Icon()
@@ -122,26 +116,69 @@ module.exports = class Drawer
             isNew: true
           }
           {
+            path: @router.get 'players', {gameKey}
+            title: @model.l.get 'drawer.menuItemPlayers'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'friends'
+          }
+          if language is 'es'
+            {
+              path: 'https://starfire.games/es/clash-royale/wiki'
+              onclick: (e) =>
+                e?.preventDefault()
+                isNative = Environment.isGameApp config.GAME_KEY
+                appVersion = isNative and Environment.getAppVersion(
+                  config.GAME_KEY
+                )
+                isNewIAB = isNative and semver.gte appVersion, '1.4.0'
+                @model.portal.call 'browser.openWindow', {
+                  url: 'https://starfire.games/es/clash-royale/wiki'
+                  target: '_blank'
+                  options: if isNewIAB
+                    statusbar: {
+                      color: colors.$primary700
+                    }
+                    toolbar: {
+                      height: 56
+                      color: colors.$tertiary700
+                    }
+                    title: {
+                      color: colors.$tertiary700Text
+                      staticText: 'Wiki'
+                    }
+                    closeButton: {
+                      # https://jgilfelt.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=clipart&foreground.space.trim=1&foreground.space.pad=0.5&foreground.clipart=res%2Fclipart%2Ficons%2Fnavigation_close.svg&foreColor=fff%2C0&crop=0&backgroundShape=none&backColor=fff%2C100&effects=none&elevate=0
+                      image: 'close'
+                      # imagePressed: 'close_grey'
+                      align: 'left'
+                      event: 'closePressed'
+                    }
+                }
+              title: 'Wiki'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'wiki'
+            }
+          {
             path: @router.get 'recruit', {gameKey}
             title: @model.l.get 'general.recruiting'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'recruit'
           }
-          {
-            isDivider: true
-          }
-          {
-            onclick: =>
-              @model.portal.call 'browser.openWindow', {
-                url: 'https://github.com/starfirehq/starfire-sdk'
-                target: '_system'
-              }
-            title: @model.l.get 'general.developers'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'developers'
-          }
+
+          # {
+          #   onclick: =>
+          #     @model.portal.call 'browser.openWindow', {
+          #       url: 'https://github.com/starfirehq/starfire-sdk'
+          #       target: '_system'
+          #     }
+          #   title: @model.l.get 'general.developers'
+          #   $icon: new Icon()
+          #   $ripple: new Ripple()
+          #   iconName: 'developers'
+          # }
           if me?.flags.isModerator
             {
               path: @router.get 'modHub', {gameKey}

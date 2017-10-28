@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
 moment = require 'moment'
 Environment = require 'clay-environment'
+Fingerprint = require 'fingerprintjs'
 
 Icon = require '../icon'
 Dialog = require '../dialog'
@@ -21,6 +22,7 @@ module.exports = class EarnFire
   constructor: ({@model, @router, @overlay$}) ->
     if @model.portal
       @update = new Rx.BehaviorSubject null
+
       rewards = Rx.Observable.combineLatest(
         Rx.Observable.fromPromise @model.portal.call 'app.getDeviceId'
         @model.l.getLanguage()
@@ -35,10 +37,10 @@ module.exports = class EarnFire
           language: language
           screenDensity: window.devicePixelRatio
           screenResolution: "#{window.innerWidth}x#{window.innerHeight}"
-          locale: navigator.languages?[0] or navigator.language
+          locale: navigator.languages?[0] or navigator.language or language
           osName: if Environment.isiOS() \
                   then 'iOS'
-                  else if Environment.isAndroid
+                  else if Environment.isAndroid()
                   then 'Android'
                   else 'Windows' # TODO
           osVersion: osVersion
@@ -62,6 +64,7 @@ module.exports = class EarnFire
                   timestamp = Date.now()
                   @model.portal.call 'admob.showRewardedVideo', {timestamp}
                   .then (successKey) =>
+                    # FIXME: not working on iOS
                     @state.set loadingOfferIndex: null
                     @model.reward.videoReward {timestamp, successKey}
                     .then =>
@@ -98,13 +101,14 @@ module.exports = class EarnFire
 
   showTips: =>
     ###
-    - Surveys
-      - Surveys are pages littered with ads everywhere
+    - Quizzes
+      - Quizzes are pages littered with ads everywhere
       - The hardest part is finding the right buttons to click ("start" and "next")
       - Sometimes you have to wait for the "next" button to show
       - Typically you don't need to get 100% correct (even if it says you do)
         - Some of them only give credits for 80%+
-    - Apps
+      - Unfortunately most are in English
+    - App installs
       - Usually you have to download an app and either spend a couple minutes in it, or complete some action
       - Sometimes they just don't work and give you credits :/ We're trying our best to filter those ones out
     ###
@@ -114,98 +118,95 @@ module.exports = class EarnFire
 
     z '.z-earn-fire',
       if isInfoCardVisible
-        z @$infoCard,
-          text:
-            z 'div',
-              z 'p', @model.l.get 'earnFire.description1'
-              z 'p', @model.l.get 'earnFire.description2'
-          submit:
-            text: @model.l.get 'installOverlay.closeButtonText'
-            onclick: =>
-              @state.set isInfoCardVisible: false
-              localStorage?['hideEarnFireInfo'] = '1'
+        z '.info-card',
+          z @$infoCard,
+            text:
+              z 'div',
+                z 'p', @model.l.get 'earnFire.description1'
+                z 'p', @model.l.get 'earnFire.description2'
+            submit:
+              text: @model.l.get 'installOverlay.closeButtonText'
+              onclick: =>
+                @state.set isInfoCardVisible: false
+                localStorage?['hideEarnFireInfo'] = '1'
 
-      z 'p.', @model.l.get 'earnFire.youHave', {
-      replacements:
-        fire: FormatService.number me?.fire
-      }
       z '.subhead', @model.l.get 'earnFire.description3'
 
-      z '.buttons',
-        z '.refresh',
-          z @$refreshButton,
-            text: @model.l.get 'earnFire.refresh'
-            isFullWidth: true
-            onclick: @updateRewards
-
-        # z '.tips',
-        #   z @$tipsButton,
-        #     text: @model.l.get 'earnFire.tips'
-        #     isFullWidth: true
-        #     onclick: @showTips
-
-      if rewards is false
-        z '.no-rewards', @model.l.get 'earnFire.noRewards'
-      else if _isEmpty rewards
+      if not rewards?
         @$spinner
-      _map rewards, ({reward, $fireIcon}, i) =>
-        ga? 'send', 'event', 'reward', 'view', JSON.stringify(reward)
+      else if _isEmpty rewards
+        z '.no-rewards', @model.l.get 'earnFire.noRewards'
+      else
+        [
+          _map rewards, ({reward, $fireIcon}, i) =>
+            z '.reward', {
+              onclick: (e) =>
+                if loadingOfferIndex is i
+                  return
+                if reward.onclick
+                  return reward.onclick()
 
-        z '.reward', {
-          onclick: (e) =>
-            if loadingOfferIndex is i
-              return
-            if reward.onclick
-              return reward.onclick()
-            ga? 'send', 'event', 'reward', 'modal_open', JSON.stringify(reward)
+                @overlay$.next z @$previewDialog, {
+                  isVanilla: true
+                  $title: reward.title
+                  $content:
+                    z '.z-earn-fire_preview-dialog',
+                      z 'p', reward.instructions
+                      if reward.averageSecondsUntilPayout
+                        z 'p',
+                          @model.l.get 'earnFire.averageTimeToComplete'
+                          ' '
+                          moment().add(reward.averageSecondsUntilPayout, 's')
+                          .fromNowModified()
+                      z @$completeOfferButton,
+                        text: @model.l.get 'earnFire.completeOffer'
+                        onclick: =>
+                          ga?(
+                            'send'
+                            'event'
+                            'reward'
+                            'complete_button_click'
+                            JSON.stringify(reward)
+                          )
+                          # if we wait for this, popup gets blocked
+                          @model.reward.incrementAttemptsByNetworkAndOfferId {
+                            network: reward.network, offerId: reward.offerId
+                          }
+                          @model.portal.call 'browser.openWindow', {
+                            url: reward.url
+                            target: '_system'
+                          }
 
-            @overlay$.next z @$previewDialog, {
-              isVanilla: true
-              $title: reward.title
-              $content:
-                z '.z-earn-fire_preview-dialog',
-                  z 'p', reward.instructions
-                  if reward.averageSecondsUntilPayout
-                    z 'p',
-                      @model.l.get 'earnFire.averageTimeToComplete'
-                      ' '
-                      moment().add(reward.averageSecondsUntilPayout, 's')
-                      .fromNowModified()
-                  z @$completeOfferButton,
-                    text: @model.l.get 'earnFire.completeOffer'
-                    onclick: =>
-                      ga?(
-                        'send'
-                        'event'
-                        'reward'
-                        'complete_button_click'
-                        JSON.stringify(reward)
-                      )
-                      # if we wait for this, popup gets blocked
-                      @model.reward.incrementAttemptsByNetworkAndOfferId {
-                        network: reward.network, offerId: reward.offerId
-                      }
-                      @model.portal.call 'browser.openWindow', {
-                        url: reward.url
-                        target: '_system'
-                      }
+                  onLeave: =>
+                    @overlay$.next null
+                }
+            },
+              z '.image',
+                style:
+                  backgroundImage: "url(#{reward.imageUrl})"
+              z '.text',
+                if loadingOfferIndex is i
+                  @model.l.get 'general.loading'
+                else
+                  reward.title
+              z '.amount',
+                '+' + FormatService.number reward.amount
+                z '.icon',
+                  z $fireIcon,
+                    icon: 'fire'
+                    color: colors.$quaternary500
+                    isTouchTarget: false
 
-              onLeave: =>
-                @overlay$.next null
-            }
-        },
-          z '.image',
-            style:
-              backgroundImage: "url(#{reward.imageUrl})"
-          z '.text',
-            if loadingOfferIndex is i
-              @model.l.get 'general.loading'
-            else
-              reward.title
-          z '.amount',
-            FormatService.number reward.amount
-            z '.icon',
-              z $fireIcon,
-                icon: 'fire'
-                color: colors.$quaternary500
-                isTouchTarget: false
+          z '.buttons',
+            z '.refresh',
+              z @$refreshButton,
+                text: @model.l.get 'earnFire.refresh'
+                isFullWidth: true
+                onclick: @updateRewards
+
+            # z '.tips',
+            #   z @$tipsButton,
+            #     text: @model.l.get 'earnFire.tips'
+            #     isFullWidth: true
+            #     onclick: @showTips
+        ]

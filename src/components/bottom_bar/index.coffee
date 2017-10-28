@@ -18,11 +18,13 @@ module.exports = class BottomBar
       requests: requests
       language: @model.l.getLanguage()
       gameKey: requests.map ({route}) ->
-        route.params.gameKey or config.DEFAULT_GAME_KEY
+        route.params.gameKey
 
   render: =>
     {requests, language, gameKey} = @state.getValue()
     currentPath = requests?.req.path
+
+    gameKey or= config.DEFAULT_GAME_KEY
 
     @menuItems = _filter [
       {
