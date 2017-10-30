@@ -1,13 +1,14 @@
 _defaults = require 'lodash/defaults'
 _pick = require 'lodash/pick'
-Rx = require 'rxjs'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/defer'
 
 config = require '../config'
 
 module.exports = class Auth
   constructor: ({@exoid, @cookieSubject, @pushToken}) ->
     initPromise = null
-    @waitValidAuthCookie = Rx.Observable.defer =>
+    @waitValidAuthCookie = RxObservable.defer =>
       if initPromise?
         return initPromise
       return initPromise = @cookieSubject.take(1).toPromise()

@@ -1,8 +1,16 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _shuffle = require 'lodash/shuffle'
-Rx = require 'rxjs'
 supportsWebP = window? and require 'supports-webp'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/filter'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/take'
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/debounceTime'
 
 SearchInput = require '../search_input'
 Spinner = require '../spinner'
@@ -15,13 +23,13 @@ SEARCH_DEBOUNCE = 300
 
 module.exports = class ConversationInputGifs
   constructor: ({@model, @message, @onPost, currentPanel}) ->
-    @searchValue = new Rx.BehaviorSubject null
+    @searchValue = new RxBehaviorSubject null
     debouncedSearchValue = @searchValue.debounceTime(SEARCH_DEBOUNCE)
 
     @$searchInput = new SearchInput {@model, @searchValue}
     @$spinner = new Spinner()
 
-    currentPanelAndSearchValue = Rx.Observable.combineLatest(
+    currentPanelAndSearchValue = RxObservable.combineLatest(
       currentPanel
       debouncedSearchValue
       (vals...) -> vals
@@ -38,7 +46,7 @@ module.exports = class ConversationInputGifs
           @state.set isLoadingGifs: false
         search.map (results) -> _shuffle results?.data
       else
-        Rx.Observable.of null
+        RxObservable.of null
 
     @state = z.state
       gifs: gifs

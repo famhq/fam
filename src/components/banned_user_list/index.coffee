@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 colors = require '../../colors'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'

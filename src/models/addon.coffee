@@ -1,4 +1,3 @@
-Rx = require 'rxjs'
 _find = require 'lodash/find'
 
 module.exports = class Addon

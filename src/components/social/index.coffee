@@ -1,5 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/operator/map'
+require 'rxjs/add/observable/combineLatest'
 
 Groups = require '../../components/groups'
 Conversations = require '../../components/conversations'
@@ -37,7 +39,7 @@ module.exports = class Social
         }
       ]
 
-    selectedIndexAndTabs = Rx.Observable.combineLatest(
+    selectedIndexAndTabs = RxObservable.combineLatest(
       selectedIndex, tabs, (vals...) -> vals
     )
 

@@ -1,6 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 FormatService = require '../../services/format'
 Icon = require '../icon'
@@ -20,10 +20,10 @@ module.exports = class StripeDialog
   constructor: ({@model, @portal, product}) ->
     @$spinner = new Spinner()
     @$dialog = new Dialog()
-    @numberValue = new Rx.BehaviorSubject ''
-    @cvcValue = new Rx.BehaviorSubject ''
-    @expireMonthValue = new Rx.BehaviorSubject ''
-    @expireYearValue = new Rx.BehaviorSubject ''
+    @numberValue = new RxBehaviorSubject ''
+    @cvcValue = new RxBehaviorSubject ''
+    @expireMonthValue = new RxBehaviorSubject ''
+    @expireYearValue = new RxBehaviorSubject ''
     @$numberInput = new Input
       value: @numberValue
     @$cvcInput = new Input

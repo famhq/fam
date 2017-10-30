@@ -1,5 +1,6 @@
 request = require 'clay-request'
-Rx = require 'rxjs'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/fromPromise'
 
 config = require '../config'
 
@@ -7,7 +8,7 @@ PATH = 'https://api.giphy.com/v1/gifs'
 
 module.exports = class Gif
   search: (query, {limit}) ->
-    Rx.Observable.fromPromise request "#{PATH}/search",
+    RxObservable.fromPromise request "#{PATH}/search",
       qs:
         q: query
         limit: limit

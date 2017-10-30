@@ -2,7 +2,8 @@ z = require 'zorium'
 supportsWebP = window? and require 'supports-webp'
 remark = require 'remark'
 vdom = require 'remark-vdom'
-Rx = require 'rxjs'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 config = require '../../config'
 
@@ -11,7 +12,7 @@ if window?
 
 module.exports = class FormattedText
   constructor: ({text, @imageWidth, model, @router}) ->
-    text = if text?.map then text else Rx.Observable.of text
+    text = if text?.map then text else RxObservable.of text
 
     $el = text?.map?((text) => @get$ {text, model}) or @get$ {text, model}
 

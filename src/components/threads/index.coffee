@@ -1,6 +1,5 @@
 z = require 'zorium'
 moment = require 'moment'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
 _filter = require 'lodash/filter'
@@ -12,6 +11,11 @@ _flatten = require 'lodash/flatten'
 _isEmpty = require 'lodash/isEmpty'
 _uniqBy = require 'lodash/uniqBy'
 _find = require 'lodash/find'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/switch'
+require 'rxjs/add/operator/map'
 
 colors = require '../../colors'
 Icon = require '../icon'
@@ -33,7 +37,7 @@ module.exports = class Threads
   constructor: ({@model, @router, @filter, gameKey}) ->
     @$spinner = new Spinner()
 
-    @threadStreams = new Rx.ReplaySubject(1)
+    @threadStreams = new RxReplaySubject(1)
     @threadStreamCache = []
     @appendThreadStream @getTopStream()
 
@@ -117,7 +121,7 @@ module.exports = class Threads
   appendThreadStream: (threadStream) =>
     @threadStreamCache = @threadStreamCache.concat [threadStream]
     @threadStreams.next \
-      Rx.Observable.combineLatest @threadStreamCache, (threads...) ->
+      RxObservable.combineLatest @threadStreamCache, (threads...) ->
         _flatten threads
 
   render: =>

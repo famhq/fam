@@ -1,4 +1,6 @@
 _defaults = require 'lodash/defaults'
+require 'rxjs/add/operator/take'
+require 'rxjs/add/operator/toPromise'
 
 config = require '../config'
 

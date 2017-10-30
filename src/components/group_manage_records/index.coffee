@@ -1,6 +1,9 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switchMap'
 
 PrimaryInput = require '../primary_input'
 Dropdown = require '../dropdown'
@@ -31,23 +34,23 @@ module.exports = class GroupManageRecords
     recordTypes = group.switchMap (group) =>
       @model.groupRecordType.getAllByGroupId group.id
 
-    @nameValue = new Rx.BehaviorSubject ''
-    @nameError = new Rx.BehaviorSubject null
-    isNameFocused = new Rx.BehaviorSubject false
+    @nameValue = new RxBehaviorSubject ''
+    @nameError = new RxBehaviorSubject null
+    isNameFocused = new RxBehaviorSubject false
     @$newNameInput = new PrimaryInput {
       value: @nameValue
       error: @nameError
       isFocused: isNameFocused
     }
 
-    @timeScaleValue = new Rx.BehaviorSubject ''
-    @timeScaleError = new Rx.BehaviorSubject null
+    @timeScaleValue = new RxBehaviorSubject ''
+    @timeScaleError = new RxBehaviorSubject null
     @$newTimeScaleDropdown = new Dropdown {
       value: @timeScaleValue
       error: @timeScaleError
     }
 
-    disposableSub = Rx.Observable.combineLatest(
+    disposableSub = RxObservable.combineLatest(
       isNameFocused
       @nameValue
       @timeScaleValue
@@ -77,10 +80,10 @@ module.exports = class GroupManageRecords
           {
             recordType: recordType
             $nameInput: new PrimaryInput {
-              value: new Rx.BehaviorSubject recordType.name
+              value: new RxBehaviorSubject recordType.name
             }
             $timeScaleInput: new Dropdown {
-              value: new Rx.BehaviorSubject recordType.timeScale
+              value: new RxBehaviorSubject recordType.timeScale
             }
             $deleteIcon: new Icon()
           }

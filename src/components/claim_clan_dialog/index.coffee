@@ -1,5 +1,10 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/map'
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -12,8 +17,8 @@ if window?
 
 module.exports = class ClaimClanDialog
   constructor: ({@model, @router, clan, @overlay$}) ->
-    @clanPasswordValue = new Rx.BehaviorSubject ''
-    @clanPasswordError = new Rx.BehaviorSubject null
+    @clanPasswordValue = new RxBehaviorSubject ''
+    @clanPasswordError = new RxBehaviorSubject null
     @$clanPasswordInput = new PrimaryInput
       value: @clanPasswordValue
       error: @clanPasswordError
@@ -23,8 +28,8 @@ module.exports = class ClaimClanDialog
     @$verifiedIcon = new Icon()
 
     me = @model.user.getMe()
-    clanAndMe = Rx.Observable.combineLatest(clan, me, (vals...) -> vals)
-    @step = new Rx.ReplaySubject 1
+    clanAndMe = RxObservable.combineLatest(clan, me, (vals...) -> vals)
+    @step = new RxReplaySubject 1
     @step.next clanAndMe.map ([clan, me]) ->
       isClaimedByMe = clan and me and clan.creatorId is me.id
       if isClaimedByMe then 'setPassword'
@@ -54,7 +59,7 @@ module.exports = class ClaimClanDialog
     @model.clan.claimById clan?.id
     .then =>
       ga? 'send', 'event', 'verify', 'claim_clan', 'verified'
-      @step.next Rx.Observable.of 'setPassword'
+      @step.next RxObservable.of 'setPassword'
       @state.set isLoading: false, error: null
     .catch (err) =>
       @state.set error: 'Unable to verify', isLoading: false

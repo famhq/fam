@@ -9,10 +9,15 @@ helmet = require 'helmet'
 z = require 'zorium'
 Promise = require 'bluebird'
 request = require 'clay-request'
-Rx = require 'rxjs'
 cookieParser = require 'cookie-parser'
 fs = require 'fs'
-socketIO = require 'socket.io-client'
+socketIO = require 'socket.io-client/dist/socket.io.slim.js'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/do'
+require 'rxjs/add/operator/take'
+require 'rxjs/add/operator/toPromise'
+require 'rxjs/add/operator/publishReplay'
+require 'rxjs/add/operator/concat'
 
 config = require './src/config'
 gulpPaths = require './gulp_paths'
@@ -28,16 +33,6 @@ BOT_RENDER_TO_STRING_TIMEOUT_MS = 4500
 
 styles = if config.ENV is config.ENVS.PROD
   fs.readFileSync gulpPaths.dist + '/bundle.css', 'utf-8'
-else
-  null
-
-bundlePath = if config.ENV is config.ENVS.PROD
-  stats = JSON.parse \
-    fs.readFileSync gulpPaths.dist + '/stats.json', 'utf-8'
-
-  # Date.now() is there because for some reason, the cache doesn't seem to get
-  # cleared for some users. Hoping this helps
-  "/bundle.js?#{stats.hash}#{Date.now()}"
 else
   null
 
@@ -118,7 +113,7 @@ _map redirects, (newPath, oldPath) ->
     goPath = newPath
     if oldPath.indexOf('*') isnt -1
       oldPathRegex = new RegExp oldPath.replace('*', '(.*?)$')
-      matches = oldPathRegex.exec req.originalUrl
+      matches = oldPathRegexexec req.originalUrl
       goPath = goPath.replace '*', matches[1]
     _map req.params, (value, key) ->
       goPath = goPath.replace ":#{key}", value
@@ -161,7 +156,7 @@ app.use (req, res, next) ->
           res.cookie(key, value, CookieService.getCookieOpts(host))
       currentCookies = cookies
 
-  cookieSubject = new Rx.BehaviorSubject req.cookies
+  cookieSubject = new RxBehaviorSubject req.cookies
   cookieSubject.do(setCookies(req.cookies)).subscribe()
 
   # for client to access
@@ -176,14 +171,28 @@ app.use (req, res, next) ->
     timeout: 5000
     transports: ['websocket']
   }
+  fullLanguage = serverHeaders?['accept-language']
+  language = req.cookies?['language'] or fullLanguage?.substr(0, 2)
+  unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
+    language = 'en'
   model = new Model {
-    cookieSubject, io, serverHeaders: req.headers
+    cookieSubject, io, serverHeaders: req.headers, language
   }
   router = new RouterService {
     router: null
     model: model
   }
-  requests = new Rx.BehaviorSubject(req)
+  requests = new RxBehaviorSubject(req)
+  bundlePath = if config.ENV is config.ENVS.PROD
+    stats = JSON.parse \
+      fs.readFileSync gulpPaths.dist + '/stats.json', 'utf-8'
+
+    # Date.now() is there because for some reason, the cache doesn't seem to get
+    # cleared for some users. Hoping this helps
+    "/bundle_#{language}.js?#{stats.hash}#{Date.now()}"
+  else
+    null
+
   serverData = {req, res, styles, bundlePath}
   userAgent = req.headers?['user-agent']
   isFacebookCrawler = userAgent?.indexOf('facebookexternalhit') isnt -1 or

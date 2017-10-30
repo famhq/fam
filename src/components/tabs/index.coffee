@@ -1,6 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 TabsBar = require '../../components/tabs_bar'
 
@@ -45,8 +45,8 @@ getTransformProperty = ->
 
 module.exports = class Tabs
   constructor: ({@model, @selectedIndex, @isPageScrolling, hideTabBar}) ->
-    @selectedIndex ?= new Rx.BehaviorSubject 0
-    @isPageScrolling ?= new Rx.BehaviorSubject false
+    @selectedIndex ?= new RxBehaviorSubject 0
+    @isPageScrolling ?= new RxBehaviorSubject false
     @mountDisposable = null
     @scrollInterval = null
     @iScrollContainer = null

@@ -1,11 +1,10 @@
 z = require 'zorium'
-_map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
 _find = require 'lodash/find'
-_filter = require 'lodash/filter'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
 moment = require 'moment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/switchMap'
 
 Icon = require '../icon'
 AdsenseAd = require '../adsense_ad'
@@ -31,7 +30,7 @@ module.exports = class ClanInfo
     @$chatButton = new SecondaryButton()
     @$adsenseAd = new AdsenseAd {@model}
 
-    isRequestNotificationCardVisible = new Rx.BehaviorSubject(
+    isRequestNotificationCardVisible = new RxBehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
         not localStorage?['hideNotificationCard']
     )

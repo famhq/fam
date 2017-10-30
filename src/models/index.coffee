@@ -1,4 +1,3 @@
-Rx = require 'rxjs'
 Exoid = require 'exoid'
 request = require 'clay-request'
 _isEmpty = require 'lodash/isEmpty'
@@ -6,6 +5,8 @@ _isPlainObject = require 'lodash/isPlainObject'
 _defaults = require 'lodash/defaults'
 _merge = require 'lodash/merge'
 _pick = require 'lodash/pick'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/take'
 
 Auth = require './auth'
 Player = require './player'
@@ -59,7 +60,7 @@ SERIALIZATION_KEY = 'MODEL'
 SERIALIZATION_EXPIRE_TIME_MS = 1000 * 10 # 10 seconds
 
 module.exports = class Model
-  constructor: ({cookieSubject, serverHeaders, io, @portal}) ->
+  constructor: ({cookieSubject, serverHeaders, io, @portal, language}) ->
     serverHeaders ?= {}
 
     cache = window?[SERIALIZATION_KEY] or {}
@@ -110,18 +111,9 @@ module.exports = class Model
       cache: cache.exoid
       isServerSide: not window?
 
-    pushToken = new Rx.BehaviorSubject null
+    pushToken = new RxBehaviorSubject null
 
-    if window?
-      fullLanguage = window.navigator.languages?[0] or window.navigator.language
-    else
-      fullLanguage = serverHeaders?['accept-language']
-
-    language = localStorage?['language'] or fullLanguage?.substr(0, 2)
-    unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
-      language = 'en'
-
-    @l = new Language {language}
+    @l = new Language {language, cookieSubject}
 
     @auth = new Auth {@exoid, cookieSubject, pushToken}
     @user = new User {@auth, proxy, @exoid, cookieSubject}

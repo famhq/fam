@@ -1,5 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxMap = require 'rxjs/add/operator/map'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -31,7 +32,7 @@ module.exports = class RecruitingPage
     @$fab = new Fab()
     @$addIcon = new Icon()
 
-    filter = new Rx.BehaviorSubject {sort: 'new', filter: 'clan'}
+    filter = new RxBehaviorSubject {sort: 'new', filter: 'clan'}
     @$threads = new Threads {@model, @router, filter, gameKey}
 
     @state = z.state

@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 colors = require '../../colors'

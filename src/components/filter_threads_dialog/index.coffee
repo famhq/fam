@@ -1,8 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
 colors = require '../../colors'
@@ -13,8 +13,8 @@ if window?
 
 module.exports = class FilterThreadsDialog
   constructor: ({@model, @isVisible, @filter}) ->
-    @selectedSort = new Rx.BehaviorSubject 'popular'
-    @selectedFilter = new Rx.BehaviorSubject 'all'
+    @selectedSort = new RxBehaviorSubject 'popular'
+    @selectedFilter = new RxBehaviorSubject 'all'
 
     @$dialog = new Dialog()
 

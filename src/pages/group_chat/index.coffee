@@ -1,6 +1,9 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _find = require 'lodash/find'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
 
 Head = require '../../components/head'
 GroupChat = require '../../components/group_chat'
@@ -26,13 +29,13 @@ module.exports = class GroupChatPage
     gameKey = requests.map ({route}) ->
       route.params.gameKey
 
-    overlay$ = new Rx.BehaviorSubject null
-    @isChannelDrawerOpen = new Rx.BehaviorSubject false
-    selectedProfileDialogUser = new Rx.BehaviorSubject null
-    isLoading = new Rx.BehaviorSubject false
+    overlay$ = new RxBehaviorSubject null
+    @isChannelDrawerOpen = new RxBehaviorSubject false
+    selectedProfileDialogUser = new RxBehaviorSubject null
+    isLoading = new RxBehaviorSubject false
     me = @model.user.getMe()
 
-    groupAndConversationIdAndMe = Rx.Observable.combineLatest(
+    groupAndConversationIdAndMe = RxObservable.combineLatest(
       group
       conversationId
       me
@@ -71,7 +74,7 @@ module.exports = class GroupChatPage
       if hasMemberPermission and conversationId
         @model.conversation.getById conversationId
       else
-        Rx.Observable.of null
+        RxObservable.of null
 
     @$head = new Head({
       @model

@@ -1,5 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -25,7 +27,7 @@ module.exports = class ProfilePage
     id = requests.map ({route}) ->
       if route.params.id then route.params.id else false
 
-    usernameAndId = Rx.Observable.combineLatest(
+    usernameAndId = RxObservable.combineLatest(
       username
       id
       (vals...) -> vals
@@ -60,8 +62,8 @@ module.exports = class ProfilePage
     @hideDrawer = usernameAndId.map ([username, id]) ->
       username or id
 
-    @isShareSheetVisible = new Rx.BehaviorSubject false
-    @overlay$ = new Rx.BehaviorSubject null
+    @isShareSheetVisible = new RxBehaviorSubject false
+    @overlay$ = new RxBehaviorSubject null
 
     @$head = new Head({
       @model

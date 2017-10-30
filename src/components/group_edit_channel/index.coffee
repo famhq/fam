@@ -1,5 +1,10 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switch'
 
 Icon = require '../icon'
 ActionBar = require '../action_bar'
@@ -16,15 +21,15 @@ module.exports = class GroupEditChannel
   constructor: ({@model, @router, group, conversation, gameKey}) ->
     me = @model.user.getMe()
 
-    @nameValueStreams = new Rx.ReplaySubject 1
+    @nameValueStreams = new RxReplaySubject 1
     @nameValueStreams.next (conversation?.map (conversation) ->
-      conversation.name) or Rx.Observable.of null
-    @nameError = new Rx.BehaviorSubject null
+      conversation.name) or RxObservable.of null
+    @nameError = new RxBehaviorSubject null
 
-    @descriptionValueStreams = new Rx.ReplaySubject 1
+    @descriptionValueStreams = new RxReplaySubject 1
     @descriptionValueStreams.next (conversation?.map (conversation) ->
-      conversation.description) or Rx.Observable.of null
-    @descriptionError = new Rx.BehaviorSubject null
+      conversation.description) or RxObservable.of null
+    @descriptionError = new RxBehaviorSubject null
 
     @$actionBar = new ActionBar {@model}
 

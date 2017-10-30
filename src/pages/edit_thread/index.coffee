@@ -1,5 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 Head = require '../../components/head'
 NewThread = require '../../components/new_thread'
@@ -16,7 +17,7 @@ module.exports = class EditThreadPage
       if route.params.id
         @model.thread.getById route.params.id
       else
-        Rx.Observable.of null
+        RxObservable.of null
 
     @$head = new Head({
       @model

@@ -1,6 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 Icon = require '../icon'
 CardPickerDialog = require '../card_picker_dialog'
@@ -15,10 +17,10 @@ if window?
 module.exports = class MarkdownEditor
   constructor: (options) ->
     {@model, @valueStreams, @attachmentsValueStreams, @value, @error} = options
-    @value ?= new Rx.BehaviorSubject ''
-    @error ?= new Rx.BehaviorSubject null
-    @overlay$ = new Rx.BehaviorSubject null
-    @imageData = new Rx.BehaviorSubject null
+    @value ?= new RxBehaviorSubject ''
+    @error ?= new RxBehaviorSubject null
+    @overlay$ = new RxBehaviorSubject null
+    @imageData = new RxBehaviorSubject null
 
     @$cardPickerDialog = new CardPickerDialog {@model, @overlay$}
     @$conversationImagePreview = new ConversationImagePreview {
@@ -29,7 +31,7 @@ module.exports = class MarkdownEditor
         {attachments} = @state.getValue()
 
         attachments or= []
-        @attachmentsValueStreams.next Rx.Observable.of(attachments.concat [
+        @attachmentsValueStreams.next RxObservable.of(attachments.concat [
           {type: 'image', src: smallUrl, smallSrc: smallUrl, largeSrc: largeUrl}
         ])
         @setModifier {
@@ -102,7 +104,7 @@ module.exports = class MarkdownEditor
 
   setValue: (value, {updateDom} = {}) =>
     if @valueStreams
-      @valueStreams.next Rx.Observable.of value
+      @valueStreams.next RxObservable.of value
     else
       @value.next value
 

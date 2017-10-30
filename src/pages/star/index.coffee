@@ -1,5 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/map'
 
 Head = require '../../components/head'
 Star = require '../../components/star'
@@ -20,7 +22,7 @@ module.exports = class StarPage
     star = username.switchMap (username) ->
       model.star.getByUsername username
 
-    @isDonateDialogVisible = new Rx.BehaviorSubject null
+    @isDonateDialogVisible = new RxBehaviorSubject null
 
     @$head = new Head({
       model

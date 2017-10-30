@@ -1,10 +1,10 @@
-Rx = require 'rxjs'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 
 module.exports = class Product
   namespace: 'products'
 
   constructor: ({@auth}) ->
-    @allCached = new Rx.ReplaySubject 1
+    @allCached = new RxReplaySubject 1
 
   getAll: =>
     @auth.stream "#{@namespace}.products"

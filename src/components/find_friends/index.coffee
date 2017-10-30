@@ -1,6 +1,9 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _isEmpty = require 'lodash/isEmpty'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/debounceTime'
 
 UserList = require '../user_list'
 TopFriends = require '../top_friends'
@@ -15,8 +18,8 @@ SEARCH_DEBOUNCE = 300
 
 module.exports = class FindFriends
   constructor: ({@model, @isFindFriendsVisible, selectedProfileDialogUser}) ->
-    @isFindFriendsVisible ?= new Rx.BehaviorSubject true
-    @searchValue = new Rx.BehaviorSubject ''
+    @isFindFriendsVisible ?= new RxBehaviorSubject true
+    @searchValue = new RxBehaviorSubject ''
 
     @$searchInput = new SearchInput({@model, @searchValue})
 
@@ -27,7 +30,7 @@ module.exports = class FindFriends
       if query
         @model.user.searchByUsername query
       else
-        Rx.Observable.of []
+        RxObservable.of []
 
     @$icon = new Icon()
     @$clear = new Icon()
@@ -52,7 +55,7 @@ module.exports = class FindFriends
   render: ({onclick, onBack, showCurrentFriends} = {}) =>
     showCurrentFriends ?= false
     onBack ?= =>
-      @isFindFriendsVisible.next Rx.Observable.of false
+      @isFindFriendsVisible.next RxObservable.of false
 
     {searchValue, users, windowSize} = @state.getValue()
 

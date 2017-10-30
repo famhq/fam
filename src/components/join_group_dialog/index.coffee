@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -13,8 +13,8 @@ if window?
 module.exports = class JoinGroupDialog
   constructor: ({@model, @router, clan, @overlay$}) ->
 
-    @clanPasswordValue = new Rx.BehaviorSubject ''
-    @clanPasswordError = new Rx.BehaviorSubject null
+    @clanPasswordValue = new RxBehaviorSubject ''
+    @clanPasswordError = new RxBehaviorSubject null
     @$clanPasswordInput = new PrimaryInput
       value: @clanPasswordValue
       error: @clanPasswordError

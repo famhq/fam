@@ -1,6 +1,6 @@
 z = require 'zorium'
 moment = require 'moment'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Tabs = require '../tabs'
 UserHeader = require '../user_header'
@@ -16,7 +16,7 @@ module.exports = class GroupManageMember
   constructor: ({@model, @router, group, user}) ->
     @$userHeader = new UserHeader()
 
-    overlay$ = new Rx.BehaviorSubject null
+    overlay$ = new RxBehaviorSubject null
 
     @$general = new GroupManageMemberGeneral {@model, group, user}
     @$records = new GroupManageMemberRecords {@model, group, user, overlay$}

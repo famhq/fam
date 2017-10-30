@@ -1,7 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _take = require 'lodash/take'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
@@ -15,8 +15,8 @@ module.exports = class ProfileLanding
   constructor: ({@model, @router}) ->
     me = @model.user.getMe()
 
-    @playerTagValue = new Rx.BehaviorSubject ''
-    @playerTagError = new Rx.BehaviorSubject null
+    @playerTagValue = new RxBehaviorSubject ''
+    @playerTagError = new RxBehaviorSubject null
     @$playerTagInput = new PrimaryInput {
       value: @playerTagValue
       error: @playerTagError

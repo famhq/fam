@@ -1,8 +1,8 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _range = require 'lodash/range'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
 Textarea = require '../textarea'
@@ -22,9 +22,9 @@ module.exports = class Nps
   constructor: ({@model}) ->
     @$dialog = new Dialog()
 
-    @npsValue = new Rx.BehaviorSubject NPS_DEFAULT
-    @commentValue = new Rx.BehaviorSubject ''
-    # @emailValue = new Rx.BehaviorSubject ''
+    @npsValue = new RxBehaviorSubject NPS_DEFAULT
+    @commentValue = new RxBehaviorSubject ''
+    # @emailValue = new RxBehaviorSubject ''
 
     @$commentInput = new Textarea
       value: @commentValue

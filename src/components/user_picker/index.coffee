@@ -1,10 +1,11 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _uniq = require 'lodash/uniq'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
 _isEmpty = require 'lodash/isEmpty'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
@@ -78,7 +79,7 @@ module.exports = class UserPicker
                 unless isUnavailable
                   userInfo
               @pickedStreams.next \
-                Rx.Observable.of selectedUsers
+                RxObservable.of selectedUsers
           },
             'Select all'
       if isUsersEmpty and _isEmpty userSuggestions
@@ -99,10 +100,10 @@ module.exports = class UserPicker
               if isChecked
                 newTo = _filter picked, ({id}) ->
                   not id or id isnt userInfo.id
-                @pickedStreams.next Rx.Observable.of newTo
+                @pickedStreams.next RxObservable.of newTo
               else
                 @pickedStreams.next \
-                  Rx.Observable.of picked.concat [userInfo]
+                  RxObservable.of picked.concat [userInfo]
           },
             z '.avatar',
               z $avatar, {user: userInfo, bgColor: colors.$grey200}

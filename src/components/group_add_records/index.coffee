@@ -1,9 +1,12 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _find = require 'lodash/find'
 _filter = require 'lodash/filter'
 _flatten = require 'lodash/flatten'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/map'
 
 Avatar = require '../avatar'
 ActionBar = require '../action_bar'
@@ -20,7 +23,7 @@ module.exports = class GroupAddRecords
         embed: ['userValues']
       }
 
-    groupAndRecordTypes = Rx.Observable.combineLatest(
+    groupAndRecordTypes = RxObservable.combineLatest(
       group
       groupRecordTypes
       (vals...) -> vals
@@ -38,7 +41,7 @@ module.exports = class GroupAddRecords
               userValue = _find(recordType.userValues, {userId: user.id})?.value
               userValue ?= 0
 
-              value = new Rx.BehaviorSubject userValue
+              value = new RxBehaviorSubject userValue
               {
                 $input: new SecondaryInput({value})
                 value: value

@@ -1,6 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _filter = require 'lodash/filter'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/map'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -24,10 +26,10 @@ module.exports = class GroupPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    selectedProfileDialogUser = new Rx.BehaviorSubject null
-    selectedIndex = new Rx.BehaviorSubject 0
+    selectedProfileDialogUser = new RxBehaviorSubject null
+    selectedIndex = new RxBehaviorSubject 0
 
-    overlay$ = new Rx.BehaviorSubject null
+    overlay$ = new RxBehaviorSubject null
 
     group = requests.switchMap ({route}) =>
       @model.group.getById route.params.id

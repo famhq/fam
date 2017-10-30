@@ -1,11 +1,17 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _last = require 'lodash/last'
 _isEmpty = require 'lodash/isEmpty'
 _debounce = require 'lodash/debounce'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/observable/merge'
+require 'rxjs/add/observable/fromEvent'
 
 Spinner = require '../spinner'
 Base = require '../base'
@@ -32,23 +38,23 @@ module.exports = class Conversation extends Base
       selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading,
       group} = options
 
-    isLoading ?= new Rx.BehaviorSubject false
-    @isPostLoading = new Rx.BehaviorSubject false
-    isTextareaFocused = new Rx.BehaviorSubject false
-    isActive ?= new Rx.BehaviorSubject false
+    isLoading ?= new RxBehaviorSubject false
+    @isPostLoading = new RxBehaviorSubject false
+    isTextareaFocused = new RxBehaviorSubject false
+    isActive ?= new RxBehaviorSubject false
     me = @model.user.getMe()
-    @conversation ?= new Rx.BehaviorSubject null
-    @error = new Rx.BehaviorSubject null
+    @conversation ?= new RxBehaviorSubject null
+    @error = new RxBehaviorSubject null
 
-    conversationAndMe = Rx.Observable.combineLatest(
+    conversationAndMe = RxObservable.combineLatest(
       @conversation
       me
       (vals...) -> vals
     )
 
     # not putting in state because re-render is too slow on type
-    @message = new Rx.BehaviorSubject ''
-    @messages = new Rx.BehaviorSubject null
+    @message = new RxBehaviorSubject ''
+    @messages = new RxBehaviorSubject null
 
     lastConversationId = null
 
@@ -63,7 +69,7 @@ module.exports = class Conversation extends Base
       (if conversation
         @model.chatMessage.getAllByConversationId(conversation.id)
       else
-        Rx.Observable.of null)
+        RxObservable.of null)
       .map (messages) =>
         isLoading.next false
         isLoaded = not _isEmpty @state.getValue().messages
@@ -84,13 +90,13 @@ module.exports = class Conversation extends Base
         messages
       .catch (err) ->
         console.log err
-        Rx.Observable.of []
+        RxObservable.of []
     .share()
 
-    messages = Rx.Observable.merge @messages, loadedMessages
+    messages = RxObservable.merge @messages, loadedMessages
 
-    @isScrolledBottomStreams = new Rx.ReplaySubject 1
-    @isScrolledBottomStreams.next Rx.Observable.of false
+    @isScrolledBottomStreams = new RxReplaySubject 1
+    @isScrolledBottomStreams.next RxObservable.of false
 
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
@@ -108,7 +114,7 @@ module.exports = class Conversation extends Base
     @debouncedOnResize = _debounce @onResize
     , RESIZE_THROTTLE_MS
 
-    messagesAndMe = Rx.Observable.combineLatest(
+    messagesAndMe = RxObservable.combineLatest(
       messages
       @model.user.getMe()
       (vals...) -> vals
@@ -161,7 +167,7 @@ module.exports = class Conversation extends Base
 
     @$$messages = @$$el?.querySelector('.messages')
     # TODO: make sure this is being disposed of correctly
-    isScrolledBottom = Rx.Observable.fromEvent @$$messages, 'scroll'
+    isScrolledBottom = RxObservable.fromEvent @$$messages, 'scroll'
     .map (e) ->
       e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10
     @isScrolledBottomStreams.next isScrolledBottom

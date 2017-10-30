@@ -1,6 +1,9 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
+RxReplaySubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switchMap'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
@@ -20,18 +23,18 @@ module.exports = class EditProfile
   constructor: ({@model, @router, gameKey}) ->
     me = @model.user.getMe()
 
-    @usernameValueStreams = new Rx.ReplaySubject 1
+    @usernameValueStreams = new RxReplaySubject 1
     @usernameValueStreams.next me.map (me) ->
       me.username
-    @usernameError = new Rx.BehaviorSubject null
+    @usernameError = new RxBehaviorSubject null
 
-    @playerTagValueStreams = new Rx.ReplaySubject 1
+    @playerTagValueStreams = new RxReplaySubject 1
     currentPlayerTag = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
       .map (player) ->
         player?.id
     @playerTagValueStreams.next currentPlayerTag
-    @playerTagError = new Rx.BehaviorSubject null
+    @playerTagError = new RxBehaviorSubject null
 
     @$actionBar = new ActionBar {@model}
 

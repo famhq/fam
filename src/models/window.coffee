@@ -1,5 +1,5 @@
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 CookieService = require '../services/cookie'
 config = require '../config'
@@ -11,10 +11,10 @@ module.exports = class Window
   constructor: ({@cookieSubject, @experiment}) ->
     @isPaused = false
 
-    @size = new Rx.BehaviorSubject @getSizeVal()
-    @breakpoint = new Rx.BehaviorSubject @getBreakpointVal()
-    @drawerWidth = new Rx.BehaviorSubject @getDrawerWidthVal()
-    @appBarHeight = new Rx.BehaviorSubject @getAppBarHeightVal()
+    @size = new RxBehaviorSubject @getSizeVal()
+    @breakpoint = new RxBehaviorSubject @getBreakpointVal()
+    @drawerWidth = new RxBehaviorSubject @getDrawerWidthVal()
+    @appBarHeight = new RxBehaviorSubject @getAppBarHeightVal()
     window?.addEventListener 'resize', @updateSize
 
   updateSize: =>

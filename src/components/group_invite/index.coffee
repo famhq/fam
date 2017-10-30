@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 FindFriends = require '../find_friends'
 HeadsUp = require '../heads_up'
@@ -11,7 +11,7 @@ HEADS_UP_TTL_MS = 2000
 
 module.exports = class GroupInvite
   constructor: ({@model, @router, group}) ->
-    @headsUpNotification = new Rx.BehaviorSubject null
+    @headsUpNotification = new RxBehaviorSubject null
     @$invitedHeadsUp = new HeadsUp {notification: @headsUpNotification}
     @$findFriends = new FindFriends {@model}
 

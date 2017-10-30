@@ -1,10 +1,10 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 moment = require 'moment'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'
 _defaults = require 'lodash/defaults'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Avatar = require '../avatar'
 Icon = require '../icon'
@@ -31,7 +31,7 @@ module.exports = class ConversationMessage
     @$statusIcon = new Icon()
     @$verifiedIcon = new Icon()
 
-    @imageData = new Rx.BehaviorSubject null
+    @imageData = new RxBehaviorSubject null
     @$conversationImageView = new ConversationImageView {
       @model
       @imageData

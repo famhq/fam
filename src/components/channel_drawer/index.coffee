@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 
 Icon = require '../icon'

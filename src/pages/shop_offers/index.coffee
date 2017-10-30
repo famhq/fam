@@ -1,5 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -22,7 +24,7 @@ module.exports = class ShopOffersPage
     id = requests.map ({route}) ->
       if route.params.id then route.params.id else false
 
-    usernameAndId = Rx.Observable.combineLatest(
+    usernameAndId = RxObservable.combineLatest(
       username
       id
       (vals...) -> vals
@@ -42,7 +44,7 @@ module.exports = class ShopOffersPage
       .map (player) ->
         return player or {}
 
-    meAndPlayer = Rx.Observable.combineLatest(me, player, (vals...) -> vals)
+    meAndPlayer = RxObservable.combineLatest(me, player, (vals...) -> vals)
 
     @$spinner = new Spinner()
 

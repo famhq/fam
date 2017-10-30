@@ -1,6 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _find = require 'lodash/find'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -21,8 +21,8 @@ module.exports = class ConversationPage
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY
 
-    selectedProfileDialogUser = new Rx.BehaviorSubject null
-    overlay$ = new Rx.BehaviorSubject null
+    selectedProfileDialogUser = new RxBehaviorSubject null
+    overlay$ = new RxBehaviorSubject null
 
     @$head = new Head({
       @model

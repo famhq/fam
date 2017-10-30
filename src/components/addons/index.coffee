@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 semver = require 'semver'
 Environment = require 'clay-environment'
 _isEmpty = require 'lodash/isEmpty'

@@ -4,7 +4,13 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _takeRight = require 'lodash/takeRight'
 _isEmpty = require 'lodash/isEmpty'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/catch'
 
 FormatService = require '../../services/format'
 DeckCards = require '../deck_cards'
@@ -22,11 +28,11 @@ MIN_WIN_RATE_FOR_GUIDE = 0.6
 
 module.exports = class ProfileDecks
   constructor: ({@model, @router, user, player, gameKey}) ->
-    @typeValue = new Rx.BehaviorSubject 'all'
+    @typeValue = new RxBehaviorSubject 'all'
     @$dropdown = new Dropdown {value: @typeValue}
     @$postDeckCard = new UiCard()
 
-    playerAndType = Rx.Observable.combineLatest(
+    playerAndType = RxObservable.combineLatest(
       player
       @typeValue
       (vals...) -> vals
@@ -45,7 +51,7 @@ module.exports = class ProfileDecks
       .catch (err) ->
         ga? 'send', 'event', 'deck_err', err.message
         error = JSON.parse err.message
-        Rx.Observable.of true
+        RxObservable.of true
       .map (result) ->
         if result is true
           true

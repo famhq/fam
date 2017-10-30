@@ -1,6 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _find = require 'lodash/find'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switchMap'
 
 ClaimClanDialog = require '../claim_clan_dialog'
 JoinGroupDialog = require '../join_group_dialog'
@@ -21,7 +23,7 @@ module.exports = class VerifyAccountDialog
         @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
         .map (clan) -> clan or false
       else
-        Rx.Observable.of false
+        RxObservable.of false
 
     @$joinGroupDialog = new JoinGroupDialog {@model, @router, @overlay$, clan}
     @$claimClanDialog = new ClaimClanDialog {@model, @router, @overlay$, clan}

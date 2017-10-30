@@ -3,13 +3,14 @@ require './polyfill'
 _map = require 'lodash/map'
 z = require 'zorium'
 log = require 'loga'
-Rx = require 'rxjs'
 cookie = require 'cookie'
 FastClick = require 'fastclick'
 LocationRouter = require 'location-router'
 Environment = require 'clay-environment'
-socketIO = require 'socket.io-client'
+socketIO = require 'socket.io-client/dist/socket.io.slim.js'
 semver = require 'semver'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/do'
 
 require './root.styl'
 
@@ -79,16 +80,16 @@ portal = new Portal()
 init = ->
   FastClick.attach document.body
   currentCookies = cookie.parse(document.cookie)
-  cookieSubject = new Rx.BehaviorSubject currentCookies
+  cookieSubject = new RxBehaviorSubject currentCookies
   cookieSubject.do(setCookies(currentCookies)).subscribe()
 
   CookieService.set(
     cookieSubject, 'resolution', "#{window.innerWidth}x#{window.innerHeight}"
   )
 
-  isOffline = new Rx.BehaviorSubject false
-  isBackendUnavailable = new Rx.BehaviorSubject false
-  currentNotification = new Rx.BehaviorSubject false
+  isOffline = new RxBehaviorSubject false
+  isBackendUnavailable = new RxBehaviorSubject false
+  currentNotification = new RxBehaviorSubject false
 
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
@@ -104,7 +105,11 @@ init = ->
     # it doesn't keep session affinity (for now?) if adding polling
     transports: ['websocket']
   }
-  model = new Model({cookieSubject, io, portal})
+  fullLanguage = window.navigator.languages?[0] or window.navigator.language
+  language = currentCookies?['language'] or fullLanguage?.substr(0, 2)
+  unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
+    language = 'en'
+  model = new Model({cookieSubject, io, portal, language})
   model.portal.listen()
 
   onOnline = ->

@@ -1,6 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 AdsenseAd = require '../adsense_ad'
 PrimaryInput = require '../primary_input'
@@ -15,8 +15,8 @@ module.exports = class PlayersSearch
   constructor: ({@model, @router, gameKey}) ->
     me = @model.user.getMe()
 
-    @playerTagValue = new Rx.BehaviorSubject ''
-    @playerTagError = new Rx.BehaviorSubject null
+    @playerTagValue = new RxBehaviorSubject ''
+    @playerTagError = new RxBehaviorSubject null
     @$playerTagInput = new PrimaryInput {
       value: @playerTagValue
       error: @playerTagError

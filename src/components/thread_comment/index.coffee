@@ -1,10 +1,10 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 moment = require 'moment'
 supportsWebP = window? and require 'supports-webp'
 _map = require 'lodash/map'
 _pick = require 'lodash/pick'
 _truncate = require 'lodash/truncate'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Icon = require '../icon'
 Avatar = require '../avatar'
@@ -33,7 +33,7 @@ module.exports = class ThreadComment
     @$downvoteButton = new ThreadVoteButton {@model}
     @$threadReplyIcon = new Icon()
 
-    @imageData = new Rx.BehaviorSubject null
+    @imageData = new RxBehaviorSubject null
     @$conversationImageView = new ConversationImageView {
       @model
       @imageData
@@ -41,8 +41,8 @@ module.exports = class ThreadComment
       @router
     }
 
-    @reply = new Rx.BehaviorSubject null
-    @isPostLoading = new Rx.BehaviorSubject null
+    @reply = new RxBehaviorSubject null
+    @isPostLoading = new RxBehaviorSubject null
 
     @$children = _map @threadComment.children, (childThreadComment) =>
       new ThreadComment {

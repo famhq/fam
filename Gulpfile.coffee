@@ -2,6 +2,7 @@ fs = require 'fs'
 del = require 'del'
 _defaults = require 'lodash/defaults'
 _defaultsDeep = require 'lodash/defaultsDeep'
+_map = require 'lodash/map'
 _mapValues = require 'lodash/mapValues'
 log = require 'loga'
 gulp = require 'gulp'
@@ -13,13 +14,16 @@ KarmaServer = require('karma').Server
 spawn = require('child_process').spawn
 coffeelint = require 'gulp-coffeelint'
 webpackStream = require 'webpack-stream'
+gulpSequence = require 'gulp-sequence'
 # istanbul = require 'gulp-coffee-istanbul'
 WebpackDevServer = require 'webpack-dev-server'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
 # UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
-# Visualizer = require('webpack-visualizer-plugin')
+Visualizer = require('webpack-visualizer-plugin')
+argv = require('yargs').argv
 
 config = require './src/config'
+Language = require './src/lang'
 paths = require './gulp_paths'
 
 FUNCTIONAL_TEST_TIMEOUT_MS = 10 * 1000 # 10sec
@@ -47,7 +51,11 @@ webpackBase =
 gulp.task 'dev', ['dev:webpack-server', 'watch:dev:server']
 gulp.task 'test', ['lint', 'test:coverage', 'test:browser']
 # TODO: 'dist:manifest' - appcache
-gulp.task 'dist', ['dist:scripts', 'dist:static']
+gulp.task 'dist', gulpSequence(
+  'dist:clean'
+  ['dist:scripts', 'dist:static']
+  'dist:concat'
+)
 
 gulp.task 'watch', ->
   gulp.watch paths.coffee, ['test:unit']
@@ -129,6 +137,7 @@ gulp.task 'dev:webpack-server', ->
       ]
     plugins: [
       new webpack.HotModuleReplacementPlugin()
+      new webpack.IgnorePlugin /\.json$/, /lang/
       new webpack.DefinePlugin
         'process.env': _mapValues process.env, (val) -> JSON.stringify val
     ]
@@ -195,7 +204,7 @@ gulp.task 'dist:sw', ->
     output:
       filename: 'service_worker.js'
     plugins: [
-      # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
+      # new webpack.IgnorePlugin /^\/lang\/*$/
       # new webpack.optimize.UglifyJsPlugin
       #   mangle:
       #     except: ['process']
@@ -205,15 +214,22 @@ gulp.task 'dist:sw', ->
   .pipe gulp.dest paths.dist
 
 gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
+  _map config.LANGUAGES, (language) ->
+    fs.writeFileSync(
+      "#{__dirname}/#{paths.dist}/lang_#{language}.json"
+      Language.getJsonString language
+    )
+
   scriptsConfig = _defaultsDeep {
     # devtool: 'source-map'
     plugins: [
-      # new Visualizer()
+      new Visualizer()
       # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       new webpack.ContextReplacementPlugin(
         /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
       )
-      # new UglifyJSPlugin
+      new webpack.IgnorePlugin /\.json$/, /lang/
+    # new UglifyJSPlugin
       #   uglifyOptions:
       #     mangle:
       #       reserved: ['process']
@@ -244,6 +260,15 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
     statsJson = JSON.stringify {hash: stats.toJson().hash}
     fs.writeFileSync "#{__dirname}/#{paths.dist}/stats.json", statsJson
   .pipe gulp.dest paths.dist
+
+gulp.task 'dist:concat', ->
+  bundle = fs.readFileSync "#{__dirname}/#{paths.dist}/bundle.js"
+  _map config.LANGUAGES, (language) ->
+    lang = fs.readFileSync "#{__dirname}/#{paths.dist}/lang_#{language}.json"
+    fs.writeFileSync(
+      "#{__dirname}/#{paths.dist}/bundle_#{language}.js"
+      lang + bundle
+    )
 
 gulp.task 'dist:manifest', ['dist:static', 'dist:scripts'], ->
   gulp.src paths.manifest

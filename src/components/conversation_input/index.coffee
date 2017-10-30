@@ -1,8 +1,9 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _upperFirst = require 'lodash/upperFirst'
-Rx = require 'rxjs'
 supportsWebP = window? and require 'supports-webp'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/switchMap'
 
 Icon = require '../icon'
 UploadOverlay = require '../upload_overlay'
@@ -21,9 +22,9 @@ module.exports = class ConversationInput
     {@model, @message, @onPost, @onResize, toggleIScroll,
       @isTextareaFocused, @overlay$, isPostLoading} = options
 
-    @imageData = new Rx.BehaviorSubject null
-    @hasText = new Rx.BehaviorSubject false
-    @isTextareaFocused ?= new Rx.BehaviorSubject false
+    @imageData = new RxBehaviorSubject null
+    @hasText = new RxBehaviorSubject false
+    @isTextareaFocused ?= new RxBehaviorSubject false
 
     @$conversationImagePreview = new ConversationImagePreview {
       @imageData
@@ -35,7 +36,7 @@ module.exports = class ConversationInput
         @onPost()
     }
 
-    @currentPanel = new Rx.BehaviorSubject 'text'
+    @currentPanel = new RxBehaviorSubject 'text'
 
     @panels =
       text: {

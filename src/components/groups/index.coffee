@@ -1,7 +1,10 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 Environment = require 'clay-environment'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/switchMap'
 
 AdsenseAd = require '../adsense_ad'
 GroupList = require '../group_list'
@@ -18,7 +21,7 @@ module.exports = class Groups
     myGroups = @model.group.getAll({filter: 'mine'})
     publicGroups = @model.l.getLanguage().switchMap (language) =>
       @model.group.getAll({filter: 'public', language})
-    myGroupsAndPublicGroups = Rx.Observable.combineLatest(
+    myGroupsAndPublicGroups = RxObservable.combineLatest(
       myGroups
       publicGroups
       (myGroups, publicGroups) ->
@@ -43,7 +46,7 @@ module.exports = class Groups
     @$adsenseAd = new AdsenseAd {@model}
 
     language = @model.l.getLanguage()
-    @isTranslateCardVisibleStreams = new Rx.ReplaySubject 1
+    @isTranslateCardVisibleStreams = new RxReplaySubject 1
     @isTranslateCardVisibleStreams.next language.map (lang) ->
       needTranslations = ['es', 'it', 'fr', 'ja', 'ko', 'zh',
                           'pt', 'de', 'pl', 'tr']
@@ -121,7 +124,7 @@ module.exports = class Groups
                   onclick: =>
                     localStorage['hideTranslateCard'] = '1'
                     @isTranslateCardVisibleStreams.next(
-                      Rx.Observable.of false
+                      RxObservable.of false
                     )
                 submit:
                   text: @model.l.get 'translateCard.submit'

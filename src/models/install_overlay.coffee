@@ -1,8 +1,8 @@
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 module.exports = class InstallOverlay
   constructor: ->
-    @_isOpen = new Rx.BehaviorSubject false
+    @_isOpen = new RxBehaviorSubject false
     @onActionFn = null
 
   isOpen: =>

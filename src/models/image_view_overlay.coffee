@@ -1,8 +1,8 @@
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 module.exports = class ImageViewOverlay
   constructor: ->
-    @imageData = new Rx.BehaviorSubject null
+    @imageData = new RxBehaviorSubject null
 
   getImageData: =>
     @imageData

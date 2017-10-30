@@ -1,5 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/map'
 
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -18,8 +19,8 @@ if window?
 module.exports = class PlayersPage
   constructor: ({@model, requests, router, serverData}) ->
     me = @model.user.getMe()
-    selectedProfileDialogUser = new Rx.BehaviorSubject null
-    overlay$ = new Rx.BehaviorSubject null
+    selectedProfileDialogUser = new RxBehaviorSubject null
+    overlay$ = new RxBehaviorSubject null
 
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY

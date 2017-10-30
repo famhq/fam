@@ -1,10 +1,15 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
 moment = require 'moment'
 Environment = require 'clay-environment'
 Fingerprint = require 'fingerprintjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/map'
+require 'rxjs/add/observable/fromPromise'
 
 Icon = require '../icon'
 Dialog = require '../dialog'
@@ -21,10 +26,10 @@ if window?
 module.exports = class EarnFire
   constructor: ({@model, @router, @overlay$}) ->
     if @model.portal
-      @update = new Rx.BehaviorSubject null
+      @update = new RxBehaviorSubject null
 
-      rewards = Rx.Observable.combineLatest(
-        Rx.Observable.fromPromise @model.portal.call 'app.getDeviceId'
+      rewards = RxObservable.combineLatest(
+        RxObservable.fromPromise @model.portal.call 'app.getDeviceId'
         @model.l.getLanguage()
         @update
         (vals...) -> vals
@@ -75,7 +80,7 @@ module.exports = class EarnFire
             }
           rewards or false
     else
-      rewards = Rx.Observable.of null
+      rewards = RxObservable.of null
 
     @$previewDialog = new Dialog()
     @$tipsDialog = new Dialog()

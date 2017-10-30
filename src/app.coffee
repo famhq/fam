@@ -1,11 +1,17 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 HttpHash = require 'http-hash'
 _forEach = require 'lodash/forEach'
 _map = require 'lodash/map'
 _values = require 'lodash/values'
 _flatten = require 'lodash/flatten'
 Environment = require 'clay-environment'
+RxObservable = require('rxjs/Observable').Observable
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/filter'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/observable/of'
 
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'
@@ -72,7 +78,7 @@ module.exports = class App
     routes = @model.window.getBreakpoint().map @getRoutes
             .publishReplay(1).refCount()
 
-    requestsAndRoutes = Rx.Observable.combineLatest(
+    requestsAndRoutes = RxObservable.combineLatest(
       requests, routes, (vals...) -> vals
     )
 
@@ -91,10 +97,10 @@ module.exports = class App
     else
       null
 
-    addToHomeSheetIsVisible = new Rx.BehaviorSubject false
+    addToHomeSheetIsVisible = new RxBehaviorSubject false
 
     # TODO: have all other component overlays use this
-    @overlay$ = new Rx.BehaviorSubject null
+    @overlay$ = new RxBehaviorSubject null
 
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
     @$drawer = new Drawer {@model, @router, gameKey, @overlay$}
@@ -136,7 +142,7 @@ module.exports = class App
         hideDrawer = request.$page?.hideDrawer
         if hideDrawer?.map
         then hideDrawer
-        else Rx.Observable.of (hideDrawer or false)
+        else RxObservable.of (hideDrawer or false)
       request: @requests.do ({$page, req}) ->
         if $page instanceof Pages['FourOhFourPage']
           res?.status? 404

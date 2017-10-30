@@ -7,9 +7,10 @@ _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
 moment = require 'moment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/switchMap'
 
 Icon = require '../icon'
 UiCard = require '../ui_card'
@@ -50,7 +51,7 @@ module.exports = class ProfileInfo
     @$autoRefreshInfoIcon = new Icon()
     @$adsenseAd = new AdsenseAd {@model}
 
-    isRequestNotificationCardVisible = new Rx.BehaviorSubject(
+    isRequestNotificationCardVisible = new RxBehaviorSubject(
       window? and not Environment.isGameApp(config.GAME_KEY) and
         not localStorage?['hideNotificationCard']
     )

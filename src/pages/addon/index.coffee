@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _camelCase = require 'lodash/camelCase'
 
 Head = require '../../components/head'

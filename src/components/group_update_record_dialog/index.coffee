@@ -1,13 +1,13 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
 
 module.exports = class GroupUpdateRecordDialog
   constructor: ({@overlay$}) ->
-    @value = new Rx.BehaviorSubject 0
-    @error = new Rx.BehaviorSubject null
+    @value = new RxBehaviorSubject 0
+    @error = new RxBehaviorSubject null
     @$valueInput = new PrimaryInput {@value, @error}
     @$dialog = new Dialog()
 

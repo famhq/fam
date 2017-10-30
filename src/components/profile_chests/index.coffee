@@ -7,7 +7,6 @@ _startCase = require 'lodash/startCase'
 _camelCase = require 'lodash/camelCase'
 _snakeCase = require 'lodash/snakeCase'
 _sortBy = require 'lodash/sortBy'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 AdsenseAd = require '../adsense_ad'

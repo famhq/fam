@@ -1,9 +1,9 @@
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 module.exports = class SignInDialog
   constructor: ->
-    @_isOpen = new Rx.BehaviorSubject false
-    @_mode = new Rx.BehaviorSubject 'join'
+    @_isOpen = new RxBehaviorSubject false
+    @_mode = new RxBehaviorSubject 'join'
     @onLoggedInFn = null
 
   isOpen: =>

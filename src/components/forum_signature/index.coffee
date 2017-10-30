@@ -1,7 +1,11 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _max = require 'lodash/max'
 _map = require 'lodash/map'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switch'
 
 Icon = require '../icon'
 CardList = require '../card_list'
@@ -21,11 +25,11 @@ module.exports = class ForumSignature
   constructor: ({@model, @portal, @router}) ->
     forumSignature = @model.dynamicImage.getMeByImageKey IMAGE_KEY
 
-    @selectedColorStreams = new Rx.ReplaySubject 1
+    @selectedColorStreams = new RxReplaySubject 1
     @selectedColorStreams.next forumSignature.map ({data}) ->
       data?.color
 
-    @selectedFavoriteCardStreams = new Rx.ReplaySubject 1
+    @selectedFavoriteCardStreams = new RxReplaySubject 1
     @selectedFavoriteCardStreams.next forumSignature.map ({data}) ->
       {key: data?.favoriteCard}
 
@@ -109,7 +113,7 @@ module.exports = class ForumSignature
                   }
                   onclick: =>
                     @selectedColorStreams.next(
-                      Rx.Observable.of color
+                      RxObservable.of color
                     )
                     @state.set isImageVisible: false
                     @model.dynamicImage.upsertMeByImageKey IMAGE_KEY, {

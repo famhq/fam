@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -17,8 +17,8 @@ if window?
 
 module.exports = class ForumPage
   constructor: ({@model, requests, @router, serverData}) ->
-    @isFilterThreadsDialogVisible = new Rx.BehaviorSubject false
-    filter = new Rx.BehaviorSubject {
+    @isFilterThreadsDialogVisible = new RxBehaviorSubject false
+    filter = new RxBehaviorSubject {
       sort: 'popular'
       filter: 'all'
     }

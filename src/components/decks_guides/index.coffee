@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 moment = require 'moment'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'

@@ -1,5 +1,3 @@
-Rx = require 'rxjs'
-
 config = require '../config'
 
 module.exports = class Payment

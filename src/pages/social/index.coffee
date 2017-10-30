@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
@@ -20,10 +20,10 @@ module.exports = class SocialPage
     gameKey = requests.map ({route}) ->
       route?.params.gameKey or config.DEFAULT_GAME_KEY
 
-    pageTitle = new Rx.BehaviorSubject @model.l.get 'communityPage.menuText'
-    selectedIndex = new Rx.BehaviorSubject 0
-    @isFilterThreadsDialogVisible = new Rx.BehaviorSubject false
-    threadsFilter = new Rx.BehaviorSubject {
+    pageTitle = new RxBehaviorSubject @model.l.get 'communityPage.menuText'
+    selectedIndex = new RxBehaviorSubject 0
+    @isFilterThreadsDialogVisible = new RxBehaviorSubject false
+    threadsFilter = new RxBehaviorSubject {
       sort: 'popular'
       filter: 'all'
     }

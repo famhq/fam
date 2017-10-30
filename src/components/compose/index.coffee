@@ -1,5 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 Icon = require '../icon'
 ActionBar = require '../action_bar'
@@ -17,7 +19,7 @@ module.exports = class Compose
 
     @$actionBar = new ActionBar {@model}
 
-    @attachmentsValueStreams ?= new Rx.ReplaySubject 1
+    @attachmentsValueStreams ?= new RxReplaySubject 1
     @$markdownEditor = new MarkdownEditor {
       @model
       value: @bodyValue
@@ -32,13 +34,13 @@ module.exports = class Compose
 
   setTitle: (e) =>
     if @titleValueStreams
-      @titleValueStreams.next Rx.Observable.of e.target.value
+      @titleValueStreams.next RxObservable.of e.target.value
     else
       @titleValue.next e.target.value
 
   setBody: (e) =>
     if @bodyValueStreams
-      @bodyValueStreams.next Rx.Observable.of e.target.value
+      @bodyValueStreams.next RxObservable.of e.target.value
     else
       @bodyValue.next e.target.value
 

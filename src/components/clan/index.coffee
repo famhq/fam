@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Tabs = require '../tabs'
 Icon = require '../icon'
@@ -23,13 +23,13 @@ module.exports = class Clan
     @$membersIcon = new Icon()
     @$graphIcon = new Icon()
 
-    selectedProfileDialogUser = new Rx.BehaviorSubject false
+    selectedProfileDialogUser = new RxBehaviorSubject false
 
     @$selectedProfileDialog = new ProfileDialog {
       @model, @router, selectedProfileDialogUser, gameKey
     }
 
-    @overlay$ = new Rx.BehaviorSubject null
+    @overlay$ = new RxBehaviorSubject null
 
     @$clanInfo = new ClanInfo {
       @model, @router, clan, @overlay$, gameKey

@@ -1,5 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 if window?
   require './index.styl'
@@ -7,8 +9,8 @@ if window?
 module.exports = class Toggle
   constructor: ({@isSelected, @isSelectedStreams}) ->
     unless @isSelectedStreams
-      @isSelectedStreams = new Rx.ReplaySubject 1
-      @isSelected ?= Rx.Observable.of ''
+      @isSelectedStreams = new RxReplaySubject 1
+      @isSelected ?= RxObservable.of ''
       @isSelectedStreams.next @isSelected
 
     @state = z.state
@@ -20,7 +22,7 @@ module.exports = class Toggle
     z '.z-toggle', {
       className: z.classKebab {isSelected}
       onclick: =>
-        @isSelectedStreams.next Rx.Observable.of not isSelected
+        @isSelectedStreams.next RxObservable.of not isSelected
         onToggle? not isSelected
     },
       z '.track'

@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 
 Conversation = require '../conversation'
 

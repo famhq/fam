@@ -1,6 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 Dialog = require '../dialog'
 colors = require '../../colors'
@@ -13,7 +15,7 @@ module.exports = class SetLanguageDialog
   constructor: ({@model, @router, @overlay$}) ->
     @$dialog = new Dialog()
 
-    @languageStreams = new Rx.ReplaySubject null
+    @languageStreams = new RxReplaySubject null
     @languageStreams.next @model.l.getLanguage()
 
     @state = z.state
@@ -40,7 +42,7 @@ module.exports = class SetLanguageDialog
                   value: language
                   checked: currentLanguage is language
                   onchange: =>
-                    @languageStreams.next Rx.Observable.of language
+                    @languageStreams.next RxObservable.of language
                 z '.text',
                   @model.l.get language, {file: 'languages'}
 

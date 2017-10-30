@@ -1,5 +1,6 @@
 #!/usr/bin/env coffee
-_ = require 'lodash'
+_forEach = require 'lodash/forEach'
+_mapValues = require 'lodash/mapValues'
 fs = require 'fs'
 
 config = require '../src/config'
@@ -13,7 +14,7 @@ nonGamePages = Lang.getNonGamePages()
 
 console.log languages
 
-_.forEach languages, (language) ->
+_forEach languages, (language) ->
   console.log language
   if urlLanguages.indexOf(language) is -1
     return fs.writeFileSync(
@@ -26,7 +27,7 @@ _.forEach languages, (language) ->
     "./src/lang/#{language}/url_paths_#{language}.json"
     'utf8'
   )
-  newPaths = _.mapValues paths, (langPath, langKey) ->
+  newPaths = _mapValues paths, (langPath, langKey) ->
     path = if language is 'en' then '' else "/#{language}"
     if nonGamePages.indexOf(langKey) is -1
       path += '/:gameKey'

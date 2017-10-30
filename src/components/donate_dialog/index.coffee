@@ -1,6 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
 
 FormatService = require '../../services/format'
 Icon = require '../icon'
@@ -21,9 +23,9 @@ module.exports = class DonateDialog
   constructor: ({@model, @router, @isVisible, username}) ->
     @$dialog = new Dialog()
 
-    @amountValue = new Rx.BehaviorSubject DEFAULT_AMOUNT
+    @amountValue = new RxBehaviorSubject DEFAULT_AMOUNT
 
-    product = Rx.Observable.combineLatest(
+    product = RxObservable.combineLatest(
       username
       @amountValue
       (username, amount) ->

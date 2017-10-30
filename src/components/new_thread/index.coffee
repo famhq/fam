@@ -1,5 +1,12 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/switch'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/map'
 
 Compose = require '../compose'
 ClanBadge = require '../clan_badge'
@@ -13,18 +20,18 @@ if window?
 
 module.exports = class NewThread
   constructor: ({@model, @router, category, thread, id}) ->
-    @titleValueStreams ?= new Rx.BehaviorSubject ''
-    @bodyValueStreams ?= new Rx.ReplaySubject 1
-    @attachmentsValueStreams ?= new Rx.ReplaySubject 1
-    @attachmentsValueStreams.next new Rx.BehaviorSubject []
-    category ?= Rx.Observable.of null
+    @titleValueStreams ?= new RxBehaviorSubject ''
+    @bodyValueStreams ?= new RxReplaySubject 1
+    @attachmentsValueStreams ?= new RxReplaySubject 1
+    @attachmentsValueStreams.next new RxBehaviorSubject []
+    category ?= RxObservable.of null
 
     if thread
       @titleValueStreams.next thread.map (thread) -> thread?.title
       @bodyValueStreams.next thread.map (thread) -> thread?.body
     else
-      @titleValueStreams.next new Rx.BehaviorSubject ''
-      @bodyValueStreams.next new Rx.BehaviorSubject ''
+      @titleValueStreams.next new RxBehaviorSubject ''
+      @bodyValueStreams.next new RxBehaviorSubject ''
 
 
     @$clanBadge = new ClanBadge()
@@ -38,12 +45,12 @@ module.exports = class NewThread
       @attachmentsValueStreams
     }
 
-    categoryAndMe = Rx.Observable.combineLatest(
+    categoryAndMe = RxObservable.combineLatest(
       category
       @model.user.getMe()
       (vals...) -> vals
     )
-    categoryAndId = Rx.Observable.combineLatest(
+    categoryAndId = RxObservable.combineLatest(
       category
       id
       (vals...) -> vals
@@ -72,7 +79,7 @@ module.exports = class NewThread
               $deckStats: new PlayerDeckStats {@model, @router, playerDeck}
             }
         else
-          Rx.Observable.of null
+          RxObservable.of null
       clan: categoryAndMe.switchMap ([category, me]) =>
         if category is 'clan'
           @model.player.getByUserIdAndGameId me.id, config.CLASH_ROYALE_ID
@@ -80,9 +87,9 @@ module.exports = class NewThread
             if player?.data?.clan?.tag
               @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
             else
-              Rx.Observable.of false
+              RxObservable.of false
         else
-          Rx.Observable.of null
+          RxObservable.of null
       .map (clan) ->
         if clan then clan else false
 
@@ -143,6 +150,6 @@ module.exports = class NewThread
             else
               @model.thread.create newThread
           .then (thread) =>
-            @bodyValueStreams.next Rx.Observable.of null
-            @attachmentsValueStreams.next Rx.Observable.of null
+            @bodyValueStreams.next RxObservable.of null
+            @attachmentsValueStreams.next RxObservable.of null
             @router.goPath @model.thread.getPath(thread, @router), {reset: true}

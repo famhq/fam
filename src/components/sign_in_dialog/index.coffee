@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -12,20 +12,20 @@ if window?
 module.exports = class SignInDialog
   constructor: ({@model, @router}) ->
 
-    @usernameValue = new Rx.BehaviorSubject ''
-    @usernameError = new Rx.BehaviorSubject null
+    @usernameValue = new RxBehaviorSubject ''
+    @usernameError = new RxBehaviorSubject null
     @$usernameInput = new PrimaryInput
       value: @usernameValue
       error: @usernameError
 
-    @passwordValue = new Rx.BehaviorSubject ''
-    @passwordError = new Rx.BehaviorSubject null
+    @passwordValue = new RxBehaviorSubject ''
+    @passwordError = new RxBehaviorSubject null
     @$passwordInput = new PrimaryInput
       value: @passwordValue
       error: @passwordError
 
-    @emailValue = new Rx.BehaviorSubject ''
-    @emailError = new Rx.BehaviorSubject null
+    @emailValue = new RxBehaviorSubject ''
+    @emailError = new RxBehaviorSubject null
     @$emailInput = new PrimaryInput
       value: @emailValue
       error: @emailError

@@ -1,6 +1,6 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Icon = require '../icon'
 colors = require '../../colors'
@@ -18,7 +18,7 @@ module.exports = class ConversationInputTextarea
 
     @$sendIcon = new Icon {hasRipple: true}
 
-    @isTextareaFocused ?= new Rx.BehaviorSubject false
+    @isTextareaFocused ?= new RxBehaviorSubject false
 
     @state = z.state
       isTextareaFocused: @isTextareaFocused

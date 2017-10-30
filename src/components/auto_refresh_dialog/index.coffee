@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 
 SecondaryButton = require '../secondary_button'
 VerifyAccountDialog = require '../verify_account_dialog'

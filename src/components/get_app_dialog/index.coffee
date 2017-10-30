@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 
 Dialog = require '../dialog'
 colors = require '../../colors'

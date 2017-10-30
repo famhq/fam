@@ -1,7 +1,10 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/map'
 
 Card = require '../card'
 Base = require '../base'
@@ -27,12 +30,12 @@ getCardSizeInfo = ->
 module.exports = class CardList extends Base
   constructor: ({cards, cardsPerRow, @selectedCardStreams}) ->
     unless cards.map
-      cards = Rx.Observable.of cards
+      cards = RxObservable.of cards
 
     @cardSizeInfo = getCardSizeInfo()
     @cachedCards = []
 
-    @selectedCardStreams ?= new Rx.ReplaySubject 1
+    @selectedCardStreams ?= new RxReplaySubject 1
 
     @$selectedCardIcon = new Icon()
 
@@ -74,7 +77,7 @@ module.exports = class CardList extends Base
             z $el,
               onclick: (card) =>
                 onCardClick card
-                @selectedCardStreams.next Rx.Observable.of card
+                @selectedCardStreams.next RxObservable.of card
               width: cardWidth - 8
             if selectedCard?.key is card.key
               z '.selected',

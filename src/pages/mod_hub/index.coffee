@@ -1,7 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _filter = require 'lodash/filter'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/map'
 
 Head = require '../../components/head'
 BannedUserList = require '../../components/banned_user_list'
@@ -38,11 +39,11 @@ module.exports = class ModHubPage
 
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router, @model}
-    selectedIndex = new Rx.BehaviorSubject 0
-    @selectedProfileDialogUser = new Rx.BehaviorSubject null
+    selectedIndex = new RxBehaviorSubject 0
+    @selectedProfileDialogUser = new RxBehaviorSubject null
 
     me = @model.user.getMe()
-    # @messagesStreams = new Rx.ReplaySubject 1
+    # @messagesStreams = new RxReplaySubject 1
     # # https://github.com/ReactiveX/RxJS/issues/1121
     # @messagesStreams.next @model.mod.getAllReportedMessages().share()
 

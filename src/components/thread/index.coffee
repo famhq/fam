@@ -1,11 +1,16 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 moment = require 'moment'
 _map = require 'lodash/map'
 _find = require 'lodash/find'
 _defaults = require 'lodash/defaults'
 _isEmpty = require 'lodash/isEmpty'
 Environment = require 'clay-environment'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/observable/of'
+
 
 colors = require '../../colors'
 config = require '../../config'
@@ -47,7 +52,7 @@ module.exports = class Thread extends Base
     @$fab = new Fab()
     @$avatar = new Avatar()
 
-    @selectedProfileDialogUser = new Rx.BehaviorSubject false
+    @selectedProfileDialogUser = new RxrBehaviorSubject false
     @$profileDialog = new ProfileDialog {
       @model, @router, @selectedProfileDialogUser, gameKey
     }
@@ -56,7 +61,7 @@ module.exports = class Thread extends Base
       if thread?.data?.deckId
         @model.clashRoyaleDeck.getById thread.data.deckId
       else
-        Rx.Observable.of null
+        RxObservable.of null
 
     @$clanBadge = new ClanBadge()
     @$threadPreview = new ThreadPreview {@model, thread}
@@ -65,7 +70,7 @@ module.exports = class Thread extends Base
       if thread?.data?.clan
         @model.clan.getById thread.data?.clan.id
       else
-        Rx.Observable.of null
+        RxObservable.of null
 
     playerDeck = thread.switchMap (thread) =>
       if thread?.data?.playerId
@@ -82,11 +87,11 @@ module.exports = class Thread extends Base
             $deckStats: new PlayerDeckStats {@model, @router, playerDeck}
           }
       else
-        Rx.Observable.of null
+        RxObservable.of null
 
-    @message = new Rx.BehaviorSubject ''
-    @overlay = new Rx.BehaviorSubject null
-    @isPostLoading = new Rx.BehaviorSubject false
+    @message = new RxBehaviorSubject ''
+    @overlay = new RxBehaviorSubject null
+    @isPostLoading = new RxBehaviorSubject false
     @$conversationInput = new ConversationInput {
       @model
       @message
@@ -131,7 +136,7 @@ module.exports = class Thread extends Base
               $el.setThreadComment threadComment
               $el
         else
-          Rx.Observable.of null
+          RxObservable.of null
 
   postMessage: =>
     {me, isPostLoading, thread} = @state.getValue()

@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _take = require 'lodash/take'
 Environment = require 'clay-environment'
 

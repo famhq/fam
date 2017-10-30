@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
@@ -12,8 +12,8 @@ if window?
 
 module.exports = class BuyGiftCardDialog
   constructor: ({@model, @router, @overlay$}) ->
-    @emailValue = new Rx.BehaviorSubject ''
-    @emailError = new Rx.BehaviorSubject null
+    @emailValue = new RxBehaviorSubject ''
+    @emailError = new RxBehaviorSubject null
     @$emailInput = new PrimaryInput
       value: @emailValue
       error: @emailError

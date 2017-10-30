@@ -1,6 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _defaults = require 'lodash/defaults'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 allColors = require '../../colors'
 
@@ -9,10 +11,10 @@ if window?
 
 module.exports = class Input
   constructor: ({@value, @valueStreams, @error, @isFocused} = {}) ->
-    @value ?= new Rx.BehaviorSubject ''
-    @error ?= new Rx.BehaviorSubject null
+    @value ?= new RxBehaviorSubject ''
+    @error ?= new RxBehaviorSubject null
 
-    @isFocused ?= new Rx.BehaviorSubject false
+    @isFocused ?= new RxBehaviorSubject false
 
     @state = z.state {
       isFocused: @isFocused
@@ -61,7 +63,7 @@ module.exports = class Input
         value: value
         oninput: z.ev (e, $$el) =>
           if @valueStreams
-            @valueStreams.next Rx.Observable.of $$el.value
+            @valueStreams.next RxObservable.of $$el.value
           else
             @value.next $$el.value
         onfocus: z.ev (e, $$el) =>

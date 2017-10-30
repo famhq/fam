@@ -1,5 +1,4 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _take = require 'lodash/take'
@@ -7,6 +6,9 @@ _isEmpty = require 'lodash/isEmpty'
 _orderBy = require 'lodash/orderBy'
 Environment = require 'clay-environment'
 semver = require 'semver'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/map'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
@@ -29,7 +31,7 @@ module.exports = class Drawer
     @$adsenseAd = new AdsenseAd {@model}
 
     me = @model.user.getMe()
-    meAndLanguageAndGameKey = Rx.Observable.combineLatest(
+    meAndLanguageAndGameKey = RxObservable.combineLatest(
       me
       @model.l.getLanguage()
       gameKey
@@ -316,8 +318,9 @@ module.exports = class Drawer
                       onclick: (e) =>
                         e.preventDefault()
                         @model.drawer.close()
-                        onclick?()
-                        if path
+                        if onclick
+                          onclick()
+                        else if path
                           @router.goPath path
                     },
                       z '.icon',

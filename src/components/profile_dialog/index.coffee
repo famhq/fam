@@ -1,7 +1,9 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/switchMap'
 
 Avatar = require '../avatar'
 Dialog = require '../dialog'
@@ -42,7 +44,7 @@ module.exports = class ProfileDialog
         if user
           @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
         else
-          Rx.Observable.of null
+          RxObservable.of null
       group: group
       isFlagLoading: false
       isFlagged: false

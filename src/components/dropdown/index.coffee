@@ -1,17 +1,20 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _kebabCase = require 'lodash/kebabCase'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+
 
 if window?
   require './index.styl'
 
 module.exports = class Dropdown
   constructor: ({@value, @valueStreams, @error} = {}) ->
-    @value ?= new Rx.BehaviorSubject null
-    @error ?= new Rx.BehaviorSubject null
+    @value ?= new RxBehaviorSubject null
+    @error ?= new RxBehaviorSubject null
 
-    @isFocused = new Rx.BehaviorSubject false
+    @isFocused = new RxBehaviorSubject false
 
     @state = z.state {
       isFocused: @isFocused
@@ -45,7 +48,7 @@ module.exports = class Dropdown
         value: value
         oninput: z.ev (e, $$el) =>
           if @valueStreams
-            @valueStreams.next Rx.Observable.of $$el.value
+            @valueStreams.next RxObservable.of $$el.value
           else
             @value.next $$el.value
           $$el.blur()

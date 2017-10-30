@@ -1,8 +1,10 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _sumBy = require 'lodash/sumBy'
 _take = require 'lodash/take'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/switchMap'
 
 GraphWidget = require '../graph_widget'
 FlatButton = require '../flat_button'
@@ -15,7 +17,7 @@ if window?
 module.exports = class GroupManageMemberRecords
   constructor: ({@model, group, user, @overlay$}) ->
 
-    groupAndUser = Rx.Observable.combineLatest(
+    groupAndUser = RxObservable.combineLatest(
       group
       user
       (vals...) -> vals

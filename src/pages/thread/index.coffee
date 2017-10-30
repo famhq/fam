@@ -1,5 +1,8 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/map'
 
 Head = require '../../components/head'
 Thread = require '../../components/thread'
@@ -14,12 +17,12 @@ module.exports = class ThreadPage
 
   constructor: ({@model, requests, @router, serverData}) ->
     # allow reset beforeUnmount so stale thread doesn't show when loading new
-    @thread = new Rx.BehaviorSubject null
+    @thread = new RxBehaviorSubject null
     loadedThread = requests.switchMap ({route}) =>
       @model.thread.getById route.params.id
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY
-    thread = Rx.Observable.merge @thread, loadedThread
+    thread = RxObservable.merge @thread, loadedThread
 
     @$head = new Head({
       @model

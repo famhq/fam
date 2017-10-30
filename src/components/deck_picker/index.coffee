@@ -1,9 +1,12 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _range = require 'lodash/range'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/map'
 
 DeckCards = require '../../components/deck_cards'
 
@@ -21,7 +24,7 @@ module.exports = class DeckPicker
       {cards: _map _range(CARDS_PER_DECK), (i) -> cards[i]}
 
     allCards = @model.clashRoyaleCard.getAll()
-    allCardsAndSelectedCards = Rx.Observable.combineLatest(
+    allCardsAndSelectedCards = RxObservable.combineLatest(
       allCards
       @selectedCards
       (vals...) -> vals
@@ -46,7 +49,7 @@ module.exports = class DeckPicker
             newCards = _filter selectedCards, (selectedCard) ->
               card.id isnt selectedCard?.id
             if @selectedCardsStreams
-              @selectedCardsStreams.next Rx.Observable.of newCards
+              @selectedCardsStreams.next RxObservable.of newCards
             else
               @selectedCards.next newCards
       z '.cards',
@@ -56,7 +59,7 @@ module.exports = class DeckPicker
               if selectedCards.length < CARDS_PER_DECK
                 newCards = selectedCards.concat [card]
                 if @selectedCardsStreams
-                  @selectedCardsStreams.next Rx.Observable.of newCards
+                  @selectedCardsStreams.next RxObservable.of newCards
                 else
                   @selectedCards.next newCards
           }

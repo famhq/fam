@@ -1,7 +1,14 @@
 z = require 'zorium'
-Rx = require 'rxjs'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/switch'
+
 
 ActionBar = require '../../components/action_bar'
 Toggle = require '../toggle'
@@ -28,24 +35,24 @@ module.exports = class Settings
     ]
 
     me = @model.user.getMe()
-    @nameValueStreams = new Rx.ReplaySubject 1
+    @nameValueStreams = new RxReplaySubject 1
     @nameValueStreams.next (group?.map (group) ->
-      group.name) or Rx.Observable.of null
-    @nameError = new Rx.BehaviorSubject null
+      group.name) or RxObservable.of null
+    @nameError = new RxBehaviorSubject null
 
-    @descriptionValueStreams = new Rx.ReplaySubject 1
+    @descriptionValueStreams = new RxReplaySubject 1
     @descriptionValueStreams.next (group?.map (group) ->
-      group.description) or Rx.Observable.of null
-    @descriptionError = new Rx.BehaviorSubject null
+      group.description) or RxObservable.of null
+    @descriptionError = new RxBehaviorSubject null
 
-    @passwordValueStreams = new Rx.ReplaySubject 1
+    @passwordValueStreams = new RxReplaySubject 1
     @passwordValueStreams.next (group?.map (group) ->
-      group.password) or Rx.Observable.of null
-    @passwordError = new Rx.BehaviorSubject null
+      group.password) or RxObservable.of null
+    @passwordError = new RxBehaviorSubject null
 
-    @isPrivateStreams = new Rx.ReplaySubject 1
+    @isPrivateStreams = new RxReplaySubject 1
     @isPrivateStreams.next (group?.map (group) ->
-      group.privacy is 'private') or Rx.Observable.of null
+      group.privacy is 'private') or RxObservable.of null
 
     @$actionBar = new ActionBar {@model}
     @$leaveIcon = new Icon()
@@ -78,7 +85,7 @@ module.exports = class Settings
       notificationTypes: group.switchMap (group) =>
         @model.userGroupData.getMeByGroupId(group.id).map (data) ->
           _map notificationTypes, (type) ->
-            isSelected = new Rx.BehaviorSubject(
+            isSelected = new RxBehaviorSubject(
               not data.globalBlockedNotifications?[type.key]
             )
 

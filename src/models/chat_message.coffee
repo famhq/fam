@@ -1,9 +1,9 @@
-Rx = require 'rxjs'
 uuid = require 'uuid'
 _sortBy = require 'lodash/sortBy'
 _merge = require 'lodash/merge'
 _cloneDeep = require 'lodash/cloneDeep'
 _defaults = require 'lodash/defaults'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 
 config = require '../config'
 
@@ -35,7 +35,7 @@ module.exports = class ChatMessage
   getAllByConversationId: (conversationId) =>
     # buffer 0 so future streams don't try to add the client changes
     # (causes smooth scroll to bottom in conversations)
-    @clientChangesStream[conversationId] ?= new Rx.ReplaySubject(0)
+    @clientChangesStream[conversationId] ?= new RxReplaySubject(0)
 
     options = {
       initialSortFn: ((items) -> _sortBy items, 'time')

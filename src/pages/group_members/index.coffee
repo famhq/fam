@@ -1,5 +1,5 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Head = require '../../components/head'
 GroupMembers = require '../../components/group_members'
@@ -31,7 +31,7 @@ module.exports = class GroupManageMemberPage
       }
     })
 
-    selectedProfileDialogUser = new Rx.BehaviorSubject null
+    selectedProfileDialogUser = new RxBehaviorSubject null
 
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}

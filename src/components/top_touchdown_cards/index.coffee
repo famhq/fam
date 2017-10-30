@@ -1,6 +1,5 @@
 z = require 'zorium'
 _map = require 'lodash/map'
-Rx = require 'rxjs'
 Environment = require 'clay-environment'
 
 Spinner = require '../spinner'

@@ -1,5 +1,7 @@
 z = require 'zorium'
-Rx = require 'rxjs'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservableOf = require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/of'
 
 Head = require '../../components/head'
 Tabs = require '../../components/tabs'
@@ -19,12 +21,12 @@ module.exports = class FriendsPage
   constructor: ({@model, @router, requests, serverData}) ->
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY
-    @isFindFriendsVisible = new Rx.ReplaySubject 1
+    @isFindFriendsVisible = new RxReplaySubject 1
     @isFindFriendsVisible.next(
       requests.map ({route}) ->
         route.params.action is 'find'
     )
-    @selectedProfileDialogUser = new Rx.BehaviorSubject null
+    @selectedProfileDialogUser = new RxBehaviorSubject null
 
     userData = @model.userData.getMe {
       embed: ['following', 'followers', 'blockedUsers']
@@ -136,4 +138,4 @@ module.exports = class FriendsPage
             color: colors.$white
           }
           onclick: =>
-            @isFindFriendsVisible.next Rx.Observable.of true
+            @isFindFriendsVisible.next RxObservable.of true
