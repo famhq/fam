@@ -37,7 +37,7 @@ if window?
   require './index.styl'
 
 module.exports = class Thread extends Base
-  constructor: ({@model, @router, thread, @isInline, gameKey}) ->
+  constructor: ({@model, @router, @overlay$, thread, @isInline, gameKey}) ->
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
 
@@ -52,7 +52,7 @@ module.exports = class Thread extends Base
     @$fab = new Fab()
     @$avatar = new Avatar()
 
-    @selectedProfileDialogUser = new RxrBehaviorSubject false
+    @selectedProfileDialogUser = new RxBehaviorSubject false
     @$profileDialog = new ProfileDialog {
       @model, @router, @selectedProfileDialogUser, gameKey
     }
@@ -90,7 +90,6 @@ module.exports = class Thread extends Base
         RxObservable.of null
 
     @message = new RxBehaviorSubject ''
-    @overlay = new RxBehaviorSubject null
     @isPostLoading = new RxBehaviorSubject false
     @$conversationInput = new ConversationInput {
       @model

@@ -1,0 +1,28 @@
+@require '../../vars'
+
+.z-addon-list-item
+  display: flex
+  min-width: 0 // fix
+
+  &.has-padding
+    padding: 16px
+
+  > .icon
+    width: 40px
+    height: 40px
+
+  > .info
+    margin-left: 16px
+    flex: 1
+
+    > .name
+      font-title()
+      overflow: hidden
+
+      > .creator
+        font-caption2()
+        display: inline-block
+        margin-left: 4px
+
+    > .description
+      font-caption2()

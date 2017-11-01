@@ -4,6 +4,7 @@ RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/share'
 
 PrimaryInput = require '../primary_input'
 Dropdown = require '../dropdown'

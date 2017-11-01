@@ -12,6 +12,7 @@ require 'rxjs/add/observable/of'
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/observable/merge'
 require 'rxjs/add/observable/fromEvent'
+require 'rxjs/add/operator/share'
 
 Spinner = require '../spinner'
 Base = require '../base'

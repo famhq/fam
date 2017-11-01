@@ -1,6 +1,7 @@
 z = require 'zorium'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/switchMap'
 
 Head = require '../../components/head'
 NewThread = require '../../components/new_thread'

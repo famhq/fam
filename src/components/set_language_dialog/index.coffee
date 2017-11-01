@@ -3,6 +3,7 @@ _map = require 'lodash/map'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/switch'
 
 Dialog = require '../dialog'
 colors = require '../../colors'
@@ -56,3 +57,5 @@ module.exports = class SetLanguageDialog
           onclick: =>
             @model.l.setLanguage currentLanguage
             @overlay$.next null
+            # we use a separate bundle.js per language, so need to load that in
+            window.location.reload()

@@ -3,7 +3,6 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 
 Icon = require '../icon'
-Ripple = require '../ripple'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -45,6 +44,7 @@ module.exports = class BottomBar
       #   icon: 'friends'
       #   route: '/players'
       #   text: @model.l.get 'drawer.menuItemPlayers'
+      #   $ripple: new Ripple()
       # }
       {
         $icon: new Icon()
@@ -65,11 +65,11 @@ module.exports = class BottomBar
           icon: 'rss'
           route: @router.get 'forum', {gameKey}
           text: @model.l.get 'general.forum'
-        }
+          }
     ]
 
-    z '.z-bottom-bar',
-      _map @menuItems, ({$icon, icon, route, text, isDefault}) =>
+    z '.z-bottom-bar', {key: 'bottom-bar'},
+      _map @menuItems, ({$icon, icon, route, text, $ripple, isDefault}, i) =>
         if isDefault
           isSelected =  currentPath in [
             @router.get 'siteHome'
@@ -79,10 +79,20 @@ module.exports = class BottomBar
         else
           isSelected = currentPath and currentPath.indexOf(route) isnt -1
 
-        z '.menu-item', {
+        z 'a.menu-item', {
+          attributes:
+            tabindex: i
           className: z.classKebab {isSelected}
-          onclick: =>
+          href: route
+          onclick: (e) =>
+            e?.preventDefault()
             @router.goPath route
+          # ontouchstart: (e) =>
+          #   e?.stopPropagation()
+          #   @router.goPath route
+          # onclick: (e) =>
+          #   e?.stopPropagation()
+          #   @router.goPath route
         },
           z '.icon',
             z $icon,

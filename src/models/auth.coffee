@@ -2,6 +2,9 @@ _defaults = require 'lodash/defaults'
 _pick = require 'lodash/pick'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/defer'
+require 'rxjs/add/observable/fromPromise'
+require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/operator/take'
 
 config = require '../config'
 

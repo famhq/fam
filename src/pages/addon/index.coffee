@@ -23,6 +23,11 @@ module.exports = class AddonPage
       @model.addon.getByKey _camelCase key
     testUrl = requests.map ({req}) ->
       req.query.testUrl
+    replacements = requests.map ({req}) ->
+      try
+        JSON.parse req.query.replacements
+      catch
+        {}
 
     @$head = new Head({
       @model
@@ -38,7 +43,9 @@ module.exports = class AddonPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$addon = new Addon {@model, @router, serverData, addon, testUrl}
+    @$addon = new Addon {
+      @model, @router, serverData, addon, testUrl, replacements
+    }
     @$thumbsUpIcon = new Icon()
     @$thumbsDownIcon = new Icon()
 
@@ -65,8 +72,7 @@ module.exports = class AddonPage
         isFlat: true
         $topLeftButton: z @$buttonBack, {
           color: colors.$primary500
-          onclick: =>
-            @router.go 'mods', {gameKey}
+          fallbackPath: @router.get 'mods', {gameKey}
         }
         $topRightButton:
           z '.p-addon_vote',

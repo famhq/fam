@@ -19,6 +19,7 @@ RequestNotificationsCard = require '../request_notifications_card'
 ClanBadge = require '../clan_badge'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
+AddonListItem = require '../addon_list_item'
 VerifyAccountDialog = require '../verify_account_dialog'
 AutoRefreshDialog = require '../auto_refresh_dialog'
 AdsenseAd = require '../adsense_ad'
@@ -58,6 +59,13 @@ module.exports = class ProfileInfo
     @$requestNotificationsCard = new RequestNotificationsCard {
       @model
       isVisible: isRequestNotificationCardVisible
+    }
+
+    @$addonListItem = new AddonListItem {
+      @model
+      @router
+      gameKey
+      addon: @model.addon.getByKey 'cardCollection'
     }
 
     @state = z.state {
@@ -420,3 +428,11 @@ module.exports = class ProfileInfo
                   z '.g-col.g-xs-6',
                     z '.name', name
                     z '.value', value
+
+        z '.block',
+          z '.g-grid',
+            z '.title', @model.l.get 'addonsPage.title'
+            z @$addonListItem, {
+              hasPadding: false
+              replacements: {playerTag: player?.id.replace '#', ''}
+            }

@@ -1,6 +1,7 @@
 z = require 'zorium'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
-RxObservableOf = require 'rxjs/add/observable/of'
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 
 Head = require '../../components/head'

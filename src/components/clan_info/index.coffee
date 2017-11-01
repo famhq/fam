@@ -9,6 +9,7 @@ require 'rxjs/add/operator/switchMap'
 Icon = require '../icon'
 AdsenseAd = require '../adsense_ad'
 RequestNotificationsCard = require '../request_notifications_card'
+AddonListItem = require '../addon_list_item'
 PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 ClanMetrics = require '../clan_metrics'
@@ -37,6 +38,13 @@ module.exports = class ClanInfo
     @$requestNotificationsCard = new RequestNotificationsCard {
       @model
       isVisible: isRequestNotificationCardVisible
+    }
+
+    @$addonListItem = new AddonListItem {
+      @model
+      @router
+      gameKey
+      addon: @model.addon.getByKey 'clanManager'
     }
 
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
@@ -168,3 +176,11 @@ module.exports = class ClanInfo
         z '.divider'
         z '.block',
           z @$clanMetrics
+
+        z '.block',
+          z '.g-grid',
+            z '.title', @model.l.get 'addonsPage.title'
+            z @$addonListItem, {
+              hasPadding: false
+              replacements: {clanTag: clan?.id.replace '#', ''}
+            }

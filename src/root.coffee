@@ -4,7 +4,6 @@ _map = require 'lodash/map'
 z = require 'zorium'
 log = require 'loga'
 cookie = require 'cookie'
-FastClick = require 'fastclick'
 LocationRouter = require 'location-router'
 Environment = require 'clay-environment'
 socketIO = require 'socket.io-client/dist/socket.io.slim.js'
@@ -78,7 +77,6 @@ navigator.serviceWorker?.register '/service_worker.js'
 portal = new Portal()
 
 init = ->
-  FastClick.attach document.body
   currentCookies = cookie.parse(document.cookie)
   cookieSubject = new RxBehaviorSubject currentCookies
   cookieSubject.do(setCookies(currentCookies)).subscribe()

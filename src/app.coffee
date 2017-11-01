@@ -12,6 +12,7 @@ require 'rxjs/add/operator/filter'
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/publishReplay'
 
 Drawer = require './components/drawer'
 SignInDialog = require './components/sign_in_dialog'

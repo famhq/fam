@@ -1,6 +1,13 @@
-
-
 @require '../../vars'
+
+// TODO: move into fn that other components can use?
+@keyframes z-ripple-animation-css-only
+  from
+    transform: scale(7) translate(-50%)
+    opacity: 0.25
+  to
+    transform: scale(20) translate(-50%)
+    opacity: 0
 
 .z-bottom-bar
   display: flex
@@ -16,6 +23,10 @@
     text-align: center
     padding: 8px 0
     cursor: pointer
+    position: relative
+    outline: none
+    overflow: hidden
+    user-select: none
 
     &.is-selected
       > .text
@@ -25,3 +36,26 @@
       font-caption1()
       color: getColor('$tertiary300')
       margin-top: 2px
+
+    &:after // ripple
+      content: ''
+      position: absolute
+      border-radius: 50%
+      width: 5px
+      height: 5px
+      left: 50%
+      top: 50%
+      transform: scale(1) translate(-50%)
+      transform-origin: 0
+      // margin-top: -50%
+      background: getColor('$primary500')
+      opacity: 0
+      pointer-events: none
+
+    // focus doesn't start until a couple hundred milliseconds after the
+    // touch event, so we trick the eye by having the animation be shorter,
+    // start faster, and start a larger than 5px (35px)
+    &:focus:not(:active)::after {
+      opacity: 0
+      animation: z-ripple-animation-css-only 0.3s ease-out
+    }

@@ -1,4 +1,5 @@
 z = require 'zorium'
+_defaults = require 'lodash/defaults'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
@@ -52,7 +53,7 @@ module.exports = class NewThread
     )
     categoryAndId = RxObservable.combineLatest(
       category
-      id
+      id or RxObservable.of null
       (vals...) -> vals
     )
 
@@ -145,11 +146,14 @@ module.exports = class NewThread
               language: language
               gameId: config.CLASH_ROYALE_ID
             }
-            if thread
+            (if thread
               @model.thread.updateById thread.id, newThread
             else
-              @model.thread.create newThread
-          .then (thread) =>
-            @bodyValueStreams.next RxObservable.of null
-            @attachmentsValueStreams.next RxObservable.of null
-            @router.goPath @model.thread.getPath(thread, @router), {reset: true}
+              @model.thread.create newThread)
+            .then =>
+              @bodyValueStreams.next RxObservable.of null
+              @attachmentsValueStreams.next RxObservable.of null
+              @router.goPath(
+                @model.thread.getPath(_defaults(newThread, thread), @router)
+                {reset: true}
+              )

@@ -51,14 +51,12 @@ relativeTimeFormats =
     y: '1A'
     yy: '%dA'
 
-# FIXME: change language
-
 class Language
   constructor: ({language, @cookieSubject}) ->
     @language = new RxBehaviorSubject language
 
     # also update gulpfile ContextReplacementPlugin for moment
-    if window?
+    if window? and config.ENV is config.ENVS.PROD
       # done like this so compile time is quicker
       @files = window.languageStrings
     else
@@ -131,7 +129,7 @@ class Language
   get: (strKey, {replacements, file} = {}) =>
     file ?= 'strings'
     language = @getLanguageStr()
-    baseResponse = @files[file]?[strKey] or
+    baseResponse = @files[file][language]?[strKey] or
                     @files[file]['en']?[strKey] or ''
 
     unless baseResponse

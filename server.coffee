@@ -11,7 +11,7 @@ Promise = require 'bluebird'
 request = require 'clay-request'
 cookieParser = require 'cookie-parser'
 fs = require 'fs'
-socketIO = require 'socket.io-client/dist/socket.io.slim.js'
+socketIO = require 'socket.io-client'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/do'
 require 'rxjs/add/operator/take'
@@ -30,11 +30,6 @@ MIN_TIME_REQUIRED_FOR_HSTS_GOOGLE_PRELOAD_MS = 10886400000 # 18 weeks
 HEALTHCHECK_TIMEOUT = 200
 RENDER_TO_STRING_TIMEOUT_MS = 1200
 BOT_RENDER_TO_STRING_TIMEOUT_MS = 4500
-
-styles = if config.ENV is config.ENVS.PROD
-  fs.readFileSync gulpPaths.dist + '/bundle.css', 'utf-8'
-else
-  null
 
 app = express()
 app.use compress()
@@ -183,17 +178,19 @@ app.use (req, res, next) ->
     model: model
   }
   requests = new RxBehaviorSubject(req)
-  bundlePath = if config.ENV is config.ENVS.PROD
+  if config.ENV is config.ENVS.PROD
     stats = JSON.parse \
       fs.readFileSync gulpPaths.dist + '/stats.json', 'utf-8'
 
-    # Date.now() is there because for some reason, the cache doesn't seem to get
-    # cleared for some users. Hoping this helps
-    "/bundle_#{language}.js?#{stats.hash}#{Date.now()}"
+    # add Date.now() if having caching issues. problem is it'll be different
+    # per node, so browser cache isn't used as often
+    bundlePath = "/bundle_#{language}.js?#{stats.hash}"
+    bundleCssPath = "/bundle.css?#{stats.time}"
   else
-    null
+    bundlePath = null
+    bundleCssPath = null
 
-  serverData = {req, res, styles, bundlePath}
+  serverData = {req, res, bundlePath, bundleCssPath}
   userAgent = req.headers?['user-agent']
   isFacebookCrawler = userAgent?.indexOf('facebookexternalhit') isnt -1 or
       userAgent?.indexOf('Facebot') isnt -1

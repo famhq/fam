@@ -19,7 +19,7 @@ gulpSequence = require 'gulp-sequence'
 WebpackDevServer = require 'webpack-dev-server'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
 # UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
-Visualizer = require('webpack-visualizer-plugin')
+# Visualizer = require('webpack-visualizer-plugin')
 argv = require('yargs').argv
 
 config = require './src/config'
@@ -137,7 +137,7 @@ gulp.task 'dev:webpack-server', ->
       ]
     plugins: [
       new webpack.HotModuleReplacementPlugin()
-      new webpack.IgnorePlugin /\.json$/, /lang/
+      # new webpack.IgnorePlugin /\.json$/, /lang/
       new webpack.DefinePlugin
         'process.env': _mapValues process.env, (val) -> JSON.stringify val
     ]
@@ -223,7 +223,7 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   scriptsConfig = _defaultsDeep {
     # devtool: 'source-map'
     plugins: [
-      new Visualizer()
+      # new Visualizer()
       # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       new webpack.ContextReplacementPlugin(
         /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
@@ -257,7 +257,7 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
     if err
       gutil.log err
       return
-    statsJson = JSON.stringify {hash: stats.toJson().hash}
+    statsJson = JSON.stringify {hash: stats.toJson().hash, time: Date.now()}
     fs.writeFileSync "#{__dirname}/#{paths.dist}/stats.json", statsJson
   .pipe gulp.dest paths.dist
 

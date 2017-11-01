@@ -1,3 +1,4 @@
+qs = require 'qs'
 _forEach = require 'lodash/forEach'
 
 config = require '../config'
@@ -26,9 +27,12 @@ class RouterService
     if route
       @router.go route
 
-  go: (routeKey, replacements, {ignoreHistory} = {}) =>
+  go: (routeKey, replacements, options = {}) =>
     path = @get routeKey, replacements
-    @goPath path, {ignoreHistory}
+    if options.qs
+      @goPath "#{path}?#{qs.stringify options.qs}", options
+    else
+      @goPath path, options
 
   get: (routeKey, replacements) =>
     route = @model.l.get routeKey, {file: 'paths'}

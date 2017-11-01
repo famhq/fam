@@ -3962,11 +3962,6 @@
       "integrity": "sha1-liVqO8l1WV6zbYLpkp0GDYk0Of8=",
       "dev": true
     },
-    "fastclick": {
-      "version": "1.0.6",
-      "resolved": "https://registry.npmjs.org/fastclick/-/fastclick-1.0.6.tgz",
-      "integrity": "sha1-FhYlsnsaWAZAWTa9qaLBkm0Gvmo="
-    },
     "fbjs": {
       "version": "0.6.1",
       "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.6.1.tgz",

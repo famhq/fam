@@ -38,7 +38,7 @@ module.exports = class Thread
     router.get 'threadWithTitle', {
       id: thread?.id
       gameKey: config.DEFAULT_GAME_KEY
-      title: formattedTitle
+      title: formattedTitle or 'thread'
     }
 
   hasPermission: (thread, user, {level} = {}) ->

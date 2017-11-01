@@ -237,8 +237,10 @@ module.exports = class Head
 
       # styles
       if isInliningSource
-        z 'style.styles',
-          innerHTML: serverData?.styles
+        z 'link',
+          rel: 'stylesheet'
+          type: 'text/css'
+          href: serverData?.bundleCssPath
       else
         null
 
