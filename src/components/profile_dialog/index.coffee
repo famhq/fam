@@ -1,8 +1,10 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
+_isEmpty = require 'lodash/isEmpty'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/switchMap'
 
 Avatar = require '../avatar'
@@ -36,8 +38,12 @@ module.exports = class ProfileDialog
 
     me = @model.user.getMe()
 
+    groupAndMe = RxObservable.combineLatest group, me, (vals...) -> vals
+
     @state = z.state
       me: me
+      meGroupUser: groupAndMe.switchMap ([group, me]) =>
+        @model.groupUser.getByGroupIdAndUserId group.id, me.id
       user: @selectedProfileDialogUser
       gameKey: gameKey
       clashRoyaleData: @selectedProfileDialogUser.switchMap (user) =>
@@ -58,12 +64,23 @@ module.exports = class ProfileDialog
     @router.onBack null
 
   render: =>
-    {me, user, platform, isFlagLoading, isFlagged, group, clashRoyaleData,
+    {me, user, meGroupUser, platform, isFlagLoading, isFlagged, group, clashRoyaleData,
       isConversationLoading, gameKey} = @state.getValue()
 
     isBlocked = @model.user.isBlocked me, user?.id
     isMe = user?.id is me?.id
-    hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
+    hasDeleteMessagePermission = @model.groupUser.hasPermission {
+      group, meGroupUser, me
+      permissions: ['deleteMessage']
+    }
+    hasTempBanPermission = @model.groupUser.hasPermission {
+      group, meGroupUser, me
+      permissions: ['tempBan']
+    }
+    hasPermaBanPermission = @model.groupUser.hasPermission {
+      group, meGroupUser, me
+      permissions: ['permaBan']
+    }
 
     userOptions = _filter [
       {
@@ -136,73 +153,77 @@ module.exports = class ProfileDialog
       # }
     ]
 
-    modOptions = [
-      {
-        icon: 'warning'
-        $icon: @$tempBanIcon
-        text:
-          if user?.isChatBanned
-            @model.l.get 'profileDialog.chatBanned'
-          else
-            @model.l.get 'profileDialog.tempBan'
-        isVisible: not isMe
-        onclick: =>
-          if user?.isChatBanned
-            @model.mod.unbanByUserId user?.id, {groupId: group?.id}
-          else
-            @model.mod.banByUserId user?.id, {
-              duration: '24h', groupId: group?.id
-            }
-          @selectedProfileDialogUser.next null
-      }
-      {
-        icon: 'perma-ban'
-        $icon: @$permaBanIcon
-        text:
-          if user?.isChatBanned
-            @model.l.get 'profileDialog.chatBanned'
-          else
-            @model.l.get 'profileDialog.permaBan'
-        isVisible: not isMe
-        onclick: =>
-          if user?.isChatBanned
-            @model.mod.unbanByUserId user?.id, {groupId: group?.id}
-          else
-            @model.mod.banByUserId user?.id, {
-              duration: 'permanent'
-              groupId: group?.id
-            }
-          @selectedProfileDialogUser.next null
-      }
-      {
-        icon: 'ip-ban'
-        $icon: @$ipBanIcon
-        text:
-          if user?.isChatBanned
-            @model.l.get 'profileDialog.chatBanned'
-          else
-            @model.l.get 'profileDialog.ipBan'
-        isVisible: not isMe
-        onclick: =>
-          if user?.isChatBanned
-            @model.mod.unbanByUserId user?.id, {
-              groupId: group?.id
-            }
-          else
-            @model.mod.banByUserId user?.id, {
-              type: 'ip', duration: 'permanent', groupId: group?.id
-            }
-          @selectedProfileDialogUser.next null
-      }
-      {
-        icon: 'delete'
-        $icon: @$deleteIcon
-        text: @model.l.get 'profileDialog.delete'
-        isVisible: true
-        onclick: =>
-          @model.chatMessage.deleteById user?.chatMessageId
-          @selectedProfileDialogUser.next null
-      }
+    modOptions = _filter [
+      if hasTempBanPermission
+        {
+          icon: 'warning'
+          $icon: @$tempBanIcon
+          text:
+            if user?.isChatBanned
+              @model.l.get 'profileDialog.chatBanned'
+            else
+              @model.l.get 'profileDialog.tempBan'
+          isVisible: not isMe
+          onclick: =>
+            if user?.isChatBanned
+              @model.mod.unbanByUserId user?.id, {groupId: group?.id}
+            else
+              @model.mod.banByUserId user?.id, {
+                duration: '24h', groupId: group?.id
+              }
+            @selectedProfileDialogUser.next null
+        }
+      if hasPermaBanPermission
+        {
+          icon: 'perma-ban'
+          $icon: @$permaBanIcon
+          text:
+            if user?.isChatBanned
+              @model.l.get 'profileDialog.chatBanned'
+            else
+              @model.l.get 'profileDialog.permaBan'
+          isVisible: not isMe
+          onclick: =>
+            if user?.isChatBanned
+              @model.mod.unbanByUserId user?.id, {groupId: group?.id}
+            else
+              @model.mod.banByUserId user?.id, {
+                duration: 'permanent'
+                groupId: group?.id
+              }
+            @selectedProfileDialogUser.next null
+        }
+      if hasPermaBanPermission
+        {
+          icon: 'ip-ban'
+          $icon: @$ipBanIcon
+          text:
+            if user?.isChatBanned
+              @model.l.get 'profileDialog.chatBanned'
+            else
+              @model.l.get 'profileDialog.ipBan'
+          isVisible: not isMe
+          onclick: =>
+            if user?.isChatBanned
+              @model.mod.unbanByUserId user?.id, {
+                groupId: group?.id
+              }
+            else
+              @model.mod.banByUserId user?.id, {
+                type: 'ip', duration: 'permanent', groupId: group?.id
+              }
+            @selectedProfileDialogUser.next null
+        }
+      if hasDeleteMessagePermission
+        {
+          icon: 'delete'
+          $icon: @$deleteIcon
+          text: @model.l.get 'profileDialog.delete'
+          isVisible: true
+          onclick: =>
+            @model.chatMessage.deleteById user?.chatMessageId
+            @selectedProfileDialogUser.next null
+        }
     ]
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
@@ -238,7 +259,7 @@ module.exports = class ProfileDialog
                     }
                   z '.text', text
 
-            if me?.flags?.isModerator
+            if not _isEmpty modOptions
               z 'ul.content',
                 z '.divider'
                 _map modOptions, ({icon, $icon, text, onclick, isVisible}) ->

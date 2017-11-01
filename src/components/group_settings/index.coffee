@@ -9,10 +9,10 @@ require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/switch'
 
-
 ActionBar = require '../../components/action_bar'
 Toggle = require '../toggle'
 PrimaryInput = require '../primary_input'
+PrimaryButton = require '../primary_button'
 PrimaryTextarea = require '../primary_textarea'
 Icon = require '../icon'
 config = require '../../config'
@@ -50,6 +50,9 @@ module.exports = class Settings
       group.password) or RxObservable.of null
     @passwordError = new RxBehaviorSubject null
 
+    @moderatorUsernameValue = new RxBehaviorSubject ''
+    @moderatorUsernameError = new RxBehaviorSubject null
+
     @isPrivateStreams = new RxReplaySubject 1
     @isPrivateStreams.next (group?.map (group) ->
       group.privacy is 'private') or RxObservable.of null
@@ -69,6 +72,12 @@ module.exports = class Settings
     @$passwordInput = new PrimaryInput
       valueStreams: @passwordValueStreams
       error: @passwordError
+
+    @$moderatorUsernameInput = new PrimaryInput
+      value: @moderatorUsernameValue
+      error: @moderatorUsernameError
+
+    @$moderatorUsernameButton = new PrimaryButton()
 
     @$isPrivateToggle = new Toggle {isSelectedStreams: @isPrivateStreams}
 
@@ -206,3 +215,17 @@ module.exports = class Settings
                         "#{key}": not isSelected
                     }
                 }
+
+        if me?.username is 'austin' # TODO
+          [
+            z @$moderatorUsernameInput,
+              hintText: 'Add mod by username'
+            z @$moderatorUsernameButton,
+              text: 'Add'
+              onclick: =>
+                @model.groupUser.createModeratorByUsername {
+                  username: @moderatorUsernameValue.getValue()
+                  groupId: group.id
+                  roleId: null
+                }
+          ]
