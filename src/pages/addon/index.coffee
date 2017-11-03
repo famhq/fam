@@ -78,6 +78,7 @@ module.exports = class AddonPage
           z '.p-addon_vote',
             z @$thumbsUpIcon,
               icon: 'thumb-up'
+              hasRipple: true
               color: if hasVotedUp \
                      then colors.$primary500
                      else colors.$white
@@ -89,6 +90,7 @@ module.exports = class AddonPage
                     @model.addon.voteById addon.id, {vote: 'up'}
             z @$thumbsDownIcon,
               icon: 'thumb-down'
+              hasRipple: true
               color: if hasVotedDown \
                      then colors.$primary500
                      else colors.$white

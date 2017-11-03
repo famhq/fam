@@ -22,6 +22,7 @@ module.exports = class ThreadVoteButton
     z '.z-thread-vote-button',
       z @$icon,
         icon: "thumb-#{vote}"
+        hasRipple: true
         size: size
         isTouchTarget: isTouchTarget
         color: if hasVoted \

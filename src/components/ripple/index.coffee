@@ -18,15 +18,10 @@ module.exports = class Ripple
   type: 'Widget'
 
   constructor: -> null
-    # @state = z.state {
-    #   $waves: []
-    #   waveKeyCounter: 0
-    # }
 
   afterMount: (@$$el) => null
 
   ripple: ({$$el, color, isCenter, mouseX, mouseY, onComplete}) =>
-    # {$waves, waveKeyCounter} = @state.getValue()
     $$el ?= @$$el
 
     {width, height, top, left} = $$el.getBoundingClientRect()
@@ -45,35 +40,16 @@ module.exports = class Ripple
     $$wave.style.backgroundColor = color
     $$el.appendChild $$wave
 
-    # $wave =  z '.wave',
-    #   key: waveKeyCounter
-    #   style:
-    #     top: y + 'px'
-    #     left: x + 'px'
-    #     backgroundColor: color
-    # @state.set
-    #   $waves: $waves.concat $wave
-
-    # $$wave.addEventListener 'animationend', ->
-    # we want to do this a little before the animation actually completes
-
     new Promise (resolve, reject) ->
       setTimeout ->
         $$el.removeChild $$wave
         onComplete?()
         resolve()
-        # {$waves} = @state.getValue()
-        # @state.set
-        #   $waves: _.without $waves, $wave
       , ANIMATION_TIME_MS
 
   render: ({color, isCircle, isCenter, onComplete}) ->
-    # {$waves} = @state.getValue()
-
     onTouch = (e) =>
       $$el = e.target
-      # this prevents scrolling when touching a button/ripple in safari
-      # e?.preventDefault()
       @ripple {
         $$el
         color
@@ -87,4 +63,3 @@ module.exports = class Ripple
       className: z.classKebab {isCircle}
       ontouchstart: if Environment.isAndroid() then null else onTouch
       onmousedown: onTouch
-      # $waves
