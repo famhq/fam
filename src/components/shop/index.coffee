@@ -59,7 +59,9 @@ module.exports = class Shop
             isDisabled = not me?.fire or me?.fire < product.cost
             z '.product',
               z '.info',
-                z '.name', product.name
+                z '.name', @model.l.get "#{product.key}.title", {
+                  file: 'products'
+                }
                 if product.isLimited
                   z '.limited', @model.l.get 'spendFire.limited'
               z '.buy',

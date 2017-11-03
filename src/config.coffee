@@ -91,6 +91,7 @@ isomorphic =
     'yellow'
   ]
   BADGES: _map _range(1, 95), (i) -> "#{i}"
+  RARITIES: ['common', 'rare', 'epic', 'Legendary']
   PLAYER_COLORS: [
     colors.$amber500
     colors.$secondary500

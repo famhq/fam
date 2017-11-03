@@ -1,4 +1,5 @@
 z = require 'zorium'
+isUuid = require 'isuuid'
 
 Head = require '../../components/head'
 GroupSettings = require '../../components/group_settings'
@@ -13,7 +14,10 @@ module.exports = class GroupSettingsPage
 
   constructor: ({@model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) =>
-      @model.group.getById route.params.id
+      if isUuid route.params.id
+        @model.group.getById route.params.id
+      else
+        @model.group.getByKey route.params.id
 
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY

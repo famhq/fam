@@ -8346,6 +8346,11 @@
       "integrity": "sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=",
       "dev": true
     },
+    "isuuid": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/isuuid/-/isuuid-0.1.0.tgz",
+      "integrity": "sha1-UIEJrBQNbeQ7P4RlBs22Zd0+hzM="
+    },
     "js-tokens": {
       "version": "3.0.2",
       "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-3.0.2.tgz",

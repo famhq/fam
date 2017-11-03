@@ -1,0 +1,39 @@
+@require '../../vars'
+
+.z-item-list
+  flex: 1
+
+  &.is-inactive
+    overflow: hidden
+
+  > .share
+    font-body2()
+    margin-left: auto
+    margin-top: 16px
+    color: getColor('$primary500')
+    display: flex
+    align-items: center
+    justify-content: center
+
+    > .icon
+      margin-right: 16px
+
+  > .no-items
+    font-body1()
+    color: getColor('$tertiary500')
+    line-height: 20px
+    padding-top: 76px
+    text-align: center
+
+  > .spinner
+    margin: 40px 0 16px 0
+
+  > .g-grid
+    > .row
+      &.is-visible
+        > .item
+          display: inline-block
+          vertical-align: top
+
+      > .item
+        display: none

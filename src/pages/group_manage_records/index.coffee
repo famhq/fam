@@ -1,4 +1,5 @@
 z = require 'zorium'
+isUuid = require 'isuuid'
 
 Head = require '../../components/head'
 GroupManageRecords = require '../../components/group_manage_records'
@@ -14,7 +15,10 @@ module.exports = class GroupManageRecordsPage
 
   constructor: ({model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) ->
-      model.group.getById route.params.id
+      if isUuid route.params.id
+        model.group.getById route.params.id
+      else
+        model.group.getByKey route.params.id
 
     @$head = new Head({
       model

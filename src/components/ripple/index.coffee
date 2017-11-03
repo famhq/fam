@@ -21,10 +21,12 @@ module.exports = class Ripple
 
   afterMount: (@$$el) => null
 
-  ripple: ({$$el, color, isCenter, mouseX, mouseY, onComplete}) =>
+  ripple: ({$$el, color, isCenter, mouseX, mouseY, onComplete, fadeIn} = {}) =>
     $$el ?= @$$el
 
     {width, height, top, left} = $$el.getBoundingClientRect()
+
+    console.log width, height
 
     if isCenter
       x = width / 2
@@ -34,7 +36,7 @@ module.exports = class Ripple
       y = mouseY - top
 
     $$wave = document.createElement 'div'
-    $$wave.className = 'wave'
+    $$wave.className = if fadeIn then 'wave fade-in' else 'wave'
     $$wave.style.top = y + 'px'
     $$wave.style.left = x + 'px'
     $$wave.style.backgroundColor = color
@@ -42,12 +44,14 @@ module.exports = class Ripple
 
     new Promise (resolve, reject) ->
       setTimeout ->
-        $$el.removeChild $$wave
         onComplete?()
         resolve()
+        setTimeout ->
+          $$el.removeChild $$wave
+        , 0
       , ANIMATION_TIME_MS
 
-  render: ({color, isCircle, isCenter, onComplete}) ->
+  render: ({color, isCircle, isCenter, onComplete, fadeIn}) ->
     onTouch = (e) =>
       $$el = e.target
       @ripple {
@@ -55,6 +59,7 @@ module.exports = class Ripple
         color
         isCenter
         onComplete
+        fadeIn
         mouseX: e.clientX or e.touches?[0]?.clientX
         mouseY: e.clientY or e.touches?[0]?.clientY
       }

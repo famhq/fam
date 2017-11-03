@@ -1,10 +1,11 @@
 @require '../../vars'
 
 $zIndexDeck = 99999999
+$zIndexOpenPack = 999
 $zIndexConfetti = 1
 $zIndexContent = 2
 
-.z-open-packet
+.z-open-pack
   position: fixed
   z-index: $zIndexOpenPack
   top: 0
@@ -16,7 +17,7 @@ $zIndexContent = 2
   flex-direction: column
 
   &.is-visible
-    background: getColor('$grey900')
+    background: getColor('$primary500')
 
     > .content
       opacity: 1
@@ -45,7 +46,7 @@ $zIndexContent = 2
     position: relative
     z-index: $zIndexContent
     display: flex
-    // opacity: 0
+    opacity: 0
     flex: 1
     flex-direction: column
     justify-content: center
@@ -56,8 +57,8 @@ $zIndexContent = 2
       right: 18px
       display: flex
 
-      > .circulating, > .cp
-        responsive-font-body2()
+      > .circulating
+        font-body2()
         font-weight: 500
         color: getColor('$tertiary200')
         display: flex
@@ -65,10 +66,6 @@ $zIndexContent = 2
 
         > .icon
           margin-right: 8px
-
-      > .cp
-        color: getColor('$amber500')
-        margin-left: 24px
 
     > .items
       margin: auto 0
@@ -84,22 +81,18 @@ $zIndexContent = 2
           position: absolute
           transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)
           -webkit-backface-visibility: hidden
-          background: getColor('$tertiary800')
           border-radius: 12.5px
           padding: 24px 36px
           text-align: center
 
           > .name
-            responsive-font-headline()
-            font-weight: 300
+            font-title()
             color: $white
             margin-top: 16px
 
           > .rarity
-            responsive-font-body-2()
-            color: $white
+            font-body1()
             margin-top: 4px
-            text-transform: uppercase
 
 
     > .bottom
@@ -118,7 +111,7 @@ $zIndexContent = 2
         box-sizing: border-box
 
       > .tap-to-reveal
-        responsive-font-body2()
+        font-body2()
         background: getColor('$grey800')
         color: getColor('$grey800Text')
         margin-top: auto

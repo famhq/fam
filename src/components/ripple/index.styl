@@ -8,6 +8,14 @@
     transform: scale(1)
     opacity: 0
 
+@keyframes z-ripple-animation-fade-in
+  from
+    transform: scale(0.1)
+    opacity: 0.25
+  to
+    transform: scale(1)
+    opacity: 1
+
 .z-ripple
   position: absolute
   top: 0
@@ -15,7 +23,7 @@
   right: 0
   bottom: 0
   overflow: hidden
-  opacity: 0.5
+  // opacity: 0.5
   cursor: pointer
 
   > .wave
@@ -28,9 +36,14 @@
     margin-left: -100%
     margin-top: -100%
     background: getColor('$white')
-    // animation: z-ripple-animation 1.5s
-    animation: z-ripple-animation 0.5s
     pointer-events: none
+
+    &.fade-in
+      animation: z-ripple-animation-fade-in 0.5s
+
+    &:not(.fade-in)
+      animation: z-ripple-animation 0.5s
+
 
   &.is-circle
     // fix chrome border-radius clipping

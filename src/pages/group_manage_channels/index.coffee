@@ -1,6 +1,5 @@
-
-
 z = require 'zorium'
+isUuid = require 'isuuid'
 
 Head = require '../../components/head'
 GroupManageChannels = require '../../components/group_manage_channels'
@@ -16,7 +15,10 @@ module.exports = class GroupManageChannelsPage
 
   constructor: ({@model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) =>
-      @model.group.getById route.params.id
+      if isUuid route.params.id
+        @model.group.getById route.params.id
+      else
+        @model.group.getByKey route.params.id
 
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId

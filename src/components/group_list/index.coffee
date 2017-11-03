@@ -35,11 +35,17 @@ module.exports = class GroupList
                 hasMemberPermission = @model.group.hasPermission group, me, {
                   level: 'member'
                 }
+                if hasMemberPermission
+                  route = @router.get 'groupChat', {
+                    gameKey, id: group.key or group.id
+                  }
+                else
+                  route = @router.get 'group', {
+                    gameKey, id: group.key or group.id
+                  }
                 z '.g-col.g-xs-12.g-md-6',
                   @router.link z 'a.group', {
-                    href: if hasMemberPermission \
-                          then @router.get 'groupChat', {gameKey, id: group.id}
-                          else @router.get 'group', {gameKey, id: group.id}
+                    href: route
                   },
                     z '.header',
                       z '.inner',

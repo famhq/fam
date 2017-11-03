@@ -62,16 +62,16 @@ module.exports = class FirePage
               isTouchTarget: false
               size: '20px'
       }
-        z @$tabs,
-          isBarFixed: false
-          hasAppBar: true
-          tabs: [
-            {
-              $menuText: @model.l.get 'general.earn'
-              $el: z @$earnFire
-            }
-            {
-              $menuText: @model.l.get 'general.spend'
-              $el: z @$spendFire
-            }
-          ]
+      z @$tabs,
+        isBarFixed: false
+        hasAppBar: true
+        tabs: [
+          {
+            $menuText: @model.l.get 'general.earn'
+            $el: z @$earnFire
+          }
+          {
+            $menuText: @model.l.get 'general.spend'
+            $el: z @$spendFire
+          }
+        ]

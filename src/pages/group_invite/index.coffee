@@ -1,4 +1,5 @@
 z = require 'zorium'
+isUuid = require 'isuuid'
 
 Head = require '../../components/head'
 GroupInvite = require '../../components/group_invite'
@@ -11,7 +12,10 @@ module.exports = class GroupInvitePage
 
   constructor: ({model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) ->
-      model.group.getById route.params.id
+      if isUuid route.params.id
+        model.group.getById route.params.id
+      else
+        model.group.getByKey route.params.id
 
     @$head = new Head({
       model

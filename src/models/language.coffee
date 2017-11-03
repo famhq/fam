@@ -66,7 +66,7 @@ class Language
         addons: null
         paths: null
         languages: null
-        items: null
+        products: null
       }
 
       @files = _mapValues files, (val, file) ->

@@ -1,4 +1,5 @@
 z = require 'zorium'
+isUuid = require 'isuuid'
 _find = require 'lodash/find'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
@@ -21,7 +22,10 @@ if window?
 module.exports = class GroupChatPage
   constructor: ({@model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) =>
-      @model.group.getById route.params.id
+      if isUuid route.params.id
+        @model.group.getById route.params.id
+      else
+        @model.group.getByKey route.params.id
 
     conversationId = requests.map ({route}) ->
       route.params.conversationId
@@ -45,6 +49,7 @@ module.exports = class GroupChatPage
     currentConversationId = null
     conversation = groupAndConversationIdAndMe
     .switchMap ([group, conversationId, me]) =>
+      console.log 'group', group
       # side effect
       if conversationId isnt currentConversationId
         # is set to false when messages load in conversation component
@@ -173,14 +178,22 @@ module.exports = class GroupChatPage
             else if group?.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
               z '.icon',
                 z @$linkIcon,
-                  icon: 'external-link'
+                  icon: 'shop'
                   color: colors.$primary500
                   onclick: =>
-                    @model.portal.call 'browser.openWindow', {
-                      url:
-                        'https://www.youtube.com/boplayhard'
-                      target: '_system'
-                  }
+                    @router.go 'groupShop', {
+                      gameKey, id: group?.key or group?.id
+                    }
+              # z '.icon',
+              #   z @$linkIcon,
+              #     icon: 'external-link'
+              #     color: colors.$primary500
+              #     onclick: =>
+              #       @model.portal.call 'browser.openWindow', {
+              #         url:
+              #           'https://www.youtube.com/boplayhard'
+              #         target: '_system'
+              #     }
 
       }
       z '.content',

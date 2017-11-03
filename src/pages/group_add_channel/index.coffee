@@ -1,4 +1,5 @@
 z = require 'zorium'
+isUuid = require 'isuuid'
 
 Head = require '../../components/head'
 GroupEditChannel = require '../../components/group_edit_channel'
@@ -11,7 +12,10 @@ module.exports = class GroupAddChannelPage
 
   constructor: ({model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) ->
-      model.group.getById route.params.id
+      if isUuid route.params.id
+        model.group.getById route.params.id
+      else
+        model.group.getByKey route.params.id
 
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY

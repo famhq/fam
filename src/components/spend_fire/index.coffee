@@ -26,7 +26,7 @@ module.exports = class SpendFire
         _filter [
           {
             id: 'noAdsForDay'
-            name: @model.l.get 'noAdsForDay.title', {file: 'items'}
+            name: @model.l.get 'noAdsForDay.title', {file: 'products'}
             cost: 50
             $fireIcon: new Icon()
             $buyButton: new PrimaryButton()
@@ -36,7 +36,7 @@ module.exports = class SpendFire
           if country in ['mx', 'us', 'br', 'kr', 'jp']
             {
               id: 'googlePlay10'
-              # name: @model.l.get 'googlePlay10.title', {file: 'items'}
+              # name: @model.l.get 'googlePlay10.title', {file: 'products'}
               name: if country is 'us' \
                     then '$10 Google Play gift card'
                     else if country is 'mx'
@@ -62,7 +62,7 @@ module.exports = class SpendFire
             }
           {
             id: 'visa10'
-            # name: @model.l.get 'googlePlay10.title', {file: 'items'}
+            # name: @model.l.get 'googlePlay10.title', {file: 'products'}
             name: '$10 Visa gift card'
             cost: 15000
             isLimited: true

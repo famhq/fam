@@ -10,27 +10,31 @@ if window?
 MIN_STICKER_SIZE_FOR_LARGE = 50
 
 module.exports = class Sticker
-  constructor: ({@model, isLocked, item}) ->
+  constructor: ({@model, isLocked, itemInfo}) ->
     isLocked ?= null
 
     @state = z.state
       me: @model.user.getMe()
+      meItemIds: @model.userItem.getAll()
       isLocked: isLocked
-      item: item
+      itemInfo: itemInfo
 
   render: ({size, onclick}) =>
-    {me, isLocked, item} = @state.getValue()
+    {me, isLocked, itemInfo, meItemIds} = @state.getValue()
 
+    itemInfo ?= {}
+    {item, count} = itemInfo
     item ?= {}
-    count = item.count
-    isLocked ?= not @model.user.ownsItem me, item.id
+    isLocked ?= not @model.userItem.isOwnedByUserItemsAndItemKey(
+      meItemIds, item.key
+    )
 
     filenameParts = []
     if size < MIN_STICKER_SIZE_FOR_LARGE
       filenameParts.push 'small'
     else
       filenameParts.push 'large'
-    console.log 'item', item
+
     stickerSrc = config.CDN_URL + '/stickers/' +
                 "#{item.key}_#{filenameParts.join('_')}.png"
 

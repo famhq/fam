@@ -1,4 +1,5 @@
 z = require 'zorium'
+isUuid = require 'isuuid'
 _filter = require 'lodash/filter'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/switchMap'
@@ -32,7 +33,10 @@ module.exports = class GroupPage
     overlay$ = new RxBehaviorSubject null
 
     group = requests.switchMap ({route}) =>
-      @model.group.getById route.params.id
+      if isUuid route.params.id
+        @model.group.getById route.params.id
+      else
+        @model.group.getByKey route.params.id
 
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY

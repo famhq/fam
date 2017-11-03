@@ -42,14 +42,16 @@ module.exports = class OpenPack
             @model
             isBack: true
             isLocked: false
-            item: item
+            itemInfo: {item: item}
           }
       itemsSwiped: 0
 
   afterMount: =>
     setTimeout =>
       @$ripple.ripple({
-        pageAnimationTime: 500
+        color: colors.$primary500
+        isCenter: true
+        fadeIn: true
       }).then =>
         @state.set
           isVisible: true
@@ -67,7 +69,6 @@ module.exports = class OpenPack
 
   render: ({pack}) =>
     {me, items, isVisible, isDeckSpread, itemsSwiped} = @state.getValue()
-    console.log items
 
     itemCount = items?.length
 
@@ -85,7 +86,7 @@ module.exports = class OpenPack
     isSpecialItem = _some REQUIRES_CONFETTI, (subTypes) ->
       _isEqual subTypes, currentItem?.item?.subTypes
 
-    z '.z-open-packet', {
+    z '.z-open-pack', {
       className: z.classKebab {
         isVisible
         isDeckSpread
@@ -95,9 +96,7 @@ module.exports = class OpenPack
       if isSpecialItem
         z '.confetti',
           @$confetti
-      z @$ripple,
-        backgroundColor: colors.$grey900
-        rippleColor: colors.$grey900
+      z @$ripple
 
       z '.content',
         z '.top-right',
@@ -108,15 +107,6 @@ module.exports = class OpenPack
                 isTouchTarget: false
                 color: colors.$tertiary200
             FormatService.number currentItemCirculating
-
-          if currentItem?.item.cp
-            z '.cp',
-              z '.icon',
-                z @$cpIcon,
-                  icon: 'cp'
-                  isTouchTarget: false
-                  color: colors.$amber500
-              FormatService.number currentItem?.item.cp
 
         z '.items', {
           style:
@@ -165,14 +155,11 @@ module.exports = class OpenPack
           z '.action',
             z @$doneButton,
               text: 'Done'
-              isRaised: true
-              isDark: true
-              isFullWidth: true
               colors:
-                c200: colors.$secondary200
-                c500: colors.$secondary500
-                c600: colors.$secondary600
-                c700: colors.$secondary700
+                c200: colors.$tertiary200
+                c500: colors.$tertiary500
+                c600: colors.$tertiary600
+                c700: colors.$tertiary700
               onclick: =>
                 @onClose()
           z '.tap-to-reveal',

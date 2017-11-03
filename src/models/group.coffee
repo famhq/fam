@@ -10,11 +10,18 @@ module.exports = class Group
       name, description, badgeId, background, mode
     }, {invalidateAll: true}
 
+  # TODO
+  getPath: (group, path, router) ->
+    null
+
   getAll: ({filter, language} = {}) =>
     @auth.stream "#{@namespace}.getAll", {filter, language}
 
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
+
+  getByKey: (key) =>
+    @auth.stream "#{@namespace}.getByKey", {key}
 
   joinById: (id) =>
     @auth.call "#{@namespace}.joinById", {id}, {

@@ -1,12 +1,15 @@
 z = require 'zorium'
+isUuid = require 'isuuid'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/switchMap'
 
 Head = require '../../components/head'
-Shop = require '../../components/shop'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
+Tabs = require '../../components/tabs'
+Shop = require '../../components/shop'
+Collection = require '../../components/collection'
 colors = require '../../colors'
 
 if window?
@@ -17,7 +20,10 @@ module.exports = class GroupShopPage
 
   constructor: ({@model, requests, @router, serverData, overlay$}) ->
     group = requests.switchMap ({route}) =>
-      @model.group.getById route.params.id
+      if isUuid route.params.id
+        @model.group.getById route.params.id
+      else
+        @model.group.getByKey route.params.id
 
     gameKey = requests.map ({route}) ->
       route?.params.gameKey or config.DEFAULT_GAME_KEY
@@ -33,6 +39,7 @@ module.exports = class GroupShopPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
+    @$tabs = new Tabs {@model}
     @$shop = new Shop {
       @model
       @router
@@ -43,6 +50,12 @@ module.exports = class GroupShopPage
           @model.product.getAllByGroupId group.id
         else
           RxObservable.of null
+    }
+    @$collection = new Collection {
+      @model
+      @router
+      gameKey
+      overlay$
     }
 
     @state = z.state
@@ -64,4 +77,17 @@ module.exports = class GroupShopPage
           color: colors.$primary500
         }
       }
-      @$shop
+
+      z @$tabs,
+        isBarFixed: false
+        hasAppBar: true
+        tabs: [
+          {
+            $menuText: @model.l.get 'general.shop'
+            $el: z @$shop
+          }
+          {
+            $menuText: @model.l.get 'general.collection'
+            $el: z @$collection
+          }
+        ]
