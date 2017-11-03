@@ -117,8 +117,8 @@ module.exports = class Tabs
           @iScrollContainer.x / @iScrollContainer.scrollerWidth
         )
         xOffset = "#{xOffset}%"
-        @$$selector?.style.transform = "translate(#{xOffset}, 0)"
-        @$$selector?.style.webkitTransform = "translate(#{xOffset}, 0)"
+        @$$selector?.style.transform = "translateX(#{xOffset})"
+        @$$selector?.style.webkitTransform = "translateX(#{xOffset})"
 
     # the scroll listener in IScroll (iscroll-probe.js) is really slow
     # interval looks 100x better
