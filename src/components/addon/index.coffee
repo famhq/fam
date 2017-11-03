@@ -3,7 +3,6 @@ _isEmpty = require 'lodash/isEmpty'
 _defaults = require 'lodash/defaults'
 _reduce = require 'lodash/reduce'
 
-ShopOffers = require '../shop_offers'
 TopTouchdownCards = require '../top_touchdown_cards'
 ChestSimulatorPick = require '../simulator_pick'
 ForumSignature = require '../forum_signature'
@@ -20,7 +19,6 @@ module.exports = class Addon
       .map (player) ->
         return player or {}
 
-    @$shopOffers = new ShopOffers {@model, @router, player}
     @$chestSimulatorPick = new ChestSimulatorPick {@model, @router}
     @$topTouchdownCards = new TopTouchdownCards {@model, @router}
     @$forumSignature = new ForumSignature {@model, @router}
@@ -47,9 +45,7 @@ module.exports = class Addon
         height: "#{windowSize.height - appBarHeight}px"
         width: "#{windowSize.width}px"
     },
-      if addon?.id is 'f537f4b0-08cb-453c-8122-ae80e4163226'
-        z @$shopOffers
-      else if addon?.id is 'c22ef0b0-f4fb-4e9d-b065-28991390cec8'
+      if addon?.id is 'c22ef0b0-f4fb-4e9d-b065-28991390cec8'
         @$topTouchdownCards
       else if addon?.id is '8787842f-bc03-4070-a541-39062be97fdc'
         z @$chestSimulatorPick

@@ -79,6 +79,7 @@ module.exports = class ForumPage
           z @$filterIcon,
             color: colors.$primary500
             icon: 'filter'
+            hasRipple: true
             onclick: =>
               @isFilterThreadsDialogVisible.next true
       }

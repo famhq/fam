@@ -7,7 +7,10 @@ module.exports = class Product
     @allCached = new RxReplaySubject 1
 
   getAll: =>
-    @auth.stream "#{@namespace}.products"
+    @auth.stream "#{@namespace}.getAll"
+
+  getAllByGroupId: (groupId) =>
+    @auth.stream "#{@namespace}.getAllByGroupId", {groupId}
 
   setAllCached: (allCached) => @allCached.next allCached
 

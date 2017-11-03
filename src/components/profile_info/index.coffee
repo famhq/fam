@@ -41,7 +41,6 @@ module.exports = class ProfileInfo
     @$followButton = new PrimaryButton()
     @$messageButton = new PrimaryButton()
     @$moreDetailsButton = new SecondaryButton()
-    @$shopOffersButton = new SecondaryButton()
     @$verifyAccountButton = new SecondaryButton()
     @$clanBadge = new ClanBadge()
     @$dialog = new Dialog()

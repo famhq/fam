@@ -15,6 +15,7 @@ if window?
 
 ONE_DAY_MS = 24 * 3600 * 1000
 
+# TODO: migrate to shop
 module.exports = class SpendFire
   constructor: ({@model, @router, @overlay$}) ->
     me = @model.user.getMe()
@@ -111,5 +112,5 @@ module.exports = class SpendFire
                   ga? 'send', 'event', 'item', 'buy', item.id
                   (item.beforePurchase?() or Promise.resolve())
                   .then (data) =>
-                    @model.product.buy _defaults data, {id: item.id}
+                    @model.product.buy _defaults data, {key: item.id}
                   .then item.onPurchase

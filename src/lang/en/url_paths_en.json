@@ -30,6 +30,7 @@
   "groupEditChannel": "/group/{id}/chat/{conversationId}/edit",
   "groupManageChannels": "/group/{id}/manage-channels",
   "groupSettings": "/group/{id}/settings",
+  "groupShop": "/group/{id}/shop",
   "groupAddRecords": "/group/{id}/add-records",
   "groupManageRecords": "/group/{id}/manage-records",
   "groupNewChannel": "/group/{id}/new-channel",

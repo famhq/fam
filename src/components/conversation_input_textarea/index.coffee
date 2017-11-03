@@ -16,7 +16,7 @@ module.exports = class ConversationInputTextarea
     {@message, @onPost, @onResize, @isTextareaFocused, @toggleIScroll
       @hasText, @model, isPostLoading} = options
 
-    @$sendIcon = new Icon {hasRipple: true}
+    @$sendIcon = new Icon()
 
     @isTextareaFocused ?= new RxBehaviorSubject false
 
@@ -132,6 +132,7 @@ module.exports = class ConversationInputTextarea
           },
             z @$sendIcon,
               icon: 'send'
+              hasRipple: true
               color: if hasText \
                      then colors.$white
                      else colors.$white54

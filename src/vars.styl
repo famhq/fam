@@ -126,3 +126,39 @@ font-micro()
 
   @media (min-width: $breakPointLarge)
     font-size: 10px
+
+
+@keyframes z-ripple-animation-css-only
+  from
+    transform: scale(7)
+    opacity: 0.25
+  to
+    transform: scale(20)
+    opacity: 0
+ripple(color)
+  position: relative
+  outline: none
+  overflow: hidden
+
+  &:after // ripple
+    content: ''
+    position: absolute
+    border-radius: 50%
+    width: 5%
+    padding-bottom: 5%
+    left: 47.5%
+    top: 50%
+    transform: scale(1)
+    transform-origin: 50%
+    // margin-top: -50%
+    background: color
+    opacity: 0
+    pointer-events: none
+
+  // focus doesn't start until a couple hundred milliseconds after the
+  // touch event, so we trick the eye by having the animation be shorter,
+  // start faster, and start a larger than 5px (35px)
+  &:focus:not(:active)::after {
+    opacity: 0
+    animation: z-ripple-animation-css-only 0.3s ease-out
+  }

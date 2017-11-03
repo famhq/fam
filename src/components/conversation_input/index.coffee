@@ -3,6 +3,7 @@ _map = require 'lodash/map'
 _upperFirst = require 'lodash/upperFirst'
 supportsWebP = window? and require 'supports-webp'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 require 'rxjs/add/operator/switchMap'
 
 Icon = require '../icon'
@@ -19,7 +20,7 @@ if window?
 
 module.exports = class ConversationInput
   constructor: (options) ->
-    {@model, @message, @onPost, @onResize, toggleIScroll,
+    {@model, @message, @onPost, @onResize, toggleIScroll, @inputTranslateY,
       @isTextareaFocused, @overlay$, isPostLoading} = options
 
     @imageData = new RxBehaviorSubject null
@@ -37,10 +38,11 @@ module.exports = class ConversationInput
     }
 
     @currentPanel = new RxBehaviorSubject 'text'
+    @inputTranslateY ?= new RxReplaySubject 1
 
     @panels =
       text: {
-        $icon: new Icon {hasRipple: true}
+        $icon: new Icon()
         icon: 'text'
         name: 'text'
         $el: new ConversationInputTextarea {
@@ -55,7 +57,7 @@ module.exports = class ConversationInput
         }
       }
       stickers: {
-        $icon: new Icon {hasRipple: true}
+        $icon: new Icon()
         icon: 'stickers'
         name: 'stickers'
         requireVerified: true
@@ -65,7 +67,7 @@ module.exports = class ConversationInput
         }
       }
       image: {
-        $icon: new Icon {hasRipple: true}
+        $icon: new Icon()
         icon: 'image'
         name: 'images'
         requireVerified: true
@@ -73,7 +75,7 @@ module.exports = class ConversationInput
         $uploadOverlay: new UploadOverlay {@model}
       }
       gifs: {
-        $icon: new Icon {hasRipple: true}
+        $icon: new Icon()
         icon: 'gifs'
         name: 'gifs'
         requireVerified: true
@@ -85,11 +87,15 @@ module.exports = class ConversationInput
         }
       }
 
+    @inputTranslateY.next @currentPanel.map (currentPanel) =>
+      54 - @panels[currentPanel].$el?.getHeightPx?()
+
     me = @model.user.getMe()
 
     @state = z.state
       currentPanel: @currentPanel
       me: me
+      inputTranslateY: @inputTranslateY.switch()
       mePlayer: me.switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
@@ -112,19 +118,24 @@ module.exports = class ConversationInput
         setTimeout post, 500
 
   render: =>
-    {currentPanel, mePlayer, me} = @state.getValue()
+    {currentPanel, mePlayer, me, inputTranslateY} = @state.getValue()
 
     isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV
 
+    baseHeight = 54
+    scale = (@panels[currentPanel].$el?.getHeightPx?() / baseHeight) or 1
+
     z '.z-conversation-input', {
       className: z.classKebab {"is-#{currentPanel}-panel": true}
+      style:
+        height: "#{@panels[currentPanel].$el?.getHeightPx?() + 32}px"
     },
       z '.g-grid',
         z '.panel', {
           'ev-transitionend': =>
             @onResize?()
           style:
-            height: "#{@panels[currentPanel].$el?.getHeightPx?()}px"
+            transform: "translateY(#{inputTranslateY}px)"
         },
           if @panels[currentPanel].requireVerified and not isVerified
             z '.require-verified',
@@ -153,6 +164,7 @@ module.exports = class ConversationInput
                          then colors.$white
                          else colors.$white54
                   isTouchTarget: true
+                  hasRipple: true
                   touchWidth: '36px'
                   touchHeight: '36px'
                 }

@@ -41,6 +41,7 @@ Pages =
   GroupChatPage: require './pages/group_chat'
   GroupMembersPage: require './pages/group_members'
   GroupSettingsPage: require './pages/group_settings'
+  GroupShopPage: require './pages/group_shop'
   GroupInvitesPage: require './pages/group_invites'
   GroupInvitePage: require './pages/group_invite'
   GroupAddRecordsPage: require './pages/group_add_records'
@@ -61,7 +62,6 @@ Pages =
   SocialPage: require './pages/social'
   ForumPage: require './pages/forum'
   RecruitingPage: require './pages/recruiting'
-  ShopOffersPage: require './pages/shop_offers'
   StarPage: require './pages/star'
   StarsPage: require './pages/stars'
   TosPage: require './pages/tos'
@@ -135,6 +135,7 @@ module.exports = class App
       isOffline: isOffline
       addToHomeSheetIsVisible: addToHomeSheetIsVisible
       signInDialogIsOpen: @model.signInDialog.isOpen()
+      signInDialogMode: @model.signInDialog.getMode()
       getAppDialogIsOpen: @model.getAppDialog.isOpen()
       pushNotificationSheetIsOpen: @model.pushNotificationSheet.isOpen()
       installOverlayIsOpen: @model.installOverlay.isOpen()
@@ -199,6 +200,7 @@ module.exports = class App
     routeGame 'groupChatConversation', 'GroupChatPage'
     routeGame 'groupInvite', 'GroupInvitePage'
     routeGame 'groupInvites', 'GroupInvitesPage'
+    routeGame 'groupShop', 'GroupShopPage'
     routeGame 'groupManage', 'GroupManageMemberPage'
     routeGame 'groupManageConversations', 'GroupManageChannelsPage'
     routeGame 'groupNewConversation', 'GroupAddChannelPage'
@@ -237,9 +239,9 @@ module.exports = class App
 
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
-      installOverlayIsOpen, signInDialogIsOpen, pushNotificationSheetIsOpen
-      getAppDialogIsOpen, addToHomeSheetIsVisible, $overlay
-      isOffline} = @state.getValue()
+      installOverlayIsOpen, signInDialogIsOpen, signInDialogMode,
+      pushNotificationSheetIsOpen, getAppDialogIsOpen,
+      addToHomeSheetIsVisible, $overlay, isOffline} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
@@ -266,7 +268,7 @@ module.exports = class App
                 $backupPage
 
             if signInDialogIsOpen
-              z @$signInDialog
+              z @$signInDialog, {mode: signInDialogMode}
             if getAppDialogIsOpen
               z @$getAppDialog
             if installOverlayIsOpen

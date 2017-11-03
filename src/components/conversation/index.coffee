@@ -98,6 +98,7 @@ module.exports = class Conversation extends Base
 
     @isScrolledBottomStreams = new RxReplaySubject 1
     @isScrolledBottomStreams.next RxObservable.of false
+    @inputTranslateY = new RxReplaySubject 1
 
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
@@ -108,6 +109,7 @@ module.exports = class Conversation extends Base
       isTextareaFocused
       toggleIScroll
       @overlay$
+      @inputTranslateY
       onPost: @postMessage
       onResize: @onResize
     }
@@ -129,6 +131,7 @@ module.exports = class Conversation extends Base
       isPostLoading: @isPostLoading
       error: null
       conversation: @conversation
+      inputTranslateY: @inputTranslateY.switch()
       group: group
       isFollowLoading: false
       followingIds: @model.userFollower.getAllFollowingIds()
@@ -247,7 +250,7 @@ module.exports = class Conversation extends Base
 
   render: =>
     {me, isLoading, message, isTextareaFocused, isLoaded, followingIds,
-      messages, conversation, group, isScrolledBottom,
+      messages, conversation, group, isScrolledBottom, inputTranslateY,
       isFollowLoading} = @state.getValue()
 
     z '.z-conversation',
@@ -256,6 +259,8 @@ module.exports = class Conversation extends Base
         z '.messages', {
           className: z.classKebab {isLoaded}
           key: 'conversation-messages'
+          style:
+            transform: "translateY(#{inputTranslateY}px)"
         },
           # hidden when inactive for perf
           if messages and not isLoading

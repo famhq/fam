@@ -30,6 +30,7 @@
   "groupEditChannel": "/:gameKey/group/:id/chat/:conversationId/edit",
   "groupManageChannels": "/:gameKey/group/:id/manage-channels",
   "groupSettings": "/:gameKey/group/:id/settings",
+  "groupShop": "/:gameKey/group/:id/shop",
   "groupAddRecords": "/:gameKey/group/:id/add-records",
   "groupManageRecords": "/:gameKey/group/:id/manage-records",
   "groupInvites": "/:gameKey/group-invites",

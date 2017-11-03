@@ -96,6 +96,6 @@ module.exports = class AddonListItem
         z '.name',
           @model.l.get "#{addon?.key}.title", {file: 'addons'}
           z 'span.creator',
-            " #{@model.l.get 'general.by'} #{addon?.creator.name}"
+            " #{@model.l.get 'general.by'} #{addon?.creator?.name}"
         z '.description',
           @model.l.get "#{addon?.key}.description", {file: 'addons'}

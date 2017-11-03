@@ -7,13 +7,10 @@ if window?
   require './index.styl'
 
 module.exports = class Icon
-  constructor: ({@hasRipple} = {}) ->
-    @$ripple = if @hasRipple then new Ripple() else null
-
-  render: (options) ->
+  render: (options) =>
     {icon, size, isAlignedTop, isAlignedLeft, isAlignedRight,
               isAlignedBottom, isTouchTarget, color, onclick,
-              flipX, viewBox, heightRatio,
+              flipX, viewBox, heightRatio, hasRipple,
               touchHeight, touchWidth} = options
     size ?= '24px'
     viewBox ?= 24
@@ -23,11 +20,15 @@ module.exports = class Icon
     touchHeight ?= '48px'
     isClickable = Boolean onclick
 
-    z 'div.z-icon', {
+    tag = if hasRipple then 'a' else 'div'
+
+    z "#{tag}.z-icon", {
       className: z.classKebab {
         isAlignedTop, isAlignedLeft, isAlignedRight,
-        isAlignedBottom, isTouchTarget, isClickable, @hasRipple
+        isAlignedBottom, isTouchTarget, isClickable, hasRipple
       }
+      attributes:
+        if hasRipple then tabindex: 0 else {}
       onclick: onclick
       style:
         minWidth: if isTouchTarget then touchWidth else '100%'
@@ -57,4 +58,3 @@ module.exports = class Icon
                        then 'translate(12, 12) scale(-1, 1) translate(-12, -12)'
                        else 'scale(1, 1)'
         }
-      @$ripple

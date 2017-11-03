@@ -2,6 +2,8 @@ _mapValues = require 'lodash/mapValues'
 _reduce = require 'lodash/reduce'
 _uniq = require 'lodash/uniq'
 
+config = require '../config'
+
 files = {
   strings: null
   cards: null
@@ -13,7 +15,11 @@ files = {
 
 module.exports = getJsonString: (language) ->
   files = _mapValues files, (val, file) ->
-    languages = _uniq([language, 'en'])
+    if file is 'paths'
+      languages = config.LANGUAGES
+    else
+      languages = _uniq([language, 'en'])
+
     # always need en for fallback
     _reduce languages, (obj, lang) ->
       obj[lang] = try require "./#{lang}/#{file}_#{lang}" \
@@ -22,3 +28,5 @@ module.exports = getJsonString: (language) ->
     , {}
   str = JSON.stringify files
   "if(typeof window !== 'undefined'){window.languageStrings=#{str};}"
+
+module.exports.getJsonString 'es'

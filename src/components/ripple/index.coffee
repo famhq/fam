@@ -23,8 +23,11 @@ module.exports = class Ripple
     #   waveKeyCounter: 0
     # }
 
-  ripple: ({$$el, color, isCenter, mouseX, mouseY, onComplete}) ->
+  afterMount: (@$$el) => null
+
+  ripple: ({$$el, color, isCenter, mouseX, mouseY, onComplete}) =>
     # {$waves, waveKeyCounter} = @state.getValue()
+    $$el ?= @$$el
 
     {width, height, top, left} = $$el.getBoundingClientRect()
 
@@ -53,13 +56,16 @@ module.exports = class Ripple
 
     # $$wave.addEventListener 'animationend', ->
     # we want to do this a little before the animation actually completes
-    setTimeout ->
-      $$el.removeChild $$wave
-      onComplete?()
-      # {$waves} = @state.getValue()
-      # @state.set
-      #   $waves: _.without $waves, $wave
-    , ANIMATION_TIME_MS
+
+    new Promise (resolve, reject) ->
+      setTimeout ->
+        $$el.removeChild $$wave
+        onComplete?()
+        resolve()
+        # {$waves} = @state.getValue()
+        # @state.set
+        #   $waves: _.without $waves, $wave
+      , ANIMATION_TIME_MS
 
   render: ({color, isCircle, isCenter, onComplete}) ->
     # {$waves} = @state.getValue()

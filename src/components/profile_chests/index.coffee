@@ -22,7 +22,6 @@ module.exports = class ProfileChests
   constructor: ({@model, @router, player}) ->
     @$adsenseAd = new AdsenseAd {@model}
     @$shareButton = new PrimaryButton()
-    @$shopOffersButton = new SecondaryButton()
 
     @state = z.state {
       me: @model.user.getMe()

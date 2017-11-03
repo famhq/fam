@@ -184,7 +184,7 @@ app.use (req, res, next) ->
 
     # add Date.now() if having caching issues. problem is it'll be different
     # per node, so browser cache isn't used as often
-    bundlePath = "/bundle_#{language}.js?#{stats.hash}"
+    bundlePath = "/bundle_#{language}.js?#{Date.now()}"#{stats.hash}"
     bundleCssPath = "/bundle.css?#{stats.time}"
   else
     bundlePath = null

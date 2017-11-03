@@ -104,8 +104,8 @@ module.exports = class SignInDialog
   cancel: =>
     @model.signInDialog.close()
 
-  render: =>
-    {mode, isLoading} = @state.getValue()
+  render: ({mode}) =>
+    {isLoading} = @state.getValue()
 
     z '.z-sign-in-dialog',
       z @$dialog,

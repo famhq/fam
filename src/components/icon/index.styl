@@ -1,8 +1,11 @@
+@require '../../vars'
+
 .z-icon
   text-align: center
   display: flex
   -webkit-tap-highlight-color: transparent
   margin: auto
+  outline: none
 
   > svg
     vertical-align: middle
@@ -10,10 +13,7 @@
     -webkit-tap-highlight-color: transparent
 
   &.has-ripple
-    position: relative
-    border-radius: 50%
-    z-index: 1 // req for rounded clipping of ripple
-    overflow: hidden
+    ripple(getColor('$white'))
 
   &.is-clickable
     cursor: pointer

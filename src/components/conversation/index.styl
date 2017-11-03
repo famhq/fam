@@ -1,5 +1,3 @@
-
-
 @require '../../vars'
 
 $zIndexTextarea = 2
@@ -16,6 +14,7 @@ $zIndexTextarea = 2
     flex-direction: column
 
     > .messages
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
       flex: 1
       overflow-y: auto
       overflow-x: hidden
@@ -27,6 +26,7 @@ $zIndexTextarea = 2
       min-width: 0 // fix
       opacity: 0
       padding: 8px
+      padding-bottom: 120px // for bottom input bar
 
       &.is-loaded
         opacity: 1
@@ -39,6 +39,11 @@ $zIndexTextarea = 2
 
   > .bottom
     padding: 0 16px 16px 16px
+    position: absolute
+    bottom: 0
+    left: 0
+    right: 0
+    background: getColor('$tertiary900')
 
     &.is-follow
       background: getColor('$tertiary700')
