@@ -35,7 +35,17 @@ module.exports = class Window
       width = undefined
       height = 732
 
+    drawerWidth =
+      Math.min(
+        width - DRAWER_RIGHT_PADDING
+        DRAWER_MAX_WIDTH
+      )
+
     {
+      contentWidth:
+        if window?.innerWidth >= 1280
+        then width - drawerWidth
+        else width
       width: width
       height: height
     }

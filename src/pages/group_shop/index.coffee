@@ -10,6 +10,8 @@ ButtonBack = require '../../components/button_back'
 Tabs = require '../../components/tabs'
 Shop = require '../../components/shop'
 Collection = require '../../components/collection'
+Icon = require '../../components/icon'
+FormatService = require '../../services/format'
 colors = require '../../colors'
 
 if window?
@@ -40,6 +42,7 @@ module.exports = class GroupShopPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
     @$tabs = new Tabs {@model}
+    @$fireIcon = new Icon()
     @$shop = new Shop {
       @model
       @router
@@ -59,12 +62,14 @@ module.exports = class GroupShopPage
     }
 
     @state = z.state
+      me: @model.user.getMe()
       windowSize: @model.window.getSize()
+      gameKey: gameKey
 
   renderHead: => @$head
 
   render: =>
-    {windowSize} = @state.getValue()
+    {me, windowSize, gameKey} = @state.getValue()
 
     z '.p-group-shop', {
       style:
@@ -76,6 +81,17 @@ module.exports = class GroupShopPage
         $topLeftButton: z @$buttonBack, {
           color: colors.$primary500
         }
+        $topRightButton: z '.p-fire_top-right', {
+          onclick: =>
+            @router.go 'fire', {gameKey}
+        },
+          FormatService.number me?.fire
+          z '.icon',
+            z @$fireIcon,
+              icon: 'fire'
+              color: colors.$quaternary500
+              isTouchTarget: false
+              size: '20px'
       }
 
       z @$tabs,
@@ -84,10 +100,12 @@ module.exports = class GroupShopPage
         tabs: [
           {
             $menuText: @model.l.get 'general.shop'
-            $el: z @$shop
+            $el:
+              z '.p-group-shop_shop', z @$shop
           }
           {
             $menuText: @model.l.get 'general.collection'
-            $el: z @$collection
+            $el:
+              z '.p-group-shop_collection', z @$collection
           }
         ]

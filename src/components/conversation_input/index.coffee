@@ -1,10 +1,13 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_pick = require 'lodash/pick'
 _upperFirst = require 'lodash/upperFirst'
 supportsWebP = window? and require 'supports-webp'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/switchMap'
+require 'rxjs/add/observable/of'
 
 Icon = require '../icon'
 UploadOverlay = require '../upload_overlay'
@@ -20,12 +23,16 @@ if window?
 
 module.exports = class ConversationInput
   constructor: (options) ->
-    {@model, @message, @onPost, @onResize, toggleIScroll, @inputTranslateY,
-      @isTextareaFocused, @overlay$, isPostLoading} = options
+    {@model, @router, @message, @onPost, @onResize, toggleIScroll,
+      @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$,
+      isPostLoading, gameKey} = options
 
+    allowedPanels ?= RxObservable.of ['text', 'stickers', 'gifs', 'image']
     @imageData = new RxBehaviorSubject null
     @hasText = new RxBehaviorSubject false
     @isTextareaFocused ?= new RxBehaviorSubject false
+    selectionStart = new RxBehaviorSubject 0
+    selectionEnd = new RxBehaviorSubject 0
 
     @$conversationImagePreview = new ConversationImagePreview {
       @imageData
@@ -49,6 +56,8 @@ module.exports = class ConversationInput
           onPost: @post
           @onResize
           @message
+          selectionStart
+          selectionEnd
           @isTextareaFocused
           toggleIScroll
           isPostLoading
@@ -62,8 +71,14 @@ module.exports = class ConversationInput
         name: 'stickers'
         requireVerified: true
         $el: new ConversationInputStickers {
+          @model
+          @router
           onPost: @post
           @message
+          selectionStart
+          selectionEnd
+          @currentPanel
+          gameKey
         }
       }
       image: {
@@ -96,6 +111,8 @@ module.exports = class ConversationInput
       currentPanel: @currentPanel
       me: me
       inputTranslateY: @inputTranslateY.switch()
+      panels: allowedPanels.map (allowedPanels) =>
+        _pick @panels, allowedPanels
       mePlayer: me.switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
@@ -118,7 +135,7 @@ module.exports = class ConversationInput
         setTimeout post, 500
 
   render: =>
-    {currentPanel, mePlayer, me, inputTranslateY} = @state.getValue()
+    {currentPanel, mePlayer, me, inputTranslateY, panels} = @state.getValue()
 
     isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV
 
@@ -151,7 +168,7 @@ module.exports = class ConversationInput
           className: z.classKebab {isVisible: true}
         },
           [
-            _map @panels, (options, panel) =>
+            _map panels, (options, panel) =>
               {$icon, icon, onclick, $uploadOverlay, requireVerified} = options
               if requireVerified and $uploadOverlay and not isVerified
                 return

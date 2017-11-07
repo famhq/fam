@@ -1,20 +1,27 @@
-
-
 @require '../../vars'
 
 .z-conversation-input-stickers
   width: 100%
   position: relative
-  padding: 8px 16px 16px 16px
+  padding: 8px 8px 16px 8px
 
   > .stickers
     white-space: nowrap
     overflow-x: auto
 
+    > .empty
+      font-body1()
+      margin-top: 8px
+
+      > .button-wrapper
+        > .button
+          display: inline-block
+
     > .sticker
-      width: 70px
-      height: 70px
+      width: 40px
+      height: 40px
       background-size: 100%
       background-repeat: no-repeat
       display: inline-block
       margin-right: 8px
+      cursor: pointer

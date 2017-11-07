@@ -50,12 +50,15 @@ drawCircle = (context, x, y, r, style) ->
   context.fill()
 
 class ConfettiItem
-  constructor: (@$$canvas, @context) ->
-    @style = COLORS[~~range(0,5)]
-    @rgb = "rgba(#{@style[0]}, #{@style[1]}, #{@style[2]}"
+  constructor: (@$$canvas, @context, color) ->
+    @setStyle color
     @r = ~~range(2, 6)
     @r2 = 2 * @r
     @replace()
+
+  setStyle: (color) =>
+    @style = color
+    @rgb = "rgba(#{@style[0]}, #{@style[1]}, #{@style[2]}"
 
   replace: ->
     w = @$$canvas.width
@@ -85,6 +88,7 @@ class ConfettiItem
 module.exports = class Confetti
   constructor: ->
     @paused = false
+    @colors ?= COLORS
 
   afterMount: (@$$canvas) =>
     @paused = false
@@ -93,12 +97,17 @@ module.exports = class Confetti
     @$$canvas.height = window.innerHeight
 
     @confettis = _map _range(NUM_CONFETTI), =>
-      new ConfettiItem(@$$canvas, @context)
+      color = @colors[~~range(0, 5)]
+      new ConfettiItem(@$$canvas, @context, color)
     @step()
 
   beforeUnmount: =>
     @paused = true
     @confettis = []
+
+  setColors: (@colors) =>
+    _map @confettis, (confetti) =>
+      confetti.setStyle @colors[~~range(0, 5)]
 
   step: =>
     unless @paused

@@ -64,7 +64,6 @@ module.exports = class ItemList
       ownedAmount + config.RARITIES.indexOf(info.item.rarity)
 
     @itemSizeInfo = new RxBehaviorSubject getItemSizeInfo()
-    console.log 'combine'
     listData = RxObservable.combineLatest(
       items
       userItems
@@ -90,6 +89,7 @@ module.exports = class ItemList
       rowsOfItems: rowsOfItems
       me: me
       userItems: userItems
+      windowSize: @model.window.getSize()
 
   afterMount: =>
     window.addEventListener 'resize', @onResize
@@ -139,15 +139,13 @@ module.exports = class ItemList
     _toArray rows
 
   render: ({onclick, isInactive, scrollTop, showCounts, xPadding, maxRows}) =>
-    {me, rowsOfItems, itemSizeInfo} = @state.getValue()
+    {me, rowsOfItems, itemSizeInfo, windowSize} = @state.getValue()
 
     {itemsPerRow, itemMargin} = itemSizeInfo
     xPadding ?= X_PADDING_PX
     showCounts ?= true
 
-    contentWidth = if window? \
-                   then Math.min(window.innerWidth, MAX_CONTENT_WIDTH)
-                   else 320
+    contentWidth = windowSize?.contentWidth or 320
 
     if window?
       itemSize = (contentWidth -
@@ -158,7 +156,7 @@ module.exports = class ItemList
       itemMargin = 0
       itemSize = 114
 
-    itemContainerHeight = itemSize + itemMargin * 2
+    itemContainerHeight = itemSize + COUNT_HEIGHT + itemMargin * 2
 
     groupScrollTop = SEARCH_BAR_HEIGHT
 
@@ -169,12 +167,11 @@ module.exports = class ItemList
       className: z.classKebab {isInactive}
     },
       if rowsOfItems?.length is 0 or rowsOfItems?[0]?.length is 0
-        z '.no-items', 'No items found'
+        z '.g-grid',
+          z '.no-items', @model.l.get 'itemList.empty'
       else if not rowsOfItems or not rowsOfItems.length
-        z '.spinner', {
-          style:
-            height: "#{containerHeight}px"
-        }, @$spinner
+        z '.g-grid',
+          @$spinner
       else
         rows = rowsOfItems.length
         containerHeight = itemContainerHeight
@@ -203,7 +200,7 @@ module.exports = class ItemList
                     marginBottom: "#{itemMargin * 2}px"
                 },
                   z $el, {
-                    size: if info?.item then itemSize else null
+                    sizePx: if info?.item then itemSize else null
                     defaultLocked: showCounts is false
                     onclick: onclick
                     isHidden: isInactive

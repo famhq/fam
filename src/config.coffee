@@ -92,6 +92,43 @@ isomorphic =
   ]
   BADGES: _map _range(1, 95), (i) -> "#{i}"
   RARITIES: ['common', 'rare', 'epic', 'Legendary']
+  RARITY_COLORS:
+    common: 'white'
+    rare: 'blue'
+    epic: 'purple'
+    legendary: 'orange'
+  CONFETTI_COLORS:
+    common: [
+      [255, 255, 255]
+      [230, 230, 230]
+      [200, 200, 200]
+      [170, 170, 170]
+      [140, 140, 140]
+    ]
+    rare: [
+      [18, 42, 135]
+      [26, 58, 186]
+      [143, 157, 214]
+      [88, 115, 188]
+      [220, 220, 220]
+      [255, 255, 255]
+    ]
+    epic: [
+      [104, 11, 132]
+      [122, 31, 150]
+      [143, 56, 170]
+      [166, 96, 188]
+      [220, 220, 220]
+      [255, 255, 255]
+    ]
+    legendary: [
+      [255, 114, 0]
+      [252, 132, 35]
+      [252, 147, 63]
+      [255, 174, 109]
+      [220, 220, 220]
+      [255, 255, 255]
+    ]
   PLAYER_COLORS: [
     colors.$amber500
     colors.$secondary500

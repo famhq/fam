@@ -7,6 +7,7 @@ Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
 EarnFire = require '../../components/earn_fire'
 SpendFire = require '../../components/spend_fire'
+Collection = require '../../components/collection'
 FormatService = require '../../services/format'
 colors = require '../../colors'
 
@@ -33,6 +34,12 @@ module.exports = class FirePage
 
     @$earnFire = new EarnFire {@model, @router, gameKey, @overlay$}
     @$spendFire = new SpendFire {@model, @router, gameKey, @overlay$}
+    @$collection = new Collection {
+      @model
+      @router
+      gameKey
+      @overlay$
+    }
 
     @$fireIcon = new Icon()
 
@@ -67,11 +74,15 @@ module.exports = class FirePage
         hasAppBar: true
         tabs: [
           {
+            $menuText: @model.l.get 'general.spend'
+            $el: z @$spendFire
+          }
+          {
             $menuText: @model.l.get 'general.earn'
             $el: z @$earnFire
           }
           {
-            $menuText: @model.l.get 'general.spend'
-            $el: z @$spendFire
+            $menuText: @model.l.get 'general.collection'
+            $el: z @$collection
           }
         ]

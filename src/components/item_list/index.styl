@@ -2,6 +2,7 @@
 
 .z-item-list
   flex: 1
+  padding: 8px
 
   &.is-inactive
     overflow: hidden
@@ -18,12 +19,13 @@
     > .icon
       margin-right: 16px
 
-  > .no-items
-    font-body1()
-    color: getColor('$tertiary500')
-    line-height: 20px
-    padding-top: 76px
-    text-align: center
+  > .g-grid
+    > .no-items
+      font-body1()
+      color: getColor('$tertiary900Text')
+      line-height: 20px
+      text-align: center
+      padding: 16px
 
   > .spinner
     margin: 40px 0 16px 0

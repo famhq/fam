@@ -152,16 +152,6 @@ module.exports = class Head
       # Android
       z 'link', {rel: 'manifest', href: "#{meta.manifestUrl}"}
 
-      # TODO: have these update with the router, not just on pageload
-      # maybe route should do a head re-render, so it doesn'th ave to do it for
-      # every render
-      _map paths, (path, lang) ->
-        z 'link', {
-          rel: 'alternate'
-          href: "https://#{config.HOST}#{path}"
-          hreflang: lang
-        }
-
       # serialization
       z 'script.model',
         innerHTML: modelSerialization or ''
@@ -187,19 +177,6 @@ module.exports = class Head
             attributes:
               async: true
             src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-
-          # z 'script',
-          #   innerHTML: '''
-          #     var inmobi_conf = {
-          #     siteid : "1503223902919",
-          #     slot : "14",
-          #     manual: true,
-          #     adtype: "int" };
-          #   '''
-          # z 'script',
-          #   attributes:
-          #     async: true
-          #   src: 'https://cf.cdn.inmobi.com/ad/inmobi.js'
 
           # z 'script',
           #   src: 'https://js.stripe.com/v2/'
@@ -237,10 +214,16 @@ module.exports = class Head
 
       # styles
       if isInliningSource
-        z 'link',
-          rel: 'stylesheet'
+        # we could use separate css file for styles, which would benefit from
+        # cache... but we have a weird problem where chrome tries to
+        # re-parse the css file resulting in a white flash. maybe a vdom issue?
+        z 'style',
           type: 'text/css'
-          href: serverData?.bundleCssPath
+        , serverData?.styles
+        # z 'link',
+        #   rel: 'stylesheet'
+        #   type: 'text/css'
+        #   href: serverData?.bundleCssPath
       else
         null
 
@@ -249,3 +232,13 @@ module.exports = class Head
         async: true
         src: if isInliningSource then serverData?.bundlePath \
              else "#{webpackDevUrl}/bundle.js"
+
+       # TODO: have these update with the router, not just on pageload
+       # maybe route should do a head re-render, so it doesn'th ave to do it for
+       # every render
+       _map paths, (path, lang) ->
+         z 'link', {
+           rel: 'alternate'
+           href: "https://#{config.HOST}#{path}"
+           hreflang: lang
+         }

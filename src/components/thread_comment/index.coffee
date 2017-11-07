@@ -23,7 +23,7 @@ MAX_COMMENT_DEPTH = 3
 
 module.exports = class ThreadComment
   constructor: (options) ->
-    {@threadComment, @depth, @isMe, @model, @overlay$,
+    {@threadComment, @depth, @isMe, @model, @overlay$, gameKey,
       @selectedProfileDialogUser, @router} = options
 
     @depth ?= 0
@@ -46,6 +46,7 @@ module.exports = class ThreadComment
 
     @$children = _map @threadComment.children, (childThreadComment) =>
       new ThreadComment {
+        gameKey
         threadComment: childThreadComment
         depth: @depth + 1
         @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
@@ -53,6 +54,7 @@ module.exports = class ThreadComment
 
     @state = z.state
       me: @model.user.getMe()
+      gameKey: gameKey
       depth: @depth
       threadComment: @threadComment
       $children: @$children
@@ -64,10 +66,12 @@ module.exports = class ThreadComment
 
   # for cached components
   setThreadComment: (threadComment) =>
+    {gameKey} = @state.getValue()
     @state.set threadComment: threadComment
     isChildUpdated = _map threadComment.children, (child, i) =>
       if child.body isnt @theadComment?.children[i]?.body
         @$children[i] ?= new ThreadComment {
+          gameKey
           threadComment: child
           depth: @depth + 1
           @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
@@ -109,7 +113,7 @@ module.exports = class ThreadComment
 
     {creator, time, card, body, id, clientId} = threadComment
 
-    isSticker = body.match /^:[a-z_]+:$/
+    isSticker = body.match /^:[a-z_\^0-9]+:$/
     hasVotedUp = threadComment?.myVote?.vote is 1
     hasVotedDown = threadComment?.myVote?.vote is -1
 
@@ -182,8 +186,10 @@ module.exports = class ThreadComment
                       else
                         @$conversationInput = new ConversationInput {
                           @model
+                          @router
                           message: @reply
                           @overlay$
+                          gameKey
                           @isPostLoading
                           onPost: @postReply
                           onResize: -> null

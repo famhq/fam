@@ -3,6 +3,7 @@ _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
 _sum = require 'lodash/sum'
 _startCase = require 'lodash/startCase'
+_snakeCase = require 'lodash/snakeCase'
 
 FormatService = require '../../services/format'
 AppBar = require '../app_bar'
@@ -17,7 +18,8 @@ if window?
   require './index.styl'
 
 module.exports = class ConfirmPackPurchase
-  constructor: ({@model, @router, pack}) ->
+  constructor: (options) ->
+    {@model, @router, pack, @onCancel, @onConfirm, isPurchaseLoading} = options
     @$appBar = new AppBar {@model, @router}
     @$backButton = new ButtonBack {@router, @model}
     @$closeIcon = new Icon()
@@ -31,18 +33,18 @@ module.exports = class ConfirmPackPurchase
     @state = z.state
       me: @me
       pack: pack
+      isPurchaseLoading: isPurchaseLoading
 
-  render: ({onCancel, onConfirm, isPackPurchaseLoading}) =>
+  render: =>
+    {me, pack, isPurchaseLoading} = @state.getValue()
 
-    {me, pack} = @state.getValue()
-
-    packImage = pack?.key
+    packImage = _snakeCase(pack?.key).replace '_pack', ''
 
     z '.z-confirm-pack-purchase',
       z @$appBar,
         $topLeftButton: z @$backButton, {
-          onclick: ->
-            onCancel?()
+          onclick: =>
+            @onCancel?()
         }
         $topRightButton:
           z '.z-confirm-pack-purchase_currency-amount',
@@ -57,22 +59,24 @@ module.exports = class ConfirmPackPurchase
         z '.g-grid',
           z '.pack',
             style:
-              backgroundImage: "url(#{config.CDN_URL}/packs/#{pack?.key}.png)"
+              backgroundImage: "url(#{config.CDN_URL}/packs/#{packImage}.png)"
           z '.button',
             z @$cancelButton,
-              $content: 'Cancel'
-              onclick: -> onCancel?()
+              $content: @model.l.get 'general.cancel'
+              onclick: => @onCancel?()
             z @$buyButton,
-              $content: if isPackPurchaseLoading \
-                        then 'Loading...'
-                        else 'Buy sticker'
-              onclick: ->
-                unless isPackPurchaseLoading
-                  onConfirm?()
+              $content: if isPurchaseLoading \
+                        then @model.l.get 'general.loading'
+                        else @model.l.get 'confirmPackPurchase.buyPack'
+              onclick: =>
+                unless isPurchaseLoading
+                  @onConfirm?()
           z '.description',
             z '.flex',
-              "Buy this sticker for
-              #{FormatService.number(pack?.cost)}"
+              @model.l.get 'confirmPackPurchase.buyPackFor', {
+                replacements:
+                  cost: FormatService.number(pack?.cost)
+              }
               z '.icon',
                 z @$fireIcon2,
                   icon: 'fire'

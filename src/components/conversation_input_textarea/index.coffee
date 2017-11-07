@@ -14,7 +14,7 @@ DEFAULT_TEXTAREA_HEIGHT = 54
 module.exports = class ConversationInputTextarea
   constructor: (options) ->
     {@message, @onPost, @onResize, @isTextareaFocused, @toggleIScroll
-      @hasText, @model, isPostLoading} = options
+      @hasText, @model, isPostLoading, @selectionStart, @selectionEnd} = options
 
     @$sendIcon = new Icon()
 
@@ -27,7 +27,12 @@ module.exports = class ConversationInputTextarea
       hasText: @hasText
 
   afterMount: (@$$el) =>
-    null
+    @$$textarea = @$$el.querySelector('#textarea')
+    @$$textarea?.value = @message.getValue()
+
+  beforeUnmount: =>
+    @selectionStart.next @$$textarea?.selectionStart
+    @selectionEnd.next @$$textarea?.selectionEnd
 
   setMessageFromEvent: (e) =>
     e or= window.event
@@ -92,10 +97,10 @@ module.exports = class ConversationInputTextarea
             @resizeTextarea e
             @setMessageFromEvent e
           ontouchstart: (e) =>
-            isFocused = e.target is document.activeElement
-            if isFocused
-              # so text can be selected
-              @toggleIScroll? 'disable'
+            # isFocused = e.target is document.activeElement
+            # if isFocused
+            #   # so text can be selected
+            #   @toggleIScroll? 'disable'
             unless Environment.isGameApp config.GAME_KEY
               @model.window.pauseResizing()
           ontouchend: (e) =>
@@ -103,13 +108,13 @@ module.exports = class ConversationInputTextarea
             # weird bug causes textarea to sometimes not focus
             unless isFocused
               e?.target.focus()
-            @toggleIScroll? 'enable'
-          onmousedown: (e) =>
-            isFocused = e.target is document.activeElement
-            if isFocused
-              @toggleIScroll? 'disable'
-          onmouseup: =>
-            @toggleIScroll? 'enable'
+            # @toggleIScroll? 'enable'
+          # onmousedown: (e) =>
+          #   isFocused = e.target is document.activeElement
+          #   if isFocused
+          #     @toggleIScroll? 'disable'
+          # onmouseup: =>
+          #   @toggleIScroll? 'enable'
           onfocus: =>
             unless Environment.isGameApp config.GAME_KEY
               @model.window.pauseResizing()
@@ -117,7 +122,7 @@ module.exports = class ConversationInputTextarea
             @isTextareaFocused.next true
             @onResize?()
           onblur: (e) =>
-            @toggleIScroll? 'enable'
+            # @toggleIScroll? 'enable'
             @blurTimeout = setTimeout =>
               isFocused = e.target is document.activeElement
               unless isFocused

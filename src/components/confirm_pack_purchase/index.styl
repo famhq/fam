@@ -24,43 +24,31 @@
       flex: 1
       display: flex
       flex-direction: column
-      max-height: 300px
-      margin: auto 0
+      // max-height: 300px
+      margin: auto
 
       > .pack
-        flex: 1
+        // flex: 1
         background-size: auto 100%
         background-position: center
         background-repeat: no-repeat
-
-      > .button
-        padding: 0 $standardPadding
+        width: 300px
+        height: 300px
+        margin: auto
 
       > .description
         font-caption1()
-        color: getColor('$tertiary800Text')
-        margin-top: 16px
-        background: getColor('$tertiary800')
+        color: getColor('$tertiary700Text')
+        background: getColor('$tertiary700')
         padding: 8px
         text-align: center
-        margin-bottom: 16px
+        margin-top: 8px
+        // margin-bottom: 16px
 
         > .counter
           margin-top: 4px
           font-weight: 500
           color: getColor('$amber500')
-
-
-        > .cyan
-          color: getColor('$primary500')
-
-        > .yellow
-          color: getColor('$amber500')
-          margin-bottom: 4px
-
-        > .white
-          color: $white
-          font-weight: 400
 
         > .flex
           display: flex
@@ -71,8 +59,9 @@
             margin-left: 2px
 
       > .button
+        padding: 0 16px
         display: flex
-        margin-top: 0
+        // margin-top: auto
 
         > div
           flex: 1

@@ -36,7 +36,7 @@ FIVE_MINUTES_MS = 60 * 5 * 1000
 module.exports = class Conversation extends Base
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
-      selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading,
+      selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading, gameKey,
       group} = options
 
     isLoading ?= new RxBehaviorSubject false
@@ -105,13 +105,20 @@ module.exports = class Conversation extends Base
     @$followButton = new PrimaryButton()
     @$conversationInput = new ConversationInput {
       @model
+      @router
       @message
       isTextareaFocused
       toggleIScroll
       @overlay$
       @inputTranslateY
+      gameKey
       onPost: @postMessage
       onResize: @onResize
+      allowedPanels: @conversation.map (conversation) ->
+        if conversation.type is 'pm' or not conversation.groupId
+          ['text', 'stickers', 'image', 'gifs']
+        else
+          ['text', 'stickers', 'gifs']
     }
 
     @debouncedOnResize = _debounce @onResize

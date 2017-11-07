@@ -31,6 +31,11 @@ HEALTHCHECK_TIMEOUT = 200
 RENDER_TO_STRING_TIMEOUT_MS = 1200
 BOT_RENDER_TO_STRING_TIMEOUT_MS = 4500
 
+styles = if config.ENV is config.ENVS.PROD or true # FIXME
+  fs.readFileSync gulpPaths.dist + '/bundle.css', 'utf-8'
+else
+  null
+
 app = express()
 app.use compress()
 
@@ -190,7 +195,7 @@ app.use (req, res, next) ->
     bundlePath = null
     bundleCssPath = null
 
-  serverData = {req, res, bundlePath, bundleCssPath}
+  serverData = {req, res, bundlePath, bundleCssPath, styles}
   userAgent = req.headers?['user-agent']
   isFacebookCrawler = userAgent?.indexOf('facebookexternalhit') isnt -1 or
       userAgent?.indexOf('Facebot') isnt -1

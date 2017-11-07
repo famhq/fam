@@ -49,7 +49,6 @@ module.exports = class GroupChatPage
     currentConversationId = null
     conversation = groupAndConversationIdAndMe
     .switchMap ([group, conversationId, me]) =>
-      console.log 'group', group
       # side effect
       if conversationId isnt currentConversationId
         # is set to false when messages load in conversation component
@@ -102,6 +101,7 @@ module.exports = class GroupChatPage
       group
       selectedProfileDialogUser
       overlay$
+      gameKey
       isLoading: isLoading
       conversation: conversation
     }
@@ -176,24 +176,25 @@ module.exports = class GroupChatPage
                       target: '_system'
                   }
             else if group?.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
-              z '.icon',
-                z @$linkIcon,
-                  icon: 'shop'
-                  color: colors.$primary500
-                  onclick: =>
-                    @router.go 'groupShop', {
-                      gameKey, id: group?.key or group?.id
-                    }
               # z '.icon',
               #   z @$linkIcon,
-              #     icon: 'external-link'
+              #     icon: 'shop'
               #     color: colors.$primary500
               #     onclick: =>
-              #       @model.portal.call 'browser.openWindow', {
-              #         url:
-              #           'https://www.youtube.com/boplayhard'
-              #         target: '_system'
-              #     }
+              #       # FIXME: model.group.getRoute
+              #       @router.go 'groupShop', {
+              #         gameKey, id: group?.key or group?.id
+              #       }
+              z '.icon',
+                z @$linkIcon,
+                  icon: 'external-link'
+                  color: colors.$primary500
+                  onclick: =>
+                    @model.portal.call 'browser.openWindow', {
+                      url:
+                        'https://www.youtube.com/boplayhard'
+                      target: '_system'
+                  }
 
       }
       z '.content',

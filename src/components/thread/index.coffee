@@ -93,9 +93,11 @@ module.exports = class Thread extends Base
     @isPostLoading = new RxBehaviorSubject false
     @$conversationInput = new ConversationInput {
       @model
+      @router
       @message
       @overlay$
       @isPostLoading
+      gameKey
       onPost: @postMessage
       onResize: -> null
     }

@@ -1,4 +1,8 @@
 z = require 'zorium'
+_map = require 'lodash/map'
+_uniqBy = require 'lodash/uniqBy'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
 
 ItemList = require '../item_list'
 colors = require '../../colors'
@@ -9,9 +13,24 @@ if window?
 
 module.exports = class Collection
   constructor: ({@model, @router, gameKey, @overlay$}) ->
-    items = @model.userItem.getAll()
+    # TODO: group-specific?
+    userItems = @model.userItem.getAll()
+    allItems = @model.item.getAll()
+    .map (items) ->
+      _map items, (item) ->
+        {itemKey: item.key, count: 0, item}
 
-    @$itemList = new ItemList {@model, @router, items, userItems: items}
+    userItemsAndAllItems = RxObservable.combineLatest(
+      userItems
+      allItems
+      (vals...) -> vals
+    )
+
+    items = userItemsAndAllItems.map ([userItems, allItems]) ->
+      userItems ?= []
+      _uniqBy userItems.concat(allItems), 'itemKey'
+
+    @$itemList = new ItemList {@model, @router, items, userItems}
 
     @state = z.state
       me: @model.user.getMe()

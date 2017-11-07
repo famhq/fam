@@ -10,11 +10,10 @@ PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
 Ripple = require '../ripple'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
-
-REQUIRES_CONFETTI = [['legendary']]
 
 STARTING_ROTATION = 0
 ROTATION_PER_ITEM = 0
@@ -83,8 +82,6 @@ module.exports = class OpenPack
     currentItemCirculating = if currentItem?.item \
                              then currentItem.item.circulating + 1
                              else null
-    isSpecialItem = _some REQUIRES_CONFETTI, (subTypes) ->
-      _isEqual subTypes, currentItem?.item?.subTypes
 
     z '.z-open-pack', {
       className: z.classKebab {
@@ -93,20 +90,25 @@ module.exports = class OpenPack
         isDoneVisible
       }
     },
-      if isSpecialItem
+      if isVisible
+        console.log currentItem?.item.rarity
+        confettiColors = config.CONFETTI_COLORS[currentItem?.item.rarity]
+        console.log confettiColors
+        if colors
+          @$confetti.setColors confettiColors
         z '.confetti',
           @$confetti
       z @$ripple
 
       z '.content',
-        z '.top-right',
-          z '.circulating',
-            z '.icon',
-              z @$globeIcon,
-                icon: 'globe'
-                isTouchTarget: false
-                color: colors.$tertiary200
-            FormatService.number currentItemCirculating
+        # z '.top-right',
+        #   z '.circulating',
+        #     z '.icon',
+        #       z @$globeIcon,
+        #         icon: 'globe'
+        #         isTouchTarget: false
+        #         color: colors.$tertiary200
+        #     FormatService.number currentItemCirculating
 
         z '.items', {
           style:
@@ -125,6 +127,9 @@ module.exports = class OpenPack
               isSlidingOut = itemsSwiped >= itemCount - i
               rotation = STARTING_ROTATION + ROTATION_PER_ITEM * i
               z '.item', {
+                onclick: =>
+                  if itemsSwiped < itemCount - 1
+                    @state.set itemsSwiped: itemCount - i
                 style:
                   marginLeft: "-#{40 + itemSize / 2}px" # FIXME: 20px is padding
                   transform: if isSlidingOut \
@@ -143,10 +148,7 @@ module.exports = class OpenPack
               },
                 z '.image',
                   z $item, {
-                    size: itemSize
-                    onclick: =>
-                      if itemsSwiped < itemCount - 1
-                        @state.set itemsSwiped: itemCount - i
+                    sizePx: itemSize
                   }
                 z '.name', item.name
                 z '.rarity', item.rarity
@@ -154,7 +156,7 @@ module.exports = class OpenPack
         z '.bottom',
           z '.action',
             z @$doneButton,
-              text: 'Done'
+              text: @model.l.get 'general.done'
               colors:
                 c200: colors.$tertiary200
                 c500: colors.$tertiary500

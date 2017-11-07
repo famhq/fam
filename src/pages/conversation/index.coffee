@@ -40,6 +40,7 @@ module.exports = class ConversationPage
     }
     @$conversation = new Conversation {
       @model, @router, conversation, selectedProfileDialogUser, overlay$
+      gameKey
     }
 
     @state = z.state

@@ -26,8 +26,6 @@ module.exports = class Ripple
 
     {width, height, top, left} = $$el.getBoundingClientRect()
 
-    console.log width, height
-
     if isCenter
       x = width / 2
       y = height / 2

@@ -290,5 +290,6 @@ module.exports = class App
                 onRate: =>
                   @model.portal.call 'app.rate'
             if $overlay
-              $overlay
+              # can be array of components or component
+              z $overlay
             z '#interstitial'
