@@ -73,6 +73,8 @@ setCookies = (currentCookies) ->
     currentCookies = cookies
 
 navigator.serviceWorker?.register '/service_worker.js'
+.then (registration) ->
+  PushService.setFirebaseServiceWorker registration
 # start before dom has loaded
 portal = new Portal()
 

@@ -52,7 +52,10 @@ relativeTimeFormats =
     yy: '%dA'
 
 class Language
-  constructor: ({language, @cookieSubject}) ->
+  constructor: ({language, @cookieSubject} = {}) ->
+    language ?= 'en'
+    @cookieSubject ?= new RxBehaviorSubject null
+
     @language = new RxBehaviorSubject language
 
     # also update gulpfile ContextReplacementPlugin for moment

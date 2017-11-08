@@ -1,6 +1,31 @@
 PortalGun = require 'portal-gun'
 
+RouterService = require './services/router'
+Language = require './models/language'
 config = require './config'
+
+model =
+  l: new Language()
+
+router = new RouterService {
+  router: null
+  model: model
+}
+
+###
+If we want to get the message in the main window (non-service worker) when
+it's in the foreground, we can use firebase
+https://firebase.google.com/docs/cloud-messaging/js/receive
+###
+# firebase = require 'firebase/app'
+# require 'firebase/messaging'
+# firebase.initializeApp {
+#   messagingSenderId: config.FIREBASE.MESSAGING_SENDER_ID
+# }
+# messaging = firebase.messaging()
+#
+# messaging.setBackgroundMessageHandler (payload) ->
+#   console.log 'fbm', payload
 
 ###
 # Clear cloudflare cache...
@@ -23,8 +48,17 @@ self.addEventListener 'activate', (e) ->
 
 self.addEventListener 'push', (e) ->
   message = if e.data then e.data.json() else {}
+  if message.data?.data
+    message = message.data
+    message.data = try
+      JSON.parse message.data
+    catch error
+      {}
 
-  console.log 'rec message', e
+  if message.data.path
+    path = router.get message.data.path.key, message.data.path.replacements
+  else
+    path = ''
 
   e.waitUntil(
     self.registration.showNotification 'Starfire',
@@ -32,11 +66,11 @@ self.addEventListener 'push', (e) ->
             then message.icon
             else "#{config.CDN_URL}/android-chrome-192x192.png"
       title: message.title
-      body: message.text
+      body: message.message or message.text # message.text is legacy VAPID
       tag: message.data.path
       vibrate: [200, 100, 200]
       data:
-        url: "https://#{config.HOST}#{message.data.path}"
+        url: "https://#{config.HOST}#{path}"
         path: message.data.path
   )
 

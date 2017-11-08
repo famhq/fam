@@ -23,9 +23,12 @@ module.exports = class AddonListItem
     hasPadding ?= true
     {addon, gameKey} = @state.getValue()
 
+    unless addon?.key
+      return null
+
     z 'a.z-addon-list-item', {
       href: @router.get 'modByKey', {
-        gameKey, key: _kebabCase(addon?.key)
+        gameKey, key: _kebabCase(addon.key)
       }
       className: z.classKebab {hasPadding}
       onclick: (e) =>
@@ -37,19 +40,19 @@ module.exports = class AddonListItem
         )
         isNewIAB = isNative and semver.gte appVersion, '1.4.0'
         isInAppBrowser = isNative and (
-          isNewIAB or addon?.key isnt 'deckGenerator'
-        ) and addon?.url.substr(0, 4) is 'http'
+          isNewIAB or addon.key isnt 'deckGenerator'
+        ) and addon.url.substr(0, 4) is 'http'
 
         if not isInAppBrowser
           @router.go 'modByKey', {
-            key: _kebabCase(addon?.key), gameKey
+            key: _kebabCase(addon.key), gameKey
           }, {
             qs:
               replacements: JSON.stringify replacements
           }
         else
-          if _isEmpty(addon?.supportedLanguages) or
-                addon?.supportedLanguages.indexOf(
+          if _isEmpty(addon.supportedLanguages) or
+                addon.supportedLanguages.indexOf(
                   @model.l.getLanguageStr()
                 ) isnt -1
             language = @model.l.getLanguageStr()
@@ -58,11 +61,11 @@ module.exports = class AddonListItem
 
           replacements ?= {}
           replacements = _defaults replacements, {lang: language}
-          vars = addon?.url.match /\{[a-zA-Z0-9]+\}/g
+          vars = addon.url.match /\{[a-zA-Z0-9]+\}/g
           url = _reduce vars, (str, variable) ->
             key = variable.replace /\{|\}/g, ''
             str.replace variable, replacements[key] or ''
-          , addon?.url
+          , addon.url
           @model.portal.call 'browser.openWindow', {
             url: url
             target: '_blank'
@@ -76,7 +79,7 @@ module.exports = class AddonListItem
               }
               title: {
                 color: colors.$tertiary700Text
-                staticText: @model.l.get "#{addon?.key}.title", {
+                staticText: @model.l.get "#{addon.key}.title", {
                   file: 'addons'
                 }
               }
@@ -91,11 +94,11 @@ module.exports = class AddonListItem
             @model.portal.portal.onMessageInAppBrowserWindow data
     },
       z 'img.icon',
-        src: addon?.iconUrl
+        src: addon.iconUrl
       z '.info',
         z '.name',
-          @model.l.get "#{addon?.key}.title", {file: 'addons'}
+          @model.l.get "#{addon.key}.title", {file: 'addons'}
           z 'span.creator',
-            " #{@model.l.get 'general.by'} #{addon?.creator?.name}"
+            " #{@model.l.get 'general.by'} #{addon.creator?.name}"
         z '.description',
-          @model.l.get "#{addon?.key}.description", {file: 'addons'}
+          @model.l.get "#{addon.key}.description", {file: 'addons'}

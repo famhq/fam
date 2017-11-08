@@ -1,9 +1,27 @@
 Environment = require 'clay-environment'
 semver = require 'semver'
+firebase = require 'firebase/app'
+require 'firebase/messaging'
 
 config = require '../config'
 
 class PushService
+  constructor: ->
+    if window? and not Environment.isGameApp config.GAME_KEY
+      firebase.initializeApp {
+        apiKey: config.FIREBASE.API_KEY
+        authDomain: config.FIREBASE.AUTH_DOMAIN
+        databaseURL: config.FIREBASE.DATABASE_URL
+        projectId: config.FIREBASE.PROJECT_ID
+        messagingSenderId: config.FIREBASE.MESSAGING_SENDER_ID
+      }
+      @firebaseMessaging = firebase.messaging()
+      @isReady = new Promise (@resolveReady) => null
+
+  setFirebaseServiceWorker: (registration) =>
+    @firebaseMessaging.useServiceWorker registration
+    @resolveReady()
+
   init: ({model}) ->
     onReply = ([reply]) ->
       payload = reply.additionalData.payload or reply.additionalData.data
@@ -36,6 +54,27 @@ class PushService
     .catch (err) ->
       unless err.message is 'Method not found'
         console.log err
+
+  registerWeb: =>
+    getToken = (isSecondAttempt) =>
+      @firebaseMessaging.requestPermission()
+      .then =>
+        @firebaseMessaging.getToken()
+      .catch (err) ->
+        # if the user has an old VAPID token, getToken fails... so resub them
+        navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
+          serviceWorkerRegistration.pushManager.getSubscription()
+          .then (subscription) ->
+            subscription.unsubscribe()
+          .then ->
+            unless isSecondAttempt
+              getToken true
+
+    @isReady.then ->
+      getToken()
+    .then (token) ->
+      console.log 'token', token
+      {token, sourceType: 'web-fcm'}
 
 
 module.exports = new PushService()

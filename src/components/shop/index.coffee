@@ -41,6 +41,8 @@ module.exports = class Shop
             $fireIcon: new Icon()
             product: product
             onPurchase: (items) =>
+              # buying anything removes ads for day
+              @model.ad.hideAds ONE_DAY_MS
               if product.type is 'pack'
                 overlay$ = @overlay$.getValue()
                 @overlay$.next [overlay$].concat [new OpenPack {
@@ -49,8 +51,6 @@ module.exports = class Shop
                   onClose: =>
                     @overlay$.next null
                 }]
-              else if product.key is 'no_ads_for_day'
-                @model.ad.hideAds ONE_DAY_MS
               else
                 Promise.resolve()
 

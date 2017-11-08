@@ -13,6 +13,8 @@ require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/observable/merge'
 require 'rxjs/add/observable/fromEvent'
 require 'rxjs/add/operator/share'
+require 'rxjs/add/operator/map'
+require 'rxjs/add/operator/switchMap'
 
 Spinner = require '../spinner'
 Base = require '../base'
@@ -130,6 +132,18 @@ module.exports = class Conversation extends Base
       (vals...) -> vals
     )
 
+    groupAndMe = RxObservable.combineLatest(
+      group
+      @model.user.getMe()
+      (vals...) -> vals
+    )
+
+    @groupUser = groupAndMe.switchMap ([group, me]) =>
+      if group and me
+        @model.groupUser.getByGroupIdAndUserId group.id, me.id
+      else
+        RxObservable.of null
+
     @state = z.state
       me: me
       isLoading: isLoading
@@ -140,7 +154,9 @@ module.exports = class Conversation extends Base
       conversation: @conversation
       inputTranslateY: @inputTranslateY.switch()
       group: group
-      isFollowLoading: false
+      groupUser: @groupUser
+
+      isJoinLoading: false
       followingIds: @model.userFollower.getAllFollowingIds()
       isLoaded: false
       isScrolledBottom: @isScrolledBottomStreams.switch()
@@ -258,7 +274,9 @@ module.exports = class Conversation extends Base
   render: =>
     {me, isLoading, message, isTextareaFocused, isLoaded, followingIds,
       messages, conversation, group, isScrolledBottom, inputTranslateY,
-      isFollowLoading} = @state.getValue()
+      groupUser, isJoinLoading} = @state.getValue()
+
+    # console.log 'gu', group, groupUser
 
     z '.z-conversation',
       z '.g-grid',
@@ -281,23 +299,31 @@ module.exports = class Conversation extends Base
           else
             @$loadingSpinner
 
-      if group?.star and not
-          @model.userFollower.isFollowing followingIds, group?.star?.user?.id
+      # TODO: join group button
+      if group and not groupUser and false
         z '.bottom.is-follow',
           z '.text',
-            @model.l.get 'conversation.followMessage', {
+            @model.l.get 'conversation.joinMessage', {
               replacements:
                 name: @model.user.getDisplayName group.star?.user
             }
           z @$followButton,
-            text: if isFollowLoading \
+            text: if isJoinLoading \
                   then @model.l.get 'general.loading'
-                  else @model.l.get 'profileInfo.followButtonText'
+                  else @model.l.get 'groupInfo.joinButtonText'
             onclick: =>
-              @state.set isFollowLoading: true
-              @model.userFollower.followByUserId group.star?.user?.id
+              # TODO: ask for notifications
+              @state.set isJoinLoading: true
+              Promise.all _filter [
+                @model.group.joinById group.id
+                if group.star
+                  @model.userFollower.followByUserId group.star?.user?.id
+              ]
               .then =>
-                @state.set isFollowLoading: false
+                @groupUser.take(1).subscribe =>
+                  @state.set isJoinLoading: false
+              .catch =>
+                @state.set isJoinLoading: false
       else
         z '.bottom',
           @$conversationInput

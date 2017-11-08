@@ -2,6 +2,7 @@ _map = require 'lodash/map'
 Environment = require 'clay-environment'
 Fingerprint = require 'fingerprintjs'
 
+PushService = require '../services/push'
 config = require '../config'
 
 if window?
@@ -280,18 +281,25 @@ module.exports = class Portal
   forumShare: ->
     console.log 'TODO'
 
-  pushRegister: ->
-    navigator.serviceWorker.ready.then (serviceWorkerRegistration) ->
-      # TODO: check if reg'd first
-      # https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/permissions-subscriptions
-
-      serviceWorkerRegistration.pushManager.subscribe {
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array config.VAPID_PUBLIC_KEY
-      }
-      .then (subscription) ->
-        subscriptionToken = JSON.stringify subscription
-        {token: subscriptionToken, sourceType: 'web'}
+  pushRegister: (isSecondAttempt = false) ->
+    PushService.registerWeb()
+    # navigator.serviceWorker.ready.then (serviceWorkerRegistration) =>
+    #   serviceWorkerRegistration.pushManager.subscribe {
+    #     userVisibleOnly: true,
+    #     applicationServerKey: urlBase64ToUint8Array config.VAPID_PUBLIC_KEY
+    #   }
+    #   .then (subscription) ->
+    #     subscriptionToken = JSON.stringify subscription
+    #     {token: subscriptionToken, sourceType: 'web'}
+    #   .catch (err) =>
+    #     serviceWorkerRegistration.pushManager.getSubscription()
+    #     .then (subscription) ->
+    #       subscription.unsubscribe()
+    #     .then =>
+    #       unless isSecondAttempt
+    #         @pushRegister true
+    #     .catch (err) ->
+    #       console.log err
 
   pushSetContextId: ({contextId}) ->
     PushService.setContextId contextId

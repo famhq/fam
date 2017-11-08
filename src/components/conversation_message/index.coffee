@@ -68,6 +68,8 @@ module.exports = class ConversationMessage
 
     isVerified = user and user.gameData?.isVerified
 
+    # console.log message
+
     z '.z-conversation-message', {
       # re-use elements in v-dom
       key: "message-#{id or clientId}"
