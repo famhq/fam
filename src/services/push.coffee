@@ -36,10 +36,11 @@ class PushService
   register: ({model, isAlwaysCalled}) ->
     model.portal.call 'push.register'
     .then ({token, sourceType} = {}) ->
+      console.log token
       if token?
         lang = model.l.getLanguageStr()
-        model.portal.call 'push.subscribeToTopic', {topic: 'all'}
-        model.portal.call 'push.subscribeToTopic', {topic: lang}
+        model.portal.call 'push.subscribeToTopic', {token, topic: 'all'}
+        model.portal.call 'push.subscribeToTopic', {token, topic: "#{lang}"}
         if not isAlwaysCalled or not localStorage?['isPushTokenStored']
           appVersion = Environment.getAppVersion config.GAME_KEY
           isIosFCM = appVersion and semver.gte(appVersion, '1.3.1')
@@ -73,8 +74,19 @@ class PushService
     @isReady.then ->
       getToken()
     .then (token) ->
-      console.log 'token', token
       {token, sourceType: 'web-fcm'}
+
+  subscribeToTopic: ({model, topic, token}) =>
+    if token
+      tokenPromise = Promise.resolve token
+    else
+      tokenPromise = @firebaseMessaging.getToken()
+
+    tokenPromise
+    .then (token) ->
+      model.pushToken.subscribeToTopic {topic, token}
+    .catch (err) ->
+      console.log 'caught', err
 
 
 module.exports = new PushService()

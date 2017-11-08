@@ -1,40 +1,10 @@
 @require '../../vars'
 
-$zIndexSoldOut = 3
-$zIndexRewardOverlay = 3
-$zIndexCountOverlay = 4
-
 .z-sticker
-  position: relative
-
-  &.is-locked
-    > .sticker
-      opacity: 0.16
+  box-sizing: border-box
+  border-radius: 2px
 
   > .sticker
     width: 100%
-
-  > .reward-overlay
-    position: absolute
-    left: 0
-    top: 0
-    width: 100%
-    height: 100%
-    z-index: $zIndexRewardOverlay
-
-  > .sold-out
-    position: absolute
-    top: 0.5%
-    right: 1%
-    background-image: url($cdnUrl + '/sold_out.svg')
-    width: 100%
-    height: 100%
-    z-index: $zIndexSoldOut
-    background-repeat: no-repeat
-    background-position: top right
-    background-size: 55%
-
-  > .count
-    font-caption1()
-    background: getColor('$tertiary700')
-    text-align: center
+    z-index: 1
+    display: block

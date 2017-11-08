@@ -18,5 +18,8 @@ module.exports = class PushNotificationsSheet
           text: @model.l.get 'pushNotificationsSheet.submitButtonText'
           onclick: =>
             PushService.register {@model}
+            .catch -> null
+            .then =>
+              @model.pushNotificationSheet.complete()
             @model.pushNotificationSheet.close()
       }

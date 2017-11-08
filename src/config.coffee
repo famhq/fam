@@ -53,6 +53,12 @@ isomorphic =
   DEFAULT_GAME_KEY: 'clash-royale'
   COMMUNITY_LANGUAGES: ['es', 'pt']
   LANGUAGES: ['en', 'es', 'it', 'fr', 'zh', 'ja', 'ko', 'de', 'pt', 'pl']
+  # also in radioactive
+  LEVEL_REQUIREMENTS: [
+    {level: 1, countRequired: 0}
+    {level: 2, countRequired: 10}
+    {level: 3, countRequired: 100}
+  ]
 
 
   CDN_URL: 'https://cdn.wtf/d/images/starfire'

@@ -11,6 +11,9 @@ module.exports = class PushToken
   claimToken: (token) =>
     @auth.call "#{@namespace}.updateByToken", {token}
 
+  subscribeToTopic: ({token, topic}) =>
+    @auth.call "#{@namespace}.subscribeToTopic", {token, topic}
+
   setCurrentPushToken: (pushToken) =>
     @pushToken.next pushToken
 

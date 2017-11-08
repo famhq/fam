@@ -166,7 +166,8 @@ module.exports = class Model
     @pushNotificationSheet = new PushNotificationSheet()
     @portal?.setModels {
       @user, @game, @player, @clan, @clashRoyaleMatch, @clashRoyalePlayerDeck,
-      @clanRecordType, @gameRecordType, @modal, @installOverlay, @getAppDialog
+      @clanRecordType, @gameRecordType, @modal, @installOverlay, @getAppDialog,
+      @pushToken
 
     }
     @window = new Window {cookieSubject, @experiment}

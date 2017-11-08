@@ -1,0 +1,114 @@
+@require '../../vars'
+
+$zIndexSoldOut = 3
+
+.z-sticker-block
+  position: relative
+  box-sizing: border-box
+  border-radius: 2px
+
+  &.is-locked
+    > .sticker
+      opacity: 0.16
+
+  > .sticker
+    width: 100%
+    position: relative
+    z-index: 1
+    display: block
+    padding: 4px
+    box-sizing: border-box
+
+  // > .sold-out
+  //   position: absolute
+  //   top: 0.5%
+  //   right: 1%
+  //   background-image: url($cdnUrl + '/sold_out.svg')
+  //   width: 100%
+  //   height: 100%
+  //   z-index: $zIndexSoldOut
+  //   background-repeat: no-repeat
+  //   background-position: top right
+  //   background-size: 55%
+
+  > .count
+    font-caption1()
+    background: getColor('$tertiary700')
+    text-align: center
+    position: relative
+    z-index: 1
+    border-radius: 2px
+
+    > .bar
+      position: absolute
+      left: 0
+      top: 0
+      height: 100%
+
+    > .text
+      position: relative
+
+  &:after
+    content: ''
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background: getColor('$tertiary300')
+    opacity: 0.5
+    border-radius: 2px
+
+  &.is-common
+    border: 2px solid getColor('$tertiary300')
+
+    &:after
+      background: getColor('$tertiary300')
+
+    > .count
+      > .bar
+        background: getColor('$tertiary300')
+        color: getColor('$tertiary300Text')
+
+  &.is-rare
+    border: 2px solid getColor('$blue500')
+
+    &:after
+      background: getColor('$blue500')
+
+    > .count
+      > .bar
+        background: getColor('$blue500')
+        color: getColor('$blue500Text')
+
+  &.is-epic
+    border: 2px solid getColor('$purple500')
+
+    &:after
+      background: getColor('$purple500')
+
+    > .count
+      > .bar
+        background: getColor('$purple500')
+        color: getColor('$purple500Text')
+
+  &.is-legendary
+    border: 2px solid getColor('$orange500')
+
+    &:after
+      background: getColor('$orange500')
+
+    > .count
+      > .bar
+        background: getColor('$orange500')
+        color: getColor('$orange500Text')
+
+
+  &.can-upgrade
+    border: 2px solid getColor('$red500')
+
+    > .count
+      font-weight: 600
+
+      > .bar
+        background: getColor('$primary500')

@@ -35,10 +35,14 @@ onPush = null
 topOnData = (callback) ->
   onPush = callback
 
+contextId = null
+pushSetContextId = (options) ->
+  contextId = options.contextId
+
 portal = new PortalGun()
 portal.listen()
 portal.on 'top.onData', topOnData
-# TODO: setcontext, don't show push if context
+portal.on 'push.setContextId', pushSetContextId
 
 self.addEventListener 'install', (e) ->
   self.skipWaiting()
@@ -48,7 +52,7 @@ self.addEventListener 'activate', (e) ->
 
 self.addEventListener 'push', (e) ->
   message = if e.data then e.data.json() else {}
-  if message.data?.data
+  if message.data?.title
     message = message.data
     message.data = try
       JSON.parse message.data
@@ -60,18 +64,28 @@ self.addEventListener 'push', (e) ->
   else
     path = ''
 
+
   e.waitUntil(
-    self.registration.showNotification 'Starfire',
-      icon: if message.icon \
-            then message.icon
-            else "#{config.CDN_URL}/android-chrome-192x192.png"
-      title: message.title
-      body: message.message or message.text # message.text is legacy VAPID
-      tag: message.data.path
-      vibrate: [200, 100, 200]
-      data:
-        url: "https://#{config.HOST}#{path}"
-        path: message.data.path
+    clients.matchAll {
+      includeUncontrolled: true
+      type: 'window'
+    }
+    .then (activeClients) ->
+      isFocused = activeClients?.some (client) ->
+        client.focused
+
+      if not isFocused or contextId isnt message.data.contextId
+        self.registration.showNotification 'Starfire',
+          icon: if message.icon \
+                then message.icon
+                else "#{config.CDN_URL}/android-chrome-192x192.png"
+          title: message.title
+          body: message.message or message.text # message.text is legacy VAPID
+          tag: message.data.path
+          vibrate: [200, 100, 200]
+          data:
+            url: "https://#{config.HOST}#{path}"
+            path: message.data.path
   )
 
 self.addEventListener 'notificationclick', (e) ->

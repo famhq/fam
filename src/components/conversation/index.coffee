@@ -104,7 +104,7 @@ module.exports = class Conversation extends Base
 
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
-    @$followButton = new PrimaryButton()
+    @$joinButton = new PrimaryButton()
     @$conversationInput = new ConversationInput {
       @model
       @router
@@ -128,13 +128,13 @@ module.exports = class Conversation extends Base
 
     messagesAndMe = RxObservable.combineLatest(
       messages
-      @model.user.getMe()
+      me
       (vals...) -> vals
     )
 
     groupAndMe = RxObservable.combineLatest(
-      group
-      @model.user.getMe()
+      group or RxObservable.of null
+      me
       (vals...) -> vals
     )
 
@@ -157,7 +157,6 @@ module.exports = class Conversation extends Base
       groupUser: @groupUser
 
       isJoinLoading: false
-      followingIds: @model.userFollower.getAllFollowingIds()
       isLoaded: false
       isScrolledBottom: @isScrolledBottomStreams.switch()
 
@@ -272,7 +271,7 @@ module.exports = class Conversation extends Base
         @isPostLoading.next false
 
   render: =>
-    {me, isLoading, message, isTextareaFocused, isLoaded, followingIds,
+    {me, isLoading, message, isTextareaFocused, isLoaded,
       messages, conversation, group, isScrolledBottom, inputTranslateY,
       groupUser, isJoinLoading} = @state.getValue()
 
@@ -299,29 +298,42 @@ module.exports = class Conversation extends Base
           else
             @$loadingSpinner
 
-      # TODO: join group button
-      if group and not groupUser and false
-        z '.bottom.is-follow',
+      if group and not groupUser
+        z '.bottom.is-gate',
           z '.text',
             @model.l.get 'conversation.joinMessage', {
               replacements:
                 name: @model.user.getDisplayName group.star?.user
             }
-          z @$followButton,
+          z @$joinButton,
             text: if isJoinLoading \
                   then @model.l.get 'general.loading'
                   else @model.l.get 'groupInfo.joinButtonText'
             onclick: =>
-              # TODO: ask for notifications
               @state.set isJoinLoading: true
-              Promise.all _filter [
-                @model.group.joinById group.id
-                if group.star
-                  @model.userFollower.followByUserId group.star?.user?.id
-              ]
+
+              @model.signInDialog.openIfGuest me
               .then =>
-                @groupUser.take(1).subscribe =>
-                  @state.set isJoinLoading: false
+                (if localStorage?['isPushTokenStored']
+                  Promise.resolve()
+                else
+                  @model.pushNotificationSheet.openAndWait()
+                ).then =>
+                  @model.portal.call 'push.subscribeToTopic', {
+                    topic: "group-#{group.id}"
+                  }
+                Promise.all _filter [
+                  @model.group.joinById group.id
+                  if group.star
+                    @model.userFollower.followByUserId group.star?.user?.id
+                ]
+                .then =>
+                  # just in case...
+                  setTimeout =>
+                    @state.set isJoinLoading: false
+                  , 1000
+                  @groupUser.take(1).subscribe =>
+                    @state.set isJoinLoading: false
               .catch =>
                 @state.set isJoinLoading: false
       else

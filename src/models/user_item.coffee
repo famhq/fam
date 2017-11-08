@@ -9,5 +9,10 @@ module.exports = class UserItem
   getAll: =>
     @auth.stream "#{@namespace}.getAll"
 
+  upgradeByItemKey: (itemKey) =>
+    @auth.call "#{@namespace}.upgradeByItemKey", {itemKey}, {
+      invalidateAll: true
+    }
+
   isOwnedByUserItemsAndItemKey: (userItems, itemKey) ->
     _find userItems, {itemKey}

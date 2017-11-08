@@ -33,7 +33,7 @@ module.exports = class Portal
 
   setModels: (props) =>
     {@user, @game, @player, @clan, @clashRoyaleMatch, @clashRoyalePlayerDeck,
-      @gameRecordType, @clanRecordType,
+      @gameRecordType, @clanRecordType, @pushToken,
       @modal, @installOverlay, @getAppDialog} = props
     null
 
@@ -68,6 +68,7 @@ module.exports = class Portal
     @portal.on 'top.onData', -> null
     @portal.on 'top.getData', -> null
     @portal.on 'push.register', @pushRegister
+    @portal.on 'push.subscribeToTopic', @pushSubscribeToTopic
 
     @portal.on 'twitter.share', @twitterShare
 
@@ -281,7 +282,7 @@ module.exports = class Portal
   forumShare: ->
     console.log 'TODO'
 
-  pushRegister: (isSecondAttempt = false) ->
+  pushRegister: ->
     PushService.registerWeb()
     # navigator.serviceWorker.ready.then (serviceWorkerRegistration) =>
     #   serviceWorkerRegistration.pushManager.subscribe {
@@ -301,9 +302,8 @@ module.exports = class Portal
     #     .catch (err) ->
     #       console.log err
 
-  pushSetContextId: ({contextId}) ->
-    PushService.setContextId contextId
-
+  pushSubscribeToTopic: ({topic, token}) =>
+    PushService.subscribeToTopic {model: {@pushToken}, topic, token}
 
   networkInformationOnOnline: (fn) ->
     window.addEventListener 'online', fn

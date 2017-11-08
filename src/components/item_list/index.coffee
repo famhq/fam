@@ -17,7 +17,7 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/map'
 
-Sticker = require '../sticker'
+StickerBlock = require '../sticker_block'
 Icon = require '../icon'
 Spinner = require '../spinner'
 colors = require '../../colors'
@@ -120,7 +120,7 @@ module.exports = class ItemList
   bundle: (items, {userItems}) =>
     _map items, (itemInfo) =>
       item = itemInfo.item
-      $el = new Sticker {
+      $el = new StickerBlock {
         @model
         @router
         isLocked: not @model.userItem.isOwnedByUserItemsAndItemKey(

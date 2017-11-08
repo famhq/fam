@@ -1,6 +1,7 @@
 z = require 'zorium'
 colors = require '../../colors'
 _clone = require 'lodash/clone'
+_startCase = require 'lodash/startCase'
 
 config = require '../../config'
 
@@ -10,7 +11,7 @@ if window?
 MIN_STICKER_SIZE_FOR_LARGE = 50
 
 module.exports = class Sticker
-  constructor: ({@model, isLocked, itemInfo, hasCount, sizePx}) ->
+  constructor: ({@model, isLocked, itemInfo, sizePx}) ->
     isLocked ?= null
 
     @state = z.state
@@ -18,25 +19,23 @@ module.exports = class Sticker
       meItemIds: @model.userItem.getAll()
       isLocked: isLocked
       itemInfo: itemInfo
-      hasCount: hasCount
       sizePx: sizePx
 
   render: ({sizePx, onclick}) =>
     sizePxProp = sizePx
-    {me, isLocked, itemInfo, meItemIds, hasCount, sizePx} = @state.getValue()
+    {me, isLocked, itemInfo, meItemIds, sizePx} = @state.getValue()
 
     sizePx ?= sizePxProp
 
-    hasCount ?= true
     itemInfo ?= {}
-    {item, count, level} = itemInfo
-    level ?= 1
+    {item, count, itemLevel} = itemInfo
+    itemLevel ?= 1
     item ?= {}
     isLocked ?= not @model.userItem.isOwnedByUserItemsAndItemKey(
       meItemIds, item.key
     )
 
-    filenameParts = [level]
+    filenameParts = [itemLevel]
     if sizePx < MIN_STICKER_SIZE_FOR_LARGE
       filenameParts.push 'small'
     else
@@ -46,7 +45,6 @@ module.exports = class Sticker
                 "#{item.key}_#{filenameParts.join('_')}.png?1"
 
 
-    height = if hasCount then sizePx + 20 else sizePx
     imageProps = {
       src: stickerSrc
     }
@@ -55,17 +53,13 @@ module.exports = class Sticker
       imageProps.height = sizePx
 
     z '.z-sticker', {
-      className: z.classKebab {isLocked}
+      className: z.classKebab {
+        isLocked
+      }
       onclick: (e) ->
         onclick? e, item
       style:
         width: "#{sizePx}px"
-        height: "#{height}px"
+        height: "#{sizePx}px"
     },
-      if item?.circulationLimit? and
-          item.circulating >= item.circulationLimit
-        z '.sold-out'
-
       z 'img.sticker', imageProps
-      if hasCount
-        z '.count', count

@@ -65,7 +65,7 @@ module.exports = class ConversationInputStickers
                   startPos = @selectionStart.getValue()
                   endPos = @selectionEnd.getValue()
                   selectedText = message.substring startPos, endPos
-                  stickerText = ":#{sticker.key}^#{itemInfo.level or 1}:"
+                  stickerText = ":#{sticker.key}^#{itemInfo.itemLevel or 1}:"
                   newMessage = message.substring(0, startPos) + stickerText +
                              message.substring(endPos, message.length)
                   @message.next newMessage
