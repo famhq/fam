@@ -71,7 +71,8 @@ module.exports = class StickerBlock
       if hasCount
         z '.count', {
           onclick: =>
-            @model.userItem.upgradeByItemKey item.key
+            if canUpgrade
+              @model.userItem.upgradeByItemKey item.key
         },
           z '.bar', {
             style:

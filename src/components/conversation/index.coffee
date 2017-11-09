@@ -141,6 +141,8 @@ module.exports = class Conversation extends Base
     @groupUser = groupAndMe.switchMap ([group, me]) =>
       if group and me
         @model.groupUser.getByGroupIdAndUserId group.id, me.id
+        .map (groupUser) ->
+          groupUser or false
       else
         RxObservable.of null
 
@@ -298,7 +300,7 @@ module.exports = class Conversation extends Base
           else
             @$loadingSpinner
 
-      if group and not groupUser
+      if group and groupUser is false
         z '.bottom.is-gate',
           z '.text',
             @model.l.get 'conversation.joinMessage', {

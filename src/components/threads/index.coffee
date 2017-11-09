@@ -128,9 +128,10 @@ module.exports = class Threads
     {me, chunkedThreads, language, filter, gameKey,
       expandedId, isLoading} = @state.getValue()
 
-    isLite = @model.experiment.get('threads') is 'lite' and
-              filter.filter isnt 'clan'
-    isControl = not isLite or filter.filter is 'clan'
+    # isLite = @model.experiment.get('threads') is 'lite' and
+    #           filter.filter isnt 'clan'
+    # isControl = not isLite or filter.filter is 'clan'
+    isLite = true
 
     z '.z-threads', {
       className: z.classKebab {isLite, isControl}
