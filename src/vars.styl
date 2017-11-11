@@ -49,7 +49,7 @@ shadow-5()
   transition: box-shadow 0.25s
   box-shadow: 0 17px 17px 0 rgba(0, 0, 0, 0.15), 0 27px 55px 0 rgba(0, 0, 0, 0.3)
 
-font-h1()
+font-h1(scale = yes)
   font-family: Rubik
   color: getColor('$white')
   font-weight: 500
@@ -57,66 +57,72 @@ font-h1()
   letter-spacing: 1px
   text-transform: uppercase
 
-  @media (min-width: $breakPointLarge)
-    font-size: 24px
+  if scale is yes
+    @media (min-width: $breakPointLarge)
+      font-size: 24px
 
-font-title()
+font-title(scale = yes)
   font-family: Rubik
   color: getColor('$white')
   font-weight: 500
   font-size: 14px
 
-  @media (min-width: $breakPointLarge)
-    font-size: 16px
+  if scale is yes
+    @media (min-width: $breakPointLarge)
+      font-size: 16px
 
-font-subhead()
+font-subhead(scale = yes)
   font-title()
   font-weight: 700
   text-transform: uppercase
 
-font-button()
+font-button(scale = yes)
   font-family: Rubik
   font-weight: 500
   color: getColor('$white')
   line-height: 16px
   font-size: 14px
   text-transform: uppercase
-  @media (min-width: $breakPointLarge)
-    font-size: 16px
+  if scale is yes
+    @media (min-width: $breakPointLarge)
+      font-size: 16px
 
-font-body1()
+font-body1(scale = yes)
   font-family: Rubik
   font-weight: 400
   color: getColor('$white')
   line-height: 20px
   font-size: 14px
-  @media (min-width: $breakPointLarge)
-    font-size: 16px
+  if scale
+    @media (min-width: $breakPointLarge)
+      font-size: 16px
 
-font-body2()
+font-body2(scale = yes)
   font-body1()
   color: getColor('$tertiary300')
 
-font-input()
+font-input(scale = yes)
   font-body()
   font-size: 16px
-  @media (min-width: $breakPointLarge)
-    font-size: 16px
+  if scale is yes
+    @media (min-width: $breakPointLarge)
+      font-size: 16px
 
-font-caption1()
+font-caption1(scale = yes)
   font-family: Rubik
   color: getColor('$white')
   font-weight: 400
   font-size: 12px
 
-  @media (min-width: $breakPointLarge)
-    font-size: 14px
+  if scale is yes
+    @media (min-width: $breakPointLarge)
+      font-size: 14px
 
-font-caption2()
-  font-caption1()
+font-caption2(scale = yes)
+  font-caption1(scale)
   color: getColor('$tertiary300')
 
-font-micro()
+font-micro(scale = yes)
   font-size: 8px
   font-family: Rubik
   color: getColor('$tertiary300')
@@ -124,8 +130,9 @@ font-micro()
   font-weight: 400
   line-height: 1.25
 
-  @media (min-width: $breakPointLarge)
-    font-size: 10px
+  if scale is yes
+    @media (min-width: $breakPointLarge)
+      font-size: 10px
 
 
 @keyframes z-ripple-animation-css-only

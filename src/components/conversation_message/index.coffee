@@ -52,7 +52,7 @@ module.exports = class ConversationMessage
     {user, body, time, card, id, clientId} = message
 
     avatarSize = if windowSize.width > 840 \
-                 then '56px'
+                 then '40px'
                  else '40px'
 
     onclick = =>
