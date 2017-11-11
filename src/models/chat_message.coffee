@@ -27,6 +27,12 @@ module.exports = class ChatMessage
     .catch (err) ->
       console.log 'err', err
 
+  # hacky: without this, when leaving a conversation, then coming back, the
+  # client-created messages will show for a split-second before the rest
+  # laod in
+  resetClientChangesStream: (conversationId) =>
+    @clientChangesStream[conversationId] = null
+
   deleteById: (id) =>
     @auth.call "#{@namespace}.deleteById", {id}, {
       invalidateAll: true

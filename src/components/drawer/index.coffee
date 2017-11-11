@@ -14,6 +14,7 @@ Icon = require '../icon'
 Avatar = require '../avatar'
 FlatButton = require '../flat_button'
 AdsenseAd = require '../adsense_ad'
+ClanBadge = require '../clan_badge'
 GroupBadge = require '../group_badge'
 SetLanguageDialog = require '../set_language_dialog'
 Ripple = require '../ripple'
@@ -26,7 +27,7 @@ if window?
 GROUPS_IN_DRAWER = 2
 
 module.exports = class Drawer
-  constructor: ({@model, @router, gameKey, @overlay$}) ->
+  constructor: ({@model, @router, gameKey, group, @overlay$}) ->
     @$avatar = new Avatar()
     @$adsenseAd = new AdsenseAd {@model}
 
@@ -39,6 +40,12 @@ module.exports = class Drawer
     )
 
     myGroups = @model.group.getAll({filter: 'mine'})
+    groupAndMyGroupsAndGameKey = RxObservable.combineLatest(
+      group
+      myGroups
+      gameKey
+      (vals...) -> vals
+    )
 
     userAgent = navigator?.userAgent
     needsApp = userAgent and
@@ -50,17 +57,46 @@ module.exports = class Drawer
       language: @model.l.getLanguage()
       me: me
       gameKey: gameKey
-      myGroups: myGroups.map (groups) =>
-        groups = _filter groups, (group) ->
-          group?.id isnt '73ed4af0-a2f2-4371-a893-1360d3989708'
+      myGroups: groupAndMyGroupsAndGameKey.map ([group, groups, gameKey]) =>
         groups = _orderBy groups, (group) ->
           group.conversations?[0]?.lastUpdateTime
         , 'desc'
+        if group # current group, show up top
+          groups = _filter groups, ({id}) ->
+            id isnt group.id
+          groups = [group].concat groups
         _map _take(groups, GROUPS_IN_DRAWER), (group) =>
           {
             group
-            $badge: new GroupBadge {@model, group}
+            $badge: if group.clan \
+                    then new ClanBadge {@model, clan: group.clan}
+                    else new GroupBadge {@model, group}
+            $chevronIcon: new Icon()
             $ripple: new Ripple()
+            children: if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
+              [
+                {
+                  path: @router.get 'groupChat', {
+                    gameKey: gameKey
+                    id: group.id
+                  }
+                  title: @model.l.get 'general.chat'
+                }
+                {
+                  path: @router.get 'groupShop', {
+                    gameKey: gameKey
+                    id: group.id
+                  }
+                  title: @model.l.get 'general.shop'
+                }
+                {
+                  path: @router.get 'groupVideos', {
+                    gameKey: gameKey
+                    id: group.id
+                  }
+                  title: @model.l.get 'videosPage.title'
+                }
+              ]
           }
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
@@ -274,9 +310,14 @@ module.exports = class Drawer
                       }, @model.l.get 'general.signUp'
                     z '.divider'
                   ]
-                _map myGroups, ({$badge, $ripple, group}) =>
+                _map myGroups, (myGroup) =>
+                  {$badge, $ripple, group, $chevronIcon, children} = myGroup
                   groupPath = @router.get 'group', {gameKey, id: group.id}
-                  isSelected = currentPath?.indexOf(groupPath) is 0
+                  groupEnPath = @router.get 'group', {gameKey, id: group.id}, {
+                    language: 'en'
+                  }
+                  isSelected = currentPath?.indexOf(groupPath) is 0 or
+                    currentPath?.indexOf(groupEnPath) is 0
                   z 'li.menu-item', {
                     className: z.classKebab {isSelected}
                   },
@@ -290,7 +331,31 @@ module.exports = class Drawer
                       z '.icon',
                         z $badge
                       @model.group.getDisplayName group
+                      if not _isEmpty children
+                        z '.chevron',
+                          z $chevronIcon,
+                            icon: if isSelected \
+                                  then 'chevron-up'
+                                  else 'chevron-down'
+                            color: colors.$tertiary500Text70
+                            isTouchTarget: false
                       $ripple
+                    if isSelected
+                      z 'ul',
+                        _map children, ({path, title}) =>
+                          isSelected = currentPath?.indexOf(path) is 0
+                          z 'li.menu-item',
+                            z 'a.menu-item-link.is-child', {
+                              className: z.classKebab {isSelected}
+                              href: path
+                              onclick: (e) =>
+                                e.preventDefault()
+                                @model.drawer.close()
+                                @router.goPath path
+                            },
+                              z '.icon'
+                              title
+
 
                 unless _isEmpty myGroups
                   z '.divider'

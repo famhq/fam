@@ -135,15 +135,16 @@ app.use (req, res, next) ->
   isBot = /bot|crawler|spider|crawling/i.test(userAgent)
   isLegacyHost = host.indexOf('starfi.re') isnt -1 or
                   host.indexOf('redtritium.com') isnt -1
-  if isLegacyHost and req.cookies?.accessToken and not isNativeApp and not isBot
+
+  if isLegacyHost and req.cookies?.accessToken and not isBot# and not isNativeApp
     return res.redirect(
       301
       'https://starfire.games' + req.path +
         '?accessToken=' + req.cookies?.accessToken
     )
-  else if isLegacyHost and not isNativeApp
+  else if isLegacyHost# and not isNativeApp
     return res.redirect(301, 'https://starfire.games' + req.path)
-  else if accessToken and not isLegacyHost and not isNativeApp
+  else if accessToken and not isLegacyHost# and not isNativeApp
     res.cookie('accessToken', accessToken, CookieService.getCookieOpts(host))
     return res.redirect(301, 'https://starfire.games' + req.path)
   # end migrate

@@ -417,6 +417,10 @@
   "tosPage.title": "Terms of service",
   "userOfWeekPage.title": "User of the week",
   "videosPage.title": "Videos",
+
+  "backend.userJoinedChatMessage": "{name} joined",
+
+
   "error.usernameTaken": "Username is taken",
   "error.invalid": "Invalid",
   "error.invalidUsername": "Invalid username",

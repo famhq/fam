@@ -5,6 +5,7 @@ _map = require 'lodash/map'
 _values = require 'lodash/values'
 _flatten = require 'lodash/flatten'
 Environment = require 'clay-environment'
+isUuid = require 'isuuid'
 RxObservable = require('rxjs/Observable').Observable
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/map'
@@ -50,6 +51,7 @@ Pages =
   GroupAddChannelPage: require './pages/group_add_channel'
   GroupEditChannelPage: require './pages/group_edit_channel'
   GroupManageMemberPage: require './pages/group_manage_member'
+  GroupVideosPage: require './pages/group_videos'
   EditThreadPage: require './pages/edit_thread'
   ThreadPage: require './pages/thread'
   NewThreadPage: require './pages/new_thread'
@@ -89,8 +91,17 @@ module.exports = class App
       {req, route, $page: $page}
     .publishReplay(1).refCount()
 
-    gameKey = requests.map ({route}) ->
+    gameKey = @requests.map ({route}) ->
       route?.params.gameKey or config.DEFAULT_GAME_KEY
+
+    group = @requests.switchMap ({$page, route}) =>
+      isGroup = $page?.isGroup
+      if isGroup and isUuid route.params.id
+        @model.group.getById route.params.id
+      else if isGroup and route.params.id
+        @model.group.getByKey route.params.id
+      else
+        RxObservable.of null
 
     # used if state / requests fails to work
     $backupPage = if @serverData?
@@ -104,7 +115,7 @@ module.exports = class App
     @overlay$ = new RxBehaviorSubject null
 
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
-    @$drawer = new Drawer {@model, @router, gameKey, @overlay$}
+    @$drawer = new Drawer {@model, @router, gameKey, group, @overlay$}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router}
     @$installOverlay = new InstallOverlay {@model, @router}
@@ -206,6 +217,7 @@ module.exports = class App
     routeGame 'groupNewConversation', 'GroupAddChannelPage'
     routeGame 'groupEditConversation', 'GroupEditChannelPage'
     routeGame 'groupSettings', 'GroupSettingsPage'
+    routeGame 'groupVideos', 'GroupVideosPage'
     routeGame 'groupAddRecords', 'GroupAddRecordsPage'
     routeGame 'groupManageRecords', 'GroupManageRecordsPage'
     routeGame [

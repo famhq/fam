@@ -31,6 +31,7 @@
   "groupManageChannels": "/group/{id}/manage-channels",
   "groupSettings": "/group/{id}/settings",
   "groupShop": "/group/{id}/shop",
+  "groupVideos": "/group/{id}/videos",
   "groupAddRecords": "/group/{id}/add-records",
   "groupManageRecords": "/group/{id}/manage-records",
   "groupNewChannel": "/group/{id}/new-channel",

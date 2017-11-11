@@ -77,24 +77,28 @@ module.exports = class FormattedText
 
           largeImageSrc ?= imageSrc
 
-
-          z 'img', {
-            className: z.classKebab {isSticker}
-            src: imageSrc
-            width: imageWidth
-            height: if imageAspectRatio and @imageWidth isnt 'auto' \
-                    then imageWidth / imageAspectRatio
-                    else undefined
-            onclick: (e) ->
-              e?.stopPropagation()
-              e?.preventDefault()
-              if isSticker
-                return
-              model.imageViewOverlay.setImageData {
-                url: largeImageSrc
-                aspectRatio: imageAspectRatio
+          if isSticker
+            z 'img.is-sticker', {
+              src: imageSrc
+              width: imageWidth
+            }
+          else
+            z '.image-wrapper',
+              z 'img', {
+                src: imageSrc
+                width: imageWidth
+                height: if imageAspectRatio and @imageWidth isnt 'auto' \
+                        then imageWidth / imageAspectRatio
+                        else undefined
+                onclick: (e) ->
+                  e?.stopPropagation()
+                  e?.preventDefault()
+                  model.imageViewOverlay.setImageData {
+                    url: largeImageSrc
+                    aspectRatio: imageAspectRatio
+                  }
               }
-          }
+
         a: (tagName, props, children) =>
           z 'a.link', {
             href: props.href

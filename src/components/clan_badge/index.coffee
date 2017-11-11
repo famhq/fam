@@ -7,8 +7,17 @@ if window?
   require './index.styl'
 
 module.exports = class ClanBadge
-  render: ({clan, size} = {}) ->
-    badgeId = clan?.badge or clan?.data?.badge
+  constructor: ({clan} = {}) ->
+    @state = z.state
+      clan: clan
+
+  render: (props = {}) =>
+    {size} = props
+
+    {clan} = @state.getValue()
+    clan ?= props.clan
+
+    badgeId = clan?.badge or clan?.data?.badgeId % 1000
 
     # height = if size then "#{parseInt(size) * (40 / 34)}px" else undefined
 

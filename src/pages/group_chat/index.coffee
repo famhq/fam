@@ -9,7 +9,7 @@ require 'rxjs/add/observable/combineLatest'
 Head = require '../../components/head'
 GroupChat = require '../../components/group_chat'
 AppBar = require '../../components/app_bar'
-ButtonBack = require '../../components/button_back'
+ButtonMenu = require '../../components/button_menu'
 ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
 Icon = require '../../components/icon'
@@ -20,6 +20,8 @@ if window?
   require './index.styl'
 
 module.exports = class GroupChatPage
+  isGroup: true
+
   constructor: ({@model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) =>
       if isUuid route.params.id
@@ -90,7 +92,7 @@ module.exports = class GroupChatPage
       }
     })
     @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@model, @router}
+    @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
     @$linkIcon = new Icon()
     @$bottomBar = new BottomBar {@model, @router, requests}
@@ -155,7 +157,7 @@ module.exports = class GroupChatPage
             z 'span.hashtag', '#'
             conversation?.name
             z '.arrow'
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
         $topRightButton:
           z '.p-group_top-right',
             z '.icon',

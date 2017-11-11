@@ -19,8 +19,8 @@ class PushService
       @isReady = new Promise (@resolveReady) => null
 
   setFirebaseServiceWorker: (registration) =>
-    @firebaseMessaging.useServiceWorker registration
-    @resolveReady()
+    @firebaseMessaging?.useServiceWorker registration
+    @resolveReady?()
 
   init: ({model}) ->
     onReply = ([reply]) ->

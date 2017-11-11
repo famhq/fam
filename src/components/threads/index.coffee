@@ -134,7 +134,7 @@ module.exports = class Threads
     isLite = true
 
     z '.z-threads', {
-      className: z.classKebab {isLite, isControl}
+      className: z.classKebab {isLite}#, isControl}
     }, [
       if chunkedThreads and _isEmpty chunkedThreads[0]
         z '.no-threads',

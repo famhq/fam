@@ -117,10 +117,11 @@ module.exports = class Conversation extends Base
       onPost: @postMessage
       onResize: @onResize
       allowedPanels: @conversation.map (conversation) ->
-        if conversation.type is 'pm' or not conversation.groupId
-          ['text', 'stickers', 'image', 'gifs']
-        else
-          ['text', 'stickers', 'gifs']
+        # TODO: conversation-specific settings
+        # if conversation.type is 'pm' or not conversation.groupId
+        ['text', 'stickers', 'image', 'gifs']
+        # else
+        #   ['text', 'stickers', 'gifs']
     }
 
     @debouncedOnResize = _debounce @onResize
@@ -201,6 +202,7 @@ module.exports = class Conversation extends Base
     @isScrolledBottomStreams.next isScrolledBottom
 
   beforeUnmount: =>
+    {conversation} = @state.getValue()
     # to update conversations page, etc...
     unless @isGroup
       # race condition without timeout.
@@ -215,6 +217,7 @@ module.exports = class Conversation extends Base
     @model.portal.call 'push.setContextId', {
       contextId: 'empty'
     }
+    @model.chatMessage.resetClientChangesStream conversation?.id
     window?.removeEventListener 'resize', @debouncedOnResize
 
   scrollToBottom: ({isSmooth} = {}) =>

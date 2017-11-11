@@ -81,6 +81,22 @@ class Language
 
     @setLanguage language
 
+  getLanguageByCountry: (country) ->
+    country = country?.toUpperCase()
+    if country in [
+      'AR', 'BO', 'CR', 'CU', 'DM', 'EC', 'SV', 'GQ', 'GT', 'HN', 'MX'
+      'NI', 'PA', 'PE', 'ES', 'UY', 'VE'
+    ]
+      'es'
+    else if country is 'IT'
+      'it'
+    else if country is 'BR'
+      'pt'
+    else if country is 'FR'
+      'fr'
+    else
+      'en'
+
   setLanguage: (language) =>
     @language.next language
     CookieService.set(
@@ -129,9 +145,9 @@ class Language
       paths
     , {}
 
-  get: (strKey, {replacements, file} = {}) =>
+  get: (strKey, {replacements, file, language} = {}) =>
     file ?= 'strings'
-    language = @getLanguageStr()
+    language ?= @getLanguageStr()
     baseResponse = @files[file][language]?[strKey] or
                     @files[file]['en']?[strKey] or ''
 

@@ -6,7 +6,7 @@ require 'rxjs/add/operator/switchMap'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
-ButtonBack = require '../../components/button_back'
+ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
 Shop = require '../../components/shop'
 Collection = require '../../components/collection'
@@ -18,7 +18,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupShopPage
-  hideDrawer: true
+  isGroup: true
 
   constructor: ({@model, requests, @router, serverData, overlay$}) ->
     group = requests.switchMap ({route}) =>
@@ -40,7 +40,7 @@ module.exports = class GroupShopPage
       }
     })
     @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@router}
+    @$buttonMenu = new ButtonMenu {@model, @router}
     @$tabs = new Tabs {@model}
     @$fireIcon = new Icon()
     @$shop = new Shop {
@@ -78,7 +78,7 @@ module.exports = class GroupShopPage
       z @$appBar, {
         title: @model.l.get 'groupShopPage.title'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {
+        $topLeftButton: z @$buttonMenu, {
           color: colors.$primary500
         }
         $topRightButton: z '.p-fire_top-right', {

@@ -102,8 +102,12 @@ module.exports = class ConversationInput
         }
       }
 
-    @inputTranslateY.next @currentPanel.map (currentPanel) =>
-      54 - @panels[currentPanel].$el?.getHeightPx?()
+
+    panelHeight = @currentPanel.switchMap (currentPanel) =>
+      @panels[currentPanel].$el?.getHeightPx?()
+
+    @inputTranslateY.next panelHeight.map (height) ->
+      54 - height
 
     me = @model.user.getMe()
 
@@ -111,6 +115,7 @@ module.exports = class ConversationInput
       currentPanel: @currentPanel
       me: me
       inputTranslateY: @inputTranslateY.switch()
+      panelHeight: panelHeight
       panels: allowedPanels.map (allowedPanels) =>
         _pick @panels, allowedPanels
       mePlayer: me.switchMap ({id}) =>
@@ -135,17 +140,18 @@ module.exports = class ConversationInput
         setTimeout post, 500
 
   render: =>
-    {currentPanel, mePlayer, me, inputTranslateY, panels} = @state.getValue()
+    {currentPanel, mePlayer, me, inputTranslateY,
+      panels, panelHeight} = @state.getValue()
 
     isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV
 
     baseHeight = 54
-    scale = (@panels[currentPanel].$el?.getHeightPx?() / baseHeight) or 1
+    scale = (panelHeight / baseHeight) or 1
 
     z '.z-conversation-input', {
       className: z.classKebab {"is-#{currentPanel}-panel": true}
       style:
-        height: "#{@panels[currentPanel].$el?.getHeightPx?() + 32}px"
+        height: "#{panelHeight + 32}px"
     },
       z '.g-grid',
         z '.panel', {

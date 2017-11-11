@@ -9,6 +9,7 @@ if window?
 
 module.exports = class GroupEditChannelPage
   hideDrawer: true
+  isGroup: true
 
   constructor: ({model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) ->

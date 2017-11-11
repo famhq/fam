@@ -60,7 +60,7 @@ self.addEventListener 'push', (e) ->
       {}
 
   if message.data.path
-    path = router.get message.data.path.key, message.data.path.replacements
+    path = router.get message.data.path.key, message.data.path.params
   else
     path = ''
 

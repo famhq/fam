@@ -9,13 +9,14 @@ require 'rxjs/add/operator/take'
 config = require '../config'
 
 module.exports = class Auth
-  constructor: ({@exoid, @cookieSubject, @pushToken}) ->
+  constructor: ({@exoid, @cookieSubject, @pushToken, @l}) ->
     initPromise = null
     @waitValidAuthCookie = RxObservable.defer =>
       if initPromise?
         return initPromise
       return initPromise = @cookieSubject.take(1).toPromise()
       .then (currentCookies) =>
+        language = @l.getLanguageStr()
         (if currentCookies[config.AUTH_COOKIE]?
           @exoid.getCached 'users.getMe'
           .then (user) =>
@@ -28,9 +29,9 @@ module.exports = class Auth
             # @cookieSubject.next _defaults {
             #   "#{config.AUTH_COOKIE}": null
             # }, currentCookies
-            @exoid.call 'auth.login'
+            @exoid.call 'auth.login', {language}
         else
-          @exoid.call 'auth.login')
+          @exoid.call 'auth.login', {language})
         .then ({accessToken}) =>
           @setAccessToken accessToken
 
@@ -43,7 +44,7 @@ module.exports = class Auth
 
   logout: =>
     @setAccessToken ''
-    @exoid.call 'auth.login'
+    @exoid.call 'auth.login', {language}
     .then ({accessToken}) =>
       @setAccessToken accessToken
     .then =>

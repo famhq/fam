@@ -39,7 +39,7 @@ module.exports = class ConversationInputStickers
           }
 
   getHeightPx: ->
-    69
+    RxObservable.of 69
 
   render: =>
     {$stickers, gameKey} = @state.getValue()

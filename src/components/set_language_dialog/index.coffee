@@ -56,6 +56,7 @@ module.exports = class SetLanguageDialog
           text: @model.l.get 'general.save'
           onclick: =>
             @model.l.setLanguage currentLanguage
+            @model.user.setLanguage currentLanguage
             @overlay$.next null
             # we use a separate bundle.js per language, so need to load that in
             window.location.reload()

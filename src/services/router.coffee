@@ -34,8 +34,8 @@ class RouterService
     else
       @goPath path, options
 
-  get: (routeKey, replacements) =>
-    route = @model.l.get routeKey, {file: 'paths'}
+  get: (routeKey, replacements, {language} = {}) =>
+    route = @model.l.get routeKey, {file: 'paths', language}
     _forEach replacements, (value, key) ->
       route = route.replace ":#{key}", value
     route

@@ -163,16 +163,21 @@ $zIndexDrawerHeader = 100
             background: getColor('$white12')
             margin: 8px 0
 
-          > .menu-item
+          .menu-item
             > .menu-item-link
               font-title()
-              display: block
+              display: flex
+              align-items: center
               position: relative
               padding: 10px 16px
 
+              &.is-child
+                color: getColor('$tertiary500Text70')
+
+              &.is-selected
+                color: getColor('$tertiary500Text')
+
               > .icon
-                display: inline-block
-                vertical-align: middle
                 margin-right: 36px
                 width: 24px
                 height: 28px
@@ -185,6 +190,15 @@ $zIndexDrawerHeader = 100
                 display: inline-block
                 vertical-align: middle
                 margin-left: 16px
+
+              > .chevron
+                margin-left: auto
+
+            ul
+              list-style-type: none
+              margin: 0
+              padding: 0
+
 
 
             &.is-selected

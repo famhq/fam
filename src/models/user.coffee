@@ -26,6 +26,9 @@ module.exports = class User
   setUsername: (username) =>
     @auth.call "#{@namespace}.setUsername", {username}, {invalidateAll: true}
 
+  setLanguage: (language) =>
+    @auth.call "#{@namespace}.setLanguage", {language}
+
   getAllByPlayerIdAndGameId: (playerId, gameId) =>
     @auth.stream "#{@namespace}.getAllByPlayerIdAndGameId", {playerId, gameId}
 

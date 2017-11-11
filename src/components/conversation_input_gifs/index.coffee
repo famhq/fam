@@ -54,7 +54,7 @@ module.exports = class ConversationInputGifs
       windowSize: @model.window.getSize()
 
   getHeightPx: ->
-    154
+    RxObservable.of 154
 
   render: =>
     {gifs, isLoadingGifs, windowSize} = @state.getValue()

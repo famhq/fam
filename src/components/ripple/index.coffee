@@ -46,7 +46,7 @@ module.exports = class Ripple
         resolve()
         setTimeout ->
           $$el.removeChild $$wave
-        , 0
+        , 50 # give some time for onComplete to render
       , ANIMATION_TIME_MS
 
   render: ({color, isCircle, isCenter, onComplete, fadeIn}) ->

@@ -1,6 +1,8 @@
 z = require 'zorium'
 Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 Icon = require '../icon'
 colors = require '../../colors'
@@ -19,11 +21,12 @@ module.exports = class ConversationInputTextarea
     @$sendIcon = new Icon()
 
     @isTextareaFocused ?= new RxBehaviorSubject false
+    @textareaHeight = new RxBehaviorSubject DEFAULT_TEXTAREA_HEIGHT
 
     @state = z.state
       isTextareaFocused: @isTextareaFocused
       isPostLoading: isPostLoading
-      textareaHeight: DEFAULT_TEXTAREA_HEIGHT
+      textareaHeight: @textareaHeight
       hasText: @hasText
 
   afterMount: (@$$el) =>
@@ -52,7 +55,7 @@ module.exports = class ConversationInputTextarea
       $$textarea = @$$el.querySelector('#textarea')
       $$textarea?.focus()
       $$textarea?.style.height = "#{DEFAULT_TEXTAREA_HEIGHT}px"
-      @state.set textareaHeight: DEFAULT_TEXTAREA_HEIGHT
+      @textareaHeight.next DEFAULT_TEXTAREA_HEIGHT
       @onPost?()
       $$textarea?.value = ''
 
@@ -64,12 +67,12 @@ module.exports = class ConversationInputTextarea
     $$textarea.style.height = "#{newHeight}px"
     $$textarea.scrollTop = newHeight
     unless textareaHeight is newHeight
-      @state.set textareaHeight: newHeight
+      @textareaHeight.next newHeight
       @onResize?()
 
   getHeightPx: =>
-    {textareaHeight} = @state.getValue()
-    textareaHeight
+    @textareaHeight.map (height) ->
+      Math.min height, 150 # max height in css
 
   render: =>
     {isTextareaFocused, hasText, textareaHeight} = @state.getValue()

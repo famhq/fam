@@ -12,6 +12,7 @@ if window?
 
 module.exports = class GroupManageRecordsPage
   hideDrawer: true
+  isGroup: true
 
   constructor: ({model, requests, @router, serverData}) ->
     group = requests.switchMap ({route}) ->

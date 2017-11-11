@@ -38,12 +38,19 @@ module.exports = class ProfileDialog
 
     me = @model.user.getMe()
 
-    groupAndMe = RxObservable.combineLatest group, me, (vals...) -> vals
+    groupAndMe = RxObservable.combineLatest(
+      group or RxObservable.of null
+      me
+      (vals...) -> vals
+    )
 
     @state = z.state
       me: me
       meGroupUser: groupAndMe.switchMap ([group, me]) =>
-        @model.groupUser.getByGroupIdAndUserId group.id, me.id
+        if group and me
+          @model.groupUser.getByGroupIdAndUserId group.id, me.id
+        else
+          RxObservable.of null
       user: @selectedProfileDialogUser
       gameKey: gameKey
       clashRoyaleData: @selectedProfileDialogUser.switchMap (user) =>

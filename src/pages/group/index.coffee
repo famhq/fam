@@ -25,6 +25,7 @@ TABS = ['chat', 'info', 'announcements', 'members']
 
 module.exports = class GroupPage
   hideDrawer: true
+  isGroup: true
 
   constructor: ({@model, requests, @router, serverData}) ->
     selectedProfileDialogUser = new RxBehaviorSubject null
