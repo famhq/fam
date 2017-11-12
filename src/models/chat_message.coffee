@@ -38,7 +38,7 @@ module.exports = class ChatMessage
       invalidateAll: true
     }
 
-  getAllByConversationId: (conversationId) =>
+  getAllByConversationId: (conversationId, {maxTimeUuid} = {}) =>
     # buffer 0 so future streams don't try to add the client changes
     # (causes smooth scroll to bottom in conversations)
     @clientChangesStream[conversationId] ?= new RxReplaySubject(0)
@@ -52,6 +52,7 @@ module.exports = class ChatMessage
 
     @auth.stream "#{@namespace}.getAllByConversationId", {
       conversationId
+      maxTimeUuid
     }, options
 
   uploadImage: (file) =>

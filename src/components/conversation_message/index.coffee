@@ -68,10 +68,8 @@ module.exports = class ConversationMessage
 
     isVerified = user and user.gameData?.isVerified
 
-    # console.log message
-
     z '.z-conversation-message', {
-      # re-use elements in v-dom
+      # re-use elements in v-dom. doesn't seem to work with prepending more
       key: "message-#{id or clientId}"
       className: z.classKebab {isGrouped, isMe}
       oncontextmenu: (e) ->

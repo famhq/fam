@@ -4,6 +4,8 @@ _filter = require 'lodash/filter'
 _last = require 'lodash/last'
 _isEmpty = require 'lodash/isEmpty'
 _debounce = require 'lodash/debounce'
+_flatten = require 'lodash/flatten'
+_uniqBy = require 'lodash/uniqBy'
 Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
@@ -34,6 +36,8 @@ MAX_CHARACTERS = 500
 MAX_LINES = 20
 RESIZE_THROTTLE_MS = 150
 FIVE_MINUTES_MS = 60 * 5 * 1000
+SCROLL_MESSAGE_LOAD_COUNT = 20
+SCROLL_DEBOUNCE_MS = 50
 
 module.exports = class Conversation extends Base
   constructor: (options) ->
@@ -57,7 +61,7 @@ module.exports = class Conversation extends Base
 
     # not putting in state because re-render is too slow on type
     @message = new RxBehaviorSubject ''
-    @messages = new RxBehaviorSubject null
+    @messageBatches = new RxBehaviorSubject null
 
     lastConversationId = null
 
@@ -69,13 +73,14 @@ module.exports = class Conversation extends Base
 
       lastConversationId = conversation.id
 
-      (if conversation
-        @model.chatMessage.getAllByConversationId(conversation.id)
-      else
-        RxObservable.of null)
-      .map (messages) =>
+      @messageBatchesStreams = new RxReplaySubject(1)
+      @messageBatchesStreamCache = []
+      @prependMessagesStream @getMessagesStream()
+
+      @messageBatchesStreams.switch()
+      .map (messageBatches) =>
         isLoading.next false
-        isLoaded = not _isEmpty @state.getValue().messages
+        isLoaded = not _isEmpty @state.getValue().messageBatches
         # HACK: give time for $formattedMessage to resolve
         {isScrolledBottom} = @state.getValue()
         if isScrolledBottom or not isLoaded
@@ -90,17 +95,19 @@ module.exports = class Conversation extends Base
                 isSmooth: isLoaded
               }
             , 500
-        messages
+
+        messageBatches
       .catch (err) ->
         console.log err
         RxObservable.of []
     .share()
 
-    messages = RxObservable.merge @messages, loadedMessages
+    messageBatches = RxObservable.merge @messageBatches, loadedMessages
 
     @isScrolledBottomStreams = new RxReplaySubject 1
     @isScrolledBottomStreams.next RxObservable.of false
     @inputTranslateY = new RxReplaySubject 1
+    @debouncedScroll = _debounce @scrollListener, SCROLL_DEBOUNCE_MS
 
     @$loadingSpinner = new Spinner()
     @$refreshingSpinner = new Spinner()
@@ -127,8 +134,8 @@ module.exports = class Conversation extends Base
     @debouncedOnResize = _debounce @onResize
     , RESIZE_THROTTLE_MS
 
-    messagesAndMe = RxObservable.combineLatest(
-      messages
+    messageBatchesAndMe = RxObservable.combineLatest(
+      messageBatches
       me
       (vals...) -> vals
     )
@@ -150,6 +157,7 @@ module.exports = class Conversation extends Base
     @state = z.state
       me: me
       isLoading: isLoading
+      isLoadingMore: false
       isActive: isActive
       isTextareaFocused: isTextareaFocused
       isPostLoading: @isPostLoading
@@ -158,35 +166,38 @@ module.exports = class Conversation extends Base
       inputTranslateY: @inputTranslateY.switch()
       group: group
       groupUser: @groupUser
-
       isJoinLoading: false
       isLoaded: false
       isScrolledBottom: @isScrolledBottomStreams.switch()
 
-      messages: messagesAndMe.map ([messages, me]) =>
-        if messages
-          prevMessage = null
-          _filter _map messages, (message) =>
-            unless message
-              return
-            isRecent = new Date(message?.time) - new Date(prevMessage?.time) <
-                        FIVE_MINUTES_MS
-            isGrouped = message.userId is prevMessage?.userId and isRecent
-            isMe = message.userId is me.id
-            id = message.id or message.clientId
-            # if we get this in conversationmessasge, there's a flicker for
-            # state to get set
-            $body = @getCached$ message.clientId + ':text', FormattedText, {
-              @model, @router, text: message.body
-            }
-            $el = @getCached$ id, ConversationMessage, {
-              message, @model, @router, @overlay$, isMe,
-              isGrouped, selectedProfileDialogUser, $body
-            }
-            prevMessage = message
-            {$el, isGrouped}
+      messageBatches: messageBatchesAndMe.map ([messageBatches, me]) =>
+        if messageBatches
+          _map messageBatches, (messages) =>
+            prevMessage = null
+            _filter _map messages, (message) =>
+              unless message
+                return
+              isRecent = new Date(message?.time) - new Date(prevMessage?.time) <
+                          FIVE_MINUTES_MS
+              isGrouped = message.userId is prevMessage?.userId and isRecent
+              isMe = message.userId is me.id
+              id = message.id or message.clientId
+              # if we get this in conversationmessasge, there's a flicker for
+              # state to get set
+              $body = @getCached$ message.clientId + ':text', FormattedText, {
+                @model, @router, text: message.body
+              }
+              $el = @getCached$ id, ConversationMessage, {
+                message, @model, @router, @overlay$, isMe,
+                isGrouped, selectedProfileDialogUser, $body
+              }
+              prevMessage = message
+              {$el, isGrouped, timeUuid: message.timeUuid, id}
 
   afterMount: (@$$el) =>
+    @$$messages = @$$el?.querySelector('.messages')
+    @$$messages?.addEventListener 'scroll', @debouncedScroll
+
     @conversation.take(1).subscribe (conversation) =>
       @model.portal.call 'push.setContextId', {
         contextId: conversation?.id
@@ -194,8 +205,8 @@ module.exports = class Conversation extends Base
     @scrollToBottom()
     window?.addEventListener 'resize', @debouncedOnResize
 
-    @$$messages = @$$el?.querySelector('.messages')
     # TODO: make sure this is being disposed of correctly
+    # TODO: Merge this with other scroll listener we have
     isScrolledBottom = RxObservable.fromEvent @$$messages, 'scroll'
     .map (e) ->
       e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10
@@ -203,6 +214,9 @@ module.exports = class Conversation extends Base
 
   beforeUnmount: =>
     {conversation} = @state.getValue()
+
+    @$$messages?.removeEventListener 'scroll', @debouncedScroll
+
     # to update conversations page, etc...
     unless @isGroup
       # race condition without timeout.
@@ -212,13 +226,58 @@ module.exports = class Conversation extends Base
       # for group data
       setImmediate =>
         @model.exoid.invalidateAll()
-    @messages.next []
+    @messageBatches.next [[]]
 
     @model.portal.call 'push.setContextId', {
       contextId: 'empty'
     }
     @model.chatMessage.resetClientChangesStream conversation?.id
     window?.removeEventListener 'resize', @debouncedOnResize
+
+  getMessagesStream: (maxTimeUuid) =>
+    @conversation.switchMap (conversation) =>
+      if conversation
+        @model.chatMessage.getAllByConversationId conversation.id, {maxTimeUuid}
+      else
+        RxObservable.of null
+
+  scrollListener: =>
+    {isLoadingMore} = @state.getValue()
+
+    if isLoadingMore
+      return
+
+    if @$$messages.scrollTop is 0
+      @loadMore()
+
+  loadMore: =>
+    @state.set
+      isLoadingMore: true
+
+    {messageBatches} = @state.getValue()
+    maxTimeUuid = messageBatches?[0]?[0]?.timeUuid
+    messagesStream = @getMessagesStream maxTimeUuid
+    @prependMessagesStream messagesStream
+
+    $$firstMessageBatch = @$$el?.querySelector('.message-batch')
+
+    messagesStream.take(1).toPromise()
+    .then =>
+      @state.set
+        isLoadingMore: false
+      setTimeout -> # wait for render
+        $$firstMessageBatch?.scrollIntoView?()
+      , 0
+
+  prependMessagesStream: (messagesStream) =>
+    @messageBatchesStreamCache = [messagesStream].concat(
+      @messageBatchesStreamCache
+    )
+    @messageBatchesStreams.next RxObservable.combineLatest(
+      @messageBatchesStreamCache, (messageBatches...) ->
+        # _uniqBy _flatten(messageBatches), ({id, clientId}) -> id or clientId
+        messageBatches
+    )
 
   scrollToBottom: ({isSmooth} = {}) =>
     $messageArr = @$$el?.querySelectorAll('.z-conversation-message')
@@ -235,8 +294,8 @@ module.exports = class Conversation extends Base
 
 
 
-    {messages} = @state.getValue()
-    @state.set isLoaded: not _isEmpty messages
+    {messageBatches} = @state.getValue()
+    @state.set isLoaded: not _isEmpty messageBatches
 
   onResize: =>
     {isScrolledBottom} = @state.getValue()
@@ -276,11 +335,9 @@ module.exports = class Conversation extends Base
         @isPostLoading.next false
 
   render: =>
-    {me, isLoading, message, isTextareaFocused, isLoaded,
-      messages, conversation, group, isScrolledBottom, inputTranslateY,
+    {me, isLoading, isLoadingMore, message, isTextareaFocused, isLoaded,
+      messageBatches, conversation, group, isScrolledBottom, inputTranslateY,
       groupUser, isJoinLoading} = @state.getValue()
-
-    # console.log 'gu', group, groupUser
 
     z '.z-conversation',
       z '.g-grid',
@@ -291,17 +348,28 @@ module.exports = class Conversation extends Base
           style:
             transform: "translateY(#{inputTranslateY}px)"
         },
-          # hidden when inactive for perf
-          if messages and not isLoading
-            _map messages, ({$el, isGrouped}, i) ->
-              [
-                if i and not isGrouped
-                  z '.divider'
-                z $el, {isTextareaFocused}
-              ]
+         [
+            if isLoadingMore
+              z 'div', {
+                key: 'conversation-messages-loading-spinner'
+              },
+                @$loadingSpinner
+            # hidden when inactive for perf
+            if messageBatches and not isLoading
+              _map messageBatches, (messageBatch) ->
+                z '.message-batch', {
+                  key: "message-batch-#{messageBatch?[0]?.id}"
+                },
+                  _map messageBatch, ({$el, isGrouped}, i) ->
+                    [
+                        if i and not isGrouped
+                          z '.divider'
+                        z $el, {isTextareaFocused}
+                    ]
 
-          else
-            @$loadingSpinner
+            else if not isLoadingMore
+              @$loadingSpinner
+          ]
 
       if group and groupUser is false
         z '.bottom.is-gate',
