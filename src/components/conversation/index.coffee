@@ -37,7 +37,6 @@ MAX_LINES = 20
 RESIZE_THROTTLE_MS = 150
 FIVE_MINUTES_MS = 60 * 5 * 1000
 SCROLL_MESSAGE_LOAD_COUNT = 20
-SCROLL_DEBOUNCE_MS = 50
 
 module.exports = class Conversation extends Base
   constructor: (options) ->
@@ -64,6 +63,7 @@ module.exports = class Conversation extends Base
     @messageBatches = new RxBehaviorSubject null
 
     lastConversationId = null
+    @isLoadingMore
 
     loadedMessages = conversationAndMe.switchMap (resp) =>
       [conversation, me] = resp
@@ -107,10 +107,9 @@ module.exports = class Conversation extends Base
     @isScrolledBottomStreams = new RxReplaySubject 1
     @isScrolledBottomStreams.next RxObservable.of false
     @inputTranslateY = new RxReplaySubject 1
-    @debouncedScroll = _debounce @scrollListener, SCROLL_DEBOUNCE_MS
 
     @$loadingSpinner = new Spinner()
-    @$refreshingSpinner = new Spinner()
+    @$loadingMoreSpinner = new Spinner()
     @$joinButton = new PrimaryButton()
     @$conversationInput = new ConversationInput {
       @model
@@ -157,7 +156,6 @@ module.exports = class Conversation extends Base
     @state = z.state
       me: me
       isLoading: isLoading
-      isLoadingMore: false
       isActive: isActive
       isTextareaFocused: isTextareaFocused
       isPostLoading: @isPostLoading
@@ -195,8 +193,10 @@ module.exports = class Conversation extends Base
               {$el, isGrouped, timeUuid: message.timeUuid, id}
 
   afterMount: (@$$el) =>
+    @$$loadingMoreSpinner = @$$el?.querySelector('.loading-more')
     @$$messages = @$$el?.querySelector('.messages')
-    @$$messages?.addEventListener 'scroll', @debouncedScroll
+    # fn is simple enough we don't need to debounce/throttle
+    @$$messages?.addEventListener 'scroll', @scrollListener
 
     @conversation.take(1).subscribe (conversation) =>
       @model.portal.call 'push.setContextId', {
@@ -215,7 +215,7 @@ module.exports = class Conversation extends Base
   beforeUnmount: =>
     {conversation} = @state.getValue()
 
-    @$$messages?.removeEventListener 'scroll', @debouncedScroll
+    @$$messages?.removeEventListener 'scroll', @scrollListener
 
     # to update conversations page, etc...
     unless @isGroup
@@ -242,17 +242,19 @@ module.exports = class Conversation extends Base
         RxObservable.of null
 
   scrollListener: =>
-    {isLoadingMore} = @state.getValue()
-
-    if isLoadingMore
+    # keep simple so we don't have to debounce / throttle
+    if @isLoadingMore
       return
 
     if @$$messages.scrollTop is 0
       @loadMore()
 
   loadMore: =>
-    @state.set
-      isLoadingMore: true
+    @isLoadingMore = true
+
+    # don't re-render or set state since it's slow with all of the conversation
+    # messages
+    @$$loadingMoreSpinner.style.display = 'block'
 
     {messageBatches} = @state.getValue()
     maxTimeUuid = messageBatches?[0]?[0]?.timeUuid
@@ -263,9 +265,9 @@ module.exports = class Conversation extends Base
 
     messagesStream.take(1).toPromise()
     .then =>
-      @state.set
-        isLoadingMore: false
-      setTimeout -> # wait for render
+      setTimeout => # wait for render
+        @isLoadingMore = false
+        @$$loadingMoreSpinner.style.display = 'none'
         $$firstMessageBatch?.scrollIntoView?()
       , 0
 
@@ -348,12 +350,12 @@ module.exports = class Conversation extends Base
           style:
             transform: "translateY(#{inputTranslateY}px)"
         },
-         [
-            if isLoadingMore
-              z 'div', {
-                key: 'conversation-messages-loading-spinner'
-              },
-                @$loadingSpinner
+          [
+            # hidden by css, shown with js (non-vdom for perf)
+            z '.loading-more', {
+              key: 'conversation-messages-loading-spinner'
+            },
+              @$loadingMoreSpinner
             # hidden when inactive for perf
             if messageBatches and not isLoading
               _map messageBatches, (messageBatch) ->
@@ -367,7 +369,7 @@ module.exports = class Conversation extends Base
                         z $el, {isTextareaFocused}
                     ]
 
-            else if not isLoadingMore
+            else
               @$loadingSpinner
           ]
 

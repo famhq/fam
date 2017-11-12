@@ -108,7 +108,7 @@ module.exports = class ThreadComment
         @isPostLoading.next false
 
   render: =>
-    {depth, isMe, threadComment, isReplyVisible, $body,
+    {depth, isMe, threadComment, isReplyVisible, $body, gameKey,
       windowSize, $children} = @state.getValue()
 
     {creator, time, card, body, id, clientId} = threadComment

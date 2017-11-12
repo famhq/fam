@@ -260,8 +260,7 @@ module.exports = class App
     isIos = /iPad|iPhone|iPod/.test userAgent
     isNative = Environment.isGameApp(config.GAME_KEY)
     isPageAvailable = (me?.isMember or not request?.$page?.isPrivate)
-    defaultInstallMessage = 'Add Starfire to your homescreen to quickly
-                            access all features anytime'
+    defaultInstallMessage = @model.l.get 'app.defaultInstallMessage'
 
     z 'html',
       request?.$page?.renderHead() or $backupPage?.renderHead()

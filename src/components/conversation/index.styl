@@ -26,17 +26,26 @@ $zIndexTextarea = 2
       min-width: 0 // fix
       opacity: 0
       padding: 8px
+      padding-top: 30px // for loading more indicator
       padding-bottom: 120px // for bottom input bar
+      position: relative
 
       &.is-loaded
         opacity: 1
 
-    > .message-batch
-      > .divider
+      > .loading-more
+        position: absolute
+        top: 0
+        display: none
         width: 100%
-        height: 1px
-        background: getColor('$white12')
-        margin: 0
+        height: 30px
+
+      > .message-batch
+        > .divider
+          width: 100%
+          height: 1px
+          background: getColor('$white12')
+          margin: 0
 
   > .bottom
     padding: 0 16px 16px 16px
