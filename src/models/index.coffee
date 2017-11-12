@@ -172,21 +172,6 @@ module.exports = class Model
     }
     @window = new Window {cookieSubject, @experiment}
 
-    # if expNativeLanguageGroup is 'native'
-    @user.getMe().take(1).toPromise()
-    # .then (me) =>
-    #   if me.country in [
-    #     'AR', 'BO', 'CR', 'CU', 'DM', 'EC', 'SV', 'GQ', 'GT', 'HN', 'MX'
-    #     'NI', 'PA', 'PE', 'ES', 'UY', 'VE'
-    #   ]
-    #     @l.setLanguage 'es'
-    #   else if me.country is 'IT'
-    #     @l.setLanguage 'it'
-    #   else if me.country is 'BR'
-    #     @l.setLanguage 'pt'
-    #   else if me.country is 'FR'
-    #     @l.setLanguage 'fr'
-
   wasCached: => @isFromCache
 
   getSerializationStream: =>

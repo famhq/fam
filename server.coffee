@@ -172,7 +172,7 @@ app.use (req, res, next) ->
     timeout: 5000
     transports: ['websocket']
   }
-  fullLanguage = serverHeaders?['accept-language']
+  fullLanguage = req.headers?['accept-language']
   language = req.cookies?['language'] or fullLanguage?.substr(0, 2)
   unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
     language = 'en'
