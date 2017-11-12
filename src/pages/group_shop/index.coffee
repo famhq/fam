@@ -100,12 +100,10 @@ module.exports = class GroupShopPage
         tabs: [
           {
             $menuText: @model.l.get 'general.shop'
-            $el:
-              z '.p-group-shop_shop', z @$shop
+            $el: @$shop
           }
           {
             $menuText: @model.l.get 'general.collection'
-            $el:
-              z '.p-group-shop_collection', z @$collection
+            $el: @$collection
           }
         ]
