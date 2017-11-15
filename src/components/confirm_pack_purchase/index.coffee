@@ -10,6 +10,7 @@ AppBar = require '../app_bar'
 SecondaryButton = require '../secondary_button'
 PrimaryButton = require '../primary_button'
 ButtonBack = require '../button_back'
+MenuFireAmount = require '../menu_fire_amount'
 Icon = require '../icon'
 config = require '../../config'
 colors = require '../../colors'
@@ -22,9 +23,8 @@ module.exports = class ConfirmPackPurchase
     {@model, @router, pack, @onCancel, @onConfirm, isPurchaseLoading} = options
     @$appBar = new AppBar {@model, @router}
     @$backButton = new ButtonBack {@router, @model}
-    @$closeIcon = new Icon()
+    @$menuFireAmount = new MenuFireAmount {@router, @model}
     @$fireIcon = new Icon()
-    @$fireIcon2 = new Icon()
     @$cancelButton = new SecondaryButton()
     @$buyButton = new PrimaryButton()
 
@@ -43,18 +43,12 @@ module.exports = class ConfirmPackPurchase
     z '.z-confirm-pack-purchase',
       z @$appBar,
         $topLeftButton: z @$backButton, {
+          color: colors.$primary500
           onclick: =>
             @onCancel?()
         }
-        $topRightButton:
-          z '.z-confirm-pack-purchase_currency-amount',
-            z '.amount', FormatService.number me?.fire
-            z @$fireIcon,
-              icon: 'fire'
-              isTouchTarget: false
-              color: colors.$tertiary900Text
-              size: '16px'
-        title: pack?.title
+        $topRightButton: @$menuFireAmount
+        title: @model.l.get "#{pack?.key}.title", {file: 'products'}
       z '.content',
         z '.g-grid',
           z '.pack',
@@ -78,7 +72,7 @@ module.exports = class ConfirmPackPurchase
                   cost: FormatService.number(pack?.cost)
               }
               z '.icon',
-                z @$fireIcon2,
+                z @$fireIcon,
                   icon: 'fire'
                   size: '14px'
                   isTouchTarget: false

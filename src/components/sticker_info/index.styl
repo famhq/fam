@@ -1,0 +1,100 @@
+@require '../../vars'
+
+.z-sticker-info
+  position: fixed
+  z-index: 999
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  background: getColor('$tertiary900')
+  display: flex
+  flex-direction: column
+
+  > .header
+    padding: 0 20px
+    display: flex
+    margin-bottom: 10px
+
+    > .close
+      display: inline-block
+      vertical-align: middle
+      margin-right: 36px
+      -webkit-tap-highlight-color: transparent
+
+    > .circulating, > .cp
+      font-body2()
+      font-weight: 500
+      color: getColor('$tertiary200')
+      margin-left: auto
+      display: flex
+      align-items: center
+
+      > .icon
+        margin-right: 8px
+
+    > .cp
+      color: getColor('$amber500')
+      margin-left: 24px
+
+  > .g-grid
+    padding: 16px
+
+    > .g-cols
+      > .g-col
+        display: flex
+
+        > .info
+          flex: 1
+          margin-left: 8px
+          padding: 0 16px
+
+          > .level
+            font-title()
+
+    // > .info
+    //   margin-top: 8px
+    //   text-align: center
+    //
+    //   > .name
+    //     font-title()
+    //     color: getColor('$tertiary900')
+    //     margin-bottom: 4px
+    //
+    //   > .stats
+    //     display: flex
+    //     align-items: center
+    //     justify-content: center
+    //
+    //     > .owned, > .circulating
+    //       font-body-2()
+    //       color: getColor('$tertiary500')
+    //       display: flex
+    //       margin: 0 8px
+    //       line-height: 16px
+    //
+    //       > .icon
+    //         margin-right: 4px
+
+
+  > .actions
+    margin-top: auto
+    display: flex
+    height: 66px
+
+    > .button
+      font-body2()
+      background: getColor('$tertiary800')
+      color: getColor('$tertiary800Text')
+      flex: 1
+      text-align: center
+      display: flex
+      align-items: center
+      justify-content: center
+
+      > .icon
+        margin-right: 12px
+
+    > .divider
+      width: 1px
+      height: 100%

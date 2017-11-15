@@ -1,13 +1,16 @@
-
 @require 'normalize-styl/normalize.styl'
 
 @require './grid.styl'
 @require './vars'
 
- @font-face
-   font-family Clash
-   font-style normal
-   src url(https://cdn.wtf/d/fonts/clash_royale/clash_regular.ttf)
+$breakPointSmall = 340px
+$breakPointMedium = 768px
+$breakPointLarge = 840px
+
+@font-face
+ font-family Clash
+ font-style normal
+ src url(https://cdn.wtf/d/fonts/clash_royale/clash_regular.ttf)
 
 html, body
   width: 100%
@@ -52,3 +55,16 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active
   transition: background-color 5000s ease-in-out 0s
   -webkit-text-fill-color: white !important
+
+@media (min-width: $breakPointMedium)
+  &::-webkit-scrollbar
+    width: 5px
+
+  &::-webkit-scrollbar-thumb
+    background: getColor('$tertiary300')
+    // border: 1px solid
+    border-radius: 20px
+
+  &::-webkit-scrollbar-track
+    background: getColor('$tertiary700')
+    border-radius: 20px

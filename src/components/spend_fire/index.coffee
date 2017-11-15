@@ -51,5 +51,5 @@ module.exports = class SpendFire
     {me, items} = @state.getValue()
 
     z '.z-spend-fire',
-      z 'p', @model.l.get 'spendFire.description1'
+      z 'p.description', @model.l.get 'spendFire.description1'
       z @$shop

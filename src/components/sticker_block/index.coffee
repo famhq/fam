@@ -45,7 +45,7 @@ module.exports = class StickerBlock
     percent = Math.min(100, Math.round(100 * (count / upgradeReqCount)))
     canUpgrade = count >= upgradeReqCount
 
-    height = if hasCount then sizePx + 24 else sizePx
+    height = if hasCount then sizePx + 22 else sizePx
 
     z '.z-sticker-block', {
       className: z.classKebab {
@@ -70,7 +70,9 @@ module.exports = class StickerBlock
 
       if hasCount
         z '.count', {
-          onclick: =>
+          className: z.classKebab {canUpgrade}
+          onclick: (e) =>
+            e?.stopPropagation()
             if canUpgrade
               @model.userItem.upgradeByItemKey item.key
         },
@@ -80,7 +82,8 @@ module.exports = class StickerBlock
           }
           z '.text',
             if canUpgrade
-              "Upgrade (#{count} / #{upgradeReqCount})"
+              "#{@model.l.get 'general.upgrade'}
+              (#{count} / #{upgradeReqCount})"
             else if upgradeReqCount
               "#{count} / #{upgradeReqCount}"
             else

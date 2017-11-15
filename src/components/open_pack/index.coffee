@@ -2,9 +2,10 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _some = require 'lodash/some'
 _isEqual = require 'lodash/isEqual'
+require 'rxjs/add/operator/map'
 
 Icon = require '../icon'
-Sticker = require '../sticker'
+StickerOpen = require '../sticker_open'
 Confetti = require '../confetti'
 PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
@@ -16,12 +17,13 @@ if window?
   require './index.styl'
 
 STARTING_ROTATION = 0
-ROTATION_PER_ITEM = 0
+ROTATION_PER_ITEM = 2
 SLIDE_OUT_TIME_MS = 300
-DECK_SPREAD_DELAY_MS = 0
+SPREAD_DELAY_MS = 1000
+FLIP_DELAY_MS = 250
 
 module.exports = class OpenPack
-  constructor: ({@model, @items, @onClose}) ->
+  constructor: ({@model, @items, @onClose, pack}) ->
     @$globeIcon = new Icon()
     @$cpIcon = new Icon()
     @$doneButton = new PrimaryButton()
@@ -37,15 +39,18 @@ module.exports = class OpenPack
       items: @items.map (items) =>
         _map items, (item) =>
           item: item
-          $item: new Sticker {
+          $item: new StickerOpen {
             @model
             isBack: true
+            backKey: pack?.data.backKey
             isLocked: false
             itemInfo: {item: item}
           }
       itemsSwiped: 0
 
   afterMount: =>
+    {items} = @state.getValue()
+
     setTimeout =>
       @$ripple.ripple({
         color: colors.$primary500
@@ -55,9 +60,13 @@ module.exports = class OpenPack
         @state.set
           isVisible: true
         setTimeout =>
-          @state.set
-            isDeckSpread: true
-        , DECK_SPREAD_DELAY_MS
+          @state.set {isDeckSpread: true}
+          setTimeout =>
+            items[items.length - 1]?.$item?.flip()
+            .then =>
+              @state.set isWaitingToFlip: false
+          , FLIP_DELAY_MS
+        , SPREAD_DELAY_MS
     , 0
 
   beforeUnmount: =>
@@ -66,8 +75,11 @@ module.exports = class OpenPack
       isVisible: false
       isDeckSpread: false
 
-  render: ({pack}) =>
-    {me, items, isVisible, isDeckSpread, itemsSwiped} = @state.getValue()
+  buyAnotherPack: -> null # TODO
+
+  render: =>
+    {me, items, isVisible, isDeckSpread, itemsSwiped,
+      isWaitingToFlip} = @state.getValue()
 
     itemCount = items?.length
 
@@ -90,10 +102,8 @@ module.exports = class OpenPack
         isDoneVisible
       }
     },
-      if isVisible
-        console.log currentItem?.item.rarity
+      if isVisible and currentItem?.item.rarity isnt 'common'
         confettiColors = config.CONFETTI_COLORS[currentItem?.item.rarity]
-        console.log confettiColors
         if colors
           @$confetti.setColors confettiColors
         z '.confetti',
@@ -128,8 +138,16 @@ module.exports = class OpenPack
               rotation = STARTING_ROTATION + ROTATION_PER_ITEM * i
               z '.item', {
                 onclick: =>
-                  if itemsSwiped < itemCount - 1
-                    @state.set itemsSwiped: itemCount - i
+                  if not isWaitingToFlip and itemsSwiped < itemCount - 1
+                    @state.set
+                      itemsSwiped: itemCount - i# + 1
+                      isWaitingToFlip: true
+                    setTimeout =>
+                      items[i - 1].$item.flip()
+                      .then =>
+                        @state.set
+                          isWaitingToFlip: false
+                    , SLIDE_OUT_TIME_MS
                 style:
                   marginLeft: "-#{40 + itemSize / 2}px" # FIXME: 20px is padding
                   transform: if isSlidingOut \
@@ -146,12 +164,9 @@ module.exports = class OpenPack
                                    else 'rotate(0deg)'
                   pointerEvents: if isSlidingOut then 'none' else 'auto'
               },
-                z '.image',
-                  z $item, {
-                    sizePx: itemSize
-                  }
-                z '.name', item.name
-                z '.rarity', item.rarity
+                z $item, {
+                  sizePx: itemSize
+                }
 
         z '.bottom',
           z '.action',

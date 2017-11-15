@@ -78,21 +78,21 @@ module.exports = class Drawer
                 {
                   path: @router.get 'groupChat', {
                     gameKey: gameKey
-                    id: group.id
+                    id: group.key or group.id
                   }
                   title: @model.l.get 'general.chat'
                 }
                 {
                   path: @router.get 'groupShop', {
                     gameKey: gameKey
-                    id: group.id
+                    id: group.key or group.id
                   }
                   title: @model.l.get 'general.shop'
                 }
                 {
                   path: @router.get 'groupVideos', {
                     gameKey: gameKey
-                    id: group.id
+                    id: group.key or group.id
                   }
                   title: @model.l.get 'videosPage.title'
                 }
@@ -312,10 +312,12 @@ module.exports = class Drawer
                   ]
                 _map myGroups, (myGroup) =>
                   {$badge, $ripple, group, $chevronIcon, children} = myGroup
-                  groupPath = @router.get 'group', {gameKey, id: group.id}
-                  groupEnPath = @router.get 'group', {gameKey, id: group.id}, {
-                    language: 'en'
+                  groupPath = @router.get 'group', {
+                    gameKey, id: group.key or group.id
                   }
+                  groupEnPath = @router.get 'group', {
+                    gameKey, id: group.key or group.id
+                    }, {language: 'en'}
                   isSelected = currentPath?.indexOf(groupPath) is 0 or
                     currentPath?.indexOf(groupEnPath) is 0
                   z 'li.menu-item', {
@@ -326,7 +328,9 @@ module.exports = class Drawer
                       onclick: (e) =>
                         e.preventDefault()
                         @model.drawer.close()
-                        @router.go 'groupChat', {gameKey, id: group.id}
+                        @router.go 'groupChat', {
+                          gameKey, id: group.key or group.id
+                        }
                     },
                       z '.icon',
                         z $badge

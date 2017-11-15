@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_unionBy = require 'lodash/unionBy'
 Environment = require 'clay-environment'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
@@ -25,7 +26,7 @@ module.exports = class Groups
       myGroups
       publicGroups
       (myGroups, publicGroups) ->
-        (myGroups or []).concat publicGroups
+        _unionBy (myGroups or []), publicGroups, 'id'
     )
     @$myGroupList = new GroupList {
       @model

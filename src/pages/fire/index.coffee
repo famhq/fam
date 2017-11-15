@@ -5,6 +5,7 @@ AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
 Icon = require '../../components/icon'
+MenuFireAmount = require '../../components/menu_fire_amount'
 EarnFire = require '../../components/earn_fire'
 SpendFire = require '../../components/spend_fire'
 Collection = require '../../components/collection'
@@ -41,7 +42,7 @@ module.exports = class FirePage
       @overlay$
     }
 
-    @$fireIcon = new Icon()
+    @$menuFireAmount = new MenuFireAmount {@model, @router}
 
     @state = z.state
       windowSize: @model.window.getSize()
@@ -60,14 +61,7 @@ module.exports = class FirePage
         title: @model.l.get 'firePage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
-        $topRightButton: z '.p-fire_top-right',
-          FormatService.number me?.fire
-          z '.icon',
-            z @$fireIcon,
-              icon: 'fire'
-              color: colors.$quaternary500
-              isTouchTarget: false
-              size: '20px'
+        $topRightButton: @$menuFireAmount
       }
       z @$tabs,
         isBarFixed: false

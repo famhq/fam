@@ -6,6 +6,7 @@ _isEmpty = require 'lodash/isEmpty'
 _debounce = require 'lodash/debounce'
 _flatten = require 'lodash/flatten'
 _uniqBy = require 'lodash/uniqBy'
+_pick = require 'lodash/pick'
 Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
@@ -182,10 +183,12 @@ module.exports = class Conversation extends Base
               id = message.id or message.clientId
               # if we get this in conversationmessasge, there's a flicker for
               # state to get set
-              $body = @getCached$ message.clientId + ':text', FormattedText, {
+              bodyCacheKey = "#{message.clientId}:text"
+              messageCacheKey = "#{id}:text"
+              $body = @getCached$ bodyCacheKey, FormattedText, {
                 @model, @router, text: message.body
               }
-              $el = @getCached$ id, ConversationMessage, {
+              $el = @getCached$ messageCacheKey, ConversationMessage, {
                 message, @model, @router, @overlay$, isMe,
                 isGrouped, selectedProfileDialogUser, $body
               }
@@ -237,7 +240,10 @@ module.exports = class Conversation extends Base
   getMessagesStream: (maxTimeUuid) =>
     @conversation.switchMap (conversation) =>
       if conversation
-        @model.chatMessage.getAllByConversationId conversation.id, {maxTimeUuid}
+        @model.chatMessage.getAllByConversationId conversation.id, {
+          maxTimeUuid
+          isStreamed: not maxTimeUuid # don't stream old message batches
+        }
       else
         RxObservable.of null
 
@@ -397,6 +403,7 @@ module.exports = class Conversation extends Base
                   @model.portal.call 'push.subscribeToTopic', {
                     topic: "group-#{group.id}"
                   }
+                  .catch -> null
                 Promise.all _filter [
                   @model.group.joinById group.id
                   if group.star

@@ -53,9 +53,7 @@ module.exports = class Sticker
       imageProps.height = sizePx
 
     z '.z-sticker', {
-      className: z.classKebab {
-        isLocked
-      }
+      className: z.classKebab {isLocked}
       onclick: (e) ->
         onclick? e, item
       style:

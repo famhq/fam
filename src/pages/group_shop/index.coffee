@@ -10,6 +10,7 @@ ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
 Shop = require '../../components/shop'
 Collection = require '../../components/collection'
+MenuFireAmount = require '../../components/menu_fire_amount'
 Icon = require '../../components/icon'
 FormatService = require '../../services/format'
 colors = require '../../colors'
@@ -42,7 +43,7 @@ module.exports = class GroupShopPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$tabs = new Tabs {@model}
-    @$fireIcon = new Icon()
+    @$menuFireAmount = new MenuFireAmount {@model, @router}
     @$shop = new Shop {
       @model
       @router
@@ -58,6 +59,7 @@ module.exports = class GroupShopPage
       @model
       @router
       gameKey
+      group
       overlay$
     }
 
@@ -81,19 +83,8 @@ module.exports = class GroupShopPage
         $topLeftButton: z @$buttonMenu, {
           color: colors.$primary500
         }
-        $topRightButton: z '.p-fire_top-right', {
-          onclick: =>
-            @router.go 'fire', {gameKey}
-        },
-          FormatService.number me?.fire
-          z '.icon',
-            z @$fireIcon,
-              icon: 'fire'
-              color: colors.$quaternary500
-              isTouchTarget: false
-              size: '20px'
+        $topRightButton: @$menuFireAmount
       }
-
       z @$tabs,
         isBarFixed: false
         hasAppBar: true

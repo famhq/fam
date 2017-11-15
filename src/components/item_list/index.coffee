@@ -33,8 +33,6 @@ GROUP_TITLE_HEIGHT = 48
 GROUP_MARGIN_BOTTOM = 8
 COUNT_HEIGHT = 20
 SEARCH_DEBOUNCE = 300
-# TODO: json file with these vars, stylus uses this
-MAX_CONTENT_WIDTH = 1280
 
 getItemSizeInfo = ->
   if window?
@@ -87,11 +85,13 @@ module.exports = class ItemList
     @state = z.state
       itemSizeInfo: @itemSizeInfo
       rowsOfItems: rowsOfItems
+      isDrawerOpen: @model.drawer.isOpen()
+      drawerWidth: @model.window.getDrawerWidth()
       me: me
       userItems: userItems
       windowSize: @model.window.getSize()
 
-  afterMount: =>
+  afterMount: (@$$el) =>
     window.addEventListener 'resize', @onResize
     @itemSizeInfo.next getItemSizeInfo()
 
@@ -139,16 +139,19 @@ module.exports = class ItemList
     _toArray rows
 
   render: ({onclick, isInactive, scrollTop, showCounts, xPadding, maxRows}) =>
-    {me, rowsOfItems, itemSizeInfo, windowSize} = @state.getValue()
+    {me, rowsOfItems, itemSizeInfo, isDrawerOpen, drawerWidth,
+      windowSize} = @state.getValue()
 
     {itemsPerRow, itemMargin} = itemSizeInfo
     xPadding ?= X_PADDING_PX
     showCounts ?= true
 
-    contentWidth = windowSize?.contentWidth or 320
+    contentWidth = @$$el?.offsetWidth or windowSize.width or 320
+    drawerWidth = if isDrawerOpen then drawerWidth else 0
 
     if window?
       itemSize = (contentWidth -
+                   drawerWidth -
                    xPadding * 2 -
                    (itemsPerRow - 1) * itemMargin * 2
                    ) / itemsPerRow
@@ -192,6 +195,7 @@ module.exports = class ItemList
             },
               _map items, ({info, $el}, itemIndex) ->
                 z '.item', {
+                  className: z.classKebab {hasOnClick: Boolean onclick}
                   style:
                     maxWidth: "#{Math.floor(100 / itemsPerRow)}%"
                     marginRight: if itemIndex isnt items.length - 1 \
@@ -202,6 +206,7 @@ module.exports = class ItemList
                   z $el, {
                     sizePx: if info?.item then itemSize else null
                     defaultLocked: showCounts is false
-                    onclick: onclick
+                    onclick: ->
+                      onclick info
                     isHidden: isInactive
                   }

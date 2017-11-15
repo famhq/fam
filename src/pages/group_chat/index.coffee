@@ -159,7 +159,7 @@ module.exports = class GroupChatPage
             z '.arrow'
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
         $topRightButton:
-          z '.p-group_top-right',
+          z '.p-group-chat_top-right',
             z '.icon',
               z @$settingsIcon,
                 icon: 'settings'

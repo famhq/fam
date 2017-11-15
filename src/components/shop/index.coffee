@@ -47,6 +47,7 @@ module.exports = class Shop
                 overlay$ = @overlay$.getValue()
                 @overlay$.next [overlay$].concat [new OpenPack {
                   @model
+                  pack: product
                   items: RxObservable.of items
                   onClose: =>
                     @overlay$.next null

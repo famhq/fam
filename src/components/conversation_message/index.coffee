@@ -49,7 +49,7 @@ module.exports = class ConversationMessage
   render: ({isTextareaFocused}) =>
     {isMe, message, $body, isGrouped, windowSize} = @state.getValue()
 
-    {user, body, time, card, id, clientId} = message
+    {user, groupUser, body, time, card, id, clientId} = message
 
     avatarSize = if windowSize.width > 840 \
                  then '40px'
@@ -87,6 +87,7 @@ module.exports = class ConversationMessage
             size: avatarSize
             bgColor: colors.$grey200
           }
+        # z '.level', 1
 
       z '.content',
         unless isGrouped

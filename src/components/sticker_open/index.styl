@@ -1,0 +1,67 @@
+@require '../../vars'
+
+$zIndexBack = 3
+
+.z-sticker-open
+  shadow-1()
+  display: inline-block
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+  transform-style: preserve-3d
+  perspective: 1000
+  -webkit-tap-highlight-color: transparent
+  transform: rotateY(0)
+  border: 1px solid getColor('$black12')
+
+  &.is-back
+    transform: rotateY(180deg)
+
+    > .back
+      display: block
+      pointer-events: all
+
+  &.is-back-animating
+
+  > .front
+    padding: 24px 36px
+    text-align: center
+    background-color: getColor('$white')
+
+    > .sticker
+      width: 100%
+      position: relative
+      z-index: 1
+      display: block
+      padding: 4px
+      box-sizing: border-box
+
+    > .name
+      font-title()
+      color: getColor('$black')
+      margin-top: 16px
+
+    > .rarity
+      font-body1()
+      color: getColor('$black')
+      margin-top: 4px
+
+  > .front, > .back
+   backface-visibility: hidden
+   transform-style: preserve-3d
+
+  > .back
+    display: none
+    position: absolute
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+    z-index: $zIndexBack
+    transform: rotateY(180deg)
+    border: 1px solid rgba(0, 0, 0, 0) // prevent aliasing
+    background-color: getColor('$white')
+    -webkit-tap-highlight-color: transparent
+    display: block
+    pointer-events: none
+
+  > .front
+    height: 100%
