@@ -25,8 +25,8 @@
   "topTouchdownCards.description": "Guarda le migliori e le peggiori carte nella nuova modalità 2v2 touchdown!",
   "openTournaments.title": "Tornei aperti",
   "openTournaments.description": "Guarda i tornei gratis e aperti a cui accedere nel gioco",
-  "clanManager.title": "Clan manager",
-  "clanManager.description": "Track donations, activity, and other statistics for your clan and its members all in one place",
-  "cardCollection.title": "Card collection lookup",
-  "cardCollection.description": "View and analyze your or another player's Card Collection"
+  "clanManager.title": "Gestisci clan",
+  "clanManager.description": "Traccia donazioni, attività e altre statistiche per il tuo clan e tutti i suoi membri in un unico luogo",
+  "cardCollection.title": "Occhiata alla collezione di carte",
+  "cardCollection.description": "Guarda e analizza la tua collezione di carte o quella di un altro giocatore"
 }

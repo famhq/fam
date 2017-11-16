@@ -1,0 +1,11 @@
+{
+  "dailyRecap.title": "今日のまとめ",
+  "dailyRecap.textWithWins": "{nextGoodChest} まで、あと{countUntilNextGoodChest} 箱\n今日は {wins} 勝、{losses} 敗",
+  "dailyRecap.text": "{nextGoodChest} まで、あと{countUntilNextGoodChest} 箱",
+  "newClanMember.title": "新しい、クランのメンバー",
+  "newClanMember.text": "{name} は、あなたのクランに入りました",
+  "newGroupMember.title": "新しい、グループのメンバー",
+  "newGroupMember.text": "{name} は、あなたのグループに入りました",
+  "newFollower.title": "新しいフォロワー",
+  "newFollower.text": "{name} は、あなたをフォローしました"
+}

@@ -6,7 +6,7 @@
   "clan": "/clan",
   "chat": "/chat",
   "chatWithTab": "/chat/{tab}",
-  "conversation": "/erhaltung/{id}",
+  "conversation": "/Unterhaltung/konversation",
   "conversations": "/unterhaltungen",
   "deck": "/deck/{id}",
   "decks": "/decks",

@@ -84,6 +84,7 @@ module.exports = class ConversationMessage
         unless isGrouped
           z @$avatar, {
             user
+            groupUser
             size: avatarSize
             bgColor: colors.$grey200
           }

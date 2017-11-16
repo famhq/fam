@@ -1,0 +1,11 @@
+{
+  "dailyRecap.title": "Daily Recap",
+  "dailyRecap.textWithWins": "{countUntilNextGoodChest} chests until a {nextGoodChest}. You had {wins} wins and {losses} losses today.",
+  "dailyRecap.text": "{countUntilNextGoodChest} chests until a {nextGoodChest}.",
+  "newClanMember.title": "New clan member",
+  "newClanMember.text": "{name} joined your clan in Starfire",
+  "newGroupMember.title": "New group member",
+  "newGroupMember.text": "{name} joined your group in Starfire",
+  "newFollower.title": "New follower",
+  "newFollower.text": "{name} followed you"
+}

@@ -9,6 +9,7 @@ AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
 Shop = require '../../components/shop'
+EarnFire = require '../../components/earn_fire'
 Collection = require '../../components/collection'
 MenuFireAmount = require '../../components/menu_fire_amount'
 Icon = require '../../components/icon'
@@ -55,6 +56,7 @@ module.exports = class GroupShopPage
         else
           RxObservable.of null
     }
+    @$earnFire = new EarnFire {@model, @router, gameKey, overlay$}
     @$collection = new Collection {
       @model
       @router
@@ -96,5 +98,9 @@ module.exports = class GroupShopPage
           {
             $menuText: @model.l.get 'general.collection'
             $el: @$collection
+          }
+          {
+            $menuText: @model.l.get 'general.earn'
+            $el: z @$earnFire
           }
         ]

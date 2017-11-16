@@ -54,12 +54,41 @@ isomorphic =
   COMMUNITY_LANGUAGES: ['es', 'pt']
   LANGUAGES: ['en', 'es', 'it', 'fr', 'zh', 'ja', 'ko', 'de', 'pt', 'pl']
   # also in radioactive
-  LEVEL_REQUIREMENTS: [
+  ITEM_LEVEL_REQUIREMENTS: [
     {level: 1, countRequired: 0}
     {level: 2, countRequired: 10}
     {level: 3, countRequired: 100}
   ]
-
+  # also in radioactive TODO: shared config file
+  # keep reversed for fast lookup
+  XP_LEVEL_REQUIREMENTS: [
+    {level: 12, xpRequired: 60000}
+    {level: 11, xpRequired: 30000}
+    {level: 10, xpRequired: 10000}
+    {level: 9, xpRequired: 5000}
+    {level: 8, xpRequired: 2000}
+    {level: 7, xpRequired: 1000}
+    {level: 6, xpRequired: 500}
+    {level: 5, xpRequired: 200}
+    {level: 4, xpRequired: 100}
+    {level: 3, xpRequired: 50}
+    {level: 2, xpRequired: 20}
+    {level: 1, xpRequired: 0}
+  ]
+  XP_LEVEL_COLORS:
+    1: 'rgb(126, 143, 234)'
+    2: 'rgb(126, 171, 234)'
+    3: 'rgb(126, 199, 234)'
+    4: 'rgb(126, 234, 230)'
+    5: 'rgb(126, 234, 190)'
+    6: 'rgb(126, 234, 142)'
+    7: 'rgb(178, 234, 126)'
+    8: 'rgb(223, 234, 126)'
+    9: 'rgb(234, 210, 126)'
+    10: 'rgb(234, 169, 126)'
+    11: 'rgb(234, 126, 126)'
+    12: 'rgb(234, 126, 165)'
+    13: 'rgb(234, 126, 194)'
 
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
   USER_CDN_URL: 'https://cdn.wtf/images/starfire'

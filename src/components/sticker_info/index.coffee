@@ -80,7 +80,7 @@ module.exports = class StickerInfo
       z '.g-grid',
         z '.g-cols',
         _map @$stickers, ({level, $el}) =>
-          requirement = _find config.LEVEL_REQUIREMENTS, {level}
+          requirement = _find config.ITEM_LEVEL_REQUIREMENTS, {level}
           z '.g-col.g-xs-12.g-md-6',
             z '.sticker',
               z $el, {

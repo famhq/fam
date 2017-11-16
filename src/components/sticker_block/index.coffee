@@ -40,7 +40,7 @@ module.exports = class StickerBlock
     item ?= {}
 
     upgradeReqCount = _find(
-      config.LEVEL_REQUIREMENTS, {level: itemLevel + 1}
+      config.ITEM_LEVEL_REQUIREMENTS, {level: itemLevel + 1}
     )?.countRequired
     percent = Math.min(100, Math.round(100 * (count / upgradeReqCount)))
     canUpgrade = count >= upgradeReqCount

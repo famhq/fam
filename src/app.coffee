@@ -52,6 +52,7 @@ Pages =
   GroupEditChannelPage: require './pages/group_edit_channel'
   GroupManageMemberPage: require './pages/group_manage_member'
   GroupVideosPage: require './pages/group_videos'
+  GroupLeaderboardPage: require './pages/group_leaderboard'
   EditThreadPage: require './pages/edit_thread'
   ThreadPage: require './pages/thread'
   NewThreadPage: require './pages/new_thread'
@@ -218,6 +219,7 @@ module.exports = class App
     routeGame 'groupEditConversation', 'GroupEditChannelPage'
     routeGame 'groupSettings', 'GroupSettingsPage'
     routeGame 'groupVideos', 'GroupVideosPage'
+    routeGame 'groupLeaderboard', 'GroupLeaderboardPage'
     routeGame 'groupAddRecords', 'GroupAddRecordsPage'
     routeGame 'groupManageRecords', 'GroupManageRecordsPage'
     routeGame [

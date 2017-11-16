@@ -25,8 +25,8 @@
   "topTouchdownCards.description": "새로운 2v2 터치 다운 모드에서 최고와 최악의 카드를 참조하세요!",
   "openTournaments.title": "오픈 토너먼트",
   "openTournaments.description": "게임 내 무료, 오픈 토너먼트보기",
-  "clanManager.title": "Clan manager",
-  "clanManager.description": "Track donations, activity, and other statistics for your clan and its members all in one place",
-  "cardCollection.title": "Card collection lookup",
-  "cardCollection.description": "View and analyze your or another player's Card Collection"
+  "clanManager.title": "클랜 관리자",
+  "clanManager.description": "당신의 클랜과 클랜원들 모두의 지원, 활동, 그리고 기타 통계들을 추적합니다",
+  "cardCollection.title": "카드 컬렉션 조회",
+  "cardCollection.description": "당신이나 다른 플레이어의 카드 컬렉션을 보고 분석하세요"
 }

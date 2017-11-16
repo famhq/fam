@@ -16,6 +16,9 @@ module.exports = class GroupUser
   getByGroupIdAndUserId: (groupId, userId) =>
     @auth.stream "#{@namespace}.getByGroupIdAndUserId", {groupId, userId}
 
+  getTopByGroupId: (groupId) =>
+    @auth.stream "#{@namespace}.getTopByGroupId", {groupId}
+
   hasPermission: ({meGroupUser, me, permissions}) ->
     isGlobalModerator = me?.flags?.isModerator
     isGlobalModerator or _every permissions, (permission) ->

@@ -32,6 +32,7 @@
   "groupSettings": "/group/{id}/settings",
   "groupShop": "/group/{id}/shop",
   "groupVideos": "/group/{id}/videos",
+  "groupLeaderboard": "/group/{id}/leaderboard",
   "groupAddRecords": "/group/{id}/add-records",
   "groupManageRecords": "/group/{id}/manage-records",
   "groupNewChannel": "/group/{id}/new-channel",

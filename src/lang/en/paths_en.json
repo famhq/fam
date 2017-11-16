@@ -32,6 +32,7 @@
   "groupSettings": "/:gameKey/group/:id/settings",
   "groupShop": "/:gameKey/group/:id/shop",
   "groupVideos": "/:gameKey/group/:id/videos",
+  "groupLeaderboard": "/:gameKey/group/:id/leaderboard",
   "groupAddRecords": "/:gameKey/group/:id/add-records",
   "groupManageRecords": "/:gameKey/group/:id/manage-records",
   "groupInvites": "/:gameKey/group-invites",

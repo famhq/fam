@@ -1,0 +1,32 @@
+@require '../../vars'
+
+.z-group-leaderboard
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+
+  > .leaderboard
+    padding: 0 16px
+
+    > .no-users
+      padding: 16px 0
+
+    > .user
+      display: flex
+      align-items: center
+      padding: 8px 0
+
+      > .rank
+        font-caption2()
+
+      > .avatar
+        margin-left: 16px
+
+      > .name
+        font-title()
+        overflow: hidden
+        margin-left: 16px
+
+      > .xp
+        margin-left: auto

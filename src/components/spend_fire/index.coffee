@@ -18,26 +18,7 @@ if window?
 
 module.exports = class SpendFire
   constructor: ({@model, @router, @overlay$, gameKey}) ->
-    productsAndMe = RxObservable.combineLatest(
-      @model.product.getAllByGroupId(config.CLASH_ROYALE_ID)
-      @model.user.getMe()
-      (vals...) -> vals
-    )
-    products = productsAndMe.map ([products, me]) ->
-      country = me?.country?.toLowerCase()
-      _filter _map products, (product) ->
-        if product.key is 'google_play_10'
-          unless country in ['mx', 'us', 'br', 'kr', 'jp']
-            return
-          product.name = if country is 'us' \
-                 then '$10 Google Play gift card'
-                 else if country is 'mx'
-                 then '200 MXN Google Play tarjeta de regalo'
-                 else if country is 'br'
-                 then '30 BRL Google Play cartão presente'
-                 else if country is 'kr'
-                 then '10,000 WON Google Play 기프트 카드'
-        product
+    products = @model.product.getAllByGroupId(config.CLASH_ROYALE_ID)
 
     @$shop = new Shop {
       @model, @router, gameKey, products, @overlay$

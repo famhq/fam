@@ -1,0 +1,11 @@
+{
+  "dailyRecap.title": "Podsumowanie dnia",
+  "dailyRecap.textWithWins": "{nextGoodChest} za {countUntilNextGoodChest} skrzyń. Dziś wygrano {wins} razy, a przegrano {losses}.",
+  "dailyRecap.text": "{nextGoodChest} za {countUntilNextGoodChest} skrzyń.",
+  "newClanMember.title": "Nowy członek klanu",
+  "newClanMember.text": "{name} dołącza do twojego klanu w Starfire",
+  "newGroupMember.title": "Nowy członek grupy",
+  "newGroupMember.text": "{name} dołącza do twojej grupy w Starfire",
+  "newFollower.title": "Nowy śledzący",
+  "newFollower.text": "{name} cię śledzi"
+}

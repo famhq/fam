@@ -73,8 +73,8 @@ module.exports = class Drawer
                     else new GroupBadge {@model, group}
             $chevronIcon: new Icon()
             $ripple: new Ripple()
-            children: if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
-              [
+            children: if group.type is 'public'
+              _filter [
                 {
                   path: @router.get 'groupChat', {
                     gameKey: gameKey
@@ -82,19 +82,28 @@ module.exports = class Drawer
                   }
                   title: @model.l.get 'general.chat'
                 }
+                if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
+                  {
+                    path: @router.get 'groupShop', {
+                      gameKey: gameKey
+                      id: group.key or group.id
+                    }
+                    title: @model.l.get 'general.shop'
+                  }
+                if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
+                  {
+                    path: @router.get 'groupVideos', {
+                      gameKey: gameKey
+                      id: group.key or group.id
+                    }
+                    title: @model.l.get 'videosPage.title'
+                  }
                 {
-                  path: @router.get 'groupShop', {
+                  path: @router.get 'groupLeaderboard', {
                     gameKey: gameKey
                     id: group.key or group.id
                   }
-                  title: @model.l.get 'general.shop'
-                }
-                {
-                  path: @router.get 'groupVideos', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  title: @model.l.get 'videosPage.title'
+                  title: @model.l.get 'groupLeaderboardPage.title'
                 }
               ]
           }

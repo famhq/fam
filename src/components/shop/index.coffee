@@ -2,6 +2,7 @@ z = require 'zorium'
 _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
+_orderBy = require 'lodash/orderBy'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/map'
@@ -35,6 +36,7 @@ module.exports = class Shop
       gameKey: gameKey
       isPurchaseLoading: @isPurchaseLoading
       products: products.map (products) =>
+        products = _orderBy products, 'cost', 'asc'
         _map products, (product) =>
           {
             $buyButton: new PrimaryButton()
@@ -66,7 +68,7 @@ module.exports = class Shop
                       @overlay$.next null
                       reject()
                   }
-              else if product.key in ['google_play_10', 'visa_10']
+              else if product.key.match(/google_play_10|visa_10/)
                 new Promise (resolve, reject) =>
                   $buyGiftCardDialog = new BuyGiftCardDialog {
                     @model, @router, @overlay$
@@ -91,10 +93,16 @@ module.exports = class Shop
               {product, $buyButton, $fireIcon,
                 onPurchase, onBeforePurchase} = options
 
+              langKey = product.key
+              if langKey.indexOf('google_play_10') isnt -1
+                langKey = 'google_play_10'
+              else if langKey.indexOf('visa_10') isnt -1
+                langKey = 'visa_10'
+
               isDisabled = not me?.fire or me?.fire < product.cost
               z '.product',
                 z '.info',
-                  z '.name', @model.l.get "#{product.key}.title", {
+                  z '.name', @model.l.get "#{langKey}.title", {
                     file: 'products'
                   }
                   if product.isLimited
