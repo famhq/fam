@@ -19,7 +19,8 @@ gulpSequence = require 'gulp-sequence'
 WebpackDevServer = require 'webpack-dev-server'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
 # UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
-# Visualizer = require('webpack-visualizer-plugin')
+Visualizer = require('webpack-visualizer-plugin')
+BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 argv = require('yargs').argv
 
 config = require './src/config'
@@ -223,7 +224,8 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   scriptsConfig = _defaultsDeep {
     # devtool: 'source-map'
     plugins: [
-      # new Visualizer()
+      new Visualizer()
+      new BundleAnalyzerPlugin()
       # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       new webpack.ContextReplacementPlugin(
         /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/

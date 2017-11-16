@@ -44,6 +44,7 @@ module.exports = class Auth
 
   logout: =>
     @setAccessToken ''
+    language = @l.getLanguageStr()
     @exoid.call 'auth.login', {language}
     .then ({accessToken}) =>
       @setAccessToken accessToken

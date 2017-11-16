@@ -44,6 +44,24 @@ body
       min-width: 0 // so text doesn't overflow
       // http://stackoverflow.com/questions/12022288/how-to-keep-a-flex-item-from-overflowing-due-to-its-text
 
+    > #server-loading
+      position: fixed
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background: getColor('$black54')
+      z-index: 999999
+      opacity: 0
+      padding: 16px
+      box-sizing: border-box
+      display: flex
+      align-items: center
+      text-align: center
+
+      &.is-clicked
+        opacity: 1
+
 a
   color: inherit
   text-decoration: inherit

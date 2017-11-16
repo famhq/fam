@@ -58,6 +58,7 @@
   "addons.discover": "Discover",
   "addToHomeSheet.submitButton": "Add to home",
   "app.defaultInstallMessage": "Add Starfire to your homescreen to quickly access all features anytime",
+  "app.stillLoading": "We're still loading this page. If this message remains for more than a few seconds, send us an email: austin@clay.io",
   "arenaPickerDialog.title": "Max Arena",
   "buyGiftCardDialog.title": "Enter email",
   "buyGiftCardDialog.description": "Let us know the email you want us to send the gift card to",

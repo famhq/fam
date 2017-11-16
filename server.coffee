@@ -31,7 +31,7 @@ HEALTHCHECK_TIMEOUT = 200
 RENDER_TO_STRING_TIMEOUT_MS = 1200
 BOT_RENDER_TO_STRING_TIMEOUT_MS = 4500
 
-styles = if config.ENV is config.ENVS.PROD or true # FIXME
+styles = if config.ENV is config.ENVS.PROD
   fs.readFileSync gulpPaths.dist + '/bundle.css', 'utf-8'
 else
   null

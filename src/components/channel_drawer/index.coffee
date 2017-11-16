@@ -3,7 +3,6 @@ _map = require 'lodash/map'
 
 Icon = require '../icon'
 ChannelList = require '../channel_list'
-GroupBadge = require '../group_badge'
 colors = require '../../colors'
 
 if window?
@@ -18,8 +17,6 @@ module.exports = class ChannelDrawer
 
     @$channelList = new ChannelList {@model, @router, group}
     @$manageChannelsSettingsIcon = new Icon()
-
-    @$groupBadge = new GroupBadge {@model, group}
 
     @state = z.state
       isOpen: @isOpen

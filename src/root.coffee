@@ -7,7 +7,6 @@ cookie = require 'cookie'
 LocationRouter = require 'location-router'
 Environment = require 'clay-environment'
 socketIO = require 'socket.io-client/dist/socket.io.slim.js'
-semver = require 'semver'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/do'
 
@@ -17,6 +16,7 @@ config = require './config'
 CookieService = require './services/cookie'
 RouterService = require './services/router'
 PushService = require './services/push'
+SemverService = require './services/semver'
 App = require './app'
 Model = require './models'
 Portal = require './models/portal'
@@ -156,9 +156,9 @@ init = ->
   if model.ad.isVisible() and Environment.isGameApp config.GAME_KEY
     appVersion = Environment.getAppVersion config.GAME_KEY
     if appVersion
-      admobMediationSupported = semver.gte(appVersion, '1.2.4')
-      appodealMediationSupported = semver.gte(appVersion, '1.2.7') and false
-      nativeAdsSupported = semver.gte(appVersion, '1.2.3')
+      admobMediationSupported = SemverService.gte(appVersion, '1.2.4')
+      appodealMediationSupported = false
+      nativeAdsSupported = SemverService.gte(appVersion, '1.2.3')
       setTimeout ->
         portalCall = if appodealMediationSupported \
                      then 'appodeal.showBanner'

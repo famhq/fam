@@ -91,4 +91,4 @@ module.exports = class SearchInput
           style:
             backgroundColor: bgColor
           oninput: z.ev (e, $$el) =>
-            @searchValue.next $$el.value
+            @searchValue.next $$el?.value

@@ -169,6 +169,11 @@ module.exports = class Head
           ga('create', '#{config.GOOGLE_ANALYTICS_ID}', 'auto', {
             sampleRate: 10
           });
+          window.addEventListener('error', function(e) {
+            ga(
+              'send', 'event', 'error', e.message, e.filename + ':  ' + e.lineno
+            );
+          });
         "
 
       unless Environment.isGameApp(config.GAME_KEY, {userAgent})

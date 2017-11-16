@@ -1,5 +1,4 @@
 z = require 'zorium'
-semver = require 'semver'
 Environment = require 'clay-environment'
 _isEmpty = require 'lodash/isEmpty'
 _defaults = require 'lodash/defaults'
@@ -7,6 +6,7 @@ _forEach = require 'lodash/forEach'
 _reduce = require 'lodash/reduce'
 _kebabCase = require 'lodash/kebabCase'
 
+SemverService = require '../../services/semver'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -38,7 +38,7 @@ module.exports = class AddonListItem
         appVersion = isNative and Environment.getAppVersion(
           config.GAME_KEY
         )
-        isNewIAB = isNative and semver.gte appVersion, '1.4.0'
+        isNewIAB = isNative and SemverService.gte appVersion, '1.4.0'
         isInAppBrowser = isNative and (
           isNewIAB or addon.key isnt 'deckGenerator'
         ) and addon.url.substr(0, 4) is 'http'

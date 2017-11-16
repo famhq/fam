@@ -1,8 +1,8 @@
 Environment = require 'clay-environment'
-semver = require 'semver'
 firebase = require 'firebase/app'
 require 'firebase/messaging'
 
+SemverService = require '../services/semver'
 config = require '../config'
 
 class PushService
@@ -43,7 +43,7 @@ class PushService
         model.portal.call 'push.subscribeToTopic', {token, topic: "#{lang}"}
         if not isAlwaysCalled or not localStorage?['isPushTokenStored']
           appVersion = Environment.getAppVersion config.GAME_KEY
-          isIosFCM = appVersion and semver.gte(appVersion, '1.3.1')
+          isIosFCM = appVersion and SemverService.gte(appVersion, '1.3.1')
           sourceType ?= if Environment.isAndroid() \
                         then 'android'
                         else if isIosFCM

@@ -3,19 +3,22 @@
 $zIndexTextarea = 2
 
 .z-conversation
-  flex: 1
   display: flex
+  flex: 1
+  min-height: 0 // fix for older chrome (otherwise doesn't keep height 100)
   flex-direction: column
   width: 100%
 
   > .g-grid
     display: flex
     flex: 1
+    min-height: 0 // fix for older chrome (otherwise doesn't keep height 100)
     flex-direction: column
 
     > .messages
       transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
       flex: 1
+      min-height: 0 // fix for older chrome (otherwise doesn't keep height 100)
       overflow-y: auto
       overflow-x: hidden
       -webkit-overflow-scrolling: touch

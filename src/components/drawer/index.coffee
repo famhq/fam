@@ -5,7 +5,6 @@ _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
 _orderBy = require 'lodash/orderBy'
 Environment = require 'clay-environment'
-semver = require 'semver'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/map'
@@ -17,6 +16,7 @@ AdsenseAd = require '../adsense_ad'
 ClanBadge = require '../clan_badge'
 GroupBadge = require '../group_badge'
 SetLanguageDialog = require '../set_language_dialog'
+SemverService = require '../../services/semver'
 Ripple = require '../ripple'
 colors = require '../../colors'
 config = require '../../config'
@@ -178,7 +178,7 @@ module.exports = class Drawer
                 appVersion = isNative and Environment.getAppVersion(
                   config.GAME_KEY
                 )
-                isNewIAB = isNative and semver.gte appVersion, '1.4.0'
+                isNewIAB = isNative and SemverService.gte appVersion, '1.4.0'
                 @model.portal.call 'browser.openWindow', {
                   url: 'https://starfire.games/es/clash-royale/wiki'
                   target: '_blank'

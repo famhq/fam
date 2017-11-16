@@ -31,8 +31,6 @@ module.exports = class ChestSimulator
       isClicked: false
 
   afterMount: (@$$el) =>
-    # _inmobi?.getNewAd(document.getElementById('interstitial'))
-
     setTimeout =>
       @state.set isOpened: true, isClicked: true
       setTimeout =>

@@ -433,5 +433,5 @@ module.exports = class ProfileInfo
             z '.title', @model.l.get 'addonsPage.title'
             z @$addonListItem, {
               hasPadding: false
-              replacements: {playerTag: player?.id.replace '#', ''}
+              replacements: {playerTag: player?.id?.replace '#', ''}
             }

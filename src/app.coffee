@@ -305,4 +305,13 @@ module.exports = class App
             if $overlay
               # can be array of components or component
               z $overlay
-            z '#interstitial'
+            if not window?
+              z '#server-loading', {
+                attributes:
+                  onmousedown: "document.getElementById('server-loading')" +
+                    ".classList.add('is-clicked')"
+                  ontouchstart: "document.getElementById('server-loading')" +
+                    ".classList.add('is-clicked')"
+
+              },
+                @model.l.get 'app.stillLoading'
