@@ -1,5 +1,4 @@
 z = require 'zorium'
-moment = require 'moment'
 supportsWebP = window? and require 'supports-webp'
 _map = require 'lodash/map'
 _pick = require 'lodash/pick'
@@ -12,6 +11,7 @@ ConversationImageView = require '../conversation_image_view'
 ConversationInput = require '../conversation_input'
 FormattedText = require '../formatted_text'
 ThreadVoteButton = require '../thread_vote_button'
+DateService = require '../../services/date'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -151,7 +151,7 @@ module.exports = class ThreadComment
             z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
             z '.time',
               if time
-              then moment(time).fromNowModified()
+              then DateService.fromNow time
               else '...'
 
           z '.body', $body

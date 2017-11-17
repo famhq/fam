@@ -224,14 +224,9 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   scriptsConfig = _defaultsDeep {
     # devtool: 'source-map'
     plugins: [
-      new Visualizer()
-      new BundleAnalyzerPlugin()
-      # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
-      new webpack.ContextReplacementPlugin(
-        /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
-      )
       new webpack.IgnorePlugin /\.json$/, /lang/
-    # new UglifyJSPlugin
+      # new webpack.IgnorePlugin /.*$/, /date-fns\/locale/
+      # new UglifyJSPlugin
       #   uglifyOptions:
       #     mangle:
       #       reserved: ['process']
@@ -239,6 +234,12 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
         mangle:
           except: ['process']
       new ExtractTextPlugin 'bundle.css'
+      new Visualizer()
+      # new BundleAnalyzerPlugin()
+      # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
+      # new webpack.ContextReplacementPlugin(
+      #   /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
+      # )
     ]
     output:
       # TODO: '[hash].bundle.js' if we have caching issues, or use appcache

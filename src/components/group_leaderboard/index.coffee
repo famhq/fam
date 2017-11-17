@@ -2,7 +2,6 @@ z = require 'zorium'
 _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
 _truncate = require 'lodash/truncate'
-require 'moment-duration-format'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/map'

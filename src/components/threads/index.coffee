@@ -1,5 +1,4 @@
 z = require 'zorium'
-moment = require 'moment'
 _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
 _filter = require 'lodash/filter'
@@ -25,6 +24,7 @@ ThreadPreview = require '../thread_preview'
 ThreadVoteButton = require '../thread_vote_button'
 Spinner = require '../spinner'
 FormatService = require '../../services/format'
+DateService = require '../../services/date'
 
 if window?
   require './index.styl'
@@ -226,7 +226,7 @@ module.exports = class Threads
                               innerHTML: '&middot;'
                             z '.time',
                               if thread.addTime
-                              then moment(thread.addTime).fromNowModified()
+                              then DateService.fromNow thread.addTime
                               else '...'
                             z '.comments',
                               thread.commentCount or 0

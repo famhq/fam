@@ -1,5 +1,4 @@
 z = require 'zorium'
-moment = require 'moment'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
 
@@ -8,6 +7,7 @@ DeckCards = require '../deck_cards'
 Base = require '../base'
 Avatar = require '../avatar'
 Spinner = require '../spinner'
+DateService = require '../../services/date'
 
 if window?
   require './index.styl'
@@ -72,7 +72,7 @@ module.exports = class DecksGuides extends Base
                     z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
                     z '.time',
                       if guide.addTime
-                      then moment(guide.addTime).fromNowModified()
+                      then DateService.fromNow guide.addTime
                       else '...'
                   z '.title', guide.title
                   z '.summary', guide.summary

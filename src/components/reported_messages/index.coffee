@@ -1,7 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 log = require 'loga'
-moment = require 'moment'
 
 ConversationMessage = require '../conversation_message'
 colors = require '../../colors'

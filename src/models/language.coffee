@@ -1,6 +1,5 @@
 _reduce = require 'lodash/reduce'
 _defaultsDeep = require 'lodash/defaultsDeep'
-moment = require 'moment'
 _mapValues = require 'lodash/mapValues'
 _keys = require 'lodash/keys'
 _reduce = require 'lodash/reduce'
@@ -8,6 +7,7 @@ _findKey = require 'lodash/findKey'
 _filter = require 'lodash/filter'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
+DateService = require '../services/date'
 CookieService = require '../services/cookie'
 config = require '../config'
 
@@ -17,39 +17,6 @@ config = require '../config'
 # thread points
 # friendspage
 # profile page share
-
-
-relativeTimeFormats =
-  en:
-    future: 'in %s'
-    past: '%s'
-    s: '1s'
-    ss: '%ss'
-    m: '1m'
-    mm: '%dm'
-    h: '1h'
-    hh: '%dh'
-    d: '1d'
-    dd: '%dd'
-    M: '1M'
-    MM: '%dM'
-    y: '1Y'
-    yy: '%dY'
-  es:
-    future: 'in %s'
-    past: '%s'
-    s: '1s'
-    ss: '%ss'
-    m: '1m'
-    mm: '%dm'
-    h: '1h'
-    hh: '%dh'
-    d: '1d'
-    dd: '%dd'
-    M: '1S'
-    MM: '%dS'
-    y: '1A'
-    yy: '%dA'
 
 class Language
   constructor: ({language, @cookieSubject} = {}) ->
@@ -102,17 +69,8 @@ class Language
     CookieService.set(
       @cookieSubject, 'language', language
     )
-    relativeTime = relativeTimeFormats[language]
-    moment.locale language, if relativeTime then {relativeTime} else undefined
-
-    # change from 'a few seconds ago'
-    justNowStr = @get 'time.justNow'
-
-    moment.fn.fromNowModified = (a) ->
-      if Math.abs(moment().diff(this)) < 30000
-        # 1000 milliseconds
-        return justNowStr
-      @fromNow a
+    DateService.setL this
+    DateService.setLocale language
 
   getLanguage: => @language
 

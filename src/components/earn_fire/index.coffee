@@ -1,7 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
-moment = require 'moment'
 Environment = require 'clay-environment'
 Fingerprint = require 'fingerprintjs'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
@@ -17,6 +16,7 @@ UiCard = require '../ui_card'
 Spinner = require '../spinner'
 PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
+DateService = require '../../services/date'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -179,8 +179,11 @@ module.exports = class EarnFire
                         z 'p',
                           @model.l.get 'earnFire.averageTimeToComplete'
                           ' '
-                          moment().add(reward.averageSecondsUntilPayout, 's')
-                          .fromNowModified()
+                          DateService.fromNow(
+                            DateService.addSeconds(
+                              new Date(), reward.averageSecondsUntilPayout
+                            )
+                          )
                       z @$completeOfferButton,
                         text: @model.l.get 'earnFire.completeOffer'
                         onclick: =>

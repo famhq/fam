@@ -2,9 +2,9 @@ z = require 'zorium'
 _startCase = require 'lodash/startCase'
 _find = require 'lodash/find'
 Environment = require 'clay-environment'
-moment = require 'moment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/switchMap'
+
 
 Icon = require '../icon'
 AdsenseAd = require '../adsense_ad'
@@ -15,6 +15,7 @@ SecondaryButton = require '../secondary_button'
 ClanMetrics = require '../clan_metrics'
 VerifyAccountDialog = require '../verify_account_dialog'
 FormatService = require '../../services/format'
+DateService = require '../../services/date'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -123,7 +124,7 @@ module.exports = class ClanInfo
             z '.time',
               @model.l.get 'clanInfo.lastUpdatedTime'
               ' '
-              moment(clan?.lastUpdateTime).fromNowModified()
+              DateService.fromNow clan?.lastUpdateTime
             if @model.clan.canRefresh clan, hasUpdatedClan
               z '.refresh',
                 if isRefreshing

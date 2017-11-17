@@ -2,8 +2,6 @@ z = require 'zorium'
 _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
 _truncate = require 'lodash/truncate'
-moment = require 'moment'
-require 'moment-duration-format'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/map'
@@ -13,6 +11,7 @@ Icon = require '../icon'
 Card = require '../card'
 Spinner = require '../spinner'
 FormatService = require '../../services/format'
+DateService = require '../../services/date'
 colors = require '../../colors'
 
 if window?
@@ -65,7 +64,7 @@ module.exports = class GroupVideos
                       "url(#{video.thumbnailImage?.versions[0].url})"
                 },
                   z '.bottom-right',
-                    z '.duration', moment.duration(video.duration).format()
+                    z '.duration', DateService.formatDuration video.duration
                     z '.source-icon',
                       z $sourceIcon,
                         icon: video.source

@@ -2,11 +2,11 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
 _find = require 'lodash/find'
-moment = require 'moment'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
 Spinner = require '../spinner'
+DateService = require '../../services/date'
 
 if window?
   require './index.styl'
@@ -52,7 +52,7 @@ module.exports = class Conversations
                 z '.info',
                   z '.name', @model.user.getDisplayName otherUser
                   z '.time',
-                    moment(conversation.lastUpdateTime).fromNowModified()
+                    DateService.fromNow conversation.lastUpdateTime
                 z '.last-message',
                   if isLastMessageFromMe
                     @model.l.get 'conversations.me'

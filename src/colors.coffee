@@ -1,6 +1,6 @@
 _defaults = require 'lodash/defaults'
 
-materialColors = require './material_colors.json'
+materialColors = require './material_colors'
 
 module.exports = _defaults {
   '$primary100': materialColors.$red100

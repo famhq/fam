@@ -1,5 +1,4 @@
 z = require 'zorium'
-moment = require 'moment'
 _map = require 'lodash/map'
 _find = require 'lodash/find'
 _defaults = require 'lodash/defaults'
@@ -32,6 +31,7 @@ ThreadVoteButton = require '../thread_vote_button'
 Fab = require '../fab'
 ProfileDialog = require '../profile_dialog'
 FormatService = require '../../services/format'
+DateService = require '../../services/date'
 
 if window?
   require './index.styl'
@@ -237,7 +237,7 @@ module.exports = class Thread extends Base
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               z '.time',
                 if thread?.addTime
-                then moment(thread?.addTime).fromNowModified()
+                then DateService.fromNow thread.addTime
                 else '...'
             z '.title',
               thread?.title

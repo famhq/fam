@@ -8,7 +8,6 @@ _camelCase = require 'lodash/camelCase'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
 Environment = require 'clay-environment'
-moment = require 'moment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/switchMap'
 
@@ -24,6 +23,7 @@ VerifyAccountDialog = require '../verify_account_dialog'
 AutoRefreshDialog = require '../auto_refresh_dialog'
 AdsenseAd = require '../adsense_ad'
 FormatService = require '../../services/format'
+DateService = require '../../services/date'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -278,7 +278,7 @@ module.exports = class ProfileInfo
             z '.time',
               @model.l.get 'profileInfo.lastUpdatedTime'
               ' '
-              moment(lastUpdateTime).fromNowModified()
+              DateService.fromNow lastUpdateTime
             z '.auto-refresh', {
               onclick: =>
                 ga? 'send', 'event', 'verify', 'auto_refresh', 'click'

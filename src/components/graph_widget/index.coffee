@@ -1,5 +1,5 @@
 z = require 'zorium'
-Chartist = if window? then require 'chartist' else null # TODO
+Chartist = if window? then require 'chartist' else null
 
 if window?
   require './index.styl'

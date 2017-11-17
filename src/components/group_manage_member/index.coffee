@@ -1,5 +1,4 @@
 z = require 'zorium'
-moment = require 'moment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Tabs = require '../tabs'
@@ -7,6 +6,7 @@ UserHeader = require '../user_header'
 GroupManageMemberGeneral = require '../group_manage_member_general'
 GroupManageMemberRecords = require '../group_manage_member_records'
 GroupManageMemberNotes = require '../group_manage_member_notes'
+DateService = require '../../services/date'
 colors = require '../../colors'
 
 if window?
@@ -48,7 +48,7 @@ module.exports = class GroupManageMember
               z '.name', @model.user.getDisplayName user
               z '.join-date',
                 z '.title', 'Joined'
-                z '.date', moment(user?.joinTime).format 'MMM D, YYYY'
+                z '.date', DateService.fromNow user?.joinTime
 
         z @$tabs,
           isBarFixed: false

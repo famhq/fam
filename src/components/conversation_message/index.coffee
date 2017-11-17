@@ -1,5 +1,4 @@
 z = require 'zorium'
-moment = require 'moment'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'
@@ -11,6 +10,7 @@ Icon = require '../icon'
 ConversationImageView = require '../conversation_image_view'
 Ripple = require '../ripple'
 FormatService = require '../../services/format'
+DateService = require '../../services/date'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -124,7 +124,7 @@ module.exports = class ConversationMessage
                   size: '14px'
             z '.time',
               if time
-              then moment(time).fromNowModified()
+              then DateService.fromNow time
               else '...'
             z '.middot',
               innerHTML: '&middot;'
