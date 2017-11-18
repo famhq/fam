@@ -1,6 +1,7 @@
 {
   "short_name": "Starfire",
   "name": "Starfire",
+  "version": "1.0.0",
   "icons": [
     {
       "src": "https://cdn.wtf/d/images/starfire/android-chrome-144x144.png",

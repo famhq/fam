@@ -30,8 +30,6 @@ ONE_DAY_SECONDS = 3600 * 24 * 1
 TWO_DAYS_SECONDS = 3600 * 24 * 2
 THREE_DAYS_SECONDS = 3600 * 24 * 3
 
-# FIXME: for some reason socket.io is
-# returning null for every request
 API_URL =
   serverEnv.RADIOACTIVE_API_URL or # server
   process.env.PUBLIC_RADIOACTIVE_API_URL # client
@@ -91,6 +89,8 @@ isomorphic =
     13: 'rgb(234, 126, 194)'
 
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
+  # d folder has longer cache
+  SCRIPTS_CDN_URL: 'https://cdn.wtf/d/scripts/starfire'
   USER_CDN_URL: 'https://cdn.wtf/images/starfire'
   IOS_APP_URL: 'https://itunes.apple.com/us/app/starfire/id1160535565'
   GOOGLE_PLAY_APP_URL:

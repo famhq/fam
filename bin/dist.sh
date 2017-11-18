@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 CURRENT_COMMIT=$(git rev-parse HEAD)
 LAST_TAG=$(git tag | sort -V -r | sed '1q;d')
@@ -29,7 +29,9 @@ fi
 
 echo "building current branch"
 git checkout $CURRENT_BRANCH
-./node_modules/gulp/bin/gulp.js dist
+
+source ../kaiser/mystic_rose/namespaces/production/env.sh
+NODE_ENV=production ./node_modules/gulp/bin/gulp.js dist
 
 # echo "restoring last tag dist"
 # cp -r ./dist/* ./_tmp_dist

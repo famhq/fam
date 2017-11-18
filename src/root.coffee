@@ -72,9 +72,13 @@ setCookies = (currentCookies) ->
           key, value, CookieService.getCookieOpts(host)
     currentCookies = cookies
 
-navigator.serviceWorker?.register '/service_worker.js'
-.then (registration) ->
-  PushService.setFirebaseServiceWorker registration
+try
+  navigator.serviceWorker?.register '/service_worker.js'
+  .then (registration) ->
+    PushService.setFirebaseServiceWorker registration
+catch err
+  null
+
 # start before dom has loaded
 portal = new Portal()
 
@@ -135,6 +139,7 @@ init = ->
     currentNotification
   }
   $app = z app
+  console.log 'bind', root, $app
   z.bind root, $app
 
   window.addEventListener 'beforeinstallprompt', (e) ->
@@ -262,6 +267,7 @@ init = ->
     # nextTick prevents white flash
     setTimeout ->
       $$root = document.getElementById 'zorium-root'
+      console.log 'set', $$root
       $$root.parentNode.replaceChild root, $$root
 
   # window.addEventListener 'resize', app.onResize
@@ -284,14 +290,6 @@ if document.readyState isnt 'complete' and
   document.addEventListener 'DOMContentLoaded', init
 else
   init()
-
-#############################
-# SERVICE WORKERS           #
-#############################
-
-if location.protocol is 'https:'
-  navigator.serviceWorker?.register '/service_worker.js'
-  .catch log.error
 
 #############################
 # ENABLE WEBPACK HOT RELOAD #

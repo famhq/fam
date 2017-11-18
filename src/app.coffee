@@ -307,6 +307,7 @@ module.exports = class App
               z $overlay
             if not window?
               z '#server-loading', {
+                key: 'server-loading'
                 attributes:
                   onmousedown: "document.getElementById('server-loading')" +
                     ".classList.add('is-clicked')"

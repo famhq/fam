@@ -125,6 +125,9 @@ if config.ENV is config.ENVS.PROD
 then app.use express.static(gulpPaths.dist, {maxAge: '4h'})
 else app.use express.static(gulpPaths.build, {maxAge: '4h'})
 
+stats = JSON.parse \
+  fs.readFileSync gulpPaths.dist + '/stats.json', 'utf-8'
+
 app.use (req, res, next) ->
   # migrate to starfire.games
   # check if native app
@@ -185,12 +188,8 @@ app.use (req, res, next) ->
   }
   requests = new RxBehaviorSubject(req)
   if config.ENV is config.ENVS.PROD
-    stats = JSON.parse \
-      fs.readFileSync gulpPaths.dist + '/stats.json', 'utf-8'
-
-    # add Date.now() if having caching issues. problem is it'll be different
-    # per node, so browser cache isn't used as often
-    bundlePath = "/bundle_#{language}.js?#{Date.now()}"#{stats.hash}"
+    scriptsCdnUrl = config.SCRIPTS_CDN_URL
+    bundlePath = "#{scriptsCdnUrl}/bundle_#{stats.hash}_#{language}.js"
     bundleCssPath = "/bundle.css?#{stats.time}"
   else
     bundlePath = null

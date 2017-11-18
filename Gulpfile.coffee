@@ -21,6 +21,7 @@ ExtractTextPlugin = require 'extract-text-webpack-plugin'
 # UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
 Visualizer = require('webpack-visualizer-plugin')
 BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+s3Upload = require 'gulp-s3-upload'
 argv = require('yargs').argv
 
 config = require './src/config'
@@ -49,6 +50,11 @@ webpackBase =
     filename: 'bundle.js'
     publicPath: '/'
 
+s3 = s3Upload {
+  accessKeyId: process.env.RADIOACTIVE_AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.RADIOACTIVE_AWS_SECRET_ACCESS_KEY
+}
+
 gulp.task 'dev', ['dev:webpack-server', 'watch:dev:server']
 gulp.task 'test', ['lint', 'test:coverage', 'test:browser']
 # TODO: 'dist:manifest' - appcache
@@ -56,6 +62,7 @@ gulp.task 'dist', gulpSequence(
   'dist:clean'
   ['dist:scripts', 'dist:static']
   'dist:concat'
+  'dist:s3'
 )
 
 gulp.task 'watch', ->
@@ -234,7 +241,7 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
         mangle:
           except: ['process']
       new ExtractTextPlugin 'bundle.css'
-      new Visualizer()
+      # new Visualizer()
       # new BundleAnalyzerPlugin()
       # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       # new webpack.ContextReplacementPlugin(
@@ -265,13 +272,29 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
   .pipe gulp.dest paths.dist
 
 gulp.task 'dist:concat', ->
-  bundle = fs.readFileSync "#{__dirname}/#{paths.dist}/bundle.js"
+  bundle = fs.readFileSync "#{__dirname}/#{paths.dist}/bundle.js", 'utf-8'
+  matches = bundle.match(/process\.env\.[a-zA-Z0-9_]+/g)
+  _map matches, (match) ->
+    key = match.replace('process.env.', '')
+    bundle = bundle.replace match, "'#{process.env[key]}'"
+  stats = JSON.parse fs.readFileSync "#{__dirname}/#{paths.dist}/stats.json"
   _map config.LANGUAGES, (language) ->
-    lang = fs.readFileSync "#{__dirname}/#{paths.dist}/lang_#{language}.json"
-    fs.writeFileSync(
-      "#{__dirname}/#{paths.dist}/bundle_#{language}.js"
-      lang + bundle
+    lang = fs.readFileSync(
+      "#{__dirname}/#{paths.dist}/lang_#{language}.json", 'utf-8'
     )
+    fs.writeFileSync(
+      "#{__dirname}/#{paths.dist}/bundle_#{stats.hash}_#{language}.js"
+      lang + bundle
+    , 'utf-8')
+
+gulp.task 'dist:s3', ->
+  gulp.src("#{__dirname}/#{paths.dist}/bundle*")
+  .pipe s3 {
+    Bucket: 'cdn.wtf'
+    ACL: 'public-read'
+    keyTransform: (relativeFilename) ->
+      "d/scripts/starfire/#{relativeFilename}"
+  }
 
 gulp.task 'dist:manifest', ['dist:static', 'dist:scripts'], ->
   gulp.src paths.manifest
