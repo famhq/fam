@@ -76,8 +76,10 @@ try
   navigator.serviceWorker?.register '/service_worker.js'
   .then (registration) ->
     PushService.setFirebaseServiceWorker registration
+  .catch (err) ->
+    console.log 'sw promise err', err
 catch err
-  null
+  console.log 'sw err', err
 
 # start before dom has loaded
 portal = new Portal()
@@ -139,7 +141,6 @@ init = ->
     currentNotification
   }
   $app = z app
-  console.log 'bind', root, $app
   z.bind root, $app
 
   window.addEventListener 'beforeinstallprompt', (e) ->
@@ -150,11 +151,7 @@ init = ->
   model.portal.call 'networkInformation.onOffline', onOffline
   model.portal.call 'networkInformation.onOnline', onOnline
 
-
-  # TODO:
   # model.reward.setup()
-
-
 
   # clashroyale://add_friend?tag=C8PJ28CG&token=fx379f9b
   # https://link.clashroyale.com/invite/friend/es?tag=UCCQV29Q&token=9krrx8x6&platform=android
@@ -267,7 +264,6 @@ init = ->
     # nextTick prevents white flash
     setTimeout ->
       $$root = document.getElementById 'zorium-root'
-      console.log 'set', $$root
       $$root.parentNode.replaceChild root, $$root
 
   # window.addEventListener 'resize', app.onResize

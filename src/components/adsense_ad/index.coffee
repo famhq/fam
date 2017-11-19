@@ -38,7 +38,7 @@ module.exports = class AdsenseAd
   render: ({slot} = {}) =>
     slotInfo = slots[slot]
 
-    if not slotInfo or not @model.ad.isVisible()
+    if not slotInfo or not @model.ad.isVisible({isWebOnly: true})
       return
 
     z '.z-adsense-ad', {

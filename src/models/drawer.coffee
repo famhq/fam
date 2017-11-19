@@ -8,6 +8,8 @@ module.exports = class Drawer
     @_isOpen
 
   open: =>
+    # could use vanilla to open and close drawer for perf
+    # (would need to get rid of all isOpens in state so it wouldn't re-render)
     @_isOpen.next true
     # prevent body scrolling while viewing menu
     document.body.style.overflow = 'hidden'

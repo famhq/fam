@@ -83,6 +83,8 @@ module.exports = class Model
     accessToken = cookieSubject.map (cookies) ->
       cookies[config.AUTH_COOKIE]
 
+    userAgent = serverHeaders['user-agent'] or navigator?.userAgent
+
     ioEmit = (event, opts) ->
       accessToken.take(1).toPromise()
       .then (accessToken) ->
@@ -125,7 +127,7 @@ module.exports = class Model
     @userItem = new UserItem {@auth}
     @userGroupData = new UserGroupData {@auth}
     @player = new Player {@auth}
-    @ad = new Ad {@portal}
+    @ad = new Ad {@portal, cookieSubject, userAgent}
     @addon = new Addon {@auth, @l}
     @clan = new Clan {@auth}
     @dynamicImage = new DynamicImage {@auth}
