@@ -3,3 +3,4 @@
 - DONE, sort of (loading separate file) Figure out a solution to load CSS dynamically and see if it's faster?
 - Unrelated to speed, need to swap localStorage with something else in native iOS app (gets cleared too often)
 - Set user and groupUser in avatar header instead of as props
+- Make own build of iscroll like iscroll-lite, but with snap

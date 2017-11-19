@@ -22,12 +22,16 @@ colors = require '../../colors'
 config = require '../../config'
 
 if window?
+  IScroll = require 'iscroll/build/iscroll-lite-snap.js'
   require './index.styl'
 
 GROUPS_IN_DRAWER = 2
+OPACITY_INTERVAL_MS = 50
+MAX_OVERLAY_OPACITY = 0.5
 
 module.exports = class Drawer
   constructor: ({@model, @router, gameKey, group, @overlay$}) ->
+    @transformProperty = window?.getTransformProperty()
     @$avatar = new Avatar()
     @$adsenseAd = new AdsenseAd {@model}
 
@@ -256,11 +260,84 @@ module.exports = class Drawer
           # }
           ])
 
+  afterMount: (@$$el) =>
+    {drawerWidth} = @state.getValue()
+
+    breakpoint = @model.window.getBreakpoint()
+    @breakpointDisposable = breakpoint.subscribe (breakpoint) =>
+      if not @iScrollContainer and breakpoint isnt 'desktop'
+        checkIsReady = =>
+          $$container = @$$el
+          if $$container and $$container.clientWidth
+            @initIScroll $$container
+          else
+            setTimeout checkIsReady, 1000
+
+        checkIsReady()
+      else if @iScrollContainer and breakpoint is 'desktop'
+        @open()
+        @iScrollContainer?.destroy()
+        delete @iScrollContainer
+        @disposable.unsubscribe()
+
+  beforeUnmount: =>
+    @iScrollContainer?.destroy()
+    delete @iScrollContainer
+    @disposable.unsubscribe()
+    @breakpointDisposable.unsubscribe()
+
+  close: =>
+    @iScrollContainer.goToPage 1, 0, 500
+
+  open: =>
+    @iScrollContainer.goToPage 0, 0, 500
+
+  initIScroll: ($$container) =>
+    {drawerWidth} = @state.getValue()
+    @iScrollContainer = new IScroll $$container, {
+      scrollX: true
+      scrollY: false
+      eventPassthrough: true
+      bounce: false
+      snap: '.tab'
+      deceleration: 0.002
+    }
+
+    # the scroll listener in IScroll (iscroll-probe.js) is really slow
+    # interval looks 100x better
+    updateOpacity = =>
+      opacity = 1 + @iScrollContainer.x / drawerWidth
+      @$$overlay.style.opacity = opacity * MAX_OVERLAY_OPACITY
+
+    @disposable = @model.drawer.isOpen().subscribe (isOpen) =>
+      if isOpen then @open() else @close()
+      @$$overlay = @$$el.querySelector '.overlay-tab'
+      updateOpacity()
+
+    @iScrollContainer.on 'scrollStart', =>
+      @$$overlay = @$$el.querySelector '.overlay-tab'
+      clearInterval @scrollInterval
+      @scrollInterval = setInterval updateOpacity, OPACITY_INTERVAL_MS
+      updateOpacity()
+
+    @iScrollContainer.on 'scrollEnd', =>
+      {isOpen} = @state.getValue()
+
+      clearInterval @scrollInterval
+
+      newIsOpen = @iScrollContainer.currentPage.pageX is 0
+
+      # landing on new tab
+      if newIsOpen and not isOpen
+        @model.drawer.open()
+      else if not newIsOpen and isOpen
+        @model.drawer.close()
+
   render: ({currentPath}) =>
     {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, gameKey,
       language, windowSize} = @state.getValue()
 
-    translateX = if isOpen then '0' else "-#{drawerWidth}px"
+    translateX = if isOpen then 0 else "-#{drawerWidth}px"
     buttonColors =
       c200: colors.$tertiary500
       c500: colors.$tertiary700
@@ -269,151 +346,155 @@ module.exports = class Drawer
 
     z '.z-drawer', {
       className: z.classKebab {isOpen}
+      key: 'drawer'
       style:
         display: if windowSize.width then 'block' else 'none'
+        height: "#{windowSize.height}px"
         width: if breakpoint is 'mobile' \
                then '100%'
                else "#{drawerWidth}px"
     },
-      z '.overlay', {
-        ontouchstart: (e) =>
-          e?.preventDefault()
-          e?.stopPropagation()
-          @model.drawer.close()
-        onclick: (e) =>
-          e?.preventDefault()
-          @model.drawer.close()
-      }
-
-      z '.drawer', {
+      z '.drawer-wrapper', {
         style:
-          width: "#{drawerWidth}px"
-          transform: "translate(#{translateX}, 0)"
-          webkitTransform: "translate(#{translateX}, 0)"
+          width: "#{drawerWidth + windowSize.width}px"
+          # "#{@transformProperty}": "translate(#{translateX}, 0)"
+          # webkitTransform: "translate(#{translateX}, 0)"
       },
-        z '.top',
-          z '.header',
-            z '.logo'
-            z '.beta'
-            z '.language', {
-              onclick: =>
-                @overlay$.next new SetLanguageDialog {
-                  @model, @router, @overlay$
-                }
-            },
-              language
-              z '.arrow'
-          z '.content',
-            z 'ul.menu',
-              [
-                if me and not me?.isMember
-                  [
-                    z 'li.sign-in-buttons',
-                      z '.button', {
-                        onclick: =>
-                          @model.signInDialog.open 'signIn'
-                      }, @model.l.get 'general.signIn'
-                      z '.button', {
-                        onclick: =>
-                          @model.signInDialog.open()
-                      }, @model.l.get 'general.signUp'
-                    z '.divider'
-                  ]
-                _map myGroups, (myGroup) =>
-                  {$badge, $ripple, group, $chevronIcon, children} = myGroup
-                  groupPath = @router.get 'group', {
-                    gameKey, id: group.key or group.id
+        z '.drawer-tab.tab',
+          z '.drawer', {
+            style:
+              width: "#{drawerWidth}px"
+          },
+            z '.header',
+              z '.logo'
+              z '.beta'
+              z '.language', {
+                onclick: =>
+                  @overlay$.next new SetLanguageDialog {
+                    @model, @router, @overlay$
                   }
-                  groupEnPath = @router.get 'group', {
-                    gameKey, id: group.key or group.id
-                    }, {language: 'en'}
-                  isSelected = currentPath?.indexOf(groupPath) is 0 or
-                    currentPath?.indexOf(groupEnPath) is 0
-                  z 'li.menu-item', {
-                    className: z.classKebab {isSelected}
-                  },
-                    z 'a.menu-item-link', {
-                      href: groupPath
-                      onclick: (e) =>
-                        e.preventDefault()
-                        @model.drawer.close()
-                        @router.go 'groupChat', {
-                          gameKey, id: group.key or group.id
-                        }
-                    },
-                      z '.icon',
-                        z $badge
-                      @model.group.getDisplayName group
-                      if not _isEmpty children
-                        z '.chevron',
-                          z $chevronIcon,
-                            icon: if isSelected \
-                                  then 'chevron-up'
-                                  else 'chevron-down'
-                            color: colors.$tertiary500Text70
-                            isTouchTarget: false
-                      $ripple
-                    if isSelected
-                      z 'ul',
-                        _map children, ({path, title}) =>
-                          isSelected = currentPath?.indexOf(path) is 0
-                          z 'li.menu-item',
-                            z 'a.menu-item-link.is-child', {
-                              className: z.classKebab {isSelected}
-                              href: path
-                              onclick: (e) =>
-                                e.preventDefault()
-                                @model.drawer.close()
-                                @router.goPath path
-                            },
-                              z '.icon'
-                              title
-
-
-                unless _isEmpty myGroups
-                  z '.divider'
-
-                _map menuItems, (menuItem) =>
-                  {path, onclick, title, $icon, $ripple, isNew,
-                    iconName, isDivider} = menuItem
-
-                  if isDivider
-                    return z 'li.divider'
-
-                  if menuItem.isDefault
-                    isSelected = currentPath in [
-                      @router.get 'siteHome'
-                      @router.get 'home', {gameKey}
-                      '/'
+              },
+                language
+                z '.arrow'
+            z '.content',
+              z 'ul.menu',
+                [
+                  if me and not me?.isMember
+                    [
+                      z 'li.sign-in-buttons',
+                        z '.button', {
+                          onclick: =>
+                            @model.signInDialog.open 'signIn'
+                        }, @model.l.get 'general.signIn'
+                        z '.button', {
+                          onclick: =>
+                            @model.signInDialog.open()
+                        }, @model.l.get 'general.signUp'
+                      z '.divider'
                     ]
-                  else
-                    isSelected = currentPath?.indexOf(path) is 0
-                  z 'li.menu-item', {
-                    className: z.classKebab {isSelected}
-                  },
-                    z 'a.menu-item-link', {
-                      href: path
-                      onclick: (e) =>
-                        e.preventDefault()
-                        @model.drawer.close()
-                        if onclick
-                          onclick()
-                        else if path
-                          @router.goPath path
+                  _map myGroups, (myGroup) =>
+                    {$badge, $ripple, group, $chevronIcon, children} = myGroup
+                    groupPath = @router.get 'group', {
+                      gameKey, id: group.key or group.id
+                    }
+                    groupEnPath = @router.get 'group', {
+                      gameKey, id: group.key or group.id
+                      }, {language: 'en'}
+                    isSelected = currentPath?.indexOf(groupPath) is 0 or
+                      currentPath?.indexOf(groupEnPath) is 0
+                    z 'li.menu-item', {
+                      className: z.classKebab {isSelected}
                     },
-                      z '.icon',
-                        z $icon,
-                          isTouchTarget: false
-                          icon: iconName
-                          color: colors.$primary500
-                      title
-                      if isNew
-                        z '.new', @model.l.get 'general.new'
-                      z $ripple
-              ]
+                      z 'a.menu-item-link', {
+                        href: groupPath
+                        onclick: (e) =>
+                          e.preventDefault()
+                          @model.drawer.close()
+                          @router.go 'groupChat', {
+                            gameKey, id: group.key or group.id
+                          }
+                      },
+                        z '.icon',
+                          z $badge
+                        @model.group.getDisplayName group
+                        if not _isEmpty children
+                          z '.chevron',
+                            z $chevronIcon,
+                              icon: if isSelected \
+                                    then 'chevron-up'
+                                    else 'chevron-down'
+                              color: colors.$tertiary500Text70
+                              isTouchTarget: false
+                        if breakpoint is 'desktop'
+                          $ripple
+                      if isSelected
+                        z 'ul',
+                          _map children, ({path, title}) =>
+                            isSelected = currentPath?.indexOf(path) is 0
+                            z 'li.menu-item',
+                              z 'a.menu-item-link.is-child', {
+                                className: z.classKebab {isSelected}
+                                href: path
+                                onclick: (e) =>
+                                  e.preventDefault()
+                                  @model.drawer.close()
+                                  @router.goPath path
+                              },
+                                z '.icon'
+                                title
 
-          if not Environment.isMobile() and windowSize?.height > 880
-            z '.ad',
-              z @$adsenseAd, {
-                slot: 'desktop336x280'
-              }
+
+                  unless _isEmpty myGroups
+                    z '.divider'
+
+                  _map menuItems, (menuItem) =>
+                    {path, onclick, title, $icon, $ripple, isNew,
+                      iconName, isDivider} = menuItem
+
+                    if isDivider
+                      return z 'li.divider'
+
+                    if menuItem.isDefault
+                      isSelected = currentPath in [
+                        @router.get 'siteHome'
+                        @router.get 'home', {gameKey}
+                        '/'
+                      ]
+                    else
+                      isSelected = currentPath?.indexOf(path) is 0
+                    z 'li.menu-item', {
+                      className: z.classKebab {isSelected}
+                    },
+                      z 'a.menu-item-link', {
+                        href: path
+                        onclick: (e) =>
+                          e.preventDefault()
+                          if onclick
+                            onclick()
+                          else if path
+                            @router.goPath path
+                          @model.drawer.close()
+                      },
+                        z '.icon',
+                          z $icon,
+                            isTouchTarget: false
+                            icon: iconName
+                            color: colors.$primary500
+                        title
+                        if isNew
+                          z '.new', @model.l.get 'general.new'
+                        if breakpoint is 'desktop'
+                          z $ripple
+                ]
+
+            if not Environment.isMobile() and windowSize?.height > 880
+              z '.ad',
+                z @$adsenseAd, {
+                  slot: 'desktop336x280'
+                }
+
+        z '.overlay-tab.tab', {
+          onclick: =>
+            @model.drawer.close()
+        },
+          z '.grip'

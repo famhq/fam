@@ -1,7 +1,6 @@
 @require '../../vars'
 
 $zIndexDrawer = 300
-$zIndexDrawerHeader = 100
 
 .z-drawer
   position: fixed
@@ -13,192 +12,210 @@ $zIndexDrawerHeader = 100
   left: 0
   box-sizing: border-box
   border-right: 1px solid getColor('$black')
+  overflow: hidden
   pointer-events: none // not supported in ie9/10 (ie our entire app breaks)
+
+  // &::-webkit-scrollbar
+  //   width: 0
+  //   background: transparent
 
   @media (min-width: $contentMaxWidth)
     position: relative
     z-index: 1
     pointer-events: all // not supported in ie9/10 (ie our entire app breaks)
 
-    > .overlay
-      display: none
-
-    > .drawer
-      position: relative
-      z-index: 1
+    > .drawer-wrapper
       transform: translate(0, 0) !important
 
-  &.is-open
-    // display: block
-    // width: 100%
-    // height: 100%
-    pointer-events: all // not supported in ie9/10
+      > .drawer-tab > .drawer > .content > .menu .menu-item
+        position: relative // for ripple
 
-    > .overlay
-      opacity: 0.5
+        > .menu-item-link
+          &:active
+            background: none !important
+
+  &.is-open
+    > .drawer-wrapper
+      > .drawer-tab
+        background: rgba(0, 0, 0, 0.5)
+
+      > .overlay-tab
+        pointer-events: all
+        opacity: 0.5
+        transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+
+  > .drawer-wrapper
+    height: 100%
+    display: flex
+    touch-action: none
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+    transform: translate(-336px, 0px)
+
+    > .tabs
+      overflow: hidden
+
+    > .overlay-tab
+      pointer-events: none
+      // width: 10px
+      background: rgba(0, 0, 0, 1)
+      opacity: 0
+      height: 100%
+      flex: 1
+      display: flex
       transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)
 
-    > .drawer
-      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+      > .grip
+        pointer-events: all
+        width: 5px
+        height: 100%
 
-  > .overlay
-    background: getColor('$black')
-    opacity: 0
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)
-    width: 100%
-    height: 100%
-    -webkit-tap-highlight-color: getColor('$transparent')
+    > .drawer-tab
+      pointer-events: all
+      height: 100%
 
-  > .drawer
-    // width and transform translate set in js
-    height: 100%
-    top: 0
-    position: fixed
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
-    display: flex
-    flex-direction: column
-    background: getColor('$tertiary700')
-    // prevents flicker glitch http://stackoverflow.com/a/3921870
-    backface-visibility: hidden
-
-    > .top
-      flex: 1
-      overflow: auto
-      -webkit-overflow-scrolling: touch
-
-      > .header
-        box-sizing: border-box
-        z-index: $zIndexDrawerHeader
+      > .drawer
+        // width and transform translate set in js
+        height: 100%
+        // top: 0
+        // position: fixed
+        // transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+        display: flex
+        flex-direction: column
+        background: getColor('$tertiary700')
         // prevents flicker glitch http://stackoverflow.com/a/3921870
         backface-visibility: hidden
-        padding: 20px 16px
-        height: 56px
-        box-sizing: border-box
-        border-bottom: 1px solid $white12
-        border-right: 1px solid getColor('$black')
-        background: getColor('$primary500')
-        display: flex
-        align-items: center
 
-        @media (min-width: $breakPointMedium)
-          height: 64px
+        > .header
+          // prevents flicker glitch http://stackoverflow.com/a/3921870
+          backface-visibility: hidden
+          padding: 20px 16px
+          height: 56px
+          box-sizing: border-box
+          border-bottom: 1px solid getColor('$white12')
+          border-right: 1px solid getColor('$black')
+          background: getColor('$primary500')
+          display: flex
+          align-items: center
 
-        > .logo
-          width: 152px
-          height: 20px
-          background: url($cdnUrl + '/sf_logo_invert.svg') no-repeat
-          background-size: auto 100%
-          background-position: 0 center
+          @media (min-width: $breakPointMedium)
+            height: 64px
 
-        > .beta
-          width: 35px
-          height: 16px
-          background: url($cdnUrl + '/beta_tag.svg') no-repeat
-          background-size: auto 100%
-          background-position: 0 center
-          margin-left: 16px
+          > .logo
+            width: 152px
+            height: 20px
+            background: url($cdnUrl + '/sf_logo_invert.svg') no-repeat
+            background-size: auto 100%
+            background-position: 0 center
 
-        > .language
-          font-caption1()
-          margin-left: auto
-          padding: 4px 8px
-          border-radius: 2px
-          background: getColor('$primary700')
-          cursor: pointer
+          > .beta
+            width: 35px
+            height: 16px
+            background: url($cdnUrl + '/beta_tag.svg') no-repeat
+            background-size: auto 100%
+            background-position: 0 center
+            margin-left: 16px
 
-          > .arrow
-            display: inline-block
-            vertical-align: top
-            margin-left: 8px
-            margin-top: 8px
-            width: 0
-            height: 0
-            border-left: 5px solid transparent
-            border-right: 5px solid transparent
-            border-top: 5px solid getColor('$white')
+          > .language
+            font-caption1()
+            margin-left: auto
+            padding: 4px 8px
+            border-radius: 2px
+            background: getColor('$primary700')
+            cursor: pointer
 
+            > .arrow
+              display: inline-block
+              vertical-align: top
+              margin-left: 8px
+              margin-top: 8px
+              width: 0
+              height: 0
+              border-left: 5px solid transparent
+              border-right: 5px solid transparent
+              border-top: 5px solid getColor('$white')
 
+            // @media (min-width: $breakPointMedium)
+            //   height: 24px
+        > .ad
+          position: absolute
+          bottom: 0
+          width: 336px
+          height: 280px
 
-          // @media (min-width: $breakPointMedium)
-          //   height: 24px
-      > .ad
-        position: absolute
-        bottom: 0
-        width: 336px
-        height: 280px
+        > .content
+          flex: 1
+          width: 100%
+          box-sizing: border-box
+          background: getColor('$tertiary700')
+          padding: 8px 0
+          overflow-y: auto
+          -webkit-overflow-scrolling: touch
 
-      > .content
-        flex: 1
-        width: 100%
-        box-sizing: border-box
-        background: getColor('$tertiary700')
-        padding: 8px 0
+          > .menu
+            list-style-type: none
+            margin: 0
+            padding: 0
 
-        > .menu
-          list-style-type: none
-          margin: 0
-          padding: 0
-
-          > .sign-in-buttons
-            padding: 6px 16px
-            display: flex
-
-            > .button
-              font-button()
-              flex: 1
-              padding: 10px
-              background: getColor('$primary500')
-              text-align: center
-              border-radius: 2px
-              cursor: pointer
-
-              &:first-child
-                margin-right: 16px
-
-          > .divider
-            width: 100%
-            height: 1px
-            background: getColor('$white12')
-            margin: 8px 0
-
-          .menu-item
-            > .menu-item-link
-              font-title()
+            > .sign-in-buttons
+              padding: 6px 16px
               display: flex
-              align-items: center
-              position: relative
-              padding: 10px 16px
 
-              &.is-child
-                color: getColor('$tertiary500Text70')
+              > .button
+                font-button()
+                flex: 1
+                padding: 10px
+                background: getColor('$primary500')
+                text-align: center
+                border-radius: 2px
+                cursor: pointer
+
+                &:first-child
+                  margin-right: 16px
+
+            > .divider
+              width: 100%
+              height: 1px
+              background: getColor('$white12')
+              margin: 8px 0
+
+            .menu-item
+              > .menu-item-link
+                font-title()
+                display: flex
+                align-items: center
+                padding: 10px 16px
+
+                &:active
+                  background: getColor('$tertiary500')
+
+                &.is-child
+                  color: getColor('$tertiary500Text70')
+
+                &.is-selected
+                  color: getColor('$tertiary500Text')
+
+                > .icon
+                  margin-right: 36px
+                  width: 24px
+                  height: 28px
+
+                > .new
+                  font-button()
+                  color: getColor('$primary500')
+                  font-size: 10px
+                  font-weight: 700
+                  display: inline-block
+                  vertical-align: middle
+                  margin-left: 16px
+
+                > .chevron
+                  margin-left: auto
+
+              ul
+                list-style-type: none
+                margin: 0
+                padding: 0
 
               &.is-selected
-                color: getColor('$tertiary500Text')
-
-              > .icon
-                margin-right: 36px
-                width: 24px
-                height: 28px
-
-              > .new
-                font-button()
-                color: getColor('$primary500')
-                font-size: 10px
-                font-weight: 700
-                display: inline-block
-                vertical-align: middle
-                margin-left: 16px
-
-              > .chevron
-                margin-left: auto
-
-            ul
-              list-style-type: none
-              margin: 0
-              padding: 0
-
-
-
-            &.is-selected
-              > .menu-item-link
-                background: getColor('$tertiary500')
+                > .menu-item-link
+                  background: getColor('$tertiary500')
