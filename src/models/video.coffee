@@ -8,3 +8,6 @@ module.exports = class Videos
 
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
+
+  logViewById: (id) =>
+    @auth.call "#{@namespace}.logViewById", {id}#, {invalidateAll: true}

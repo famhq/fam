@@ -37,6 +37,8 @@ module.exports = class GroupVideos
             $sourceIcon: new Icon()
           }
 
+  afterMount: (@$$el) => null
+
   render: =>
     {me, videos} = @state.getValue()
 
@@ -53,6 +55,12 @@ module.exports = class GroupVideos
                 onclick: (e) =>
                   e?.preventDefault()
                   ga? 'send', 'event', 'video', 'click', video.sourceId
+                  x = e?.clientX
+                  y = e?.clientY
+                  @model.video.logViewById video.id
+                  .then (response) =>
+                    if response?.xpGained
+                      @model.xpGain.show {xp: response.xpGained, x, y}
                   @model.portal.call 'browser.openWindow', {
                     url: "https://www.youtube.com/watch?v=#{video.sourceId}"
                     target: '_system'

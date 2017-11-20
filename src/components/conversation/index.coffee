@@ -184,7 +184,7 @@ module.exports = class Conversation extends Base
               # if we get this in conversationmessasge, there's a flicker for
               # state to get set
               bodyCacheKey = "#{message.clientId}:text"
-              messageCacheKey = "#{id}:text"
+              messageCacheKey = "#{id}:message"
               $body = @getCached$ bodyCacheKey, FormattedText, {
                 @model, @router, text: message.body
               }
@@ -336,9 +336,10 @@ module.exports = class Conversation extends Base
         conversationId: conversation?.id
         userId: me?.id
       }, {user: me, time: Date.now()}
-      .then =>
+      .then (response) =>
         # @model.user.emit('chatMessage').catch log.error
         @isPostLoading.next false
+        response
       .catch =>
         @isPostLoading.next false
 

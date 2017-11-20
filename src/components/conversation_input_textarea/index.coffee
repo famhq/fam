@@ -56,8 +56,19 @@ module.exports = class ConversationInputTextarea
       $$textarea?.focus()
       $$textarea?.style.height = "#{DEFAULT_TEXTAREA_HEIGHT}px"
       @textareaHeight.next DEFAULT_TEXTAREA_HEIGHT
-      @onPost?()
       $$textarea?.value = ''
+      @onPost?()
+      .then (response) =>
+        console.log 'post response', response
+        if response.xpGained
+          if e?.clientX
+            x = e?.clientX
+            y = e?.clientY
+          else
+            boundingRect = @$$el?.getBoundingClientRect?()
+            x = boundingRect?.left
+            y = boundingRect?.top
+          @model.xpGain.show {xp: response.xpGained, x, y}
 
   resizeTextarea: (e) =>
     {textareaHeight} = @state.getValue()

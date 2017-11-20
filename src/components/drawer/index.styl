@@ -27,12 +27,10 @@ $zIndexDrawer = 300
     > .drawer-wrapper
       transform: translate(0, 0) !important
 
-      > .drawer-tab > .drawer > .content > .menu .menu-item
+      > .drawer-tab > .drawer > .content > .menu .menu-item > .menu-item-link
         position: relative // for ripple
-
-        > .menu-item-link
-          &:active
-            background: none !important
+        &:active
+          background: none !important
 
   &.is-open
     > .drawer-wrapper

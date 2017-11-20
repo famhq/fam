@@ -16,6 +16,7 @@ require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/publishReplay'
 
 Drawer = require './components/drawer'
+XpGain = require './components/xp_gain'
 SignInDialog = require './components/sign_in_dialog'
 InstallOverlay = require './components/install_overlay'
 GetAppDialog = require './components/get_app_dialog'
@@ -117,6 +118,7 @@ module.exports = class App
 
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
     @$drawer = new Drawer {@model, @router, gameKey, group, @overlay$}
+    @$xpGain = new XpGain {@model}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router}
     @$installOverlay = new InstallOverlay {@model, @router}
@@ -316,3 +318,4 @@ module.exports = class App
 
               },
                 @model.l.get 'app.stillLoading'
+            z @$xpGain

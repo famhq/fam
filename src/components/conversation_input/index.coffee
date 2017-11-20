@@ -125,9 +125,10 @@ module.exports = class ConversationInput
     {me} = @state.getValue()
 
     post = =>
-      @onPost()
+      promise = @onPost()
       @message.next ''
       @hasText.next false
+      promise
 
     if me?.isMember
       post()
@@ -137,7 +138,10 @@ module.exports = class ConversationInput
         # SUPER HACK:
         # stream doesn't update while cache is being invalidated, for whatever
         # reason, so this waits until invalidation for login is ~done
-        setTimeout post, 500
+        new Promise (resolve) ->
+          setTimeout ->
+            post().then resolve
+          , 500
 
   render: =>
     {currentPanel, mePlayer, me, inputTranslateY,
