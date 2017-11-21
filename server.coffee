@@ -121,7 +121,7 @@ _map redirects, (newPath, oldPath) ->
 
 # end legacy
 
-if config.ENV is config.ENVS.PROD
+if config.ENV is config.ENVS.PROD or true # FIXME FIXME
 then app.use express.static(gulpPaths.dist, {maxAge: '4h'})
 else app.use express.static(gulpPaths.build, {maxAge: '4h'})
 

@@ -62,7 +62,7 @@ gulp.task 'dist', gulpSequence(
   'dist:clean'
   ['dist:scripts', 'dist:static']
   'dist:concat'
-  'dist:s3'
+  # 'dist:s3'
 )
 
 gulp.task 'watch', ->
@@ -221,7 +221,27 @@ gulp.task 'dist:sw', ->
       extensions: ['.coffee', '.js', '.json', '']
   .pipe gulp.dest paths.dist
 
-gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
+gulp.task 'dist:ww', ->
+  gulp.src paths.ww
+  .pipe webpackStream
+    module:
+      loaders: [
+        {test: /\.coffee$/, loader: 'coffee'}
+        {test: /\.json$/, loader: 'json'}
+      ]
+    output:
+      filename: 'shared_worker.js'
+    plugins: [
+      # new webpack.IgnorePlugin /^\/lang\/*$/
+      # new webpack.optimize.UglifyJsPlugin
+      #   mangle:
+      #     except: ['process']
+    ]
+    resolve:
+      extensions: ['.coffee', '.js', '.json', '']
+  .pipe gulp.dest paths.dist
+
+gulp.task 'dist:scripts', ['dist:clean', 'dist:sw', 'dist:ww'], ->
   _map config.LANGUAGES, (language) ->
     fs.writeFileSync(
       "#{__dirname}/#{paths.dist}/lang_#{language}.json"

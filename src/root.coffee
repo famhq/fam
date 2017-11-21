@@ -6,7 +6,6 @@ log = require 'loga'
 cookie = require 'cookie'
 LocationRouter = require 'location-router'
 Environment = require 'clay-environment'
-socketIO = require 'socket.io-client/dist/socket.io.slim.js'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/do'
 
@@ -17,6 +16,7 @@ CookieService = require './services/cookie'
 RouterService = require './services/router'
 PushService = require './services/push'
 SemverService = require './services/semver'
+IOService = require './services/io'
 App = require './app'
 Model = require './models'
 Portal = require './models/portal'
@@ -96,8 +96,7 @@ init = ->
   isOffline = new RxBehaviorSubject false
   isBackendUnavailable = new RxBehaviorSubject false
   currentNotification = new RxBehaviorSubject false
-
-  io = socketIO config.API_HOST, {
+  io = new IOService config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
     # this potentially has negative side effects. firewalls could
     # potentially block websockets, but not long polling.
@@ -111,6 +110,7 @@ init = ->
     # it doesn't keep session affinity (for now?) if adding polling
     transports: ['websocket']
   }
+
   fullLanguage = window.navigator.languages?[0] or window.navigator.language
   language = currentCookies?['language'] or fullLanguage?.substr(0, 2)
   unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
