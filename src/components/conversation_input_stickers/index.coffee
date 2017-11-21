@@ -14,7 +14,6 @@ if window?
   require './index.styl'
 
 DEFAULT_TEXTAREA_HEIGHT = 54
-SEARCH_DEBOUNCE = 300
 
 module.exports = class ConversationInputStickers
   constructor: (options) ->

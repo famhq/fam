@@ -18,8 +18,4 @@ module.exports = class Ad
     isNativeApp = Environment.isGameApp(config.GAME_KEY, {@userAgent})
     isVisible = not hideAdsUntil or Date.now() > parseInt(hideAdsUntil)
 
-    # TODO: rm after 11/20/17
-    oldIsVisible = not localStorage?['hideAdsUntil'] or
-      Date.now() > parseInt(localStorage?['hideAdsUntil'])
-
-    (not isWebOnly or not isNativeApp) and isVisible and oldIsVisible
+    (not isWebOnly or not isNativeApp) and isVisible

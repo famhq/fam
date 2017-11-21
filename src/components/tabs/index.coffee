@@ -8,14 +8,12 @@ if window?
   IScroll = require 'iscroll/build/iscroll-lite-snap.js'
   require './index.styl'
 
-SELECTOR_POSITION_INTERVAL_MS = 50
 
 module.exports = class Tabs
   constructor: ({@model, @selectedIndex, @isPageScrolling, hideTabBar}) ->
     @selectedIndex ?= new RxBehaviorSubject 0
     @isPageScrolling ?= new RxBehaviorSubject false
     @mountDisposable = null
-    @scrollInterval = null
     @iScrollContainer = null
     @isPaused = false
     @transformProperty = window?.getTransformProperty()
@@ -24,7 +22,6 @@ module.exports = class Tabs
 
     @state = z.state
       selectedIndex: @selectedIndex
-      x: 0
       hideTabBar: hideTabBar
       windowSize: @model.window.getSize()
 
@@ -40,18 +37,17 @@ module.exports = class Tabs
 
   beforeUnmount: (keepEl = false) =>
     @mountDisposable?.unsubscribe()
-    clearInterval @scrollInterval
     @iScrollContainer?.destroy()
-    @$$el?.removeEventListener 'touchstart', @onTouchStart
-    @$$el?.removeEventListener 'touchend', @onTouchEnd
+    # @$$el?.removeEventListener 'touchstart', @onTouchStart
+    # @$$el?.removeEventListener 'touchend', @onTouchEnd
     unless keepEl
       @$$el = null
 
-  onTouchStart: =>
-    @isPageScrolling.next true
-
-  onTouchEnd: =>
-    @isPageScrolling.next false
+  # onTouchStart: =>
+  #   @isPageScrolling.next true
+  #
+  # onTouchEnd: =>
+  #   @isPageScrolling.next false
 
   toggle: (mode) =>
     if mode is 'enable' and @isPaused
@@ -73,8 +69,8 @@ module.exports = class Tabs
       deceleration: 0.002
     }
 
-    @$$el.addEventListener 'touchstart', @onTouchStart
-    @$$el.addEventListener 'touchend', @onTouchEnd
+    # @$$el.addEventListener 'touchstart', @onTouchStart
+    # @$$el.addEventListener 'touchend', @onTouchEnd
 
     unless hideTabBar
       @$$selector = @$$el?.querySelector '.z-tabs-bar .selector'
@@ -84,27 +80,29 @@ module.exports = class Tabs
           @iScrollContainer.x / @iScrollContainer.scrollerWidth
         )
         xOffset = "#{xOffset}%"
-        @$$selector?.style.transform = "translateX(#{xOffset})"
-        @$$selector?.style.webkitTransform = "translateX(#{xOffset})"
+        @$$selector?.style[@transformProperty] = "translateX(#{xOffset})"
 
     # the scroll listener in IScroll (iscroll-probe.js) is really slow
-    # interval looks 100x better
+    isScrolling = false
     @iScrollContainer.on 'scrollStart', =>
-      @isPageScrolling.next true
+      isScrolling = true
+      # @isPageScrolling.next true
       unless hideTabBar
         @$$selector = document.querySelector '.z-tabs-bar .selector'
-        @scrollInterval = setInterval(
-          updateSelectorPosition, SELECTOR_POSITION_INTERVAL_MS
-        )
+        update = ->
+          updateSelectorPosition()
+          if isScrolling
+            window.requestAnimationFrame update
+        update()
         updateSelectorPosition()
 
     @iScrollContainer.on 'scrollEnd', =>
       {selectedIndex} = @state.getValue()
-      @isPageScrolling.next false
+      isScrolling = false
+      # causes extra render
+      # @isPageScrolling.next false
 
-      clearInterval @scrollInterval
       newIndex = @iScrollContainer.currentPage.pageX
-      @state.set x: @iScrollContainer?.x
       # landing on new tab
       if selectedIndex isnt newIndex
         @selectedIndex.next newIndex
@@ -122,6 +120,7 @@ module.exports = class Tabs
       barTabWidth, hasAppBar, windowSize, vDomKey, barStyle} = options
 
     tabs ?= [{$el: ''}]
+    x = @iScrollContainer?.x
 
     # if @lastTabsLength and tabs?.length and @lastTabsLength isnt tabs?.length
     #   @beforeUnmount true
@@ -130,7 +129,7 @@ module.exports = class Tabs
     #   , 100
     # @lastTabsLength = tabs?.length
 
-    {selectedIndex, x, hideTabBar, windowSize} = @state.getValue()
+    {selectedIndex, hideTabBar, windowSize} = @state.getValue()
 
     vDomKey = "#{vDomKey}-tabs-#{tabs?.length}"
     isBarFixed ?= true

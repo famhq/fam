@@ -12,7 +12,8 @@ if window?
   require './index.styl'
 
 module.exports = class Profile
-  constructor: ({@model, @router, user, player, @overlay$, gameKey}) ->
+  constructor: (options) ->
+    {@model, @router, user, player, @overlay$, gameKey, serverData} = options
     me = @model.user.getMe()
 
     @$tabs = new Tabs {@model}
@@ -22,7 +23,7 @@ module.exports = class Profile
     @$graphIcon = new Icon()
 
     @$profileInfo = new ProfileInfo {
-      @model, @router, user, player, @overlay$, gameKey
+      @model, @router, user, player, @overlay$, gameKey, serverData
     }
     @$profileDecks = new ProfileDecks {
       @model, @router, user, player, gameKey

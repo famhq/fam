@@ -18,7 +18,7 @@ module.exports = class XpGain
   afterMount: (@$$el) =>
     $$xp = document.createElement 'div'
     $$xp.className = 'xp'
-    @model.xpGain.getXp().subscribe ({xp, x, y} = {}) =>
+    @mountDisposable = @model.xpGain.getXp().subscribe ({xp, x, y} = {}) =>
       $$xp.innerText = "+#{xp}xp"
       $$xp.style.left = x + 'px'
       $$xp.style.top = y + 'px'
@@ -26,6 +26,9 @@ module.exports = class XpGain
       setTimeout =>
         @$$el.removeChild $$xp
       , ANIMATION_TIME_MS
+
+  beforeUnmount: =>
+    @mountDisposable?.unsubscribe()
 
   render: ->
     z '.z-xp-gain'

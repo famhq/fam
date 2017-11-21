@@ -31,7 +31,8 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileInfo
-  constructor: ({@model, @router, user, player, @overlay$, gameKey}) ->
+  constructor: (options) ->
+    {@model, @router, user, player, @overlay$, gameKey, serverData} = options
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
@@ -81,6 +82,7 @@ module.exports = class ProfileInfo
       gameKey: gameKey
       followingIds: @model.userFollower.getAllFollowingIds()
       player: player
+      serverData: serverData
     }
 
   beforeUnmount: =>
@@ -140,7 +142,7 @@ module.exports = class ProfileInfo
 
   render: =>
     {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing,
-      isAutoRefresh, isSplitsInfoCardVisible, user, me, gameKey,
+      isAutoRefresh, isSplitsInfoCardVisible, user, me, gameKey, serverData,
       followingIds} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
@@ -212,6 +214,10 @@ module.exports = class ProfileInfo
     lastUpdateTime = player?.lastUpdateTime
 
     canRefresh = @model.player.canRefresh player, hasUpdatedPlayer, isRefreshing
+    userAgent = serverData?.req?.headers?['user-agent'] or
+                  navigator?.userAgent or ''
+    isNativeApp = Environment.isGameApp config.GAME_KEY, {userAgent}
+    isMobile = Environment.isMobile {userAgent}
 
     z '.z-profile-info',
       z '.header',
@@ -371,12 +377,12 @@ module.exports = class ProfileInfo
             z '.g-grid',
               z @$requestNotificationsCard
 
-        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+        if isMobile and not isNativeApp
           z '.ad',
             z @$adsenseAd, {
               slot: 'mobile300x250'
             }
-        else if not Environment.isMobile()
+        else if not isMobile and not isNativeApp
           z '.ad',
             z @$adsenseAd, {
               slot: 'desktop728x90'

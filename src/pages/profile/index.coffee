@@ -82,7 +82,9 @@ module.exports = class ProfilePage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$profile = new Profile {@model, @router, user, player, @overlay$, gameKey}
+    @$profile = new Profile {
+      @model, @router, user, player, @overlay$, gameKey, serverData
+    }
     @$profileLanding = new ProfileLanding {@model, @router, gameKey}
     @$bottomBar = new BottomBar {@model, @router, requests}
     @$shareSheet = new ShareSheet {

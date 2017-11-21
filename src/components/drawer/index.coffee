@@ -26,7 +26,6 @@ if window?
   require './index.styl'
 
 GROUPS_IN_DRAWER = 2
-OPACITY_INTERVAL_MS = 50
 MAX_OVERLAY_OPACITY = 0.5
 
 module.exports = class Drawer
@@ -304,7 +303,6 @@ module.exports = class Drawer
     }
 
     # the scroll listener in IScroll (iscroll-probe.js) is really slow
-    # interval looks 100x better
     updateOpacity = =>
       opacity = 1 + @iScrollContainer.x / drawerWidth
       @$$overlay.style.opacity = opacity * MAX_OVERLAY_OPACITY
@@ -314,16 +312,20 @@ module.exports = class Drawer
       @$$overlay = @$$el.querySelector '.overlay-tab'
       updateOpacity()
 
+    isScrolling = false
     @iScrollContainer.on 'scrollStart', =>
+      isScrolling = true
       @$$overlay = @$$el.querySelector '.overlay-tab'
-      clearInterval @scrollInterval
-      @scrollInterval = setInterval updateOpacity, OPACITY_INTERVAL_MS
+      update = ->
+        updateOpacity()
+        if isScrolling
+          window.requestAnimationFrame update
+      update()
       updateOpacity()
 
     @iScrollContainer.on 'scrollEnd', =>
       {isOpen} = @state.getValue()
-
-      clearInterval @scrollInterval
+      isScrolling = false
 
       newIsOpen = @iScrollContainer.currentPage.pageX is 0
 
