@@ -65,7 +65,6 @@
   "user": "/:gameKey/user/:username",
   "userById": "/:gameKey/user/id/:id",
   "videos": "/:gameKey/videos",
-  "fire": "/:gameKey/fire",
   "home": "/:gameKey",
   "siteHome": "/"
 }

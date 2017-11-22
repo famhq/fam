@@ -10,7 +10,6 @@ files = {
   addons: null
   paths: null
   languages: null
-  products: null
 }
 
 module.exports = getJsonString: (language) ->

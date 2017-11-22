@@ -85,14 +85,13 @@ module.exports = class Drawer
                   }
                   title: @model.l.get 'general.chat'
                 }
-                if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
-                  {
-                    path: @router.get 'groupShop', {
-                      gameKey: gameKey
-                      id: group.key or group.id
-                    }
-                    title: @model.l.get 'general.shop'
+                {
+                  path: @router.get 'groupShop', {
+                    gameKey: gameKey
+                    id: group.key or group.id
                   }
+                  title: @model.l.get 'general.shop'
+                }
                 if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
                   {
                     path: @router.get 'groupVideos', {
@@ -156,14 +155,6 @@ module.exports = class Drawer
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'ellipsis'
-          }
-          {
-            path: @router.get 'fire', {gameKey}
-            title: @model.l.get 'firePage.title'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'fire'
-            isNew: true
           }
           {
             path: @router.get 'players', {gameKey}

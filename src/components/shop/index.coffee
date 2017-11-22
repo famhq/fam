@@ -93,18 +93,10 @@ module.exports = class Shop
               {product, $buyButton, $fireIcon,
                 onPurchase, onBeforePurchase} = options
 
-              langKey = product.key
-              if langKey.indexOf('google_play_10') isnt -1
-                langKey = 'google_play_10'
-              else if langKey.indexOf('visa_10') isnt -1
-                langKey = 'visa_10'
-
               isDisabled = not me?.fire or me?.fire < product.cost
               z '.product',
                 z '.info',
-                  z '.name', @model.l.get "#{langKey}.title", {
-                    file: 'products'
-                  }
+                  z '.name', product.name
                   if product.isLimited
                     z '.limited', @model.l.get 'spendFire.limited'
                 z '.buy',

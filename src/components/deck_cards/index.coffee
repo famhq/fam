@@ -35,6 +35,7 @@ module.exports = class DeckCards extends Base
     @state = z.state
       deck: deck
       cardsPerRow: cardsPerRow
+      cardWidth: 0
       cardGroups: deck.map (deck) =>
         cards = _map deck?.cards, (card, i) =>
           # can have multiple of same cardId per deck
@@ -42,21 +43,20 @@ module.exports = class DeckCards extends Base
           {card, $el}
         _chunk cards, cardsPerRow or @cardSizeInfo.cardsPerRow
 
-  afterMount: (@$$el) => null
+  afterMount: (@$$el) =>
+    {cardsPerRow} = @state.getValue()
+    cardsPerRow ?= @cardSizeInfo.cardsPerRow
+    width = @$$el?.offsetWidth or window?.innerWidth
+    @state.set cardWidth: Math.floor(width / cardsPerRow)
 
   render: ({onCardClick, maxCardWidth, cardMarginPx} = {}) =>
-    {cardGroups, cardsPerRow} = @state.getValue()
+    {cardWidth, cardGroups, cardsPerRow} = @state.getValue()
 
     cardMarginPx ?= 8
     hasNoMargins = cardMarginPx is 0
 
-    cardsPerRow ?= @cardSizeInfo.cardsPerRow
-    if cardWidth
-      cardWidth = Math.min(
-        maxCardWidth, Math.floor(@$$el?.offsetWidth / cardsPerRow)
-      )
-    else
-      cardWidth = Math.floor(@$$el?.offsetWidth / cardsPerRow)
+    if maxCardWidth
+      cardWidth = Math.min(maxCardWidth, cardWidth)
 
     z '.z-deck-cards', {
       className: z.classKebab {hasNoMargins}

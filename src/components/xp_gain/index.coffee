@@ -31,4 +31,4 @@ module.exports = class XpGain
     @mountDisposable?.unsubscribe()
 
   render: ->
-    z '.z-xp-gain'
+    z '.z-xp-gain', {key: 'xp-gain'}

@@ -16,7 +16,7 @@ module.exports = class Graph
     @chart = new Chartist.Line @$$el, {@labels, @series}, @options
 
   beforeUnmount: =>
-    @chart.detach()
+    @chart?.detach()
 
   render: ({@labels, @series, @options}) =>
     @chart?.update {@labels, @series}, @options
