@@ -1,11 +1,14 @@
 z = require 'zorium'
 _find = require 'lodash/find'
+_map = require 'lodash/map'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
 
-ClaimClanDialog = require '../claim_clan_dialog'
-JoinGroupDialog = require '../join_group_dialog'
+PrimaryButton = require '../primary_button'
+SecondaryButton = require '../secondary_button'
+DeckCards = require '../deck_cards'
+Dialog = require '../dialog'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -18,26 +21,58 @@ module.exports = class VerifyAccountDialog
     player = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
-    clan = player.switchMap (player) =>
-      if player?.data?.clan?.tag
-        @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
-        .map (clan) -> clan or false
-      else
-        RxObservable.of false
+    verifyDeckId = @model.player.getVerifyDeckId()
 
-    @$joinGroupDialog = new JoinGroupDialog {@model, @router, @overlay$, clan}
-    @$claimClanDialog = new ClaimClanDialog {@model, @router, @overlay$, clan}
+    deck = verifyDeckId.map ({deckId, copyIds}) ->
+      cards = _map deckId.split('|'), (cardKey) ->
+        {key: cardKey}
+      {cards}
 
-    @state = z.state {clan, player}
+    @$deckCards = new DeckCards {deck, cardsPerRow: 4}
+    @$dialog = new Dialog()
+    @$copyDeckButton = new PrimaryButton()
+
+    @state = z.state
+      isLoading: false
+      copyIds: verifyDeckId.map ({copyIds}) -> copyIds
+
+  verify: =>
+    @state.set isLoading: true
+    @model.player.verifyMe()
+    .then =>
+      @state.set isLoading: true
+      @overlay$.next null
+    .catch (err) =>
+      @state.set
+        error: @model.l.get 'verifyAccountDialog.error'
+        isLoading: false
 
   render: =>
-    {clan, player} = @state.getValue()
-
-    clanPlayer = _find clan?.data?.memberList, {tag: "##{player?.id}"}
-    isLeader = clanPlayer?.role in ['coLeader', 'leader']
+    {isLoading, copyIds, error} = @state.getValue()
 
     z '.z-verify-account-dialog',
-      if isLeader
-        @$claimClanDialog
-      else if clanPlayer
-        @$joinGroupDialog
+      z @$dialog,
+        onLeave: =>
+          @overlay$.next null
+        isVanilla: true
+        $title: @model.l.get 'general.verify'
+        $content:
+          z '.z-verify-account-dialog_dialog',
+            z '.error', error
+            z '.description',
+              @model.l.get 'verifyAccountDialog.description'
+            z @$deckCards
+            z @$copyDeckButton,
+              text: @model.l.get 'verifyAccountDialog.copyDeck'
+              onclick: =>
+                @model.portal.call 'browser.openWindow', {
+                  url: "clashroyale://copyDeck?deck=#{copyIds.join(';')}"
+                }
+        cancelButton:
+          text: @model.l.get 'general.cancel'
+          onclick: =>
+            @overlay$.next null
+        submitButton:
+          text: if isLoading then 'loading...' \
+                else @model.l.get 'general.verify'
+          onclick: @verify

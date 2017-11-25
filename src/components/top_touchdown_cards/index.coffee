@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
 Environment = require 'clay-environment'
 
 Spinner = require '../spinner'
@@ -19,10 +20,12 @@ module.exports = class TopTouchdownCards
     @state = z.state {
       language: @model.l.getLanguage()
       topCards: @model.clashRoyaleCard.getTop {
-        gameType: 'touchdown2v2DraftPractice'
+        gameType: 'touchdown2v2Draft'
       }
       .map (cards) ->
-        _map cards, (card) ->
+        _filter _map cards, (card) ->
+          if card.cardId is 'hog_rider'
+            return
           {
             $card: new Card {card}
             card: card

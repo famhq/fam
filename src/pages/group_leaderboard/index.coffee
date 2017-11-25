@@ -3,7 +3,9 @@ isUuid = require 'isuuid'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
+Tabs = require '../../components/tabs'
 GroupLeaderboard = require '../../components/group_leaderboard'
+GroupEarnXp = require '../../components/group_earn_xp'
 ButtonMenu = require '../../components/button_menu'
 colors = require '../../colors'
 
@@ -34,7 +36,11 @@ module.exports = class GroupLeaderboardPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
+    @$tabs = new Tabs {@model}
     @$groupLeaderboard = new GroupLeaderboard {
+      @model, @router, serverData, group, gameKey
+    }
+    @$earnXp = new GroupEarnXp {
       @model, @router, serverData, group, gameKey
     }
 
@@ -52,8 +58,21 @@ module.exports = class GroupLeaderboardPage
     },
       z @$appBar, {
         title: @model.l.get 'groupLeaderboardPage.title'
+        isFlat: true
         $topLeftButton: z @$buttonMenu, {
           color: colors.$primary500
         }
       }
-      @$groupLeaderboard
+      z @$tabs,
+        isBarFixed: false
+        hasAppBar: true
+        tabs: [
+          {
+            $menuText: @model.l.get 'groupLeaderboardPage.topAllTime'
+            $el: z @$groupLeaderboard
+          }
+          {
+            $menuText: @model.l.get 'groupLeaderboardPage.earnXp'
+            $el: z @$earnXp
+          }
+        ]

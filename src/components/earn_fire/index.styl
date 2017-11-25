@@ -8,44 +8,46 @@
   overflow: auto
   -webkit-overflow-scrolling: touch
 
-  > .buttons
-    display: flex
-    margin-top: 20px
+  > .g-grid
 
-    > .refresh, > .tips
-      flex: 1
+    > .buttons
+      display: flex
+      margin-top: 20px
 
-  .info-card
-    margin-bottom: 16px
+      > .refresh, > .tips
+        flex: 1
 
-  .subhead
-    font-subhead()
-    color: getColor('$primary500')
-    margin: 0 0 8px 0
+    .info-card
+      margin-bottom: 16px
 
-  > .reward
-    display: flex
-    align-items: center
-    cursor: pointer
-    margin-bottom: 8px
+    .subhead
+      font-subhead()
+      color: getColor('$primary500')
+      margin: 0 0 8px 0
 
-    > .image
-      width: 50px
-      height: 50px
-      background-size: cover
-      border-radius: 50%
-
-    > .text
-      margin-left: 16px
-
-    > .amount
-      font-title()
-      margin-left: auto
+    > .reward
       display: flex
       align-items: center
+      cursor: pointer
+      margin-bottom: 8px
 
-      > .icon
-        margin-left: 4px
+      > .image
+        width: 50px
+        height: 50px
+        background-size: cover
+        border-radius: 50%
+
+      > .text
+        margin-left: 16px
+
+      > .amount
+        font-title()
+        margin-left: auto
+        display: flex
+        align-items: center
+
+        > .icon
+          margin-left: 4px
 
 .z-earn-fire_tips-dialog
   margin-bottom: -24px

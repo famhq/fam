@@ -251,10 +251,10 @@ module.exports = class Drawer
           ])
 
   afterMount: (@$$el) =>
-    {drawerWidth} = @state.getValue()
+    {drawerWidth, breakpoint} = @state.getValue()
 
     breakpoint = @model.window.getBreakpoint()
-    @breakpointDisposable = breakpoint.subscribe (breakpoint) =>
+    onBreakpoint = (breakpoint) =>
       if not @iScrollContainer and breakpoint isnt 'desktop'
         checkIsReady = =>
           $$container = @$$el
@@ -268,13 +268,15 @@ module.exports = class Drawer
         @open()
         @iScrollContainer?.destroy()
         delete @iScrollContainer
-        @disposable.unsubscribe()
+        @disposable?.unsubscribe()
+    @breakpointDisposable = breakpoint.subscribe onBreakpoint
+    onBreakpoint breakpoint
 
   beforeUnmount: =>
     @iScrollContainer?.destroy()
     delete @iScrollContainer
-    @disposable.unsubscribe()
-    @breakpointDisposable.unsubscribe()
+    @disposable?.unsubscribe()
+    @breakpointDisposable?.unsubscribe()
 
   close: =>
     @iScrollContainer.goToPage 1, 0, 500

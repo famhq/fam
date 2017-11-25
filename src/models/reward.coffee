@@ -13,8 +13,3 @@ module.exports = class Reward
     @auth.call "#{@namespace}.incrementAttemptsByNetworkAndOfferId", {
       network, offerId
     }
-
-  videoReward: ({timestamp, successKey}) =>
-    @auth.call "#{@namespace}.videoReward", {timestamp, successKey}, {
-      invalidateAll: true
-    }

@@ -33,17 +33,25 @@ GROUP_TITLE_HEIGHT = 48
 GROUP_MARGIN_BOTTOM = 8
 COUNT_HEIGHT = 20
 
-getItemSizeInfo = ->
+getItemSizeInfo = ($$el) ->
   if window?
     # TODO: json file with these vars, stylus uses this
     if window.matchMedia('(min-width: 840px)').matches
-      {itemsPerRow: 6, itemMargin: 12}
+      info = {itemsPerRow: 6, itemMargin: 12}
     else if window.matchMedia('(min-width: 480px)').matches
-      {itemsPerRow: 4, itemMargin: 6}
+      info = {itemsPerRow: 4, itemMargin: 6}
     else
-      {itemsPerRow: 3, itemMargin: 6}
+      info = {itemsPerRow: 3, itemMargin: 6}
+    if $$el?.offsetWidth
+      info.itemSize = ($$el.offsetWidth -
+                   X_PADDING_PX * 2 -
+                   (info.itemsPerRow - 1) * info.itemMargin * 2
+                   ) / info.itemsPerRow
+    else
+      info.itemSize = 114
+    info
   else
-    {itemsPerRow: DEFAULT_ITEMS_PER_ROW, itemMargin: 0}
+    {itemsPerRow: DEFAULT_ITEMS_PER_ROW, itemMargin: 0, itemSize: 114}
 
 module.exports = class ItemList
   constructor: (options) ->
@@ -92,13 +100,25 @@ module.exports = class ItemList
 
   afterMount: (@$$el) =>
     window.addEventListener 'resize', @onResize
-    @itemSizeInfo.next getItemSizeInfo()
+    # TODO / HACKY: for some reason offsetWidth is 0 on initial load
+    tries = 0
+    maxTries = 5
+    retryTimeMs = 200
+    $$row = @$$el.querySelector '.row'
+    setSize = =>
+      width = @$$el?.offsetWidth
+      if width
+        @itemSizeInfo.next getItemSizeInfo @$$el
+      else if tries < maxTries
+        tries += 1
+        setTimeout setSize, retryTimeMs
+    setSize()
 
   beforeUnmount: =>
     window.removeEventListener 'resize', @onResize
 
   onResize: =>
-    @itemSizeInfo.next getItemSizeInfo()
+    @itemSizeInfo.next getItemSizeInfo @$$el
 
   filter: (items, {searchValue, groupKeyFilter}) ->
     if searchValue
@@ -137,28 +157,14 @@ module.exports = class ItemList
     rows = _chunk items, itemsPerRow
     _toArray rows
 
-  render: ({onclick, isInactive, scrollTop, showCounts, xPadding, maxRows}) =>
+  render: ({onclick, isInactive, scrollTop, showCounts, maxRows}) =>
     {me, rowsOfItems, itemSizeInfo, isDrawerOpen, drawerWidth,
       windowSize} = @state.getValue()
 
-    {itemsPerRow, itemMargin} = itemSizeInfo
-    xPadding ?= X_PADDING_PX
+    {itemsPerRow, itemMargin, itemSize} = itemSizeInfo
     showCounts ?= true
 
-    contentWidth = @$$el?.offsetWidth or windowSize.width or 320
-    drawerWidth = if isDrawerOpen then drawerWidth else 0
-
-    if window?
-      itemSize = (contentWidth -
-                   drawerWidth -
-                   xPadding * 2 -
-                   (itemsPerRow - 1) * itemMargin * 2
-                   ) / itemsPerRow
-    else
-      itemMargin = 0
-      itemSize = 114
-
-    itemContainerHeight = itemSize + COUNT_HEIGHT + itemMargin * 2
+    containerHeight = itemSize + COUNT_HEIGHT + itemMargin * 2
 
     groupScrollTop = SEARCH_BAR_HEIGHT
 
@@ -169,43 +175,39 @@ module.exports = class ItemList
       className: z.classKebab {isInactive}
     },
       if rowsOfItems?.length is 0 or rowsOfItems?[0]?.length is 0
-        z '.g-grid',
-          z '.no-items', @model.l.get 'itemList.empty'
+        z '.no-items', @model.l.get 'itemList.empty'
       else if not rowsOfItems or not rowsOfItems.length
-        z '.g-grid',
-          @$spinner
+        @$spinner
       else
         rows = rowsOfItems.length
-        containerHeight = itemContainerHeight
-        z '.g-grid',
-          _map rowsOfItems, (items, rowIndex) ->
-            # 2 * is for extra buffer room. also the
-            # calculation seems to get
-            # less accurate the futher page is scrolled
-            isRowVisible = not scrollTop? or
-               (groupScrollTop >= scrollTop - 2 * containerHeight and
-               groupScrollTop < scrollTop + window?.innerHeight)
-            groupScrollTop += containerHeight
+        _map rowsOfItems, (items, rowIndex) ->
+          # 2 * is for extra buffer room. also the
+          # calculation seems to get
+          # less accurate the futher page is scrolled
+          isRowVisible = not scrollTop? or
+             (groupScrollTop >= scrollTop - 2 * containerHeight and
+             groupScrollTop < scrollTop + window?.innerHeight)
+          groupScrollTop += containerHeight
 
-            z '.row', {
-              className: z.classKebab {isVisible: isRowVisible}
-              style:
-                height: "#{containerHeight}px"
-            },
-              _map items, ({info, $el}, itemIndex) ->
-                z '.item', {
-                  className: z.classKebab {hasOnClick: Boolean onclick}
-                  style:
-                    maxWidth: "#{Math.floor(100 / itemsPerRow)}%"
-                    marginRight: if itemIndex isnt items.length - 1 \
-                                 then "#{itemMargin * 2}px"
-                                 else 0
-                    marginBottom: "#{itemMargin * 2}px"
-                },
-                  z $el, {
-                    sizePx: if info?.item then itemSize else null
-                    defaultLocked: showCounts is false
-                    onclick: ->
-                      onclick info
-                    isHidden: isInactive
-                  }
+          z '.row', {
+            className: z.classKebab {isVisible: isRowVisible}
+            style:
+              height: "#{containerHeight}px"
+          },
+            _map items, ({info, $el}, itemIndex) ->
+              z '.item', {
+                className: z.classKebab {hasOnClick: Boolean onclick}
+                style:
+                  maxWidth: "#{Math.floor(100 / itemsPerRow)}%"
+                  marginRight: if itemIndex isnt items.length - 1 \
+                               then "#{itemMargin * 2}px"
+                               else 0
+                  marginBottom: "#{itemMargin * 2}px"
+              },
+                z $el, {
+                  sizePx: if info?.item then itemSize else null
+                  defaultLocked: showCounts is false
+                  onclick: ->
+                    onclick info
+                  isHidden: isInactive
+                }

@@ -19,26 +19,24 @@
     > .icon
       margin-right: 16px
 
-  > .g-grid
-    > .no-items
-      font-body1()
-      color: getColor('$tertiary900Text')
-      line-height: 20px
-      text-align: center
-      padding: 16px
+  > .no-items
+    font-body1()
+    color: getColor('$tertiary900Text')
+    line-height: 20px
+    text-align: center
+    padding: 16px
 
   > .spinner
     margin: 40px 0 16px 0
 
-  > .g-grid
-    > .row
-      &.is-visible
-        > .item
-          display: inline-block
-          vertical-align: top
-
+  > .row
+    &.is-visible
       > .item
-        display: none
+        display: inline-block
+        vertical-align: top
 
-        &.has-on-click
-          cursor: pointer
+    > .item
+      display: none
+
+      &.has-on-click
+        cursor: pointer

@@ -24,7 +24,9 @@ class PushService
     @resolveReady?()
 
   init: ({model}) ->
-    onReply = ([reply]) ->
+    onReply = (reply) ->
+      unless reply.additionalData # legacy (older than 1.4.10)
+        reply = reply[0]
       payload = reply.additionalData.payload or reply.additionalData.data
       model.chatMessage.create {
         body: reply.additionalData.inlineReply
@@ -37,11 +39,7 @@ class PushService
   register: ({model, isAlwaysCalled}) ->
     model.portal.call 'push.register'
     .then ({token, sourceType} = {}) ->
-      console.log token
       if token?
-        lang = model.l.getLanguageStr()
-        model.portal.call 'push.subscribeToTopic', {token, topic: 'all'}
-        model.portal.call 'push.subscribeToTopic', {token, topic: "#{lang}"}
         if not isAlwaysCalled or not localStorage?['isPushTokenStored']
           appVersion = Environment.getAppVersion config.GAME_KEY
           isIosFCM = appVersion and SemverService.gte(appVersion, '1.3.1')

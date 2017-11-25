@@ -36,8 +36,11 @@ module.exports = class Player
   search: (playerId) =>
     @auth.call "#{@namespace}.search", {playerId}
 
-  # verifyMe: ({gold, lo}) =>
-  #   @auth.call "#{@namespace}.verifyMe", {gold, lo}, {invalidateAll: true}
+  getVerifyDeckId: =>
+    @auth.stream "#{@namespace}.getVerifyDeckId", {}
+
+  verifyMe: =>
+    @auth.call "#{@namespace}.verifyMe", {}, {invalidateAll: true}
 
   canRefresh: (player, hasUpdated, isRefreshing) ->
     lastUpdate = player?.lastUpdateTime

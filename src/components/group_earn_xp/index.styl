@@ -1,0 +1,33 @@
+@require '../../vars'
+
+.z-group-earn-xp
+  flex: 1
+  width: 100%
+  overflow: auto
+  -webkit-overflow-scrolling: touch
+  padding: 16px
+  box-sizing: border-box
+
+  > .g-grid > .g-cols > .g-col
+    > .action
+      display: flex
+      align-items: center
+      background: getColor('$tertiary700')
+      border-radius: 2px
+      padding: 16px
+      min-height: 76px
+
+      > .text
+        margin-left: 16px
+
+      > .amount
+        font-title()
+        // margin-left: 4px
+        display: flex
+        align-items: center
+
+        > .icon
+          margin-left: 4px
+
+      > .button
+        margin-left: auto

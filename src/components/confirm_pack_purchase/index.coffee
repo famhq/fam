@@ -48,7 +48,7 @@ module.exports = class ConfirmPackPurchase
             @onCancel?()
         }
         $topRightButton: @$menuFireAmount
-        title: @model.l.get "#{pack?.key}.title", {file: 'products'}
+        title: pack?.name
       z '.content',
         z '.g-grid',
           z '.pack',

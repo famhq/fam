@@ -6,6 +6,7 @@ config = require '../config'
 
 DRAWER_RIGHT_PADDING = 56
 DRAWER_MAX_WIDTH = 336
+GRID_WIDTH = 1280
 
 module.exports = class Window
   constructor: ({@cookieSubject, @experiment}) ->
@@ -35,16 +36,10 @@ module.exports = class Window
       width = undefined
       height = 732
 
-    drawerWidth =
-      Math.min(
-        width - DRAWER_RIGHT_PADDING
-        DRAWER_MAX_WIDTH
-      )
-
     {
       contentWidth:
         if window?.innerWidth >= 1280
-        then width - drawerWidth
+        then Math.min GRID_WIDTH, width - DRAWER_MAX_WIDTH
         else width
       width: width
       height: height

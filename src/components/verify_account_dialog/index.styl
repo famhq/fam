@@ -1,6 +1,10 @@
-
-
 @require '../../vars'
 
 .z-verify-account-dialog_dialog
-  display: block
+  > .error
+    font-title()
+    color: getColor('$primary500')
+
+  > .description
+    font-body1()
+    margin-bottom: 8px

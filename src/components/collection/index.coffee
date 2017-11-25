@@ -56,8 +56,9 @@ module.exports = class Collection
     {me, gameKey} = @state.getValue()
 
     z '.z-collection',
-      z @$itemList, {
-        onclick: (itemInfo) =>
-          @clickedInfo.next RxObservable.of itemInfo
-          @overlay$.next @$stickerInfo
-      }
+      z '.g-grid',
+        z @$itemList, {
+          onclick: (itemInfo) =>
+            @clickedInfo.next RxObservable.of itemInfo
+            @overlay$.next @$stickerInfo
+        }

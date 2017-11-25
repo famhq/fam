@@ -46,8 +46,21 @@ module.exports = class DeckCards extends Base
   afterMount: (@$$el) =>
     {cardsPerRow} = @state.getValue()
     cardsPerRow ?= @cardSizeInfo.cardsPerRow
-    width = @$$el?.offsetWidth or window?.innerWidth
-    @state.set cardWidth: Math.floor(width / cardsPerRow)
+
+    # TODO / HACKY: for some reason offsetWidth is 0 on initial load
+    tries = 0
+    maxTries = 5
+    retryTimeMs = 200
+    setWidth = =>
+      width = @$$el?.offsetWidth
+      if width
+        @state.set cardWidth: Math.floor(width / cardsPerRow)
+      else if tries < maxTries
+        tries += 1
+        setTimeout setWidth, retryTimeMs
+      else
+        @state.set cardWidth: 320 / cardsPerRow
+    setWidth()
 
   render: ({onCardClick, maxCardWidth, cardMarginPx} = {}) =>
     {cardWidth, cardGroups, cardsPerRow} = @state.getValue()

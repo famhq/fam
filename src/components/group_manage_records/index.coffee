@@ -97,8 +97,6 @@ module.exports = class GroupManageRecords
     {group, recordTypes, isLoading, deletingRecordType,
       isConfirmDeleteDialogVisible} = @state.getValue()
 
-    console.log 'rerender', recordTypes?.length
-
     z '.z-group-manage-records', [
       _map recordTypes, (options) =>
         {recordType, $nameInput, $timeScaleInput, $deleteIcon} = options

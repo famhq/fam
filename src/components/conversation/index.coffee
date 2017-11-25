@@ -396,15 +396,8 @@ module.exports = class Conversation extends Base
 
               @model.signInDialog.openIfGuest me
               .then =>
-                (if localStorage?['isPushTokenStored']
-                  Promise.resolve()
-                else
-                  @model.pushNotificationSheet.openAndWait()
-                ).then =>
-                  @model.portal.call 'push.subscribeToTopic', {
-                    topic: "group-#{group.id}"
-                  }
-                  .catch -> null
+                unless localStorage?['isPushTokenStored']
+                  @model.pushNotificationSheet.open()
                 Promise.all _filter [
                   @model.group.joinById group.id
                   if group.star

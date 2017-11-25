@@ -30,7 +30,6 @@ module.exports = class GroupVideos
     @state = z.state
       me: @model.user.getMe()
       videos: videos.map (videos) ->
-        console.log 'videos...', videos
         _map videos, (video) ->
           {
             video

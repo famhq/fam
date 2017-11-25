@@ -1,11 +1,11 @@
 {
-  "dailyRecap.title": "Daily Recap",
+  "dailyRecap.title": "일일 요점",
   "dailyRecap.textWithWins": "{countUntilNextGoodChest} chests until a {nextGoodChest}. You had {wins} wins and {losses} losses today.",
-  "dailyRecap.text": "{countUntilNextGoodChest} chests until a {nextGoodChest}.",
-  "newClanMember.title": "New clan member",
-  "newClanMember.text": "{name} joined your clan in Starfire",
-  "newGroupMember.title": "New group member",
-  "newGroupMember.text": "{name} joined your group in Starfire",
-  "newFollower.title": "New follower",
-  "newFollower.text": "{name} followed you"
+  "dailyRecap.text": "{nextGoodChest} 까지 {countUntilNextGoodChest} 승 남았습니다",
+  "newClanMember.title": "새로운 클랜 멤버",
+  "newClanMember.text": "{name} Starfire 클랜에 가입 ",
+  "newGroupMember.title": "새 그룹 멤버",
+  "newGroupMember.text": "{name} Starfire 그룹에 가입",
+  "newFollower.title": "새로운 팔로워",
+  "newFollower.text": "{name}을(를)팔로우 하였습니다"
 }

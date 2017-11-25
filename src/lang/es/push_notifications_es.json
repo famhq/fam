@@ -1,7 +1,7 @@
 {
   "dailyRecap.title": "Resumen Diario",
-  "dailyRecap.textWithWins": "{countUntilNextGoodChest} cofres hasta un {nextGoodChest}. Tienes {wins} Victorias y {losses} derrotas de hoy.",
-  "dailyRecap.text": "{countUntilNextGoodChest} Cofres Hasta \n{nextGoodChest}.",
+  "dailyRecap.textWithWins": "{countUntilNextGoodChest} Cofres para Obtener un {nextGoodChest}. Hoy tuviste {wins} victorias y {losses} derrotas.",
+  "dailyRecap.text": "{countUntilNextGoodChest} cofres hasta \n{nextGoodChest}.",
   "newClanMember.title": "Nuevo miembro del clan",
   "newClanMember.text": "{name} se ha unido a tu clan en Starfire",
   "newGroupMember.title": "Nuevo miembro del grupo",
