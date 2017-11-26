@@ -90,7 +90,7 @@ module.exports = class Conversation extends Base
               isSmooth: isLoaded
             }
           , 100
-          unless isLoaded
+          if not isLoaded
             setTimeout =>
               @scrollToBottom {
                 isSmooth: isLoaded
@@ -184,7 +184,7 @@ module.exports = class Conversation extends Base
               # if we get this in conversationmessasge, there's a flicker for
               # state to get set
               bodyCacheKey = "#{message.clientId}:text"
-              messageCacheKey = "#{id}:message"
+              messageCacheKey = "#{id}:#{message.lastUpdateTime}:message"
               $body = @getCached$ bodyCacheKey, FormattedText, {
                 @model, @router, text: message.body
               }
@@ -216,6 +216,7 @@ module.exports = class Conversation extends Base
     @isScrolledBottomStreams.next isScrolledBottom
 
   beforeUnmount: =>
+    super()
     {conversation} = @state.getValue()
 
     @$$messages?.removeEventListener 'scroll', @scrollListener
@@ -271,11 +272,11 @@ module.exports = class Conversation extends Base
 
     messagesStream.take(1).toPromise()
     .then =>
-      setTimeout => # wait for render
-        @isLoadingMore = false
-        @$$loadingMoreSpinner.style.display = 'none'
-        $$firstMessageBatch?.scrollIntoView?()
-      , 0
+      # setTimeout => # wait for render
+      @isLoadingMore = false
+      @$$loadingMoreSpinner.style.display = 'none'
+      $$firstMessageBatch?.scrollIntoView?()
+      # , 0
 
   prependMessagesStream: (messagesStream) =>
     @messageBatchesStreamCache = [messagesStream].concat(

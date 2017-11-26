@@ -15,18 +15,14 @@ if window?
 
 module.exports = class FormattedText
   constructor: ({text, @imageWidth, model, @router, @skipImages}) ->
-    text = if text?.map then text else RxObservable.of text
-
-    $el = text?.map?((text) => @get$ {text, model}) or @get$ {text, model}
+    unless text?.map
+      @$el = @get$ {text, model}
 
     @state = z.state {
-      $el
-      windowSize: model.window.getSize()
+      $el: text?.map?((text) => @get$ {text, model})
     }
 
   get$: ({text, model}) =>
-    {windowSize} = @state.getValue()
-
     isSticker = text?.match /^:[a-z_\^0-9]+:$/
 
     stickers = _uniq text?.match /:[a-z_\^0-9]+:/g
@@ -116,4 +112,4 @@ module.exports = class FormattedText
     {$el} = @state.getValue()
 
     z '.z-formatted-text',
-      $el
+      @$el or $el

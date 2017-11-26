@@ -22,7 +22,7 @@ DESCRIPTION_LENGTH = 100
 
 module.exports = class ConversationMessage
   constructor: (options) ->
-    {message, $body, isGrouped, isMe, @model, @overlay$,
+    {message, @$body, isGrouped, isMe, @model, @overlay$,
       @selectedProfileDialogUser, @router} = options
 
     @$avatar = new Avatar()
@@ -41,13 +41,12 @@ module.exports = class ConversationMessage
 
     @state = z.state
       message: message
-      $body: $body
       isMe: isMe
       isGrouped: isGrouped
       windowSize: @model.window.getSize()
 
   render: ({isTextareaFocused}) =>
-    {isMe, message, $body, isGrouped, windowSize} = @state.getValue()
+    {isMe, message, isGrouped, windowSize} = @state.getValue()
 
     {user, groupUser, body, time, card, id, clientId} = message
 
@@ -138,7 +137,7 @@ module.exports = class ConversationMessage
                   size: '16px'
 
         z '.body',
-          $body
+          @$body
 
         if card
           z '.card', {
