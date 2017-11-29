@@ -13,23 +13,26 @@ ANIMATION_TIME_MS = 1050
 module.exports = class XpGain
   type: 'Widget'
 
-  constructor: ({@model}) -> null
+  constructor: ({@model}) ->
+    @hasMounted = false
 
   afterMount: (@$$el) =>
-    $$xp = document.createElement 'div'
-    $$xp.className = 'xp'
-    @mountDisposable?.unsubscribe()
-    @mountDisposable = @model.xpGain.getXp().subscribe ({xp, x, y} = {}) =>
-      $$xp.innerText = "+#{xp}xp"
-      $$xp.style.left = x + 'px'
-      $$xp.style.top = y + 'px'
-      @$$el.appendChild $$xp
-      setTimeout =>
-        @$$el.removeChild $$xp
-      , ANIMATION_TIME_MS
+    unless @hasMounted
+      @hasMounted = true
+      $$xp = document.createElement 'div'
+      $$xp.className = 'xp'
+      @mountDisposable = @model.xpGain.getXp().subscribe ({xp, x, y} = {}) =>
+        $$xp.innerText = "+#{xp}xp"
+        $$xp.style.left = x + 'px'
+        $$xp.style.top = y + 'px'
+        @$$el.appendChild $$xp
+        setTimeout =>
+          @$$el.removeChild $$xp
+        , ANIMATION_TIME_MS
 
-  beforeUnmount: =>
-    @mountDisposable?.unsubscribe()
+  # always in dom in app
+  # beforeUnmount: =>
+  #   @mountDisposable?.unsubscribe()
 
   render: ->
     z '.z-xp-gain', {key: 'xp-gain'}

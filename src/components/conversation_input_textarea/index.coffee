@@ -59,7 +59,6 @@ module.exports = class ConversationInputTextarea
       $$textarea?.value = ''
       @onPost?()
       .then (response) =>
-        console.log 'post response', response
         if response.xpGained
           if e?.clientX
             x = e?.clientX

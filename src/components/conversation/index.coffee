@@ -279,12 +279,24 @@ module.exports = class Conversation extends Base
     @prependMessagesStream messagesStream
 
     $$firstMessageBatch = @$$el?.querySelector('.message-batch')
+    previousScrollHeight = @$$messages.scrollHeight
 
     messagesStream.take(1).toPromise()
     .then =>
       @isLoadingMore = false
       @$$loadingSpinner.style.display = 'none'
-      $$firstMessageBatch?.scrollIntoView?()
+
+      if $$firstMessageBatch?.scrollIntoView # doesn't work on ios
+        $$firstMessageBatch?.scrollIntoView?() # works on android
+        setTimeout ->  # works on ios, but has flash
+          $$firstMessageBatch?.scrollIntoView?()
+        , 0
+      else
+        setTimeout =>
+          @$$messages.scrollTop =
+            @$$messages.scrollHeight - previousScrollHeight
+        , 0
+
 
   prependMessagesStream: (messagesStream) =>
     @messageBatchesStreamCache = [messagesStream].concat(
