@@ -113,7 +113,9 @@ init = ->
   }
   fullLanguage = window.navigator.languages?[0] or window.navigator.language
   language = currentCookies?['language'] or fullLanguage?.substr(0, 2)
-  unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
+  unless language in [
+    'es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl', 'ru'
+  ]
     language = 'en'
   model = new Model({cookieSubject, io, portal, language})
   model.portal.listen()

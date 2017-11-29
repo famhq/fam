@@ -177,7 +177,9 @@ app.use (req, res, next) ->
   }
   fullLanguage = req.headers?['accept-language']
   language = req.cookies?['language'] or fullLanguage?.substr(0, 2)
-  unless language in ['es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl']
+  unless language in [
+    'es', 'it', 'fr', 'de', 'ja', 'ko', 'zh', 'pt', 'pl', 'ru'
+  ]
     language = 'en'
   model = new Model {
     cookieSubject, io, serverHeaders: req.headers, language

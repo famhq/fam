@@ -50,7 +50,7 @@ isomorphic =
   CLASH_ROYALE_ID: '319a9065-e3dc-4d02-ad30-62047716a88f'
   DEFAULT_GAME_KEY: 'clash-royale'
   COMMUNITY_LANGUAGES: ['es', 'pt']
-  LANGUAGES: ['en', 'es', 'it', 'fr', 'zh', 'ja', 'ko', 'de', 'pt', 'pl']
+  LANGUAGES: ['en', 'es', 'it', 'fr', 'zh', 'ja', 'ko', 'de', 'pt', 'pl', 'ru']
   # also in radioactive
   ITEM_LEVEL_REQUIREMENTS: [
     {level: 1, countRequired: 0}

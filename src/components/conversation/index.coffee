@@ -349,6 +349,8 @@ module.exports = class Conversation extends Base
         response
       .catch =>
         @isPostLoading.next false
+    else
+      Promise.resolve null # reject here?
 
   join: =>
     {me, group} = @state.getValue()
