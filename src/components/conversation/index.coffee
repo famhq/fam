@@ -98,6 +98,7 @@ module.exports = class Conversation extends Base
                 scrollBottomIfScroll attempt + 1
               , 200
             else
+              @$$loadingSpinner?.style.display = 'none'
               @state.set isLoaded: true
 
           scrollBottomIfScroll()
@@ -113,7 +114,6 @@ module.exports = class Conversation extends Base
     @inputTranslateY = new RxReplaySubject 1
 
     @$loadingSpinner = new Spinner()
-    @$loadingMoreSpinner = new Spinner()
     @$joinButton = new PrimaryButton()
     @$conversationInput = new ConversationInput {
       @model
@@ -200,7 +200,7 @@ module.exports = class Conversation extends Base
               {$el, isGrouped, timeUuid: message.timeUuid, id}
 
   afterMount: (@$$el) =>
-    @$$loadingMoreSpinner = @$$el?.querySelector('.loading-more')
+    @$$loadingSpinner = @$$el?.querySelector('.loading')
     @$$messages = @$$el?.querySelector('.messages')
     # fn is simple enough we don't need to debounce/throttle
     @$$messages?.addEventListener 'scroll', @scrollListener
@@ -217,6 +217,8 @@ module.exports = class Conversation extends Base
     {conversation} = @state.getValue()
 
     @$$messages?.removeEventListener 'scroll', @scrollListener
+    @$$loadingSpinner?.style.display = 'block'
+    @state.set isLoaded: false
 
     # to update conversations page, etc...
     unless @isGroup
@@ -269,7 +271,7 @@ module.exports = class Conversation extends Base
 
     # don't re-render or set state since it's slow with all of the conversation
     # messages
-    @$$loadingMoreSpinner.style.display = 'block'
+    @$$loadingSpinner.style.display = 'block'
 
     {messageBatches} = @state.getValue()
     maxTimeUuid = messageBatches?[0]?[0]?.timeUuid
@@ -281,7 +283,7 @@ module.exports = class Conversation extends Base
     messagesStream.take(1).toPromise()
     .then =>
       @isLoadingMore = false
-      @$$loadingMoreSpinner.style.display = 'none'
+      @$$loadingSpinner.style.display = 'none'
       $$firstMessageBatch?.scrollIntoView?()
 
   prependMessagesStream: (messagesStream) =>
@@ -348,6 +350,29 @@ module.exports = class Conversation extends Base
       .catch =>
         @isPostLoading.next false
 
+  join: =>
+    {me, group} = @state.getValue()
+    @state.set isJoinLoading: true
+
+    @model.signInDialog.openIfGuest me
+    .then =>
+      unless localStorage?['isPushTokenStored']
+        @model.pushNotificationSheet.open()
+      Promise.all _filter [
+        @model.group.joinById group.id
+        if group.star
+          @model.userFollower.followByUserId group.star?.user?.id
+      ]
+      .then =>
+        # just in case...
+        setTimeout =>
+          @state.set isJoinLoading: false
+        , 1000
+        @groupUser.take(1).subscribe =>
+          @state.set isJoinLoading: false
+    .catch =>
+      @state.set isJoinLoading: false
+
   render: =>
     {me, isLoading, isLoadingMore, message, isTextareaFocused, isLoaded,
       messageBatches, conversation, group, isScrolledBottom, inputTranslateY,
@@ -357,21 +382,20 @@ module.exports = class Conversation extends Base
       z '.g-grid',
         # hide messages until loaded to prevent showing the scrolling
         z '.messages', {
-          className: z.classKebab {isLoaded}
           key: 'conversation-messages'
           style:
             transform: "translateY(#{inputTranslateY}px)"
         },
           [
-            # hidden by css, shown with js (non-vdom for perf)
-            z '.loading-more', {
+            # toggled with vanilla js (non-vdom for perf)
+            z '.loading', {
               key: 'conversation-messages-loading-spinner'
             },
-              @$loadingMoreSpinner
-            # hidden when inactive for perf
+              @$loadingSpinner
             if messageBatches and not isLoading
               _map messageBatches, (messageBatch) ->
                 z '.message-batch', {
+                  className: z.classKebab {isLoaded}
                   key: "message-batch-#{messageBatch?[0]?.id}"
                 },
                   _map messageBatch, ({$el, isGrouped}, i) ->
@@ -380,9 +404,6 @@ module.exports = class Conversation extends Base
                           z '.divider'
                         z $el, {isTextareaFocused}
                     ]
-
-            else
-              @$loadingSpinner
           ]
 
       if group and groupUser is false
@@ -396,27 +417,7 @@ module.exports = class Conversation extends Base
             text: if isJoinLoading \
                   then @model.l.get 'general.loading'
                   else @model.l.get 'groupInfo.joinButtonText'
-            onclick: =>
-              @state.set isJoinLoading: true
-
-              @model.signInDialog.openIfGuest me
-              .then =>
-                unless localStorage?['isPushTokenStored']
-                  @model.pushNotificationSheet.open()
-                Promise.all _filter [
-                  @model.group.joinById group.id
-                  if group.star
-                    @model.userFollower.followByUserId group.star?.user?.id
-                ]
-                .then =>
-                  # just in case...
-                  setTimeout =>
-                    @state.set isJoinLoading: false
-                  , 1000
-                  @groupUser.take(1).subscribe =>
-                    @state.set isJoinLoading: false
-              .catch =>
-                @state.set isJoinLoading: false
+            onclick: @join
       else
         z '.bottom',
           @$conversationInput

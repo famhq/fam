@@ -1,11 +1,11 @@
 {
-  "dailyRecap.title": "Daily Recap",
-  "dailyRecap.textWithWins": "{countUntilNextGoodChest} chests until a {nextGoodChest}. You had {wins} wins and {losses} losses today.",
-  "dailyRecap.text": "{countUntilNextGoodChest} chests until a {nextGoodChest}.",
-  "newClanMember.title": "New clan member",
-  "newClanMember.text": "{name} joined your clan in Starfire",
-  "newGroupMember.title": "New group member",
-  "newGroupMember.text": "{name} joined your group in Starfire",
-  "newFollower.title": "New follower",
-  "newFollower.text": "{name} followed you"
+  "dailyRecap.title": "Ежедневное вознаграждение",
+  "dailyRecap.textWithWins": "{countUntilNextGoodChest} до {nextGoodChest}. Вы {wins} выиграли и {losses} проиграли сегодня.",
+  "dailyRecap.text": "{countUntilNextGoodChest} сундуков до {nextGoodChest}.",
+  "newClanMember.title": "Новый участник клана",
+  "newClanMember.text": "{name} присоединился к вашему клану в Starfire",
+  "newGroupMember.title": "Новый член группы",
+  "newGroupMember.text": "{name} присоединился к вашей группе в Starfire",
+  "newFollower.title": "Новый подписчик",
+  "newFollower.text": "{name} подписался на вас"
 }

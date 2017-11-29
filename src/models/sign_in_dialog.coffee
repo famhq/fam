@@ -5,14 +5,20 @@ module.exports = class SignInDialog
     @_isOpen = new RxBehaviorSubject false
     @_mode = new RxBehaviorSubject 'join'
     @onLoggedInFn = null
+    @onCancelFn = null
 
   isOpen: =>
     @_isOpen
 
   onLoggedIn: (@onLoggedInFn) => null
 
+  onCancel: (@onCancelFn) => null
+
   loggedIn: =>
     @onLoggedInFn?()
+
+  cancel: =>
+    @onCancelFn?()
 
   openIfGuest: (user) =>
     new Promise (resolve, reject) =>
@@ -21,6 +27,7 @@ module.exports = class SignInDialog
       else
         @open()
         @onLoggedIn resolve
+        @onCancel reject
 
   getMode: =>
     @_mode

@@ -1,6 +1,6 @@
 {
   "dailyRecap.title": "일일 요점",
-  "dailyRecap.textWithWins": "{countUntilNextGoodChest} chests until a {nextGoodChest}. You had {wins} wins and {losses} losses today.",
+  "dailyRecap.textWithWins": "{countUntilNextGoodChest} 상자까지 {nextGoodChest}. 당신이 한  금일 {wins} 승리와 {losses} 패배.",
   "dailyRecap.text": "{nextGoodChest} 까지 {countUntilNextGoodChest} 승 남았습니다",
   "newClanMember.title": "새로운 클랜 멤버",
   "newClanMember.text": "{name} Starfire 클랜에 가입 ",
