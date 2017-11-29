@@ -127,6 +127,7 @@ init = ->
 
   router = new RouterService {
     model: model
+    cookieSubject: cookieSubject
     router: new LocationRouter()
   }
 
@@ -136,6 +137,7 @@ init = ->
     requests
     model
     router
+    cookieSubject
     isOffline
     isBackendUnavailable
     currentNotification
@@ -223,8 +225,8 @@ init = ->
         router.go path.key, path.params
       else if path # legacy
         router.goPath path
-    else
-      router.go()
+    # else
+    #   router.go()
 
     if data.logEvent
       {category, action, label} = data.logEvent

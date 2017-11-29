@@ -4,6 +4,7 @@ _forEach = require 'lodash/forEach'
 _map = require 'lodash/map'
 _values = require 'lodash/values'
 _flatten = require 'lodash/flatten'
+_defaults = require 'lodash/defaults'
 Environment = require 'clay-environment'
 isUuid = require 'isuuid'
 RxObservable = require('rxjs/Observable').Observable
@@ -77,7 +78,8 @@ Pages =
 TIME_UNTIL_ADD_TO_HOME_PROMPT_MS = 90000 # 1.5 min
 
 module.exports = class App
-  constructor: ({requests, @serverData, @model, @router, isOffline}) ->
+  constructor: (options) ->
+    {requests, @serverData, @model, @router, cookieSubject, isOffline} = options
     @$cachedPages = []
     routes = @model.window.getBreakpoint().map @getRoutes
             .publishReplay(1).refCount()
@@ -86,9 +88,19 @@ module.exports = class App
       requests, routes, (vals...) -> vals
     )
 
+    isFirstRequest = true
     @requests = requestsAndRoutes.map ([req, routes]) ->
+      userAgent = navigator?.userAgent or req.headers?['user-agent']
+      cookies = req.cookies or cookieSubject.getValue()
+      if isFirstRequest and Environment.isGameApp(config.GAME_KEY, {userAgent})
+        path = cookies?.currentPath or req.path
+        if window?
+          req.path = path # doesn't work server-side
+        else
+          req = _defaults {path}, req
       route = routes.get req.path
       $page = route.handler?()
+      isFirstRequest = false
       {req, route, $page: $page}
     .publishReplay(1).refCount()
 
@@ -106,7 +118,12 @@ module.exports = class App
 
     # used if state / requests fails to work
     $backupPage = if @serverData?
-      @getRoutes().get(@serverData.req.path).handler?()
+      userAgent = @serverData.req.headers?['user-agent']
+      if Environment.isGameApp config.GAME_KEY, {userAgent}
+        serverPath = @serverData.req.cookies.currentPath or @serverData.req.path
+      else
+        serverPath = @serverData.req.path
+      @getRoutes().get(serverPath).handler?()
     else
       null
 

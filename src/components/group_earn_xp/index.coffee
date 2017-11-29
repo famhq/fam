@@ -39,11 +39,13 @@ module.exports = class GroupEarnXp
         _filter [
           if Environment.isGameApp(config.GAME_KEY)
             {
-              action: 'Watch ad'
+              action: @model.l.get 'earnXp.watchAd'
               actionKey: 'rewardedVideos'
               xp: 1
               $claimButton: new PrimaryButton()
-              $claimButtonText: "Watch (#{videosLeft} left)"
+              $claimButtonText: @model.l.get 'earnXp.watchAdButton', {
+                  replacements: {videosLeft}
+              }
               isClaimed: not videosLeft
               onclick: =>
                 @state.set loadingActionKey: 'rewardedVideos'
@@ -64,11 +66,11 @@ module.exports = class GroupEarnXp
                   @state.set loadingActionKey: null
             }
           {
-            action: 'Daily visit'
+            action: @model.l.get 'earnXp.dailyVisit'
             actionKey: 'dailyVisit'
             xp: 5
             $claimButton: new PrimaryButton()
-            $claimButtonText: 'Claim'
+            $claimButtonText: @model.l.get 'earnXp.claim'
             isClaimed: _find xpTransactions, {actionKey: 'dailyVisit'}
             onclick: (e) =>
               @state.set loadingActionKey: 'dailyVisit'
@@ -89,40 +91,66 @@ module.exports = class GroupEarnXp
                 @state.set loadingActionKey: null
           }
           {
-            action: 'Daily chat message'
+            action: @model.l.get 'earnXp.dailyChatMessage'
             actionKey: 'dailyChatMessage'
             route:
               key: 'groupChat'
               replacements: {id: group.key or group.id, gameKey}
             xp: 5
             $claimButton: new PrimaryButton()
-            $claimButtonText: 'Go to chat'
+            $claimButtonText: @model.l.get 'earnXp.dailyChatMessageButton'
             isClaimed: _find xpTransactions, {actionKey: 'dailyChatMessage'}
+          }
+          {
+            action: @model.l.get 'earnXp.openStickerPacks'
+            actionKey: 'openStickerPacks'
+            route:
+              key: 'groupShop'
+              replacements: {id: group.key or group.id, gameKey}
+            xp: '∞'
+            $claimButton: new PrimaryButton()
+            $claimButtonText: @model.l.get 'earnXp.openStickerPacksButton'
+            isClaimed: false
           }
           if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
             {
-              action: 'Daily video watched'
+              action: @model.l.get 'earnXp.dailyVideoView'
               actionKey: 'dailyVideoView'
               route:
                 key: 'groupVideos'
                 replacements: {id: group.key or group.id, gameKey}
               xp: 5
               $claimButton: new PrimaryButton()
-              $claimButtonText: 'Go to videos'
+              $claimButtonText: @model.l.get 'earnXp.dailyVideoViewButton'
               isClaimed: _find xpTransactions, {actionKey: 'dailyVideoView'}
             }
         ]
 
+    me = @model.user.getMe()
+
+    groupAndMe = RxObservable.combineLatest(
+      group
+      me
+      (vals...) -> vals
+    )
+
     @state = z.state
-      me: @model.user.getMe()
+      me: me
+      meGroupUser: groupAndMe.switchMap ([group, me]) =>
+        @model.groupUser.getByGroupIdAndUserId group.id, me.id
       xpActions: xpActions
       loadingActionKey: null
 
   render: =>
-    {me, xpActions, loadingActionKey} = @state.getValue()
+    {me, xpActions, loadingActionKey, meGroupUser} = @state.getValue()
 
     z '.z-group-earn-xp',
       z '.g-grid',
+        z '.current-xp',
+          @model.l.get 'earnXp.currentXp', {
+            replacements:
+              currentXp: FormatService.number meGroupUser?.xp
+          }
         z '.g-cols',
         _map xpActions, (item) =>
           {action, route, xp, onclick, isClaimed, actionKey,

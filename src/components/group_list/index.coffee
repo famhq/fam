@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
 
 GroupHeader = require '../group_header'
+FormatService = require '../../services/format'
 config = require '../../config'
 
 if window?
@@ -54,10 +55,9 @@ module.exports = class GroupList
                       z '.name', group.name or 'Nameless'
                       z '.count',
                         @model.l.get "groupList.type#{_startCase(group.type)}"
-                        if group.type isnt 'public'
-                          [
-                            z 'span.middot',
-                              innerHTML: ' &middot; '
-                            "#{group.userIds?.length} "
-                            @model.l.get 'general.members'
-                          ]
+                        [
+                          z 'span.middot',
+                            innerHTML: ' &middot; '
+                          "#{FormatService.number group.userCount} "
+                          @model.l.get 'general.members'
+                        ]

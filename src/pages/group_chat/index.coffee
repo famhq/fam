@@ -166,37 +166,16 @@ module.exports = class GroupChatPage
                 color: colors.$primary500
                 onclick: =>
                   @router.go 'groupSettings', {gameKey, id: group?.id}
-            if group?.id is 'd9070cbb-e06a-46c6-8048-cfdc4225343e'
+            if group?.type is 'public'
               z '.icon',
                 z @$linkIcon,
-                  icon: 'external-link'
+                  icon: 'shop'
                   color: colors.$primary500
                   onclick: =>
-                    @model.portal.call 'browser.openWindow', {
-                      url:
-                        'https://www.youtube.com/withzack'
-                      target: '_system'
-                  }
-            else if group?.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
-              # z '.icon',
-              #   z @$linkIcon,
-              #     icon: 'shop'
-              #     color: colors.$primary500
-              #     onclick: =>
-              #       # FIXME: model.group.getRoute
-              #       @router.go 'groupShop', {
-              #         gameKey, id: group?.key or group?.id
-              #       }
-              z '.icon',
-                z @$linkIcon,
-                  icon: 'external-link'
-                  color: colors.$primary500
-                  onclick: =>
-                    @model.portal.call 'browser.openWindow', {
-                      url:
-                        'https://www.youtube.com/boplayhard'
-                      target: '_system'
-                  }
+                    @router.go 'groupShop', {
+                      id: group.key or group.id
+                      gameKey: gameKey
+                    }
 
       }
       z '.content',

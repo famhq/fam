@@ -25,7 +25,7 @@ module.exports = class ConversationInput
   constructor: (options) ->
     {@model, @router, @message, @onPost, @onResize, toggleIScroll,
       @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$,
-      isPostLoading, gameKey} = options
+      isPostLoading, gameKey, conversation} = options
 
     allowedPanels ?= RxObservable.of ['text', 'stickers', 'gifs', 'image']
     @imageData = new RxBehaviorSubject null
@@ -69,7 +69,7 @@ module.exports = class ConversationInput
         $icon: new Icon()
         icon: 'stickers'
         name: 'stickers'
-        requireVerified: true
+        # requireVerified: true
         $el: new ConversationInputStickers {
           @model
           @router
@@ -79,6 +79,7 @@ module.exports = class ConversationInput
           selectionEnd
           @currentPanel
           gameKey
+          conversation
         }
       }
       image: {

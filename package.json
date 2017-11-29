@@ -67,7 +67,7 @@
     "bluebird": "^3.4.6",
     "body-parser": "^1.14.1",
     "chartist": "^0.11.0",
-    "clay-environment": "^0.4.1",
+    "clay-environment": "git://github.com/claydotio/clay-environment.git",
     "clay-request": "git://github.com/claydotio/clay-request.git",
     "compression": "^1.6.0",
     "cookie": "^0.2.3",

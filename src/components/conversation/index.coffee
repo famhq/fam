@@ -14,7 +14,6 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/observable/merge'
-require 'rxjs/add/observable/fromEvent'
 require 'rxjs/add/operator/share'
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
@@ -81,21 +80,27 @@ module.exports = class Conversation extends Base
       @messageBatchesStreams.switch()
       .map (messageBatches) =>
         isLoading.next false
-        isLoaded = not _isEmpty @state.getValue().messageBatches
-        # HACK: give time for $formattedMessage to resolve
-        {isScrolledBottom} = @state.getValue()
-        if isScrolledBottom or not isLoaded
+        {isScrolledBottom, isLoaded} = @state.getValue()
+        if isScrolledBottom and isLoaded
           setTimeout =>
             @scrollToBottom {
               isSmooth: isLoaded
             }
-          , 100
-          if not isLoaded
-            setTimeout =>
-              @scrollToBottom {
-                isSmooth: isLoaded
-              }
-            , 500
+          , 0
+        else if not isLoaded
+          maxTries = 5 # 1s
+          scrollBottomIfScroll = (attempt = 0) =>
+            scrolled = @scrollToBottom {
+              isSmooth: isLoaded and attempt is 0
+            }
+            if not scrolled and attempt < maxTries
+              setTimeout ->
+                scrollBottomIfScroll attempt + 1
+              , 200
+            else
+              @state.set isLoaded: true
+
+          scrollBottomIfScroll()
 
         messageBatches
       .catch (err) ->
@@ -105,8 +110,6 @@ module.exports = class Conversation extends Base
 
     messageBatches = RxObservable.merge @messageBatches, loadedMessages
 
-    @isScrolledBottomStreams = new RxReplaySubject 1
-    @isScrolledBottomStreams.next RxObservable.of false
     @inputTranslateY = new RxReplaySubject 1
 
     @$loadingSpinner = new Spinner()
@@ -121,6 +124,7 @@ module.exports = class Conversation extends Base
       @overlay$
       @inputTranslateY
       gameKey
+      @conversation
       onPost: @postMessage
       onResize: @onResize
       allowedPanels: @conversation.map (conversation) ->
@@ -167,7 +171,7 @@ module.exports = class Conversation extends Base
       groupUser: @groupUser
       isJoinLoading: false
       isLoaded: false
-      isScrolledBottom: @isScrolledBottomStreams.switch()
+      isScrolledBottom: true
 
       messageBatches: messageBatchesAndMe.map ([messageBatches, me]) =>
         if messageBatches
@@ -208,13 +212,6 @@ module.exports = class Conversation extends Base
     @scrollToBottom()
     window?.addEventListener 'resize', @debouncedOnResize
 
-    # TODO: make sure this is being disposed of correctly
-    # TODO: Merge this with other scroll listener we have
-    isScrolledBottom = RxObservable.fromEvent @$$messages, 'scroll'
-    .map (e) ->
-      e.target.scrollHeight - e.target.scrollTop - e.target.offsetHeight < 10
-    @isScrolledBottomStreams.next isScrolledBottom
-
   beforeUnmount: =>
     super()
     {conversation} = @state.getValue()
@@ -249,11 +246,22 @@ module.exports = class Conversation extends Base
         RxObservable.of null
 
   scrollListener: =>
+    {isScrolledBottom} = @state.getValue()
+    scrollTop = @$$messages.scrollTop
+    scrollHeight = @$$messages.scrollHeight
+    offsetHeight = @$$messages.offsetHeight
+    if scrollHeight - scrollTop - offsetHeight < 10
+      unless isScrolledBottom
+        @state.set isScrolledBottom: true
+    else
+      if isScrolledBottom
+        @state.set isScrolledBottom: false
+
     # keep simple so we don't have to debounce / throttle
     if @isLoadingMore
       return
 
-    if @$$messages.scrollTop is 0
+    if scrollTop is 0
       @loadMore()
 
   loadMore: =>
@@ -272,11 +280,9 @@ module.exports = class Conversation extends Base
 
     messagesStream.take(1).toPromise()
     .then =>
-      # setTimeout => # wait for render
       @isLoadingMore = false
       @$$loadingMoreSpinner.style.display = 'none'
       $$firstMessageBatch?.scrollIntoView?()
-      # , 0
 
   prependMessagesStream: (messagesStream) =>
     @messageBatchesStreamCache = [messagesStream].concat(
@@ -284,7 +290,6 @@ module.exports = class Conversation extends Base
     )
     @messageBatchesStreams.next RxObservable.combineLatest(
       @messageBatchesStreamCache, (messageBatches...) ->
-        # _uniqBy _flatten(messageBatches), ({id, clientId}) -> id or clientId
         messageBatches
     )
 
@@ -297,14 +302,13 @@ module.exports = class Conversation extends Base
         $$lastMessage.scrollIntoView {
           behavior: if isSmooth then 'smooth' else 'instant'
         }
+        scrolled = true
     else if @$$messages
-      @$$messages.scrollTop = @$$messages.scrollHeight -
-                                @$$messages.offsetHeight
-
-
-
-    {messageBatches} = @state.getValue()
-    @state.set isLoaded: not _isEmpty messageBatches
+      scrollHeight = @$$messages.scrollHeight
+      offsetHeight = @$$messages.offsetHeight
+      scrolled = scrollHeight > offsetHeight
+      @$$messages.scrollTop = scrollHeight - offsetHeight
+    return scrolled
 
   onResize: =>
     {isScrolledBottom} = @state.getValue()

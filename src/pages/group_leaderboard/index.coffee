@@ -68,11 +68,11 @@ module.exports = class GroupLeaderboardPage
         hasAppBar: true
         tabs: [
           {
-            $menuText: @model.l.get 'groupLeaderboardPage.topAllTime'
-            $el: z @$groupLeaderboard
-          }
-          {
             $menuText: @model.l.get 'groupLeaderboardPage.earnXp'
             $el: z @$earnXp
+          }
+          {
+            $menuText: @model.l.get 'groupLeaderboardPage.topAllTime'
+            $el: z @$groupLeaderboard
           }
         ]

@@ -9,11 +9,12 @@ config = require '../../config'
 colors = require '../../colors'
 
 DEFAULT_SIZE = '40px'
+PLACEHOLDER_URL = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CgogPGc+CiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPgogIDxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSI0MDIiIHdpZHRoPSI1ODIiIHk9Ii0xIiB4PSItMSIvPgogPC9nPgogPGc+CiAgPHRpdGxlPkxheWVyIDE8L3RpdGxlPgogIDxwYXRoIGlkPSJzdmdfMSIgZD0ibTE2LDhhNCw0IDAgMCAxIDQsNGE0LDQgMCAwIDEgLTQsNGE0LDQgMCAwIDEgLTQsLTRhNCw0IDAgMCAxIDQsLTRtMCwxMGM0LjQyLDAgOCwxLjc5IDgsNGwwLDJsLTE2LDBsMCwtMmMwLC0yLjIxIDMuNTgsLTQgOCwtNHoiIGZpbGw9InJnYmEoMCwgMCwgMCwgMC41KSIvPgogPC9nPgo8L3N2Zz4='
 
 module.exports = class Avatar
   render: ({size, user, groupUser, src}) ->
     size ?= DEFAULT_SIZE
-    src or= src or user?.avatarImage?.versions[0].url
+    src or= src or user?.avatarImage?.versions[0].url or PLACEHOLDER_URL
 
     playerColors = config.PLAYER_COLORS
     lastChar = user?.id?.substr(user?.id?.length - 1, 1) or 'a'
@@ -27,11 +28,15 @@ module.exports = class Avatar
         groupUser.xp >= xpRequired
       )?.level
 
+    levelColor = colors["$#{config.XP_LEVEL_COLORS[level]}500"]
+    textShadowColor = colors["$#{config.XP_LEVEL_COLORS[level]}500TextShadow"]
+
     z '.z-avatar', {
       style:
         width: size
         height: size
         backgroundColor: avatarColor
+        border: if level then "2px solid #{levelColor}" else 'none'
     },
       if src
         z '.image',
@@ -40,6 +45,8 @@ module.exports = class Avatar
       if level
         z '.level',  {
           style:
-            backgroundColor: config.XP_LEVEL_COLORS[level]
+            backgroundColor: levelColor
+            color: colors["$#{config.XP_LEVEL_COLORS[level]}500Text"]
+            textShadow: "0 1px 0 #{textShadowColor}"
         },
           level

@@ -1,6 +1,8 @@
 qs = require 'qs'
 _forEach = require 'lodash/forEach'
 
+Environment = require 'clay-environment'
+CookieService = require './cookie'
 config = require '../config'
 
 ev = (fn) ->
@@ -13,19 +15,23 @@ isSimpleClick = (e) ->
   not (e.which > 1 or e.shiftKey or e.altKey or e.metaKey or e.ctrlKey)
 
 class RouterService
-  constructor: ({@router, @model}) ->
+  constructor: ({@router, @model, @cookieSubject}) ->
     @history = []
     @onBackFn = null
 
-  goPath: (route, {ignoreHistory, reset} = {}) =>
+  goPath: (path, {ignoreHistory, reset} = {}) =>
     unless ignoreHistory
-      @history.push(route or window?.location.pathname)
+      @history.push(path or window?.location.pathname)
 
     if @history[0] is '/' or @history[0] is @get('siteHome') or reset
-      @history = [route]
+      @history = [path]
 
-    if route
-      @router.go route
+    if path
+      # store current page for app re-launch
+      if Environment.isGameApp config.GAME_KEY
+        CookieService.set @cookieSubject, 'currentPath', path
+
+      @router.go path
 
   go: (routeKey, replacements, options = {}) =>
     path = @get routeKey, replacements

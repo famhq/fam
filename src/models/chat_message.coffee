@@ -46,7 +46,9 @@ module.exports = class ChatMessage
     options = {
       initialSortFn: ((items) -> _sortBy items, 'time')
       limit: CHAT_MESSAGES_LIMIT
-      clientChangesStream: @clientChangesStream[conversationId]
+      clientChangesStream: if isStreamed \
+                           then @clientChangesStream[conversationId]
+                           else null
       isStreamed: isStreamed
     }
 

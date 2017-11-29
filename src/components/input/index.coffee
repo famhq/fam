@@ -3,6 +3,7 @@ _defaults = require 'lodash/defaults'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
+require 'rxjs/add/operator/switch'
 
 allColors = require '../../colors'
 
@@ -60,7 +61,7 @@ module.exports = class Input
         attributes:
           disabled: if isDisabled then true else undefined
           type: type
-        value: value
+          value: value
         oninput: z.ev (e, $$el) =>
           if @valueStreams
             @valueStreams.next RxObservable.of $$el.value

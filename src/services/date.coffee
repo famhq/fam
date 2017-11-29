@@ -32,10 +32,20 @@ class DateService
     else
       "00:#{seconds}"
 
+  formatSeconds: (seconds) =>
+    if seconds < ONE_MINUTE_S
+      return parseInt(seconds) + @l.get 'time.secondShorthand'
+    else if seconds < ONE_HOUR_S
+      return parseInt(seconds / ONE_MINUTE_S) + @l.get 'time.minuteShorthand'
+    else if seconds <= ONE_DAY_S
+      return parseInt(seconds / ONE_HOUR_S) + @l.get 'time.hourShorthand'
+    else if seconds <= ONE_WEEK_S
+      return parseInt(seconds / ONE_DAY_S) + @l.get 'time.dayShorthand'
+
   fromNow: (date) =>
     unless date instanceof Date
       date = new Date date
-    seconds = (Date.now() - date.getTime()) / 1000
+    seconds = Math.abs (Date.now() - date.getTime()) / 1000
     if isNaN seconds
       '...'
     else if seconds < 30

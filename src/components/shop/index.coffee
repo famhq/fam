@@ -14,6 +14,7 @@ PrimaryButton = require '../primary_button'
 BuyGiftCardDialog = require '../buy_gift_card_dialog'
 OpenPack = require '../open_pack'
 ConfirmPackPurchase = require '../confirm_pack_purchase'
+DateService = require '../../services/date'
 FormatService = require '../../services/format'
 colors = require '../../colors'
 config = require '../../config'
@@ -44,7 +45,8 @@ module.exports = class Shop
             product: product
             onPurchase: (items) =>
               # buying anything removes ads for day
-              @model.ad.hideAds ONE_DAY_MS
+              if product.cost > 0
+                @model.ad.hideAds ONE_DAY_MS
               if product.type is 'pack'
                 overlay$ = @overlay$.getValue()
                 @overlay$.next [overlay$].concat [new OpenPack {
@@ -93,7 +95,9 @@ module.exports = class Shop
               {product, $buyButton, $fireIcon,
                 onPurchase, onBeforePurchase} = options
 
-              isDisabled = not me?.fire or me?.fire < product.cost
+              isDisabled = product.isLocked or
+                            not me?.fire? or me?.fire < product.cost
+              isFree = product.cost is 0
               z '.product',
                 z '.info',
                   z '.name', product.name
@@ -106,12 +110,22 @@ module.exports = class Shop
                         @model.l.get 'general.loading'
                       else
                         z '.z-spend-fire_buy-button',
-                          z '.amount', FormatService.number product.cost
+                          z '.amount',
+                            if product.isLocked
+                            then DateService.formatSeconds \
+                                  product.lockExpireSeconds
+                            else if isFree \
+                            then @model.l.get 'general.free'
+                            else FormatService.number product.cost
                           z '.icon',
                             z $fireIcon,
-                              icon: 'fire'
+                              icon: if product.isLocked \
+                                    then 'lock-outline'
+                                    else 'fire'
                               size: '20px'
-                              color: if isDisabled \
+                              color: if product.isLocked \
+                                     then colors.$white54
+                                     else if isDisabled
                                      then colors.$quaternary500
                                      else colors.$white
                               isTouchTarget: false

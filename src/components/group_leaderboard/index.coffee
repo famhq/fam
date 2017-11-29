@@ -39,23 +39,24 @@ module.exports = class GroupLeaderboard
     {me, leaderboardGroupUsers} = @state.getValue()
 
     z '.z-group-leaderboard',
-      z '.leaderboard',
-        if leaderboardGroupUsers and _isEmpty leaderboardGroupUsers
-          z '.no-users', 'No users found'
-        else if leaderboardGroupUsers
-          _map leaderboardGroupUsers, ({groupUser, $avatar}, i) =>
-            [
-              z '.user', {
-                onclick: ->
-                  null
-              },
-                z '.rank', groupUser.rank
-                z '.avatar',
-                  z $avatar, {user: groupUser.user, groupUser}
-                z '.name',
-                  @model.user.getDisplayName groupUser.user
-                z '.xp',
-                  groupUser.xp
-            ]
-        else
-          @$spinner
+      z '.g-grid',
+        z '.leaderboard',
+          if leaderboardGroupUsers and _isEmpty leaderboardGroupUsers
+            z '.no-users', 'No users found'
+          else if leaderboardGroupUsers
+            _map leaderboardGroupUsers, ({groupUser, $avatar}, i) =>
+              [
+                z '.user', {
+                  onclick: ->
+                    null
+                },
+                  z '.rank', groupUser.rank
+                  z '.avatar',
+                    z $avatar, {user: groupUser.user, groupUser}
+                  z '.name',
+                    @model.user.getDisplayName groupUser.user
+                  z '.xp',
+                    groupUser.xp
+              ]
+          else
+            @$spinner

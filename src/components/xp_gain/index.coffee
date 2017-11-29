@@ -18,6 +18,7 @@ module.exports = class XpGain
   afterMount: (@$$el) =>
     $$xp = document.createElement 'div'
     $$xp.className = 'xp'
+    @mountDisposable?.unsubscribe()
     @mountDisposable = @model.xpGain.getXp().subscribe ({xp, x, y} = {}) =>
       $$xp.innerText = "+#{xp}xp"
       $$xp.style.left = x + 'px'
