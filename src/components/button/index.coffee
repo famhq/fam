@@ -38,9 +38,8 @@ module.exports = class Button
       else
         null
 
-  # TODO: deprecate text infavor of $content
   render: (options) =>
-    {text, isDisabled, listeners, isRaised, isFullWidth,
+    {text, isDisabled, allowDisabledClick, listeners, isRaised, isFullWidth,
             isShort, isDark, isFlat, colors, onclick, type, $content} = options
     {backgroundColor, isHovered, isActive} = @state.getValue()
 
@@ -74,6 +73,7 @@ module.exports = class Button
         isFullWidth
         isDark
         isDisabled
+        allowDisabledClick
       }
       ontouchstart: =>
         @state.set isActive: true
@@ -91,7 +91,9 @@ module.exports = class Button
 
       z 'button.button', {
         attributes:
-          disabled: if isDisabled then true else undefined
+          disabled: if isDisabled and not allowDisabledClick \
+                    then true
+                    else undefined
           type: type
         onmousedown: z.ev (e, $$el) =>
           @state.set isActive: true

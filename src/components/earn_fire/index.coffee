@@ -129,7 +129,7 @@ module.exports = class EarnFire
                   @state.set isInfoCardVisible: false
                   localStorage?['hideEarnFireInfo'] = '1'
 
-        z '.subhead', @model.l.get 'earnFire.description3'
+        # z '.subhead', @model.l.get 'earnFire.description3'
 
         if not rewards?
           @$spinner
@@ -185,18 +185,26 @@ module.exports = class EarnFire
                 z '.image',
                   style:
                     backgroundImage: "url(#{reward.imageUrl})"
-                z '.text',
-                  if loadingOfferIndex is i
-                    @model.l.get 'general.loading'
-                  else
-                    reward.title
-                z '.amount',
-                  '+' + FormatService.number reward.amount
-                  z '.icon',
-                    z $fireIcon,
-                      icon: 'fire'
-                      color: colors.$quaternary500
-                      isTouchTarget: false
+                z '.info',
+                  z '.title',
+                    if loadingOfferIndex is i
+                      @model.l.get 'general.loading'
+                    else
+                      reward.title
+
+                  z '.description',
+                    reward.instructions
+
+                  z '.amount',
+                    @model.l.get 'general.earn'
+                    ' '
+                    FormatService.number reward.amount
+                    z '.icon',
+                      z $fireIcon,
+                        icon: 'fire'
+                        color: colors.$quaternary500
+                        isTouchTarget: false
+                        size: '16px'
 
             z '.buttons',
               z '.refresh',

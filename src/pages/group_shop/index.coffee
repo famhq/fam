@@ -1,6 +1,7 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 RxObservable = require('rxjs/Observable').Observable
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/switchMap'
 
@@ -23,6 +24,7 @@ module.exports = class GroupShopPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, overlay$}) ->
+    selectedIndex = new RxBehaviorSubject 0
     group = requests.switchMap ({route}) =>
       if isUuid route.params.id
         @model.group.getById route.params.id
@@ -43,13 +45,15 @@ module.exports = class GroupShopPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
-    @$tabs = new Tabs {@model}
+    @$tabs = new Tabs {@model, selectedIndex}
     @$menuFireAmount = new MenuFireAmount {@model, @router}
     @$shop = new Shop {
       @model
       @router
       gameKey
       overlay$
+      goToEarnFn: ->
+        selectedIndex.next 1
       products: group.switchMap (group) =>
         if group
           @model.product.getAllByGroupId group.id
@@ -96,11 +100,11 @@ module.exports = class GroupShopPage
             $el: @$shop
           }
           {
-            $menuText: @model.l.get 'general.collection'
-            $el: @$collection
-          }
-          {
             $menuText: @model.l.get 'general.earn'
             $el: z @$earnFire
+          }
+          {
+            $menuText: @model.l.get 'general.collection'
+            $el: @$collection
           }
         ]

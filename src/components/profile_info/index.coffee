@@ -225,6 +225,8 @@ module.exports = class ProfileInfo
           if document?.referrer
             if document.referrer.indexOf('clashroyalearena.com') isnt -1
               z '.referrer', 'Brought to you by Clash Royale Arena'
+            else if document.referrer.indexOf('clashroyale-la.com') isnt -1
+              z '.referrer', 'Traído hasta ti por Clash Royale Latino'
             else if document.referrer.indexOf('clashroyaledicas.com') isnt -1
               z '.referrer', 'Indicado por Clash Royale Dicas'
           z '.info',
@@ -359,7 +361,7 @@ module.exports = class ProfileInfo
                       @model.userFollower.unfollowByUserId user?.id
                     else
                       @model.userFollower.followByUserId user?.id
-              if user
+              if user and not user?.flags?.isStar
                 z '.message-button',
                   z @$messageButton,
                     text: @model.l.get 'profileDialog.message'

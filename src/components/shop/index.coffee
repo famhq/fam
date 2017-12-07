@@ -25,7 +25,7 @@ if window?
   require './index.styl'
 
 module.exports = class Shop
-  constructor: ({@model, @router, gameKey, products, @overlay$}) ->
+  constructor: ({@model, @router, gameKey, products, @overlay$, @goToEarnFn}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -87,10 +87,10 @@ module.exports = class Shop
 
     z '.z-shop',
       z '.g-grid',
-        z '.products',
-          if products and _isEmpty products
-            @model.l.get 'shop.empty'
-          else if products
+        if products and _isEmpty products
+          @model.l.get 'shop.empty'
+        else if products
+          z '.g-cols.no-padding',
             _map products, (options) =>
               {product, $buyButton, $fireIcon,
                 onPurchase, onBeforePurchase} = options
@@ -98,48 +98,45 @@ module.exports = class Shop
               isDisabled = product.isLocked or
                             not me?.fire? or me?.fire < product.cost
               isFree = product.cost is 0
-              z '.product',
+              z '.g-col.g-xs-6.g-md-2', {
+                style:
+                  backgroundImage: "url(#{product.data?.backgroundImage})"
+                  backgroundColor: product.data?.backgroundColor
+                onclick: =>
+                  ga? 'send', 'event', 'product', 'buy', product.key
+                  if isDisabled
+                    @goToEarnFn?()
+                  else
+                    (onBeforePurchase?() or Promise.resolve())
+                    .then (data) =>
+                      @isPurchaseLoading.next true
+                      @model.product.buy _defaults data, {key: product.key}
+                    .then onPurchase
+                    .then =>
+                      @isPurchaseLoading.next false
+              },
                 z '.info',
                   z '.name', product.name
-                  if product.isLimited
-                    z '.limited', @model.l.get 'spendFire.limited'
-                z '.buy',
-                  z $buyButton,
-                    text:
-                      if isPurchaseLoading
-                        @model.l.get 'general.loading'
-                      else
-                        z '.z-spend-fire_buy-button',
-                          z '.amount',
-                            if product.isLocked
-                            then DateService.formatSeconds \
-                                  product.lockExpireSeconds
-                            else if isFree \
-                            then @model.l.get 'general.free'
-                            else FormatService.number product.cost
-                          z '.icon',
-                            z $fireIcon,
-                              icon: if product.isLocked \
-                                    then 'lock-outline'
-                                    else 'fire'
-                              size: '20px'
-                              color: if product.isLocked \
-                                     then colors.$white54
-                                     else if isDisabled
-                                     then colors.$quaternary500
-                                     else colors.$white
-                              isTouchTarget: false
-                    isFullWidth: false
-                    isDisabled: isDisabled
-                    onclick: =>
-                      ga? 'send', 'event', 'product', 'buy', product.key
-                      (onBeforePurchase?() or Promise.resolve())
-                      .then (data) =>
-                        @isPurchaseLoading.next true
-                        @model.product.buy _defaults data, {key: product.key}
-                      .then onPurchase
-                      .then =>
-                        @isPurchaseLoading.next false
-
-          else
-            @$spinner
+                  # if product.isLimited
+                  #   z '.limited', @model.l.get 'spendFire.limited'
+                  if isPurchaseLoading
+                    @model.l.get 'general.loading'
+                  else
+                    z '.cost',
+                      z '.amount',
+                        if product.isLocked
+                        then DateService.formatSeconds \
+                              product.lockExpireSeconds
+                        else if isFree \
+                        then @model.l.get 'general.free'
+                        else FormatService.number product.cost
+                      z '.icon',
+                        z $fireIcon,
+                          icon: if product.isLocked \
+                                then 'lock-outline'
+                                else 'fire'
+                          size: '16px'
+                          color: colors.$quaternary500
+                          isTouchTarget: false
+        else
+          @$spinner

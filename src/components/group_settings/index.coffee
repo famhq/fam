@@ -10,6 +10,8 @@ require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/switch'
 
 ActionBar = require '../../components/action_bar'
+AppBar = require '../../components/app_bar'
+ButtonBack = require '../../components/button_back'
 Toggle = require '../toggle'
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
@@ -21,8 +23,8 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class Settings
-  constructor: ({@model, @portal, @router, group, gameKey}) ->
+module.exports = class GroupSettings
+  constructor: ({@model, @router, group, gameKey}) ->
     notificationTypes = [
       {
         name: @model.l.get 'groupSettings.chatMessage'
@@ -58,6 +60,8 @@ module.exports = class Settings
       group.privacy is 'private') or RxObservable.of null
 
     @$actionBar = new ActionBar {@model}
+    @$appBar = new AppBar {@model}
+    @$buttonBack = new ButtonBack {@router, @model}
     @$leaveIcon = new Icon()
     @$manageRecordsIcon = new Icon()
 
@@ -126,7 +130,7 @@ module.exports = class Settings
     @model.group.updateById group.id, {name, description, password, isPrivate}
     .then =>
       @state.set isSaving: false
-      @router.go 'groupChat', {gameKey}
+      @router.go 'groupChat', {gameKey, id: group.id}
 
   render: =>
     {me, notificationTypes, group, isLeaveGroupLoading, isSaving, gameKey,
@@ -159,15 +163,23 @@ module.exports = class Settings
       ]
 
     z '.z-group-settings',
-      z @$actionBar, {
-        isSaving: isSaving
-        title: @model.l.get 'groupSettingsPage.title'
-        cancel:
-          onclick: =>
-            @router.back()
-        save:
-          onclick: @save
-      }
+      if hasAdminPermission
+        z @$actionBar, {
+          isSaving: isSaving
+          title: @model.l.get 'groupSettingsPage.title'
+          cancel:
+            onclick: =>
+              @router.back()
+          save:
+            onclick: @save
+        }
+      else
+        z @$appBar,
+          title: @model.l.get 'groupSettingsPage.title'
+          $topLeftButton:
+            z @$buttonBack,
+              color: colors.$primary500
+
       z '.g-grid',
         z '.title', @model.l.get 'general.general'
 

@@ -48,6 +48,12 @@
       cursor: default
       pointer-events: none
 
+    &.allow-disabled-click
+      pointer-events: all
+
+      > .button
+        pointer-events: all
+
   &.is-raised
     > .button
       shadow-1()

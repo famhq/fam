@@ -2,32 +2,49 @@
 
 .z-shop
   flex: 1
-  padding: 16px
+  padding: 4px
   width: 100%
   box-sizing: border-box
 
   > .g-grid
-    > .products
-      > .product
-        display: flex
-        align-items: center
-        margin: 8px 0
+    > .g-cols
+      > .g-col
+        height: 0
+        overflow: hidden
+        padding-top: 33%
+        background-size: auto 90%
+        background-position: center
+        background-repeat: no-repeat
+        position: relative
+        background-color: getColor('$primary500')
+        border: 2px solid getColor('$tertiary900')
+        cursor: pointer
+
+        @media (min-width: $breakPointMedium)
+          padding-top: 11%
 
         > .info
+          position: absolute
+          left: 0
+          right: 0
+          bottom: 0
+          box-sizing: border-box
+          background: getColor('$black54')
+          padding: 4px 8px
+
           > .name
-            font-title()
+            font-caption1()
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+
+          > .cost
+            font-caption1()
+            display: flex
+            align-items: center
+
+            > .amount
+              margin-right: 4px
 
           > .limited
             font-caption2()
-
-        > .buy
-          margin-left: auto
-
-.z-spend-fire_buy-button
-  display: flex
-  align-items: center
-
-  > .amount
-    flex: 1
-    text-transform: none
-    margin-right: 4px

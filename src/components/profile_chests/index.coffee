@@ -41,6 +41,8 @@ module.exports = class ProfileChests
         if document?.referrer
           if document.referrer.indexOf('clashroyalearena.com') isnt -1
             z '.referrer', 'Brought to you by Clash Royale Arena'
+          else if document.referrer.indexOf('clashroyale-la.com') isnt -1
+            z '.referrer', 'Traído hasta ti por Clash Royale Latino'
           else if document.referrer.indexOf('clashroyaledicas.com') isnt -1
             z '.referrer', 'Indicado por Clash Royale Dicas'
         z '.title', @model.l.get 'profileChests.chestsTitle'

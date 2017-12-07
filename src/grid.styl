@@ -21,6 +21,13 @@ grid(class = 'xs', columns = 12)
 		// Convert each column count to a percentage: i.e. 1/12
 		percentWidth = 1% * ((colCount / columns) * 100)
 
+		&.no-padding
+			.g-{class}-{colCount}
+				&:nth-child(n)
+					padding: 0
+					padding-left: 0
+					padding-right: 0
+
 		.g-{class}-{colCount}
 			width percentWidth
 			box-sizing: border-box
@@ -53,8 +60,15 @@ grid(class = 'xs', columns = 12)
 		margin-left: -8px
 		margin-right: -8px
 
+		&.no-padding
+			margin-left: 0
+			margin-right: 0
+
 	*
 		box-sizing border-box
+
+.g-cols.no-padding .g-col
+	padding: 0
 
 .g-col
 	float left
