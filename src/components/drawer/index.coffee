@@ -90,7 +90,15 @@ module.exports = class Drawer
                     gameKey: gameKey
                     id: group.key or group.id
                   }
-                  title: @model.l.get 'general.shop'
+                  # title: @model.l.get 'general.shop'
+                  title: @model.l.get 'general.freeStuff'
+                }
+                {
+                  path: @router.get 'groupCollection', {
+                    gameKey: gameKey
+                    id: group.key or group.id
+                  }
+                  title: @model.l.get 'collectionPage.title'
                 }
                 if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
                   {

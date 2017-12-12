@@ -93,8 +93,9 @@ module.exports = class AddonListItem
           }, (data) =>
             @model.portal.portal.onMessageInAppBrowserWindow data
     },
-      z 'img.icon',
-        src: addon.iconUrl
+      z '.icon-wrapper',
+        z 'img.icon',
+          src: addon.iconUrl
       z '.info',
         z '.name',
           @model.l.get "#{addon.key}.title", {file: 'addons'}

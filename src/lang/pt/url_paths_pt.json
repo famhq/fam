@@ -28,7 +28,7 @@
   "groupManage": "/grupo/{id}/gerenciar/{userId}",
   "groupNewChannel": "/grupo/{id}/novo-canal",
   "groupEditChannel": "/grupo/{id}/conversa/{conversationId}/editar",
-  "groupManageChannels": "/grupo/{id}/canais-administracao",
+  "groupManageChannels": "/group/{id}/canais-administracão",
   "groupSettings": "/grupo/{id}/configuracoes",
   "groupAddRecords": "/grupo/{id}/adicionar-gravacoes",
   "groupManageRecords": "/grupo/{id}/gerir-gravacoes",

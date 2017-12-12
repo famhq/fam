@@ -43,13 +43,15 @@ module.exports = class GroupVideos
 
     z '.z-videos',
       z 'h2.title', @model.l.get 'videos.title'
-      z '.videos',
+      z '.g-grid',
         if videos and _isEmpty videos
-          'No videos found'
+          z '.no-videos',
+            'No videos found'
         else if videos
+          z '.g-cols.no-padding',
           _map videos, ({video, $sourceIcon}) =>
             [
-              z 'a.video', {
+              z '.g-col.g-md-6.g-xs-12.video', {
                 href: "https://www.youtube.com/watch?v=#{video.sourceId}"
                 onclick: (e) =>
                   e?.preventDefault()
@@ -81,7 +83,6 @@ module.exports = class GroupVideos
                 z '.info',
                   z '.title', _truncate video.title, {length: MAX_TITLE_LENGTH}
                   z '.author', video.authorName
-              z '.divider'
             ]
         else
           @$spinner

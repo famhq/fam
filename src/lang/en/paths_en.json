@@ -22,6 +22,7 @@
   "friendsWithAction": "/:gameKey/friends/:action",
   "group": "/:gameKey/group/:id",
   "groupChat": "/:gameKey/group/:id/chat",
+  "groupCollection": "/:gameKey/group/:id/collection",
   "groupChatConversation": "/:gameKey/group/:id/chat/:conversationId",
   "groupMembers": "/:gameKey/group/:id/members",
   "groupInvite": "/:gameKey/group/:id/invite",

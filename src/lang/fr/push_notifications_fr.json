@@ -1,11 +1,11 @@
 {
-  "dailyRecap.title": "Daily Recap",
-  "dailyRecap.textWithWins": "{countUntilNextGoodChest} chests until a {nextGoodChest}. You had {wins} wins and {losses} losses today.",
-  "dailyRecap.text": "{countUntilNextGoodChest} chests until a {nextGoodChest}.",
-  "newClanMember.title": "New clan member",
-  "newClanMember.text": "{name} joined your clan in Starfire",
-  "newGroupMember.title": "New group member",
-  "newGroupMember.text": "{name} joined your group in Starfire",
-  "newFollower.title": "New follower",
-  "newFollower.text": "{name} followed you"
+  "dailyRecap.title": "Récapitulatif du jour",
+  "dailyRecap.textWithWins": "Plus que 8 coffres avant de pouvoir débloquer un coffre légendaire. Vous avez 11 victoires et 5 défaites aujourd'hui.",
+  "dailyRecap.text": "Plus que 15 coffres avant de pouvoir débloquer un coffre magique.",
+  "newClanMember.title": "Petit nouveau du clan",
+  "newClanMember.text": "{name} a rejoint votre clan Starfire",
+  "newGroupMember.title": "Nouveau membre du groupe",
+  "newGroupMember.text": "{name} a rejoint votre clan Starfire",
+  "newFollower.title": "Nouvel abonné",
+  "newFollower.text": "{name} vous suit"
 }

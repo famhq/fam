@@ -39,6 +39,7 @@ Payment = require './payment'
 Product = require './product'
 PushToken = require './push_token'
 Reward = require './reward'
+SpecialOffer = require './special_offer'
 Star = require './star'
 Stream = require './stream'
 Theme = require './theme'
@@ -123,7 +124,7 @@ module.exports = class Model
 
     @l = new Language {language, cookieSubject}
 
-    @auth = new Auth {@exoid, cookieSubject, pushToken, @l}
+    @auth = new Auth {@exoid, cookieSubject, pushToken, @l, userAgent}
     @user = new User {@auth, proxy, @exoid, cookieSubject}
     @userData = new UserData {@auth}
     @userFollower = new UserFollower {@auth}
@@ -161,6 +162,7 @@ module.exports = class Model
     @product = new Product {@auth}
     @pushToken = new PushToken {@auth, pushToken}
     @reward = new Reward {@auth}
+    @specialOffer = new SpecialOffer {@auth}
     @star = new Star {@auth}
     @stream = new Stream {@auth}
     @theme = new Theme()

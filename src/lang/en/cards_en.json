@@ -37,6 +37,7 @@
   "crCard.guards": "Guards",
   "crCard.heal": "Heal",
   "crCard.hogRider": "Hog Rider",
+  "crCard.hunter": "Hunter",
   "crCard.iceGolem": "Ice Golem",
   "crCard.iceSpirit": "Ice Spirit",
   "crCard.iceWizard": "Ice Wizard",
@@ -78,6 +79,7 @@
   "crCard.wizard": "Wizard",
   "crCard.xBow": "X-Bow",
   "crCard.zap": "Zap",
+  "crCard.zappies": "Zappies",
 
   "crCard.resource": "Resource",
   "crCard.common": "Common",

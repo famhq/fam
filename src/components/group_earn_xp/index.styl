@@ -9,9 +9,27 @@
   box-sizing: border-box
 
   > .g-grid
-    > .current-xp
+    > .level
       font-title()
+      margin-bottom: 4px
+
+    > .bar
+      background: getColor('$tertiary400')
+      height: 12px
       margin-bottom: 16px
+      position: relative
+
+      > .fill
+        background: getColor('$primary500')
+        height: 100%
+
+      > .progress
+        font-caption1(false)
+        line-height: 12px
+        position: absolute
+        left: 0
+        top: 0
+        padding: 0 8px
 
     > .g-cols > .g-col
       > .action

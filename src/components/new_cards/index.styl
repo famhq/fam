@@ -1,0 +1,56 @@
+@require '../../vars'
+
+.z-new-cards
+  padding: 16px
+  width: 100%
+  box-sizing: border-box
+
+  > .g-grid
+    > .ad
+      margin-bottom: 16px
+
+    > .g-cols
+      > .g-col
+        @media (min-width: $breakPointMedium)
+          &:first-child
+            padding-right: 36px
+
+        > .ad
+          margin: 16px 0 8px 0
+
+        > .name
+          font-h1()
+          margin-bottom: 8px
+
+        > .subhead
+          font-subhead()
+          color: getColor('$primary500')
+          margin-top: 8px
+          margin-bottom: 4px
+
+        > .game-types
+          max-width: 380px
+
+          > .game-type
+            display: flex
+
+            > .type
+              font-title()
+
+            > .win-rate
+              margin-left: auto
+
+        > .popular-decks
+          > .popular-deck
+            display: flex
+            align-items: center
+
+            > .deck
+              flex: 1
+
+            > .stats
+              width: 55px
+              text-align: right
+
+              > .match-count
+                font-micro()

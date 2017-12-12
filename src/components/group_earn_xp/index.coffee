@@ -144,13 +144,28 @@ module.exports = class GroupEarnXp
   render: =>
     {me, xpActions, loadingActionKey, meGroupUser} = @state.getValue()
 
+    currentXp = meGroupUser?.xp or 0
+    level = _find(config.XP_LEVEL_REQUIREMENTS, ({xpRequired}) ->
+      currentXp >= xpRequired
+    )?.level
+    nextLevel = _find config.XP_LEVEL_REQUIREMENTS, {level: level + 1}
+    nextLevelXp = nextLevel?.xpRequired
+    xpPercent = 100 * currentXp / nextLevelXp
+
     z '.z-group-earn-xp',
       z '.g-grid',
-        z '.current-xp',
-          @model.l.get 'earnXp.currentXp', {
-            replacements:
-              currentXp: FormatService.number meGroupUser?.xp
-          }
+        z '.bar',
+          z '.fill',
+            style:
+              width: "#{xpPercent}%"
+          z '.progress',
+            @model.l.get 'general.level'
+            ": #{level}"
+            ' ('
+            FormatService.number currentXp
+            ' / '
+            "#{nextLevelXp}xp"
+            ')'
         z '.g-cols',
         _map xpActions, (item) =>
           {action, route, xp, onclick, isClaimed, actionKey,

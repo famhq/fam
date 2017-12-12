@@ -11,8 +11,8 @@ module.exports = class ClashRoyaleCard
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
 
-  getByKey: (key) =>
-    @auth.stream "#{@namespace}.getByKey", {key}
+  getByKey: (key, {embed} = {}) =>
+    @auth.stream "#{@namespace}.getByKey", {key, embed}
 
   getTop: ({gameType}) =>
     @auth.stream "#{@namespace}.getTop", {gameType}
@@ -20,7 +20,7 @@ module.exports = class ClashRoyaleCard
   getChestCards: ({arena, chest}) =>
     @auth.call "#{@namespace}.getChestCards", {arena, chest}
 
-  getNameTranslation: (key, language) =>
+  getNameTranslation: (key) =>
     unless key
       return ''
     @l.get "crCard.#{_camelCase key.replace(/\./, '')}", {file: 'cards'}

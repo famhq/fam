@@ -36,4 +36,28 @@ class FormatService
 
     return prettyTimer
 
+  # https://stackoverflow.com/a/32638472
+  shortNumber: (num, fixed) ->
+    if num is null
+      return null
+    # terminate early
+    if num is 0
+      return '0'
+    # terminate early
+    fixed = if not fixed or fixed < 0 then 0 else fixed
+    # number of decimal places to show
+    b = num.toPrecision(2).split('e')
+    k = if b.length == 1 then 0 else Math.floor(Math.min(b[1].slice(1), 14) / 3)
+    c = if k < 1 then num.toFixed(0 + fixed) else (num / 10 ** (k * 3)).toFixed(1 + fixed)
+    d = if c < 0 then c else Math.abs(c)
+    e = d + [
+      ''
+      'K'
+      'M'
+      'B'
+      'T'
+    ][k]
+    # append power
+    e
+
 module.exports = new FormatService()

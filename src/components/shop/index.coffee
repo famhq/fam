@@ -88,7 +88,8 @@ module.exports = class Shop
     z '.z-shop',
       z '.g-grid',
         if products and _isEmpty products
-          @model.l.get 'shop.empty'
+          z '.no-products',
+            @model.l.get 'shop.empty'
         else if products
           z '.g-cols.no-padding',
             _map products, (options) =>

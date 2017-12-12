@@ -1,6 +1,7 @@
 _map = require 'lodash/map'
 Environment = require 'clay-environment'
 Fingerprint = require 'fingerprintjs'
+getUuidByString = require 'uuid-by-string'
 
 PushService = require '../services/push'
 config = require '../config'
@@ -148,7 +149,7 @@ module.exports = class Portal
       target: '_system'
 
   appGetDeviceId: ->
-    "#{new Fingerprint().get()}"
+    getUuidByString "#{new Fingerprint().get()}"
 
   appOnResume: (callback) =>
     if @appResumeHandler

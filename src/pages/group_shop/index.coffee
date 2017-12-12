@@ -11,6 +11,7 @@ ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
 Shop = require '../../components/shop'
 EarnFire = require '../../components/earn_fire'
+SpecialOffers = require '../../components/special_offers'
 Collection = require '../../components/collection'
 MenuFireAmount = require '../../components/menu_fire_amount'
 Icon = require '../../components/icon'
@@ -60,14 +61,8 @@ module.exports = class GroupShopPage
         else
           RxObservable.of null
     }
+    @$specialOffers = new SpecialOffers {@model, @router, gameKey, overlay$}
     @$earnFire = new EarnFire {@model, @router, gameKey, overlay$}
-    @$collection = new Collection {
-      @model
-      @router
-      gameKey
-      group
-      overlay$
-    }
 
     @state = z.state
       me: @model.user.getMe()
@@ -99,12 +94,12 @@ module.exports = class GroupShopPage
             $menuText: @model.l.get 'general.shop'
             $el: @$shop
           }
+          # {
+          #   $menuText: @model.l.get 'shop.specialOffers'
+          #   $el: z @$specialOffers
+          # }
           {
             $menuText: @model.l.get 'general.earn'
             $el: z @$earnFire
-          }
-          {
-            $menuText: @model.l.get 'general.collection'
-            $el: @$collection
           }
         ]

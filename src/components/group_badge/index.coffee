@@ -16,13 +16,20 @@ module.exports = class GroupBadge
     badgeId ?= group?.badgeId
 
     z '.z-group-badge', {onclick},
-      z '.overlay',
-        style:
-          backgroundImage:
-            "url(#{config.CDN_URL}/groups/badges/badge_frame.png)"
-      z '.inner',
-        style:
-          backgroundImage:
-            if badgeId
-            then "url(#{config.CDN_URL}/groups/badges/#{badgeId}.png)"
-            else 'none'
+      if group?.badge
+        z '.image',
+          style:
+            backgroundImage: "url(#{group?.badge})"
+      else
+        [
+          z '.overlay',
+            style:
+              backgroundImage:
+                "url(#{config.CDN_URL}/groups/badges/badge_frame.png)"
+          z '.inner',
+            style:
+              backgroundImage:
+                if badgeId
+                then "url(#{config.CDN_URL}/groups/badges/#{badgeId}.png)"
+                else 'none'
+        ]

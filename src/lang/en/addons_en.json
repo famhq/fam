@@ -25,6 +25,8 @@
   "top200Decks.description": "See the decks the top 200 players use",
   "topTouchdownCards.title": "Top touchdown cards",
   "topTouchdownCards.description": "See the best and worst cards in the new 2v2 touchdown mode!",
+  "newCards.title": "New cards",
+  "newCards.description": "View stats for the cards in the latest update!",
   "openTournaments.title": "Open tournaments",
   "openTournaments.description": "View free, open tournaments to join in-game",
   "clanManager.title": "Clan manager",
