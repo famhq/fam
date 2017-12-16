@@ -150,7 +150,7 @@ module.exports = class NewThread
               @model.thread.updateById thread.id, newThread
             else
               @model.thread.create newThread)
-            .then =>
+            .then (newThread) =>
               @bodyValueStreams.next RxObservable.of null
               @attachmentsValueStreams.next RxObservable.of null
               @router.goPath(

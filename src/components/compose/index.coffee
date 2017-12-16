@@ -60,6 +60,7 @@ module.exports = class Compose
             unless isLoading
               @state.set isLoading: true
               onDone e
+              .catch -> null
               .then =>
                 @state.set isLoading: false
       }

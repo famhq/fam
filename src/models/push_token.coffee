@@ -5,8 +5,8 @@ module.exports = class PushToken
 
   constructor: ({@auth, @pushToken}) -> null
 
-  create: ({token, sourceType} = {}) =>
-    @auth.call "#{@namespace}.create", {sourceType, token}
+  create: ({token, sourceType, language} = {}) =>
+    @auth.call "#{@namespace}.create", {token, sourceType, language}
 
   claimToken: (token) =>
     @auth.call "#{@namespace}.updateByToken", {token}

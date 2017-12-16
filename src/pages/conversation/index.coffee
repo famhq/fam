@@ -67,6 +67,7 @@ module.exports = class ConversationPage
         title: @model.user.getDisplayName toUser
         style: 'primary'
         $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        isFullWidth: true
       }
       @$conversation
 

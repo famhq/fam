@@ -133,7 +133,7 @@ module.exports = class Groups
                     ga? 'send', 'event', 'translate', 'click', language
                     @model.portal.call 'browser.openWindow',
                       url: 'https://crowdin.com/project/starfire'
-                      target: '_SYSTEM'
+                      target: '_system'
             else if Environment.isMobile() and
                       not Environment.isGameApp(config.GAME_KEY)
               z '.ad',

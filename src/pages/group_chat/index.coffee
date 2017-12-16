@@ -148,6 +148,7 @@ module.exports = class GroupChatPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
+        isFullWidth: true
         title: z '.p-group-chat_title', {
           onclick: =>
             @isChannelDrawerOpen.next not isChannelDrawerOpen

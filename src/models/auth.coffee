@@ -32,12 +32,14 @@ module.exports = class Auth
             @exoid.call 'auth.login', {language}
         # FIXME FIXME https://stackoverflow.com/questions/47731745/android-cordova-app-with-iframes-chrome-63-no-request-headers-cookies
         # rm userAgent part when fixed (keep the else)
-        else if userAgent?.indexOf('starfire') isnt -1 and userAgent?.indexOf('Chrome/63') isnt -1
+        else if userAgent?.indexOf('starfire') isnt -1 and userAgent?.indexOf('Chrome/63') isnt -1 and not window?
           Promise.resolve {accessToken: null}
         else
           @exoid.call 'auth.login', {language})
         .then ({accessToken}) =>
-          @setAccessToken accessToken
+          # FIXME FIXME: can rm the if, when removing above chrome 63 stuff
+          if accessToken
+            @setAccessToken accessToken
 
   setAccessToken: (accessToken) =>
     @cookieSubject.take(1).toPromise()

@@ -154,62 +154,63 @@ module.exports = class ConversationInput
     scale = (panelHeight / baseHeight) or 1
 
     z '.z-conversation-input', {
-      className: z.classKebab {"is-#{currentPanel}-panel": true}
+      className: z.classKebab {
+        "is-#{currentPanel}-panel": true
+      }
       style:
         height: "#{panelHeight + 32}px"
     },
-      z '.g-grid',
-        z '.panel', {
-          'ev-transitionend': =>
-            @onResize?()
-          style:
-            transform: "translateY(#{inputTranslateY}px)"
-        },
-          if @panels[currentPanel].requireVerified and not isVerified
-            z '.require-verified',
-                z '.title',
-                  @model.l.get(
-                    "conversationInput.unlock#{_upperFirst currentPanel}"
-                  )
-                z '.description',
-                  @model.l.get 'conversationInput.unlockDescription'
-          @panels[currentPanel].$el
+      z '.panel', {
+        'ev-transitionend': =>
+          @onResize?()
+        style:
+          transform: "translateY(#{inputTranslateY}px)"
+      },
+        if @panels[currentPanel].requireVerified and not isVerified
+          z '.require-verified',
+              z '.title',
+                @model.l.get(
+                  "conversationInput.unlock#{_upperFirst currentPanel}"
+                )
+              z '.description',
+                @model.l.get 'conversationInput.unlockDescription'
+        @panels[currentPanel].$el
 
-        z '.bottom-icons',  {
-          className: z.classKebab {isVisible: true}
-        },
-          [
-            _map panels, (options, panel) =>
-              {$icon, icon, onclick, $uploadOverlay, requireVerified} = options
-              if requireVerified and $uploadOverlay and not isVerified
-                return
-              z '.icon',
-                z $icon, {
-                  onclick: onclick or =>
-                    @currentPanel.next panel
-                  icon: icon
-                  color: if currentPanel is panel \
-                         then colors.$white
-                         else colors.$white54
-                  isTouchTarget: true
-                  hasRipple: true
-                  touchWidth: '36px'
-                  touchHeight: '36px'
-                }
-                if $uploadOverlay
-                  z '.upload-overlay',
-                    z $uploadOverlay, {
-                      onSelect: ({file, dataUrl}) =>
-                        img = new Image()
-                        img.src = dataUrl
-                        img.onload = =>
-                          @imageData.next {
-                            file
-                            dataUrl
-                            width: img.width
-                            height: img.height
-                          }
-                          @overlay$.next @$conversationImagePreview
-                    }
-            z '.powered-by-giphy'
-          ]
+      z '.bottom-icons',  {
+        className: z.classKebab {isVisible: true}
+      },
+        [
+          _map panels, (options, panel) =>
+            {$icon, icon, onclick, $uploadOverlay, requireVerified} = options
+            if requireVerified and $uploadOverlay and not isVerified
+              return
+            z '.icon',
+              z $icon, {
+                onclick: onclick or =>
+                  @currentPanel.next panel
+                icon: icon
+                color: if currentPanel is panel \
+                       then colors.$white
+                       else colors.$white54
+                isTouchTarget: true
+                hasRipple: true
+                touchWidth: '36px'
+                touchHeight: '36px'
+              }
+              if $uploadOverlay
+                z '.upload-overlay',
+                  z $uploadOverlay, {
+                    onSelect: ({file, dataUrl}) =>
+                      img = new Image()
+                      img.src = dataUrl
+                      img.onload = =>
+                        @imageData.next {
+                          file
+                          dataUrl
+                          width: img.width
+                          height: img.height
+                        }
+                        @overlay$.next @$conversationImagePreview
+                  }
+          z '.powered-by-giphy'
+        ]

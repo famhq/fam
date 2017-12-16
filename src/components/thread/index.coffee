@@ -28,6 +28,7 @@ PlayerDeckStats = require '../player_deck_stats'
 Spinner = require '../spinner'
 FormattedText = require '../formatted_text'
 ThreadVoteButton = require '../thread_vote_button'
+FilterCommentsDialog = require '../filter_comments_dialog'
 Fab = require '../fab'
 ProfileDialog = require '../profile_dialog'
 FormatService = require '../../services/format'
@@ -46,6 +47,7 @@ module.exports = class Thread extends Base
     @$replyIcon = new Icon()
     @$editIcon = new Icon()
     @$deleteIcon = new Icon()
+    @$filterIcon = new Icon()
     @$threadUpvoteButton = new ThreadVoteButton {@model}
     @$threadDownvoteButton = new ThreadVoteButton {@model}
 
@@ -55,6 +57,16 @@ module.exports = class Thread extends Base
     @selectedProfileDialogUser = new RxBehaviorSubject false
     @$profileDialog = new ProfileDialog {
       @model, @router, @selectedProfileDialogUser, gameKey
+    }
+
+    filter = new RxBehaviorSubject {
+      sort: 'popular'
+    }
+    filterAndThread = RxObservable.combineLatest(
+      filter, thread, (vals...) -> vals
+    )
+    @$filterCommentsDialog = new FilterCommentsDialog {
+      @model, filter, @overlay$
     }
 
     deck = thread.switchMap (thread) =>
@@ -123,9 +135,10 @@ module.exports = class Thread extends Base
       playerDeck: playerDeck
       isPostLoading: @isPostLoading
       windowSize: @model.window.getSize()
-      threadComments: thread.switchMap (thread) =>
+      threadComments: filterAndThread.switchMap ([filter, thread]) =>
+        console.log 'get', filter?.sort
         if thread?.id
-          @model.threadComment.getAllByThreadId thread.id
+          @model.threadComment.getAllByThreadId thread.id, {sort: filter?.sort}
           .map (threadComments) =>
             _map threadComments, (threadComment) =>
               # cache, otherwise there's a flicker on invalidate
@@ -233,7 +246,11 @@ module.exports = class Thread extends Base
                 onclick: =>
                   @selectedProfileDialogUser.next thread?.creator
               },
-                @model.user.getDisplayName thread?.creator
+                # TODO: don't hardcode this
+                if thread?.creator?.username is 'clashroyalees'
+                  'ClashRoyaleES (Oficial)'
+                else
+                  @model.user.getDisplayName thread?.creator
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               z '.time',
                 if thread?.addTime
@@ -296,6 +313,13 @@ module.exports = class Thread extends Base
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               "#{FormatService.number thread?.commentCount} "
               @model.l.get 'thread.comments'
+            z '.filter-icon',
+              z @$filterIcon,
+                icon: 'filter'
+                isTouchTarget: false
+                color: colors.$tertiary900Text
+                onclick: =>
+                  @overlay$.next @$filterCommentsDialog
 
         z '.reply',
           @$conversationInput

@@ -19,19 +19,6 @@ $zIndexDrawer = 300
   //   width: 0
   //   background: transparent
 
-  @media (min-width: $contentMaxWidth)
-    position: relative
-    z-index: 1
-    pointer-events: all // not supported in ie9/10 (ie our entire app breaks)
-
-    > .drawer-wrapper
-      transform: translate(0, 0) !important
-
-      > .drawer-tab > .drawer > .content > .menu .menu-item > .menu-item-link
-        position: relative // for ripple
-        &:active
-          background: none !important
-
   &.is-open
     > .drawer-wrapper
       > .drawer-tab
@@ -217,3 +204,20 @@ $zIndexDrawer = 300
               &.is-selected
                 > .menu-item-link
                   background: getColor('$tertiary500')
+
+  @media (min-width: $contentMaxWidth)
+    position: relative
+    z-index: 1
+    pointer-events: all // not supported in ie9/10 (ie our entire app breaks)
+
+    > .drawer-wrapper
+      transform: translate(0, 0) !important
+
+      > .drawer-tab > .drawer > .content > .menu .menu-item > .menu-item-link
+        position: relative // for ripple
+        &:active
+          background: none !important
+
+  @media (pointer: fine) and (min-width: $contentMaxWidth)
+    > .drawer-wrapper > .drawer-tab > .drawer > .content > .menu .menu-item > .menu-item-link
+      padding: 4px 16px

@@ -4,6 +4,7 @@ _defaults = require 'lodash/defaults'
 _reduce = require 'lodash/reduce'
 
 TopTouchdownCards = require '../top_touchdown_cards'
+TopDraftCards = require '../top_draft_cards'
 NewCards = require '../new_cards'
 ChestSimulatorPick = require '../simulator_pick'
 ForumSignature = require '../forum_signature'
@@ -22,6 +23,7 @@ module.exports = class Addon
 
     @$chestSimulatorPick = new ChestSimulatorPick {@model, @router}
     @$topTouchdownCards = new TopTouchdownCards {@model, @router}
+    @$topDraftCards = new TopDraftCards {@model, @router}
     @$newCards = new NewCards {@model, @router}
     @$forumSignature = new ForumSignature {@model, @router}
 
@@ -49,6 +51,8 @@ module.exports = class Addon
     },
       if addon?.id is 'c22ef0b0-f4fb-4e9d-b065-28991390cec8'
         @$topTouchdownCards
+      else if addon?.id is 'f6096723-be39-41c5-b2c8-ed44892595a3'
+        z @$topDraftCards
       else if addon?.id is 'f3dae359-ce93-4039-a2cf-421c92e423cf'
         z @$newCards
       else if addon?.id is '8787842f-bc03-4070-a541-39062be97fdc'

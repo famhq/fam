@@ -11,5 +11,5 @@ module.exports = class ThreadComment
   flag: (id) =>
     @auth.call "#{@namespace}.flag", {id}
 
-  getAllByThreadId: (threadId) =>
-    @auth.stream "#{@namespace}.getAllByThreadId", {threadId}
+  getAllByThreadId: (threadId, {sort} = {}) =>
+    @auth.stream "#{@namespace}.getAllByThreadId", {threadId, sort}

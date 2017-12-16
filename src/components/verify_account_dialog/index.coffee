@@ -67,6 +67,7 @@ module.exports = class VerifyAccountDialog
               onclick: =>
                 @model.portal.call 'browser.openWindow', {
                   url: "clashroyale://copyDeck?deck=#{copyIds.join(';')}"
+                  target: '_system'
                 }
         cancelButton:
           text: @model.l.get 'general.cancel'

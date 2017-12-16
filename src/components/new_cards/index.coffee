@@ -66,7 +66,8 @@ module.exports = class NewCards
         z '.g-cols',
           _map cards, ({card, popularDecks}, i) =>
             types = [
-              'PvP', 'classicChallenge', 'grandChallenge', 'tournament', '2v2'
+              'PvP', 'classicChallenge', 'grandChallenge', 'tournament', '2v2',
+              'newCardChallenge'
             ]
             z '.g-col.g-xs-12.g-md-6',
               z '.name', @model.clashRoyaleCard.getNameTranslation card.key
@@ -75,6 +76,8 @@ module.exports = class NewCards
                 _map types, (type) =>
                   typeStats = _filter card.stats, {gameType: type}
                   winRate = _meanBy(typeStats, 'winRate') * 100
+                  if isNaN winRate
+                    winRate = 0
                   roundedWinRate = Math.round(winRate * 100) / 100
                   type = if type is 'PvP' then 'ladder' else type
                   z '.game-type',
@@ -94,7 +97,7 @@ module.exports = class NewCards
                     z '.stats',
                       z '.win-rate', "#{roundedWinRate}%"
                       z '.match-count',
-                        "(#{FormatService.shortNumber count * 100} " +
+                        "(#{FormatService.shortNumber count} " +
                         "#{@model.l.get 'general.games'})"
 
               if i is 0 and isMobile and not isNativeApp

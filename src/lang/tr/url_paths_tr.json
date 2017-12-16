@@ -58,8 +58,8 @@
   "threadWithTitle": "konu başlık",
   "threadEdit": "konu düzenleme",
   "termsOfService": "tos",
-  "userOfWeek": "/user-of-week",
-  "user": "/user/{username}",
-  "userById": "/user/id/{id}",
-  "videos": "/videos"
+  "userOfWeek": "haftanın kullanıcısı",
+  "user": "kullanıcı/kullanıcı adı",
+  "userById": "kullanıcı/kimlik",
+  "videos": "videolar"
 }

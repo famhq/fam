@@ -174,27 +174,29 @@ module.exports = class ThreadComment
           z '.bottom',
             z '.actions',
               if depth < MAX_COMMENT_DEPTH
-                z '.reply',
-                  z @$threadReplyIcon,
-                    icon: 'reply'
-                    isTouchTarget: false
-                    color: colors.$white
-                    onclick: (e) =>
-                      e?.stopPropagation()
-                      if isReplyVisible
-                        @state.set isReplyVisible: false
-                      else
-                        @$conversationInput = new ConversationInput {
-                          @model
-                          @router
-                          message: @reply
-                          @overlay$
-                          gameKey
-                          @isPostLoading
-                          onPost: @postReply
-                          onResize: -> null
-                        }
-                        @state.set isReplyVisible: true
+                z '.reply', {
+                  onclick: (e) =>
+                    e?.stopPropagation()
+                    if isReplyVisible
+                      @state.set isReplyVisible: false
+                    else
+                      @$conversationInput = new ConversationInput {
+                        @model
+                        @router
+                        message: @reply
+                        @overlay$
+                        gameKey
+                        @isPostLoading
+                        onPost: @postReply
+                        onResize: -> null
+                      }
+                      @state.set isReplyVisible: true
+                },
+                  @model.l.get 'general.reply'
+                  # z @$threadReplyIcon,
+                  #   icon: 'reply'
+                  #   isTouchTarget: false
+                  #   color: colors.$white
               z '.points',
                 z '.icon',
                   z @$upvoteButton, {

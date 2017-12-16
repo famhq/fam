@@ -48,7 +48,8 @@ class PushService
                         else if isIosFCM
                         then 'ios-fcm'
                         else 'ios'
-          model.pushToken.create {token, sourceType}
+          language = model.l.getLanguageStr()
+          model.pushToken.create {token, sourceType, language}
           localStorage?['isPushTokenStored'] = 1
         model.pushToken.setCurrentPushToken token
     .catch (err) ->

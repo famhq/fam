@@ -11,18 +11,19 @@ module.exports = class ThreadVoteButton
       me: @model.user.getMe()
 
   render: (options) =>
-    {parent, parentType, vote, hasVoted,
+    {parent, parentType, vote, hasVoted, hasRipple
       isTouchTarget, color, size} = options
 
     {me} = @state.getValue()
 
     color ?= colors.$white
+    hasRipple ?= true
     size ?= '18px'
 
     z '.z-thread-vote-button',
       z @$icon,
         icon: "thumb-#{vote}"
-        hasRipple: true
+        hasRipple: hasRipple
         size: size
         isTouchTarget: isTouchTarget
         color: if hasVoted \

@@ -13,7 +13,7 @@ module.exports = class AppBar
 
   render: (options) ->
     {$topLeftButton, $topRightButton, title, bgColor, color, isFlat,
-      style} = options
+      style, isFullWidth} = options
 
     color ?= colors.$tertiary700Text
     bgColor ?= colors.$tertiary700
@@ -25,7 +25,11 @@ module.exports = class AppBar
         style:
           backgroundColor: bgColor
       },
-        z '.g-grid',
+        z '.wrapper', {
+          className: z.classKebab {
+            gGrid: not isFullWidth
+          }
+        },
           z '.top',
             if $topLeftButton
               z '.top-left-button', {

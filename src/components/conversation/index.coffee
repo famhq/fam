@@ -393,32 +393,31 @@ module.exports = class Conversation extends Base
       groupUser, isJoinLoading} = @state.getValue()
 
     z '.z-conversation',
-      z '.g-grid',
-        # hide messages until loaded to prevent showing the scrolling
-        z '.messages', {
-          key: 'conversation-messages'
-          style:
-            transform: "translateY(#{inputTranslateY}px)"
-        },
-          [
-            # toggled with vanilla js (non-vdom for perf)
-            z '.loading', {
-              key: 'conversation-messages-loading-spinner'
-            },
-              @$loadingSpinner
-            if messageBatches and not isLoading
-              _map messageBatches, (messageBatch) ->
-                z '.message-batch', {
-                  className: z.classKebab {isLoaded}
-                  key: "message-batch-#{messageBatch?[0]?.id}"
-                },
-                  _map messageBatch, ({$el, isGrouped}, i) ->
-                    [
-                        if i and not isGrouped
-                          z '.divider'
-                        z $el, {isTextareaFocused}
-                    ]
-          ]
+      # hide messages until loaded to prevent showing the scrolling
+      z '.messages', {
+        key: 'conversation-messages'
+        style:
+          transform: "translateY(#{inputTranslateY}px)"
+      },
+        [
+          # toggled with vanilla js (non-vdom for perf)
+          z '.loading', {
+            key: 'conversation-messages-loading-spinner'
+          },
+            @$loadingSpinner
+          if messageBatches and not isLoading
+            _map messageBatches, (messageBatch) ->
+              z '.message-batch', {
+                className: z.classKebab {isLoaded}
+                key: "message-batch-#{messageBatch?[0]?.id}"
+              },
+                _map messageBatch, ({$el, isGrouped}, i) ->
+                  [
+                      if i and not isGrouped
+                        z '.divider'
+                      z $el, {isTextareaFocused}
+                  ]
+        ]
 
       if group and groupUser is false
         z '.bottom.is-gate',

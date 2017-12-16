@@ -141,17 +141,17 @@ module.exports = class Threads
           'No threads found'
       else if chunkedThreads
         z '.g-grid',
-          if language is 'es'
-            z '.user-of-week', {
-              onclick: =>
-                @router.go 'userOfWeek', {gameKey}
-            },
-              z 'span.title', @model.l.get 'threads.userOfWeek'
-              z 'div',
-                ' vegetaariel '
-                "(#{@model.l.get 'threads.winner'})"
-              z '.description',
-                @model.l.get 'threads.learnMore'
+          # if language is 'es'
+          #   z '.user-of-week', {
+          #     onclick: =>
+          #       @router.go 'userOfWeek', {gameKey}
+          #   },
+          #     z 'span.title', @model.l.get 'threads.userOfWeek'
+          #     z 'div',
+          #       ' vegetaariel '
+          #       "(#{@model.l.get 'threads.winner'})"
+          #     z '.description',
+          #       @model.l.get 'threads.learnMore'
           z '.columns',
             _map chunkedThreads, (threads) =>
               z '.column',
@@ -167,7 +167,7 @@ module.exports = class Threads
                   hasVotedDown = thread.myVote?.vote is -1
 
                   z 'a.thread', {
-                    href: @model.thread.getPath(thread, @router)
+                    href: @model.thread.getPath thread, @router
                     className: z.classKebab {isExpanded}
                     onclick: (e) =>
                       e.preventDefault()
@@ -246,6 +246,10 @@ module.exports = class Threads
                                     id: thread.id
                                     type: 'thread'
                                   isTouchTarget: false
+                                  # ripple uses anchor tag, don't want
+                                  # anchor within anchor since it breaks
+                                  # server-side render
+                                  hasRipple: window?
                                   color: colors.$tertiary300
                                   size: '14px'
                                 }
@@ -260,6 +264,10 @@ module.exports = class Threads
                                     id: thread.id
                                     type: 'thread'
                                   isTouchTarget: false
+                                  # ripple uses anchor tag, don't want
+                                  # anchor within anchor since it breaks
+                                  # server-side render
+                                  hasRipple: window?
                                   color: colors.$tertiary300
                                   size: '14px'
                                 }
