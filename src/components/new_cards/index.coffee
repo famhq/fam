@@ -34,12 +34,12 @@ module.exports = class NewCards
 
     @state = z.state {
       zappies: @model.clashRoyaleCard.getByKey 'hunter',  {
-        embed: ['stats', 'popularDecks']
+        embed: ['stats', 'popularDecks', 'bestDecks']
       }
       .map mapCard
 
       hunter: @model.clashRoyaleCard.getByKey 'zappies',  {
-        embed: ['stats', 'popularDecks']
+        embed: ['stats', 'popularDecks', 'bestDecks']
       }
       .map mapCard
     }

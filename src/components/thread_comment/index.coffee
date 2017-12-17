@@ -11,6 +11,7 @@ ConversationImageView = require '../conversation_image_view'
 ConversationInput = require '../conversation_input'
 FormattedText = require '../formatted_text'
 ThreadVoteButton = require '../thread_vote_button'
+FormatService = require '../../services/format'
 DateService = require '../../services/date'
 colors = require '../../colors'
 config = require '../../config'
@@ -32,6 +33,7 @@ module.exports = class ThreadComment
     @$upvoteButton = new ThreadVoteButton {@model}
     @$downvoteButton = new ThreadVoteButton {@model}
     @$threadReplyIcon = new Icon()
+    @$trophyIcon = new Icon()
 
     @imageData = new RxBehaviorSubject null
     @$conversationImageView = new ConversationImageView {
@@ -148,11 +150,24 @@ module.exports = class ThreadComment
         z '.content',
           z '.author', {onclick},
             z '.name', @model.user.getDisplayName creator
+            if creator?.gameData
+              [
+                z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
+                z '.trophies',
+                  FormatService.number creator?.gameData?.data?.trophies
+                  z '.icon',
+                    z @$trophyIcon,
+                      icon: 'trophy'
+                      color: colors.$white54
+                      isTouchTarget: false
+                      size: '16px'
+              ]
             z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
             z '.time',
               if time
               then DateService.fromNow time
               else '...'
+
 
           z '.body', $body
 
@@ -170,7 +185,6 @@ module.exports = class ThreadComment
                 length: DESCRIPTION_LENGTH
               }
 
-          # TODO: hasVoted and reply
           z '.bottom',
             z '.actions',
               if depth < MAX_COMMENT_DEPTH

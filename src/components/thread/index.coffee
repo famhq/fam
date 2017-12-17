@@ -131,6 +131,7 @@ module.exports = class Thread extends Base
       isDeckDialogVisible: false
       isCardDialogVisible: false
       isVideoVisible: false
+      hasLoadedAll: false
       gameKey: gameKey
       $body: new FormattedText {
         text: thread.map (thread) ->
@@ -148,6 +149,7 @@ module.exports = class Thread extends Base
       threadComments: @commentStreams.switch().map (threadComments) =>
         if threadComments?.length is 1 and threadComments[0] is null
           return null
+        threadComments = _filter threadComments
         _map threadComments, (threadComment) =>
           # cache, otherwise there's a flicker on invalidate
           cacheId = "threadComment-#{threadComment.id}"
@@ -168,9 +170,9 @@ module.exports = class Thread extends Base
     @$$content?.removeEventListener 'resize', @scrollListener
 
   scrollListener: =>
-    {isLoading} = @state.getValue()
+    {isLoading, hasLoadedAll} = @state.getValue()
 
-    if isLoading or not @$$content
+    if isLoading or not @$$content or hasLoadedAll
       return
 
     $$el = @$$content
@@ -202,8 +204,10 @@ module.exports = class Thread extends Base
     @appendCommentStream commentStream
 
     commentStream.take(1).toPromise()
-    .then =>
-      @state.set isLoading: false
+    .then (comments) =>
+      @state.set
+        isLoading: false
+        hasLoadedAll: _isEmpty comments
 
   appendCommentStream: (commentStream) =>
     @commentStreamCache = @commentStreamCache.concat [commentStream]
