@@ -3,8 +3,11 @@ _map = require 'lodash/map'
 _find = require 'lodash/find'
 _defaults = require 'lodash/defaults'
 _isEmpty = require 'lodash/isEmpty'
+_flatten = require 'lodash/flatten'
+_filter = require 'lodash/filter'
 Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
@@ -37,6 +40,9 @@ DateService = require '../../services/date'
 if window?
   require './index.styl'
 
+SCROLL_THRESHOLD = 250
+SCROLL_COMMENT_LOAD_COUNT = 50
+
 module.exports = class Thread extends Base
   constructor: ({@model, @router, @overlay$, thread, @isInline, gameKey}) ->
     @$appBar = new AppBar {@model}
@@ -62,12 +68,16 @@ module.exports = class Thread extends Base
     filter = new RxBehaviorSubject {
       sort: 'popular'
     }
-    filterAndThread = RxObservable.combineLatest(
+    @filterAndThread = RxObservable.combineLatest(
       filter, thread, (vals...) -> vals
-    )
+    ).share()
     @$filterCommentsDialog = new FilterCommentsDialog {
       @model, filter, @overlay$
     }
+
+    @commentStreams = new RxReplaySubject(1)
+    @commentStreamCache = []
+    @appendCommentStream @getTopStream()
 
     deck = thread.switchMap (thread) =>
       if thread?.data?.deckId
@@ -135,22 +145,71 @@ module.exports = class Thread extends Base
       playerDeck: playerDeck
       isPostLoading: @isPostLoading
       windowSize: @model.window.getSize()
-      threadComments: filterAndThread.switchMap ([filter, thread]) =>
-        console.log 'get', filter?.sort
-        if thread?.id
-          @model.threadComment.getAllByThreadId thread.id, {sort: filter?.sort}
-          .map (threadComments) =>
-            _map threadComments, (threadComment) =>
-              # cache, otherwise there's a flicker on invalidate
-              cacheId = "threadComment-#{threadComment.id}"
-              $el = @getCached$ cacheId, ThreadComment, {
-                @model, @router, @selectedProfileDialogUser, threadComment
-              }
-              # update cached version
-              $el.setThreadComment threadComment
-              $el
-        else
-          RxObservable.of null
+      threadComments: @commentStreams.switch().map (threadComments) =>
+        if threadComments?.length is 1 and threadComments[0] is null
+          return null
+        _map threadComments, (threadComment) =>
+          # cache, otherwise there's a flicker on invalidate
+          cacheId = "threadComment-#{threadComment.id}"
+          $el = @getCached$ cacheId, ThreadComment, {
+            @model, @router, @selectedProfileDialogUser, threadComment
+          }
+          # update cached version
+          $el.setThreadComment threadComment
+          $el
+
+  afterMount: (@$$el) =>
+    @$$content = @$$el?.querySelector '.content'
+    @$$content?.addEventListener 'scroll', @scrollListener
+    @$$content?.addEventListener 'resize', @scrollListener
+
+  beforeUnmount: =>
+    @$$content?.removeEventListener 'scroll', @scrollListener
+    @$$content?.removeEventListener 'resize', @scrollListener
+
+  scrollListener: =>
+    {isLoading} = @state.getValue()
+
+    if isLoading or not @$$content
+      return
+
+    $$el = @$$content
+
+    totalScrolled = $$el.scrollTop
+    totalScrollHeight = $$el.scrollHeight - $$el.offsetHeight
+
+    if totalScrollHeight - totalScrolled < SCROLL_THRESHOLD
+      @loadMore()
+
+  getTopStream: (skip = 0) =>
+    @filterAndThread.switchMap ([filter, thread]) =>
+      if thread?.id
+        @model.threadComment.getAllByThreadId thread.id, {
+          limit: 50
+          skip: skip
+          sort: filter?.sort
+        }
+        .map (comments) ->
+          comments or false
+      else
+        RxObservable.of null
+
+  loadMore: =>
+    @state.set isLoading: true
+
+    skip = @commentStreamCache.length * SCROLL_COMMENT_LOAD_COUNT
+    commentStream = @getTopStream skip
+    @appendCommentStream commentStream
+
+    commentStream.take(1).toPromise()
+    .then =>
+      @state.set isLoading: false
+
+  appendCommentStream: (commentStream) =>
+    @commentStreamCache = @commentStreamCache.concat [commentStream]
+    @commentStreams.next \
+      RxObservable.combineLatest @commentStreamCache, (comments...) ->
+        _flatten comments
 
   postMessage: =>
     {me, isPostLoading, thread} = @state.getValue()
@@ -176,7 +235,7 @@ module.exports = class Thread extends Base
 
   render: =>
     {me, thread, $body, threadComments, isVideoVisible, windowSize, playerDeck,
-      selectedProfileDialogUser, clan, $clanMetrics, gameKey,
+      selectedProfileDialogUser, clan, $clanMetrics, gameKey, isLoading,
       isPostLoading} = @state.getValue()
 
     headerAttachment = _find thread?.attachments, {type: 'video'}
@@ -325,16 +384,20 @@ module.exports = class Thread extends Base
           @$conversationInput
 
         z '.comments',
-          if threadComments and _isEmpty threadComments
+          if not threadComments
+            @$spinner
+          else if threadComments and _isEmpty threadComments
             z '.no-comments', @model.l.get 'thread.noComments'
           else if threadComments
-            _map threadComments, ($threadComment) ->
-              [
-                z $threadComment
-                z '.divider'
-              ]
-          else
-            @$spinner
+            [
+              _map threadComments, ($threadComment) ->
+                [
+                  z $threadComment
+                  z '.divider'
+                ]
+              if isLoading
+                z '.loading', @$spinner
+            ]
 
       if selectedProfileDialogUser
         z @$profileDialog

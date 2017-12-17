@@ -3,7 +3,6 @@ _map = require 'lodash/map'
 _chunk = require 'lodash/chunk'
 _filter = require 'lodash/filter'
 _range = require 'lodash/range'
-_debounce = require 'lodash/debounce'
 _find = require 'lodash/find'
 _orderBy = require 'lodash/orderBy'
 _flatten = require 'lodash/flatten'
@@ -31,7 +30,6 @@ if window?
 
 SCROLL_THRESHOLD = 250
 SCROLL_THREAD_LOAD_COUNT = 20
-SCROLL_DEBOUNCE_MS = 50
 
 module.exports = class Threads
   constructor: ({@model, @router, @filter, gameKey}) ->
@@ -40,8 +38,6 @@ module.exports = class Threads
     @threadStreams = new RxReplaySubject(1)
     @threadStreamCache = []
     @appendThreadStream @getTopStream()
-
-    @debouncedScroll = _debounce @scrollListener, SCROLL_DEBOUNCE_MS
 
     @state = z.state
       me: @model.user.getMe()
@@ -75,12 +71,12 @@ module.exports = class Threads
           _filter threads, (thread, i) -> i % cols is colIndex
 
   afterMount: (@$$el) =>
-    @$$el?.addEventListener 'scroll', @debouncedScroll
-    @$$el?.addEventListener 'resize', @debouncedScroll
+    @$$el?.addEventListener 'scroll', @scrollListener
+    @$$el?.addEventListener 'resize', @scrollListener
 
   beforeUnmount: =>
-    @$$el?.removeEventListener 'scroll', @debouncedScroll
-    @$$el?.removeEventListener 'resize', @debouncedScroll
+    @$$el?.removeEventListener 'scroll', @scrollListener
+    @$$el?.removeEventListener 'resize', @scrollListener
 
   scrollListener: =>
     {isLoading} = @state.getValue()
