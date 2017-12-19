@@ -8,7 +8,8 @@ AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 ButtonBack = require '../../components/button_back'
 Profile = require '../../components/profile'
-ProfileLanding = require '../../components/profile_landing'
+ProfileInfo = require '../../components/profile_info'
+ProfileLanding = require '../../components/clash_royale_profile_landing'
 BottomBar = require '../../components/bottom_bar'
 ShareSheet = require '../../components/share_sheet'
 Spinner = require '../../components/spinner'
@@ -18,6 +19,8 @@ colors = require '../../colors'
 
 if window?
   require './index.styl'
+
+PROFILE_INFO_HEIGHT_PX = 80
 
 module.exports = class ProfilePage
   constructor: ({@model, requests, @router, serverData}) ->
@@ -85,6 +88,7 @@ module.exports = class ProfilePage
     @$profile = new Profile {
       @model, @router, user, player, @overlay$, gameKey, serverData
     }
+    @$profileInfo = new ProfileInfo {@model, @router, gameKey, user}
     @$profileLanding = new ProfileLanding {@model, @router, gameKey}
     @$bottomBar = new BottomBar {@model, @router, requests}
     @$shareSheet = new ShareSheet {
@@ -107,7 +111,31 @@ module.exports = class ProfilePage
       requests: requests
       overlay$: @overlay$
 
+  afterMount: (@$$el) =>
+    @$$content = @$$el.querySelector('.content')
+
   renderHead: => @$head
+
+  scrollPastInfo: (e) =>
+    clientY = e?.touches?[0]?.clientY
+    isScrollDown = @prevClientY? and @prevClientY - clientY > 0
+    @prevClientY = clientY
+    if not @isScrolling and isScrollDown and
+        @$$content.scrollTop < PROFILE_INFO_HEIGHT_PX
+      @isScrolling = true
+
+      prevTime = Date.now()
+      update = =>
+        dt = Date.now() - prevTime
+        newScrollTop = @$$content.scrollTop +
+                        PROFILE_INFO_HEIGHT_PX * (dt / 1000)
+        if newScrollTop >= PROFILE_INFO_HEIGHT_PX
+          @$$content.scrollTop = newScrollTop = PROFILE_INFO_HEIGHT_PX
+          @isScrolling = false
+        else
+          @$$content.scrollTop = newScrollTop
+          window.requestAnimationFrame update
+      update()
 
   render: =>
     {windowSize, player, me, routeUsername, routeId, routePlayerId, user,
@@ -137,11 +165,12 @@ module.exports = class ProfilePage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: if not isMe \
-               then player?.data?.name
-               else if player?.id
-               then @model.l.get 'profilePage.title'
-               else ''
+        title: null
+              #  if not isMe \
+              #  then player?.data?.name
+              #  else if player?.id
+              #  then @model.l.get 'profilePage.title'
+              #  else ''
         bgColor: if player and not isTagSet \
                  then colors.$primary500
                  else colors.$tertiary700
@@ -166,12 +195,24 @@ module.exports = class ProfilePage
               }
         isFlat: true
       }
-      if player and isTagSet
-        z @$profile, {isOtherProfile}
-      else if player
-        z @$profileLanding, {isHome: not routeId}
-      else
-        @$spinner
+      z '.content',
+        if user?.isMember or (player and isTagSet)
+          z '.profile-info', {
+            style:
+              height: "#{PROFILE_INFO_HEIGHT_PX}px"
+          },
+            z @$profileInfo
+        if player and isTagSet
+          z '.profile', {
+            ontouchmove: @scrollPastInfo
+            ontouchend: =>
+              @prevClientY = null
+          },
+            z @$profile, {isOtherProfile}
+        else if player
+          z @$profileLanding, {isHome: not routeId}
+        else
+          @$spinner
 
       unless isOtherProfile
         @$bottomBar

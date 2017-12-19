@@ -14,8 +14,13 @@ module.exports = class Group
   getPath: (group, path, router) ->
     null
 
-  getAll: ({filter, language} = {}) =>
-    @auth.stream "#{@namespace}.getAll", {filter, language}
+  getAll: ({filter, language, embed} = {}) =>
+    embed ?= ['conversations', 'userId', 'star', 'userCount', 'clan']
+    @auth.stream "#{@namespace}.getAll", {filter, language, embed}
+
+  getAllByUserId: (userId, {embed} = {}) =>
+    embed ?= ['conversations', 'userId', 'star', 'userCount', 'clan']
+    @auth.stream "#{@namespace}.getAllByUserId", {userId, embed}
 
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}

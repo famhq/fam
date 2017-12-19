@@ -25,7 +25,7 @@ module.exports = class EditProfile
 
     @usernameValueStreams = new RxReplaySubject 1
     @usernameValueStreams.next me.map (me) ->
-      me.username
+      me.username or ''
     @usernameError = new RxBehaviorSubject null
 
     @playerTagValueStreams = new RxReplaySubject 1

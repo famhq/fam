@@ -40,10 +40,12 @@ module.exports = class Button
 
   render: (options) =>
     {text, isDisabled, allowDisabledClick, listeners, isRaised, isFullWidth,
-            isShort, isDark, isFlat, colors, onclick, type, $content} = options
+      isShort, isDark, isFlat, colors, onclick, type, $content,
+      heightPx} = options
     {backgroundColor, isHovered, isActive} = @state.getValue()
 
     $content ?= text
+    heightPx ?= 36
     type ?= 'button'
     isRaised ?= false
     isFlat = not isRaised
@@ -100,6 +102,8 @@ module.exports = class Button
         style:
           backgroundColor: if isDisabled then null else backgroundColor
           color: if isDisabled then null else colors.cText
+          lineHeight: "#{heightPx}px"
+          minHeight: "#{heightPx}px"
       },
         $content
         unless isDisabled

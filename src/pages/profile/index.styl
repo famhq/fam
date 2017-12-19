@@ -1,10 +1,28 @@
-
-
 @require '../../vars'
 
 .p-profile
   display: flex
   flex-direction: column
+  width: 100%
+
+  > .content
+    overflow: auto
+    -webkit-overflow-scrolling: touch
+    flex: 1
+    display: flex
+    flex-direction: column
+
+    > .profile
+      width: 100%
+      flex: 1
+      display: flex
+      flex-direction: column
+      padding-bottom: 80px
+      margin-bottom: -160px
+
+    > .profile-info
+      width: 100%
+
 
 .p-profile_top-right
   display: flex

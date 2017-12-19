@@ -291,6 +291,7 @@
   "profileHistory.currentTitle": "Current deck",
   "profileHistory.otherDecksTitle": "Other decks",
   "profileHistory.otherDecksEmpty": "No other decks found",
+  "profileInfo.setUsername": "Set username",
   "profileInfo.statWins": "Wins",
   "profileInfo.statLosses": "Losses",
   "profileInfo.statDraws": "Draws",

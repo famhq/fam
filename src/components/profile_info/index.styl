@@ -1,144 +1,40 @@
 @require '../../vars'
 
 .z-profile-info
-  flex: 1
-  overflow: auto
-  -webkit-overflow-scrolling: touch
-  padding-bottom: 16px
+  background: getColor('$tertiary700')
+  height: 80px
+  box-sizing: border-box
+  padding: 4px 16px
+  display: flex
 
-  > .header
-    width: 100%
-    box-sizing: border-box
-    background-color: getColor('$tertiary700')
+  > .avatar
+    flex-shrink: 0
 
-    > .divider
-      width: 100%
-      height: 1px
-      background: getColor('$white12')
-      margin: 0
+  > .info
+    margin-left: 16px
+    min-width: 0
 
-    > .g-grid
+    > .name
+      font-h1()
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
 
-      > .referrer
-        background: getColor('$primary900')
-        padding: 8px
-        margin-bottom: 16px
-        border-radius: 2px
-        margin: 16px 16px 0 16px
+    > .groups
+      font-caption2()
+      margin-top: 2px
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
 
-      > .info
-        display: flex
-        align-items: flex-end
-        // margin-bottom: 8px
-        padding: 16px
+    > .fire
+      font-caption2()
+      margin-top: 2px
+      display: flex
+      align-items: center
 
-        > .left
-          > .name
-            font-h1()
+      > .icon
+        margin-left: 2px
 
-          > .tag
-            font-caption1()
-            color: getColor('$tertiary300')
-            margin-top: 2px
-
-        > .right
-          margin-left: auto
-          display: flex
-          align-items: center
-
-          > .clan-info
-
-            > .clan-name
-              font-body1()
-
-            > .clan-tag
-              font-caption1()
-              color: getColor('$tertiary300')
-              margin-top: 2px
-
-          > .clan-badge
-            margin-left: 8px
-
-      > .g-cols
-        > .g-col
-          > .text
-            font-title()
-            text-align: center
-
-      > .last-updated
-        padding: 8px 16px
-        display: flex
-        align-items: center
-
-        > .time
-          font-caption2()
-
-        > .auto-refresh
-          cursor: pointer
-          display: flex
-
-          font-caption2()
-          margin-left: auto
-          margin-right: 8px
-
-          > .status
-            font-caption1()
-            font-weight: 600
-            text-transform: uppercase
-            margin-left: 4px
-
-          > .info
-            margin-left: 4px
-
-
-      > .follow-button, > .verify-button, > .message-button
-        padding: 0 16px 16px 16px
-
-  > .content
-    padding: 0 16px
-
-    > .card
-      margin: 16px 0
-
-    > .ad
-      margin: 16px 0
-
-    > .block
-      > .g-grid
-        > .chests
-          width: 100%
-          overflow-x: auto
-          -webkit-overflow-scrolling: touch
-          white-space: nowrap
-          margin-top: -16px
-          max-width: 900px
-          margin-left: auto
-          margin-right: auto
-
-          > .chest
-            display: inline-block
-
-        > .chests-button
-          margin-top: 16px
-          display: flex
-
-          > div
-            flex: 1
-
-        > .splits-info-card
-          margin-top: 16px
-
-        > .title
-          font-subhead()
-          color: getColor('$primary500')
-          margin: 16px 0
-
-        > .g-cols
-          > .g-col
-            > .name
-              font-caption1()
-              color: getColor('$tertiary300')
-
-            > .value
-              font-title()
-              margin-top: 4px
+  > .actions
+    margin-left: auto

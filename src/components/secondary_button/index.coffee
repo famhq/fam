@@ -13,5 +13,5 @@ module.exports = class SecondaryButton extends Button
       super _defaults opts, {
         isFullWidth: true
         colors:
-          cText: colors.$primary500
+          cText: colors.$tertiary500Text
       }

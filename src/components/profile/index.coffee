@@ -2,10 +2,10 @@ z = require 'zorium'
 
 Tabs = require '../tabs'
 Icon = require '../icon'
-ProfileInfo = require '../profile_info'
-ProfileDecks = require '../profile_decks'
-ProfileMatches = require '../profile_matches'
-ProfileGraphs = require '../profile_graphs'
+ProfileInfo = require '../clash_royale_profile_info'
+ProfileDecks = require '../clash_royale_profile_decks'
+ProfileMatches = require '../clash_royale_profile_matches'
+ProfileGraphs = require '../clash_royale_profile_graphs'
 colors = require '../../colors'
 
 if window?
