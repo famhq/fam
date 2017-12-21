@@ -4,14 +4,13 @@ isUuid = require 'isuuid'
 Head = require '../../components/head'
 GroupManageChannels = require '../../components/group_manage_channels'
 AppBar = require '../../components/app_bar'
-ButtonBack = require '../../components/button_back'
+ButtonMenu = require '../../components/button_menu'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 module.exports = class GroupManageChannelsPage
-  hideDrawer: true
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData}) ->
@@ -24,6 +23,9 @@ module.exports = class GroupManageChannelsPage
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
@@ -34,9 +36,9 @@ module.exports = class GroupManageChannelsPage
       }
     })
     @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@model, @router}
+    @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupManageChannels = new GroupManageChannels {
-      @model, @router, serverData, group, user
+      @model, @router, serverData, group, user, gameKey
     }
 
     @state = z.state
@@ -55,6 +57,6 @@ module.exports = class GroupManageChannelsPage
         title: @model.l.get 'groupManageChannelsPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
       }
       @$groupManageChannels

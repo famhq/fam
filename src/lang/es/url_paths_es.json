@@ -5,7 +5,7 @@
   "chestCycleByPlayerId": "/ciclo-de-cofres/{playerId}",
   "clan": "/clan",
   "chat": "/chat",
-  "chatWithTab": "/conversacion/{tab}",
+  "chatWithTab": "/chat/{tab}",
   "conversation": "/conversacion/{id}",
   "conversations": "/conversaciones",
   "deck": "/mazo/{id}",

@@ -4,6 +4,7 @@ _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
 
 GroupHeader = require '../group_header'
+Spinner = require '../spinner'
 FormatService = require '../../services/format'
 config = require '../../config'
 
@@ -12,12 +13,13 @@ if window?
 
 module.exports = class GroupList
   constructor: ({@model, @router, groups, gameKey}) ->
+    @$spinner = new Spinner()
     @state = z.state
       me: @model.user.getMe()
       gameKey: gameKey
-      groups: groups.map (groups) ->
-        _map groups, (group) ->
-          {group, $header: new GroupHeader({group})}
+      groups: groups.map (groups) =>
+        _map groups, (group) =>
+          {group, $header: new GroupHeader({@model, group})}
 
   render: =>
     {groups, me, gameKey} = @state.getValue()
@@ -27,6 +29,8 @@ module.exports = class GroupList
         z '.no-groups',
           z '.g-grid',
             @model.l.get 'groupList.empty'
+      else if not groups
+        @$spinner
       else if groups
         z '.groups',
           z '.g-grid',

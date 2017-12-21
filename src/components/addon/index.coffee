@@ -5,6 +5,7 @@ _reduce = require 'lodash/reduce'
 
 TopTouchdownCards = require '../top_touchdown_cards'
 TopDraftCards = require '../top_draft_cards'
+TopChallengeDecks = require '../top_challenge_decks'
 NewCards = require '../new_cards'
 ChestSimulatorPick = require '../simulator_pick'
 ForumSignature = require '../forum_signature'
@@ -23,6 +24,7 @@ module.exports = class Addon
 
     @$chestSimulatorPick = new ChestSimulatorPick {@model, @router}
     @$topTouchdownCards = new TopTouchdownCards {@model, @router}
+    @$topChallengeDecks = new TopChallengeDecks {@model, @router}
     @$topDraftCards = new TopDraftCards {@model, @router}
     @$newCards = new NewCards {@model, @router}
     @$forumSignature = new ForumSignature {@model, @router}
@@ -59,9 +61,11 @@ module.exports = class Addon
         z @$chestSimulatorPick
       else if addon?.id is 'db0593b5-114f-43db-9d98-0b0a88ce3d12'
         z @$forumSignature
+      else if addon?.id is 'a8370ac8-d07e-454a-824d-bee1b5266ea4'
+        z @$topChallengeDecks
       else if testUrl or addon?.url
         replacements = _defaults replacements, {lang: language}
-        vars = addon?.url.match /\{[a-zA-Z0-9]+\}/g
+        vars = addon?.url?.match /\{[a-zA-Z0-9]+\}/g
         url = _reduce vars, (str, variable) ->
           key = variable.replace /\{|\}/g, ''
           str.replace variable, replacements[key] or ''

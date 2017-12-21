@@ -54,7 +54,7 @@ module.exports = class ChannelDrawer
             z '.divider'
             z '.manage-channels', {
               onclick: =>
-                @router.go 'groupManageConversations', {gameKey, id: group?.id}
+                @router.go 'groupManageChannels', {gameKey, id: group?.id}
             },
               z '.icon',
                 z @$manageChannelsSettingsIcon,

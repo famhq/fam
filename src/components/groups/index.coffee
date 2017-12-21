@@ -59,10 +59,11 @@ module.exports = class Groups
       me: @model.user.getMe()
       language: language
       gameKey: gameKey
+      groups: myGroupsAndPublicGroups
       isTranslateCardVisible: @isTranslateCardVisibleStreams.switch()
 
   render: =>
-    {me, isTranslateCardVisible, language, gameKey} = @state.getValue()
+    {me, isTranslateCardVisible, language, gameKey, groups} = @state.getValue()
 
     groupTypes = [
       {
@@ -107,41 +108,42 @@ module.exports = class Groups
           z '.g-grid',
             z 'h2.title', title
           $groupList
-      z '.g-grid',
-        z '.g-cols',
-          z '.g-col.g-xs-12.g-md-6',
-            if isTranslateCardVisible
-              z @$translateCard,
-                isHighlighted: true
-                text:
-                  z 'div',
-                    z 'p', @model.l.get 'translateCard.request1'
-                    z 'p', @model.l.get 'translateCard.request2', {
-                      replacements:
-                        language: translation[language]
-                    }
-                cancel:
-                  text: @model.l.get 'translateCard.cancelText'
-                  onclick: =>
-                    localStorage['hideTranslateCard'] = '1'
-                    @isTranslateCardVisibleStreams.next(
-                      RxObservable.of false
-                    )
-                submit:
-                  text: @model.l.get 'translateCard.submit'
-                  onclick: =>
-                    ga? 'send', 'event', 'translate', 'click', language
-                    @model.portal.call 'browser.openWindow',
-                      url: 'https://crowdin.com/project/starfire'
-                      target: '_system'
-            else if Environment.isMobile() and
-                      not Environment.isGameApp(config.GAME_KEY)
-              z '.ad',
-                z @$adsenseAd, {
-                  slot: 'mobile300x250'
-                }
-            else if not Environment.isMobile()
-              z '.ad',
-                z @$adsenseAd, {
-                  slot: 'desktop728x90'
-                }
+      if groups
+        z '.g-grid',
+          z '.g-cols',
+            z '.g-col.g-xs-12.g-md-6',
+              if isTranslateCardVisible
+                z @$translateCard,
+                  isHighlighted: true
+                  text:
+                    z 'div',
+                      z 'p', @model.l.get 'translateCard.request1'
+                      z 'p', @model.l.get 'translateCard.request2', {
+                        replacements:
+                          language: translation[language]
+                      }
+                  cancel:
+                    text: @model.l.get 'translateCard.cancelText'
+                    onclick: =>
+                      localStorage['hideTranslateCard'] = '1'
+                      @isTranslateCardVisibleStreams.next(
+                        RxObservable.of false
+                      )
+                  submit:
+                    text: @model.l.get 'translateCard.submit'
+                    onclick: =>
+                      ga? 'send', 'event', 'translate', 'click', language
+                      @model.portal.call 'browser.openWindow',
+                        url: 'https://crowdin.com/project/starfire'
+                        target: '_system'
+              if Environment.isMobile() and
+                        not Environment.isGameApp(config.GAME_KEY)
+                z '.ad',
+                  z @$adsenseAd, {
+                    slot: 'mobile300x250'
+                  }
+              else if not Environment.isMobile()
+                z '.ad',
+                  z @$adsenseAd, {
+                    slot: 'desktop728x90'
+                  }

@@ -8,7 +8,6 @@ _orderBy = require 'lodash/orderBy'
 _flatten = require 'lodash/flatten'
 _isEmpty = require 'lodash/isEmpty'
 _uniqBy = require 'lodash/uniqBy'
-_find = require 'lodash/find'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
@@ -16,14 +15,8 @@ require 'rxjs/add/operator/switch'
 require 'rxjs/add/operator/map'
 
 colors = require '../../colors'
-Icon = require '../icon'
-ClanBadge = require '../clan_badge'
-DeckCards = require '../deck_cards'
-ThreadPreview = require '../thread_preview'
-ThreadVoteButton = require '../thread_vote_button'
+ThreadListItem = require '../thread_list_item'
 Spinner = require '../spinner'
-FormatService = require '../../services/format'
-DateService = require '../../services/date'
 
 if window?
   require './index.styl'
@@ -56,16 +49,9 @@ module.exports = class Threads
         threads = _map threads, (thread) =>
           {
             thread
-            $threadPreview: new ThreadPreview {@model, thread}
-            $pointsIcon: new Icon()
-            $threadUpvoteButton: new ThreadVoteButton {@model}
-            $threadDownvoteButton: new ThreadVoteButton {@model}
-            $commentsIcon: new Icon()
-            $textIcon: new Icon()
-            $deck: if thread.playerDeck then new DeckCards {
-              @model, @router, deck: thread.playerDeck.deck, cardsPerRow: 4
+            $threadListItem: new ThreadListItem {
+              @model, @router, gameKey, thread
             }
-            $icon: if thread.data.clan then new ClanBadge() else null
           }
         return _map _range(cols), (colIndex) ->
           _filter threads, (thread, i) -> i % cols is colIndex
@@ -149,127 +135,10 @@ module.exports = class Threads
           #     z '.description',
           #       @model.l.get 'threads.learnMore'
           z '.columns',
-            _map chunkedThreads, (threads) =>
+            _map chunkedThreads, (threads) ->
               z '.column',
-                _map threads, (properties) =>
-                  {thread, $pointsIcon, $commentsIcon, $icon, $textIcon, $deck,
-                    $threadUpvoteButton, $threadDownvoteButton,
-                    $threadPreview} = properties
-
-                  mediaAttachment = thread.attachments?[0]
-                  mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
-                  isExpanded = expandedId is thread.id
-                  hasVotedUp = thread.myVote?.vote is 1
-                  hasVotedDown = thread.myVote?.vote is -1
-
-                  z 'a.thread', {
-                    href: @model.thread.getPath thread, @router
-                    className: z.classKebab {isExpanded}
-                    onclick: (e) =>
-                      e.preventDefault()
-                      # set cache manually so we don't have to re-fetch
-                      req = {
-                        body:
-                          id: thread.id
-                          language: language
-                        path: 'threads.getById'
-                      }
-                      @model.exoid.setDataCache req, thread
-                      @router.goPath @model.thread.getPath(thread, @router)
-                  },
-                    z '.content',
-                      if thread.data.clan
-                        z '.icon',
-                          z $icon, {clan: thread.data.clan, size: '34px'}
-                      else if mediaSrc
-                        z '.image',
-                          style:
-                            backgroundImage: "url(#{mediaSrc})"
-                          onclick: (e) =>
-                            unless isLite
-                              return
-                            e?.stopPropagation()
-                            e?.preventDefault()
-                            ga? 'send', 'event', 'thread', 'preview', ''
-                            @state.set expandedId: if expandedId is thread.id \
-                                                   then null
-                                                   else thread.id
-                      else if isLite
-                        if $deck
-                          games = thread.playerDeck.wins +
-                                    thread.playerDeck.losses
-                          winRate = FormatService.percentage(
-                            thread.playerDeck.wins / games
-                          )
-                          z '.deck',
-                            z $deck, {cardMarginPx: 0}
-                            z '.win-rate', winRate
-                        else
-                          z '.text-icon',
-                            z $textIcon,
-                              icon: if thread.category is 'deckGuide' \
-                                    then 'cards'
-                                    else 'text'
-                              size: '30px'
-                              isTouchTarget: false
-                              color: colors.$white
-                      z '.info',
-                        z '.title', thread.title
-                        z '.bottom',
-                          z '.author',
-                            z '.name', @model.user.getDisplayName thread.creator
-                            z '.middot',
-                              innerHTML: '&middot;'
-                            z '.time',
-                              if thread.addTime
-                              then DateService.fromNow thread.addTime
-                              else '...'
-                            z '.comments',
-                              thread.commentCount or 0
-                              z '.icon',
-                                z $commentsIcon,
-                                  icon: 'comment'
-                                  isTouchTarget: false
-                                  color: colors.$tertiary300
-                                  size: '14px'
-
-                            z '.points',
-                              z '.icon',
-                                z $threadUpvoteButton, {
-                                  vote: 'up'
-                                  hasVoted: hasVotedUp
-                                  parent:
-                                    id: thread.id
-                                    type: 'thread'
-                                  isTouchTarget: false
-                                  # ripple uses anchor tag, don't want
-                                  # anchor within anchor since it breaks
-                                  # server-side render
-                                  hasRipple: window?
-                                  color: colors.$tertiary300
-                                  size: '14px'
-                                }
-
-                              thread.upvotes or 0
-
-                              z '.icon',
-                                z $threadDownvoteButton, {
-                                  vote: 'down'
-                                  hasVoted: hasVotedDown
-                                  parent:
-                                    id: thread.id
-                                    type: 'thread'
-                                  isTouchTarget: false
-                                  # ripple uses anchor tag, don't want
-                                  # anchor within anchor since it breaks
-                                  # server-side render
-                                  hasRipple: window?
-                                  color: colors.$tertiary300
-                                  size: '14px'
-                                }
-                    if isExpanded
-                      z '.preview',
-                        z $threadPreview
+                _map threads, ({$threadListItem}) ->
+                  $threadListItem
           if isLoading
             z '.loading', @$spinner
       else

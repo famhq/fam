@@ -9,7 +9,7 @@ if window?
 
 module.exports = class GroupInfo
   constructor: ({@model, @router, group, gameKey}) ->
-    @$groupHeader = new GroupHeader {group}
+    @$groupHeader = new GroupHeader {@model, group}
     @$joinButton = new PrimaryButton()
 
     @state = z.state {

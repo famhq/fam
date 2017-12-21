@@ -8,6 +8,7 @@ require 'rxjs/add/operator/switch'
 
 Icon = require '../icon'
 ActionBar = require '../action_bar'
+FlatButton = require '../flat_button'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'
 PrimaryTextarea = require '../primary_textarea'
@@ -31,8 +32,6 @@ module.exports = class GroupEditChannel
       conversation.description) or RxObservable.of null
     @descriptionError = new RxBehaviorSubject null
 
-    @$actionBar = new ActionBar {@model}
-
     @$nameInput = new PrimaryInput
       valueStreams: @nameValueStreams
       error: @nameError
@@ -40,6 +39,9 @@ module.exports = class GroupEditChannel
     @$descriptionTextarea = new PrimaryTextarea
       valueStreams: @descriptionValueStreams
       error: @descriptionError
+
+    @$cancelButton = new FlatButton()
+    @$saveButton = new PrimaryButton()
 
     @state = z.state
       me: me
@@ -81,19 +83,7 @@ module.exports = class GroupEditChannel
     {me, isSaving, group, name, description} = @state.getValue()
 
     z '.z-group-edit-channel',
-      z @$actionBar, {
-        isSaving
-        cancel:
-          onclick: =>
-            @router.back()
-        save:
-          text: if isNewChannel \
-                then @model.l.get 'general.create'
-                else @model.l.get 'general.save'
-          onclick: =>
-            @save isNewChannel
-      }
-      z '.content',
+      z '.g-grid',
         z '.input',
           z @$nameInput,
             hintText: @model.l.get 'groupEditChannel.nameInputHintText'
@@ -101,3 +91,21 @@ module.exports = class GroupEditChannel
         z '.input',
           z @$descriptionTextarea,
             hintText: @model.l.get 'general.description'
+
+        z '.actions',
+          z '.cancel-button',
+            z @$cancelButton,
+              isFullWidth: false
+              text: @model.l.get 'general.cancel'
+              onclick: =>
+                @router.back()
+          z '.save-button',
+            z @$saveButton,
+              isFullWidth: false
+              text: if isSaving \
+                    then @model.l.get 'general.loading'
+                    else if isNewChannel
+                    then @model.l.get 'general.create'
+                    else @model.l.get 'general.save'
+              onclick: =>
+                @save isNewChannel

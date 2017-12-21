@@ -9,9 +9,6 @@ require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/switch'
 
-ActionBar = require '../../components/action_bar'
-AppBar = require '../../components/app_bar'
-ButtonBack = require '../../components/button_back'
 Toggle = require '../toggle'
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
@@ -25,17 +22,6 @@ if window?
 
 module.exports = class GroupSettings
   constructor: ({@model, @router, group, gameKey}) ->
-    notificationTypes = [
-      {
-        name: @model.l.get 'groupSettings.chatMessage'
-        key: 'chatMessage'
-      }
-      # {
-      #   name: 'New announcments'
-      #   key: 'announcement'
-      # }
-    ]
-
     me = @model.user.getMe()
     @nameValueStreams = new RxReplaySubject 1
     @nameValueStreams.next (group?.map (group) ->
@@ -59,10 +45,6 @@ module.exports = class GroupSettings
     @isPrivateStreams.next (group?.map (group) ->
       group.privacy is 'private') or RxObservable.of null
 
-    @$actionBar = new ActionBar {@model}
-    @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@router, @model}
-    @$leaveIcon = new Icon()
     @$manageRecordsIcon = new Icon()
 
     @$nameInput = new PrimaryInput
@@ -95,27 +77,6 @@ module.exports = class GroupSettings
       description: @descriptionValueStreams.switch()
       password: @passwordValueStreams.switch()
       isPrivate: @isPrivateStreams.switch()
-      notificationTypes: group.switchMap (group) =>
-        @model.userGroupData.getMeByGroupId(group.id).map (data) ->
-          _map notificationTypes, (type) ->
-            isSelected = new RxBehaviorSubject(
-              not data.globalBlockedNotifications?[type.key]
-            )
-
-            _defaults {
-              $toggle: new Toggle {isSelected}
-              isSelected: isSelected
-            }, type
-
-  leaveGroup: =>
-    {isLeaveGroupLoading, group, gameKey} = @state.getValue()
-
-    unless isLeaveGroupLoading
-      @state.set isLeaveGroupLoading: true
-      @model.group.leaveById group.id
-      .then =>
-        @state.set isLeaveGroupLoading: false
-        @router.go 'chat', {gameKey}
 
   save: =>
     {group, name, description, password, gameKey,
@@ -133,23 +94,12 @@ module.exports = class GroupSettings
       @router.go 'groupChat', {gameKey, id: group.id}
 
   render: =>
-    {me, notificationTypes, group, isLeaveGroupLoading, isSaving, gameKey,
+    {me, group, isSaving, gameKey,
       isPrivate} = @state.getValue()
 
     items = []
 
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
-    unless hasAdminPermission
-      items = items.concat [
-        {
-          $icon: @$leaveIcon
-          icon: 'subtract-circle'
-          text: if isLeaveGroupLoading \
-                then @model.l.get 'general.loading'
-                else @model.l.get 'groupSettings.leaveGroup'
-          onclick: @leaveGroup
-        }
-      ]
 
     if hasAdminPermission
       items = items.concat [
@@ -163,23 +113,6 @@ module.exports = class GroupSettings
       ]
 
     z '.z-group-settings',
-      if hasAdminPermission
-        z @$actionBar, {
-          isSaving: isSaving
-          title: @model.l.get 'groupSettingsPage.title'
-          cancel:
-            onclick: =>
-              @router.back()
-          save:
-            onclick: @save
-        }
-      else
-        z @$appBar,
-          title: @model.l.get 'groupSettingsPage.title'
-          $topLeftButton:
-            z @$buttonBack,
-              color: colors.$primary500
-
       z '.g-grid',
         z '.title', @model.l.get 'general.general'
 
@@ -214,22 +147,9 @@ module.exports = class GroupSettings
                   isTouchTarget: false
                   color: colors.$primary500
               z '.text', text
-        z '.title', @model.l.get 'general.notifications'
-        z 'ul.list',
-          _map notificationTypes, ({name, key, $toggle, isSelected}) =>
-            z 'li.item',
-              z '.text', name
-              z '.toggle',
-                z $toggle, {
-                  onToggle: (isSelected) =>
-                    @model.userGroupData.updateMeByGroupId group.id, {
-                      globalBlockedNotifications:
-                        "#{key}": not isSelected
-                    }
-                }
 
         if me?.username is 'austin' # TODO
-          [
+          z '.input',
             z @$moderatorUsernameInput,
               hintText: 'Add mod by username'
             z @$moderatorUsernameButton,
@@ -240,4 +160,3 @@ module.exports = class GroupSettings
                   groupId: group.id
                   roleId: null
                 }
-          ]

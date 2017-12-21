@@ -47,6 +47,7 @@ module.exports = class Drawer
       group
       myGroups
       gameKey
+      me
       (vals...) -> vals
     )
 
@@ -60,7 +61,7 @@ module.exports = class Drawer
       language: @model.l.getLanguage()
       me: me
       gameKey: gameKey
-      myGroups: groupAndMyGroupsAndGameKey.map ([group, groups, gameKey]) =>
+      myGroups: groupAndMyGroupsAndGameKey.map ([group, groups, gameKey, me]) =>
         groups = _orderBy groups, (group) ->
           group.conversations?[0]?.lastUpdateTime
         , 'desc'
@@ -115,6 +116,24 @@ module.exports = class Drawer
                   }
                   title: @model.l.get 'groupLeaderboardPage.title'
                 }
+                if @model.group.hasPermission group, me, {level: 'admin'}
+                  {
+                    path: @router.get 'groupSettings', {
+                      gameKey: gameKey
+                      id: group.key or group.id
+                    }
+                    title: @model.l.get 'groupSettingsPage.title'
+                    children: [
+                      {
+                        path: @router.get 'groupManageChannels', {
+                          gameKey: gameKey
+                          id: group.key or group.id
+                        }
+                        title: @model.l.get 'groupManageChannelsPage.title'
+                      }
+                    ]
+                  }
+
               ]
           }
       windowSize: @model.window.getSize()
@@ -347,6 +366,24 @@ module.exports = class Drawer
       c600: colors.$tertiary700
       c700: colors.$tertiary500
 
+    renderChild = ({path, title, children}, depth = 0) =>
+      isSelected = currentPath?.indexOf(path) is 0
+      z 'li.menu-item',
+        z 'a.menu-item-link.is-child', {
+          className: z.classKebab {isSelected}
+          href: path
+          onclick: (e) =>
+            e.preventDefault()
+            @model.drawer.close()
+            @router.goPath path
+        },
+          z '.icon'
+          title
+        if children
+          z "ul.children-#{depth}",
+            _map children, (child) ->
+              renderChild child, depth + 1
+
     z '.z-drawer', {
       className: z.classKebab {isOpen}
       key: 'drawer'
@@ -432,20 +469,7 @@ module.exports = class Drawer
                           $ripple
                       if isSelected
                         z 'ul',
-                          _map children, ({path, title}) =>
-                            isSelected = currentPath?.indexOf(path) is 0
-                            z 'li.menu-item',
-                              z 'a.menu-item-link.is-child', {
-                                className: z.classKebab {isSelected}
-                                href: path
-                                onclick: (e) =>
-                                  e.preventDefault()
-                                  @model.drawer.close()
-                                  @router.goPath path
-                              },
-                                z '.icon'
-                                title
-
+                          _map children, (child) -> renderChild child
 
                   unless _isEmpty myGroups
                     z '.divider'

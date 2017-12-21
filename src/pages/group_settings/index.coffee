@@ -3,14 +3,14 @@ isUuid = require 'isuuid'
 
 Head = require '../../components/head'
 GroupSettings = require '../../components/group_settings'
-ButtonBack = require '../../components/button_back'
+AppBar = require '../../components/app_bar'
+ButtonMenu = require '../../components/button_menu'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 module.exports = class GroupSettingsPage
-  hideDrawer: true
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData}) ->
@@ -32,7 +32,8 @@ module.exports = class GroupSettingsPage
         description: @model.l.get 'groupSettingsPage.title'
       }
     })
-    @$buttonBack = new ButtonBack {@model, @router}
+    @$appBar = new AppBar {@model}
+    @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupSettings = new GroupSettings {
       @model, @router, serverData, group, gameKey
     }
@@ -49,4 +50,10 @@ module.exports = class GroupSettingsPage
       style:
         height: "#{windowSize.height}px"
     },
+      z @$appBar, {
+        title: @model.l.get 'groupSettingsPage.title'
+        $topLeftButton: z @$buttonMenu, {
+          color: colors.$primary500
+        }
+      }
       @$groupSettings

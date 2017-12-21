@@ -89,9 +89,13 @@ init = ->
   cookieSubject = new RxBehaviorSubject currentCookies
   cookieSubject.do(setCookies(currentCookies)).subscribe()
 
-  CookieService.set(
-    cookieSubject, 'resolution', "#{window.innerWidth}x#{window.innerHeight}"
-  )
+  setTimeout ->
+    # HACK / FIXME: CookieService.set can't be called simultaneously twice or
+    # it will revert the first cookie. we also set in language model.
+    CookieService.set(
+      cookieSubject, 'resolution', "#{window.innerWidth}x#{window.innerHeight}"
+    )
+  , 0
 
   isOffline = new RxBehaviorSubject false
   isBackendUnavailable = new RxBehaviorSubject false

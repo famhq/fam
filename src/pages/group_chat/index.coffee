@@ -12,6 +12,7 @@ AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
+GroupUserSettingsDialog = require '../../components/group_user_settings_dialog'
 Icon = require '../../components/icon'
 BottomBar = require '../../components/bottom_bar'
 colors = require '../../colors'
@@ -22,7 +23,7 @@ if window?
 module.exports = class GroupChatPage
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData, @overlay$}) ->
     group = requests.switchMap ({route}) =>
       if isUuid route.params.id
         @model.group.getById route.params.id
@@ -35,7 +36,6 @@ module.exports = class GroupChatPage
     gameKey = requests.map ({route}) ->
       route.params.gameKey
 
-    overlay$ = new RxBehaviorSubject null
     @isChannelDrawerOpen = new RxBehaviorSubject false
     selectedProfileDialogUser = new RxBehaviorSubject null
     isLoading = new RxBehaviorSubject false
@@ -102,7 +102,7 @@ module.exports = class GroupChatPage
       @router
       group
       selectedProfileDialogUser
-      overlay$
+      @overlay$
       gameKey
       isLoading: isLoading
       conversation: conversation
@@ -113,6 +113,13 @@ module.exports = class GroupChatPage
       group
       selectedProfileDialogUser
       gameKey
+    }
+    @$groupUserSettingsDialog = new GroupUserSettingsDialog {
+      @model
+      @router
+      group
+      gameKey
+      @overlay$
     }
 
     @$channelDrawer = new ChannelDrawer {
@@ -129,7 +136,6 @@ module.exports = class GroupChatPage
       group: group
       gameKey: gameKey
       me: me
-      overlay$: overlay$
       selectedProfileDialogUser: selectedProfileDialogUser
       isChannelDrawerOpen: @isChannelDrawerOpen
       conversation: conversation
@@ -137,7 +143,7 @@ module.exports = class GroupChatPage
   renderHead: => @$head
 
   render: =>
-    {windowSize, overlay$, group, me, conversation, isChannelDrawerOpen
+    {windowSize, group, me, conversation, isChannelDrawerOpen
       selectedProfileDialogUser, gameKey} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
@@ -166,7 +172,8 @@ module.exports = class GroupChatPage
                 icon: 'settings'
                 color: colors.$primary500
                 onclick: =>
-                  @router.go 'groupSettings', {gameKey, id: group?.id}
+                  @overlay$.next @$groupUserSettingsDialog
+                  # @router.go 'groupSettings', {gameKey, id: group?.id}
             if group?.type is 'public'
               z '.icon',
                 z @$linkIcon,
@@ -181,10 +188,6 @@ module.exports = class GroupChatPage
       }
       z '.content',
         @$groupChat
-
-      if overlay$
-        z '.overlay',
-          overlay$
 
       if selectedProfileDialogUser
         z @$profileDialog

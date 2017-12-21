@@ -28,7 +28,7 @@
   "groupManage": "/pt/:gameKey/grupo/:id/gerenciar/:userId",
   "groupNewChannel": "/pt/:gameKey/grupo/:id/novo-canal",
   "groupEditChannel": "/pt/:gameKey/grupo/:id/conversa/:conversationId/editar",
-  "groupManageChannels": "/pt/:gameKey/grupo/:id/canais-administracao",
+  "groupManageChannels": "/pt/:gameKey/gropo/:id/canais-administracão",
   "groupSettings": "/pt/:gameKey/grupo/:id/configuracoes",
   "groupAddRecords": "/pt/:gameKey/grupo/:id/adicionar-gravacoes",
   "groupManageRecords": "/pt/:gameKey/grupo/:id/gerir-gravacoes",
@@ -62,7 +62,6 @@
   "user": "/pt/:gameKey/usuario/:username",
   "userById": "/pt/:gameKey/usuario/id/:id",
   "videos": "/pt/:gameKey/videos",
-  "fire": "/pt/:gameKey/fire",
   "home": "/pt/:gameKey",
   "siteHome": "/pt"
 }

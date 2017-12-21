@@ -99,6 +99,7 @@ $zIndexDrawer = 300
             background-size: auto 100%
             background-position: 0 center
             margin-left: 16px
+            flex-shrink: 5
 
           > .language
             font-caption1()
@@ -107,6 +108,7 @@ $zIndexDrawer = 300
             border-radius: 2px
             background: getColor('$primary700')
             cursor: pointer
+            flex-shrink: 0
 
             > .arrow
               display: inline-block
@@ -203,6 +205,9 @@ $zIndexDrawer = 300
                 list-style-type: none
                 margin: 0
                 padding: 0
+
+                &.children-0
+                  padding-left: 16px
 
               &.is-selected
                 > .menu-item-link

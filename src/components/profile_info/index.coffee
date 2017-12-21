@@ -44,7 +44,7 @@ module.exports = class ProfileInfo
       if not user and user isnt false
         @$spinner
       else
-        [
+        z '.g-grid',
           z '.avatar',
             z @$avatar,
               user: user
@@ -106,4 +106,3 @@ module.exports = class ProfileInfo
                         .then ({id}) =>
                           @router.go 'conversation', {gameKey, id}
               ]
-        ]

@@ -8,7 +8,7 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class GroupInfo
+module.exports = class GroupManageChannels
   constructor: ({@model, @router, group, gameKey}) ->
 
     @$fab = new Fab()

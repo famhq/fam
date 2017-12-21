@@ -87,23 +87,23 @@ module.exports = class GroupShopPage
         }
         $topRightButton: @$menuFireAmount
       }
-      if language is 'es'
-        @$shop
-      else
-        z @$tabs,
-          isBarFixed: false
-          hasAppBar: true
-          tabs: [
-            {
-              $menuText: @model.l.get 'general.shop'
-              $el: @$shop
-            }
-            # {
-            #   $menuText: @model.l.get 'shop.specialOffers'
-            #   $el: z @$specialOffers
-            # }
-            {
-              $menuText: @model.l.get 'general.earn'
-              $el: z @$earnFire
-            }
-          ]
+      # if language is 'es'
+      #   @$shop
+      # else
+      z @$tabs,
+        isBarFixed: false
+        hasAppBar: true
+        tabs: [
+          {
+            $menuText: @model.l.get 'general.shop'
+            $el: @$shop
+          }
+          # {
+          #   $menuText: @model.l.get 'shop.specialOffers'
+          #   $el: z @$specialOffers
+          # }
+          {
+            $menuText: @model.l.get 'general.earn'
+            $el: z @$earnFire
+          }
+        ]
