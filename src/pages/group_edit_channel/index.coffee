@@ -6,6 +6,8 @@ AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Tabs = require '../../components/tabs'
 GroupEditChannel = require '../../components/group_edit_channel'
+GroupEditChannelPermissions =
+  require '../../components/group_edit_channel_permissions'
 colors = require '../../colors'
 
 if window?
@@ -39,6 +41,9 @@ module.exports = class GroupEditChannelPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupEditChannel = new GroupEditChannel {
+      @model, @router, serverData, group, conversation, gameKey
+    }
+    @$groupEditChannelPermissions = new GroupEditChannelPermissions {
       @model, @router, serverData, group, conversation, gameKey
     }
     @$tabs = new Tabs {@model}

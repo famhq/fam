@@ -25,7 +25,7 @@
   "groupChatConversation": "/grupo/{id}/chat/{conversationId}",
   "groupMembers": "/grupo/{id}/mienbros",
   "groupInvite": "/grupo/{id}/invitacion",
-  "groupManage": "/grupo/{id}/mensajes/{userId}",
+  "groupManage": "/grupo/{id}/administrar/{userId}",
   "groupNewChannel": "/grupo/{id}/canal-nuevo",
   "groupEditChannel": "/grupo/{id}/mensajes/{conversationId}/editar",
   "groupManageChannels": "/grupo/{id}/administrar-canales",

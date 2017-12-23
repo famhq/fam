@@ -38,6 +38,7 @@
   "general.followers": "followers",
   "general.next": "Next",
   "general.new": "New",
+  "general.permissions": "Permissions",
   "general.profile": "Profile",
   "general.username": "Username",
   "general.social": "Social",
@@ -470,6 +471,8 @@
   "error.invalidEmail": "Invalid email",
   "error.passwordSet": "Password is already set",
 
+  
+  "permissions.readMessages": "Read messages",
 
 
   "crChest.wooden": "Wooden",

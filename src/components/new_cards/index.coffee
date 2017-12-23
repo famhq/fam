@@ -33,21 +33,26 @@ module.exports = class NewCards
       }
 
     @state = z.state {
-      zappies: @model.clashRoyaleCard.getByKey 'hunter',  {
+      hunter: @model.clashRoyaleCard.getByKey 'hunter',  {
         embed: ['stats', 'popularDecks', 'bestDecks']
       }
       .map mapCard
 
-      hunter: @model.clashRoyaleCard.getByKey 'zappies',  {
+      zappies: @model.clashRoyaleCard.getByKey 'zappies',  {
+        embed: ['stats', 'popularDecks', 'bestDecks']
+      }
+      .map mapCard
+
+      royalGhost: @model.clashRoyaleCard.getByKey 'royal_ghost',  {
         embed: ['stats', 'popularDecks', 'bestDecks']
       }
       .map mapCard
     }
 
   render: =>
-    {zappies, hunter} = @state.getValue()
+    {zappies, hunter, royalGhost} = @state.getValue()
 
-    cards = _filter [zappies, hunter]
+    cards = _filter [royalGhost, hunter, zappies]
     isNativeApp = Environment.isGameApp config.GAME_KEY
     isMobile = Environment.isMobile()
 
@@ -67,7 +72,7 @@ module.exports = class NewCards
           _map cards, ({card, popularDecks}, i) =>
             types = [
               'PvP', 'classicChallenge', 'grandChallenge', 'tournament', '2v2',
-              'newCardChallenge'
+              # 'newCardChallenge'
             ]
             z '.g-col.g-xs-12.g-md-6',
               z '.name', @model.clashRoyaleCard.getNameTranslation card.key

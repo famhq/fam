@@ -160,6 +160,7 @@ module.exports = class ProfilePage
 
     $button = if isOtherProfile then @$buttonBack else @$buttonMenu
 
+
     z '.p-profile', {
       style:
         height: "#{windowSize.height}px"
@@ -196,7 +197,7 @@ module.exports = class ProfilePage
         isFlat: true
       }
       z '.content',
-        if user?.isMember or (player and isTagSet)
+        if (user?.isMember or (player and isTagSet)) and not routePlayerId
           z '.profile-info', {
             style:
               height: "#{PROFILE_INFO_HEIGHT_PX}px"

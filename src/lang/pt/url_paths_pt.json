@@ -41,7 +41,7 @@
   "newConversation": "/nova-conversa",
   "newThread": "/novo-topico",
   "newThreadWithCategory": "/novo-topico/{category}",
-  "newThreadWithCategoryAndId": "/novo-topico/{category}{id}",
+  "newThreadWithCategoryAndId": "/novo-topico/{category}/{id}",
   "player": "/jogador/{playerId}",
   "playerEmbed": "/jogador/{playerId}/embutir",
   "players": "/jogadores",

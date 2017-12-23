@@ -3,9 +3,9 @@
   "dailyRecap.textWithWins": "{countUntilNextGoodChest} Truhen bis zu einer {nextGoodChest}. Du hattest heute {wins} Siege und {losses} Niederlagen.",
   "dailyRecap.text": "{countUntilNextGoodChest} Truhen bis zu einer {nextGoodChest}.",
   "newClanMember.title": "Neues Clanmitglied",
-  "newClanMember.text": "{name} ist deinen Clan in Starfire beigetreten",
+  "newClanMember.text": "{name} ist deinen Starfire-Clan beigetreten",
   "newGroupMember.title": "Neues Gruppenmitglied",
-  "newGroupMember.text": "{name} ist deiner Gruppe in Starfire beigetreten",
+  "newGroupMember.text": "{name} ist deiner Starfire-Gruppe beigetreten",
   "newFollower.title": "Neuer Follower",
   "newFollower.text": "{name} folgt dir"
 }
