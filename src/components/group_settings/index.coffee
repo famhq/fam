@@ -38,14 +38,9 @@ module.exports = class GroupSettings
       group.password) or RxObservable.of null
     @passwordError = new RxBehaviorSubject null
 
-    @moderatorUsernameValue = new RxBehaviorSubject ''
-    @moderatorUsernameError = new RxBehaviorSubject null
-
     @isPrivateStreams = new RxReplaySubject 1
     @isPrivateStreams.next (group?.map (group) ->
       group.privacy is 'private') or RxObservable.of null
-
-    @$manageRecordsIcon = new Icon()
 
     @$nameInput = new PrimaryInput
       valueStreams: @nameValueStreams
@@ -58,12 +53,6 @@ module.exports = class GroupSettings
     @$passwordInput = new PrimaryInput
       valueStreams: @passwordValueStreams
       error: @passwordError
-
-    @$moderatorUsernameInput = new PrimaryInput
-      value: @moderatorUsernameValue
-      error: @moderatorUsernameError
-
-    @$moderatorUsernameButton = new PrimaryButton()
 
     @$isPrivateToggle = new Toggle {isSelectedStreams: @isPrivateStreams}
 
@@ -101,17 +90,6 @@ module.exports = class GroupSettings
 
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
-    if hasAdminPermission
-      items = items.concat [
-        {
-          $icon: @$manageRecordsIcon
-          icon: 'edit'
-          text: 'Manage Records'
-          onclick: =>
-            @router.go 'groupManageRecords', {gameKey}
-        }
-      ]
-
     z '.z-group-settings',
       z '.g-grid',
         z '.title', @model.l.get 'general.general'
@@ -147,16 +125,3 @@ module.exports = class GroupSettings
                   isTouchTarget: false
                   color: colors.$primary500
               z '.text', text
-
-        if me?.username is 'austin' # TODO
-          z '.input',
-            z @$moderatorUsernameInput,
-              hintText: 'Add mod by username'
-            z @$moderatorUsernameButton,
-              text: 'Add'
-              onclick: =>
-                @model.groupUser.createModeratorByUsername {
-                  username: @moderatorUsernameValue.getValue()
-                  groupId: group.id
-                  roleId: null
-                }

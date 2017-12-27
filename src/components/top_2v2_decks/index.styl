@@ -1,0 +1,41 @@
+@require '../../vars'
+
+.z-top-2v2-decks
+  padding: 16px
+  width: 100%
+  box-sizing: border-box
+
+  > .g-grid
+    > .ad
+      margin: 16px 0
+
+    > .deck-row, > .header
+      display: flex
+      align-items: center
+      width: 100%
+      max-width: 800px
+
+      > .deck
+        flex: 1
+
+      > .win-rate
+        margin-left: auto
+        text-align: right
+        white-space: nowrap
+
+    > .header
+      > .deck, > .win-rate
+        font-subhead()
+        color: getColor('$primary500')
+
+    > .deck-row
+      margin-bottom: 8px
+
+      > .deck
+        min-height: 60px
+
+      > .win-rate
+        width: 60px
+
+        > .match-count
+          font-micro()

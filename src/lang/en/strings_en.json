@@ -33,6 +33,8 @@
   "general.off": "off",
   "general.by": "by",
   "general.inbox": "Messages",
+  "general.manage": "Manage",
+  "general.roles": "Roles",
   "general.clan": "Clan",
   "general.community": "Community",
   "general.followers": "followers",
@@ -40,6 +42,7 @@
   "general.new": "New",
   "general.permissions": "Permissions",
   "general.profile": "Profile",
+  "general.name": "Name",
   "general.username": "Username",
   "general.social": "Social",
   "general.tools": "Tools",
@@ -220,6 +223,9 @@
   "groupList.typeGeneral": "General",
   "groupList.typePublic": "Public",
   "groupList.typeClan": "Clan",
+  "groupManageRoles.addRole": "Add role",
+  "groupManageMember.addRole": "Add role",
+  "groupRolePermissions.selectRole": "Select a role",
   "groupSettings.leaveGroup": "Leave group",
   "groupSettings.chatMessage": "New chat messages",
   "groupSettings.passwordToJoin": "Password to join",
@@ -435,6 +441,7 @@
   "groupInvitePage.title": "Group invite",
   "groupInvitesPage.title": "Group invites",
   "groupManageChannelsPage.title": "Manage channels",
+  "groupManageRolesPage.title": "Manage roles",
   "groupManageMemberPage.title": "Manage member",
   "groupMembersPage.title": "Group members",
   "groupSettingsPage.title": "Group settings",
@@ -471,8 +478,11 @@
   "error.invalidEmail": "Invalid email",
   "error.passwordSet": "Password is already set",
 
-  
+
   "permissions.readMessages": "Read messages",
+  "permissions.manageChannel": "Manage channel",
+  "permissions.manageInfo": "Manage info",
+  "permissions.manageRoles": "Manage roles",
 
 
   "crChest.wooden": "Wooden",

@@ -49,6 +49,7 @@ Pages =
   GroupInvitePage: require './pages/group_invite'
   GroupAddRecordsPage: require './pages/group_add_records'
   GroupManageRecordsPage: require './pages/group_manage_records'
+  GroupManageRolesPage: require './pages/group_manage_roles'
   GroupManageChannelsPage: require './pages/group_manage_channels'
   GroupAddChannelPage: require './pages/group_add_channel'
   GroupEditChannelPage: require './pages/group_edit_channel'
@@ -241,6 +242,7 @@ module.exports = class App
     routeGame 'groupLeaderboard', 'GroupLeaderboardPage'
     routeGame 'groupAddRecords', 'GroupAddRecordsPage'
     routeGame 'groupManageRecords', 'GroupManageRecordsPage'
+    routeGame 'groupManageRoles', 'GroupManageRolesPage'
     routeGame [
       'newThread', 'newThreadWithCategory', 'newThreadWithCategoryAndId'
     ], 'NewThreadPage'

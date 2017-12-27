@@ -1,11 +1,13 @@
 z = require 'zorium'
-RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/switchMap'
+_map = require 'lodash/map'
 
-Tabs = require '../tabs'
+Dropdown = require '../dropdown'
+PrimaryButton = require '../primary_button'
 UserHeader = require '../user_header'
-GroupManageMemberGeneral = require '../group_manage_member_general'
-GroupManageMemberRecords = require '../group_manage_member_records'
-GroupManageMemberNotes = require '../group_manage_member_notes'
 DateService = require '../../services/date'
 colors = require '../../colors'
 
@@ -16,22 +18,35 @@ module.exports = class GroupManageMember
   constructor: ({@model, @router, group, user}) ->
     @$userHeader = new UserHeader()
 
-    overlay$ = new RxBehaviorSubject null
+    roles = group.switchMap (group) =>
+      @model.groupRole.getAllByGroupId group.id
 
-    @$general = new GroupManageMemberGeneral {@model, group, user}
-    @$records = new GroupManageMemberRecords {@model, group, user, overlay$}
-    @$notes = new GroupManageMemberNotes {@model, group, user}
-    @$tabs = new Tabs {@model}
+    @roleValueStreams = new RxReplaySubject 1
+    @roleValueStreams.next roles.map (roles) ->
+      roles?[0]?.roleId
+
+    @$roleDropdown = new Dropdown {valueStreams: @roleValueStreams}
+    @$addRoleButton = new PrimaryButton()
+
+    groupAndUser = RxObservable.combineLatest(group, user, (vals...) -> vals)
 
     @state = z.state
+      groupUser: groupAndUser.switchMap ([group, user]) =>
+        @model.groupUser.getByGroupIdAndUserId group.id, user.id
+      roleId: @roleValueStreams.switch()
       group: group
       user: user
-      overlay$: overlay$
+      roles: roles
       windowSize: @model.window.getSize()
       appBarHeight: @model.window.getAppBarHeight()
 
+  addRole: =>
+    {group, user, roleId} = @state.getValue()
+    @model.groupUser.addRoleByGroupIdAndUserId group.id, user.id, roleId
+
   render: =>
-    {group, user, overlay$, windowSize, appBarHeight} = @state.getValue()
+    {groupUser, group, user, windowSize,
+      appBarHeight, roles, roleId} = @state.getValue()
 
     z '.z-group-manage-member', {
       style:
@@ -50,24 +65,23 @@ module.exports = class GroupManageMember
                 z '.title', 'Joined'
                 z '.date', DateService.fromNow user?.joinTime
 
-        z @$tabs,
-          isBarFixed: false
-          fitToParent: true
-          barBgColor: colors.$tertiary700
-          barInactiveColor: colors.$white
-          tabs: [
-            # {
-            #   $menuText: 'General'
-            #   $el: @$general
-            # }
-            {
-              $menuText: 'Records'
-              $el: @$records
-            }
-            {
-              $menuText: 'Notes'
-              $el: @$notes
-            }
-          ]
-
-      overlay$
+        z '.g-grid',
+          z '.row',
+            z '.roles',
+              _map groupUser?.roles, (role) =>
+                z '.role', {
+                  onclick: =>
+                    @model.groupUser.removeRoleByGroupIdAndUserId(
+                      group.id, user.id, roleId
+                    )
+                }, role.name
+          z '.row',
+            z @$roleDropdown,
+              hintText: 'Type'
+              isFloating: false
+              options: _map roles, (role) ->
+                {value: role.roleId, text: role.name}
+            z '.button',
+              z @$addRoleButton,
+                text: @model.l.get 'groupManageMember.addRole'
+                onclick: @addRole

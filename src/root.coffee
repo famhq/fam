@@ -13,7 +13,6 @@ require 'rxjs/add/operator/do'
 require './root.styl'
 
 config = require './config'
-CookieService = require './services/cookie'
 RouterService = require './services/router'
 PushService = require './services/push'
 SemverService = require './services/semver'
@@ -63,14 +62,6 @@ window.onerror = (message, file, line, column, error) ->
 #################
 # ROUTING SETUP #
 #################
-setCookies = (currentCookies) ->
-  host = window.location.host
-  (cookies) ->
-    _map cookies, (value, key) ->
-      unless currentCookies[key] is value
-        document.cookie = cookie.serialize \
-          key, value, CookieService.getCookieOpts(host)
-    currentCookies = cookies
 
 try
   navigator.serviceWorker?.register '/service_worker.js'
@@ -87,15 +78,6 @@ portal = new Portal()
 init = ->
   currentCookies = cookie.parse(document.cookie)
   cookieSubject = new RxBehaviorSubject currentCookies
-  cookieSubject.do(setCookies(currentCookies)).subscribe()
-
-  setTimeout ->
-    # HACK / FIXME: CookieService.set can't be called simultaneously twice or
-    # it will revert the first cookie. we also set in language model.
-    CookieService.set(
-      cookieSubject, 'resolution', "#{window.innerWidth}x#{window.innerHeight}"
-    )
-  , 0
 
   isOffline = new RxBehaviorSubject false
   isBackendUnavailable = new RxBehaviorSubject false
@@ -123,6 +105,24 @@ init = ->
     language = 'en'
   model = new Model({cookieSubject, io, portal, language})
   model.portal.listen()
+
+  setCookies = (currentCookies) ->
+    host = window.location.host
+    (cookies) ->
+      _map cookies, (value, key) ->
+        unless currentCookies[key] is value
+          document.cookie = cookie.serialize \
+            key, value, model.cookie.getCookieOpts(host)
+      currentCookies = cookies
+  cookieSubject.do(setCookies(currentCookies)).subscribe()
+
+  setTimeout ->
+    # HACK / FIXME: model.cookie.set can't be called simultaneously twice or
+    # it will revert the first cookie. we also set in language model.
+    model.cookie.set(
+      'resolution', "#{window.innerWidth}x#{window.innerHeight}"
+    )
+  , 0
 
   onOnline = ->
     isOffline.next false

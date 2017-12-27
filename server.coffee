@@ -23,7 +23,6 @@ config = require './src/config'
 gulpPaths = require './gulp_paths'
 App = require './src/app'
 Model = require './src/models'
-CookieService = require './src/services/cookie'
 RouterService = require './src/services/router'
 
 MIN_TIME_REQUIRED_FOR_HSTS_GOOGLE_PRELOAD_MS = 10886400000 # 18 weeks
@@ -148,27 +147,21 @@ app.use (req, res, next) ->
   else if isLegacyHost# and not isNativeApp
     return res.redirect(301, 'https://starfire.games' + req.path)
   else if accessToken and not isLegacyHost# and not isNativeApp
-    res.cookie('accessToken', accessToken, CookieService.getCookieOpts(host))
+    res.cookie(
+      'accessToken'
+      accessToken
+      {
+        path: '/'
+        expires: new Date(Date.now() + 3600 * 24 * 365)
+        domain: '.' + host.split(':')[0]
+      }
+    )
     return res.redirect(301, 'https://starfire.games' + req.path)
   # end migrate
 
   hasSent = false
-  setCookies = (currentCookies) ->
-    (cookies) ->
-      _map cookies, (value, key) ->
-        if currentCookies[key] isnt value and not hasSent
-          res.cookie(key, value, CookieService.getCookieOpts(host))
-      currentCookies = cookies
 
   cookieSubject = new RxBehaviorSubject req.cookies
-  cookieSubject.do(setCookies(req.cookies)).subscribe()
-
-  # for client to access
-  CookieService.set(
-    cookieSubject
-    'ip'
-    req.headers?['x-forwarded-for'] or req.connection.remoteAddress
-  )
 
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
@@ -189,6 +182,21 @@ app.use (req, res, next) ->
     model: model
   }
   requests = new RxBehaviorSubject(req)
+
+  setCookies = (currentCookies) ->
+    (cookies) ->
+      _map cookies, (value, key) ->
+        if currentCookies[key] isnt value and not hasSent
+          res.cookie(key, value, model.cookie.getCookieOpts(host))
+      currentCookies = cookies
+  cookieSubject.do(setCookies(req.cookies)).subscribe()
+
+  # for client to access
+  model.cookie.set(
+    'ip'
+    req.headers?['x-forwarded-for'] or req.connection.remoteAddress
+  )
+
   if config.ENV is config.ENVS.PROD
     scriptsCdnUrl = config.SCRIPTS_CDN_URL
     bundlePath = "#{scriptsCdnUrl}/bundle_#{stats.hash}_#{language}.js"

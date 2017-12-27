@@ -101,6 +101,10 @@ isomorphic =
     # 12: 'rgb(234, 126, 165)'
     # 13: 'rgb(234, 126, 194)'
 
+  # ALSO IN RADIOACTIVE
+  DEFAULT_PERMISSIONS:
+    readMessages: true
+    manageChannel: false
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
   # d folder has longer cache
   SCRIPTS_CDN_URL: 'https://cdn.wtf/d/scripts/starfire'

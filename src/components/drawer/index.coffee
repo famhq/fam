@@ -61,81 +61,96 @@ module.exports = class Drawer
       language: @model.l.getLanguage()
       me: me
       gameKey: gameKey
-      myGroups: groupAndMyGroupsAndGameKey.map ([group, groups, gameKey, me]) =>
-        groups = _orderBy groups, (group) ->
-          group.conversations?[0]?.lastUpdateTime
+      myGroups: groupAndMyGroupsAndGameKey.switchMap (props) =>
+        [group, groups, gameKey, me] = props
+        groups = _orderBy groups, (group) =>
+          @model.cookie.get("group_#{group.id}_lastVisit") or 0
         , 'desc'
         if group # current group, show up top
           groups = _filter groups, ({id}) ->
             id isnt group.id
           groups = [group].concat groups
-        _map _take(groups, GROUPS_IN_DRAWER), (group) =>
-          {
-            group
-            $badge: if group.clan \
-                    then new ClanBadge {@model, clan: group.clan}
-                    else new GroupBadge {@model, group}
-            $chevronIcon: new Icon()
-            $ripple: new Ripple()
-            children: if group.type is 'public'
-              _filter [
-                {
-                  path: @router.get 'groupChat', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  title: @model.l.get 'general.chat'
-                }
-                {
-                  path: @router.get 'groupShop', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  # title: @model.l.get 'general.shop'
-                  title: @model.l.get 'general.freeStuff'
-                }
-                {
-                  path: @router.get 'groupCollection', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  title: @model.l.get 'collectionPage.title'
-                }
-                if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
+        groups = _take(groups, GROUPS_IN_DRAWER)
+        groupUserObs = _map groups, (group) =>
+          @model.groupUser.getByGroupIdAndUserId group.id, me.id
+        RxObservable.combineLatest groupUserObs..., (vals...) -> vals
+        .map (meGroupUsers) =>
+          _map groups, (group, i) =>
+            meGroupUser = meGroupUsers[i]
+            {
+              group
+              $badge: if group.clan \
+                      then new ClanBadge {@model, clan: group.clan}
+                      else new GroupBadge {@model, group}
+              $chevronIcon: new Icon()
+              $ripple: new Ripple()
+              children: if group.type is 'public'
+                _filter [
                   {
-                    path: @router.get 'groupVideos', {
+                    path: @router.get 'groupChat', {
                       gameKey: gameKey
                       id: group.key or group.id
                     }
-                    title: @model.l.get 'videosPage.title'
+                    title: @model.l.get 'general.chat'
                   }
-                {
-                  path: @router.get 'groupLeaderboard', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  title: @model.l.get 'groupLeaderboardPage.title'
-                }
-                if @model.group.hasPermission group, me, {level: 'admin'}
                   {
-                    path: @router.get 'groupSettings', {
+                    path: @router.get 'groupShop', {
                       gameKey: gameKey
                       id: group.key or group.id
                     }
-                    title: @model.l.get 'groupSettingsPage.title'
-                    children: [
-                      {
-                        path: @router.get 'groupManageChannels', {
-                          gameKey: gameKey
-                          id: group.key or group.id
-                        }
-                        title: @model.l.get 'groupManageChannelsPage.title'
+                    # title: @model.l.get 'general.shop'
+                    title: @model.l.get 'general.freeStuff'
+                  }
+                  {
+                    path: @router.get 'groupCollection', {
+                      gameKey: gameKey
+                      id: group.key or group.id
+                    }
+                    title: @model.l.get 'collectionPage.title'
+                  }
+                  if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
+                    {
+                      path: @router.get 'groupVideos', {
+                        gameKey: gameKey
+                        id: group.key or group.id
                       }
-                    ]
+                      title: @model.l.get 'videosPage.title'
+                    }
+                  {
+                    path: @router.get 'groupLeaderboard', {
+                      gameKey: gameKey
+                      id: group.key or group.id
+                    }
+                    title: @model.l.get 'groupLeaderboardPage.title'
                   }
-
-              ]
-          }
+                  if @model.groupUser.hasPermission {
+                    meGroupUser, me, permissions: ['manageRoles']
+                  }
+                    {
+                      path: @router.get 'groupSettings', {
+                        gameKey: gameKey
+                        id: group.key or group.id
+                      }
+                      title: @model.l.get 'groupSettingsPage.title'
+                      children: [
+                        {
+                          path: @router.get 'groupManageChannels', {
+                            gameKey: gameKey
+                            id: group.key or group.id
+                          }
+                          title: @model.l.get 'groupManageChannelsPage.title'
+                        }
+                        {
+                          path: @router.get 'groupManageRoles', {
+                            gameKey: gameKey
+                            id: group.key or group.id
+                          }
+                          title: @model.l.get 'groupManageRolesPage.title'
+                        }
+                      ]
+                    }
+                ]
+            }
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
@@ -190,44 +205,6 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'friends'
           }
-          if language is 'es'
-            {
-              path: 'https://starfire.games/es/clash-royale/wiki'
-              onclick: (e) =>
-                e?.preventDefault()
-                isNative = Environment.isGameApp config.GAME_KEY
-                appVersion = isNative and Environment.getAppVersion(
-                  config.GAME_KEY
-                )
-                isNewIAB = isNative and SemverService.gte appVersion, '1.4.0'
-                @model.portal.call 'browser.openWindow', {
-                  url: 'https://starfire.games/es/clash-royale/wiki'
-                  target: '_blank'
-                  options: if isNewIAB
-                    statusbar: {
-                      color: colors.$primary700
-                    }
-                    toolbar: {
-                      height: 56
-                      color: colors.$tertiary700
-                    }
-                    title: {
-                      color: colors.$tertiary700Text
-                      staticText: 'Wiki'
-                    }
-                    closeButton: {
-                      # https://jgilfelt.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=clipart&foreground.space.trim=1&foreground.space.pad=0.5&foreground.clipart=res%2Fclipart%2Ficons%2Fnavigation_close.svg&foreColor=fff%2C0&crop=0&backgroundShape=none&backColor=fff%2C100&effects=none&elevate=0
-                      image: 'close'
-                      # imagePressed: 'close_grey'
-                      align: 'left'
-                      event: 'closePressed'
-                    }
-                }
-              title: 'Wiki'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'wiki'
-            }
           {
             path: @router.get 'recruit', {gameKey}
             title: @model.l.get 'general.recruiting'

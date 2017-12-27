@@ -22,7 +22,8 @@ module.exports = class Toggle
     z '.z-toggle', {
       className: z.classKebab {isSelected}
       onclick: =>
-        @isSelectedStreams.next RxObservable.of not isSelected
+        # @isSelectedStreams.next RxObservable.of not isSelected
+        @isSelected.next not isSelected
         onToggle? not isSelected
     },
       z '.track'

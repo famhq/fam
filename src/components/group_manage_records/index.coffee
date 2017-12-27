@@ -112,6 +112,7 @@ module.exports = class GroupManageRecords
               hintText: 'Time scale'
               isDisabled: true
               options: timeScaleOptions
+              isFirstOptionEmpty: true
           z '.delete',
             z $deleteIcon,
               icon: 'delete'
@@ -132,6 +133,7 @@ module.exports = class GroupManageRecords
             hintText: 'Time scale'
             isDisabled: isLoading
             options: timeScaleOptions
+            isFirstOptionEmpty: true
 
       if isConfirmDeleteDialogVisible
         z @$confirmDeleteDialog,

@@ -14,22 +14,18 @@
       background: getColor('$tertiary700')
       padding: 16px
 
-      > .g-grid
-        > .flex
+    > .g-grid
+        > .row
+          padding: 16px
           display: flex
 
-          > .name
-            font-h1()
-            color: getColor('$white')
+          > .button
+            margin-left: 8px
 
-          > .join-date
-            margin-left: auto
-            font-caption1()
-            color: getColor('$tertiary300')
-
-            > .title
-              font-title()
-              text-transform: uppercase
-
-            > .date
-              margin-top: 4px
+          > .roles
+            > .role
+              display: inline-block
+              margin-right: 4px
+              background: getColor('$tertiary500')
+              padding: 4px
+              cursor: pointer

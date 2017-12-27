@@ -68,10 +68,10 @@ module.exports = class Conversation extends Base
     loadedMessages = conversationAndMe.switchMap (resp) =>
       [conversation, me] = resp
 
-      if lastConversationId isnt conversation.id
+      if lastConversationId isnt conversation?.id
         isLoading.next true
 
-      lastConversationId = conversation.id
+      lastConversationId = conversation?.id
 
       @messageBatchesStreams = new RxReplaySubject(1)
       @messageBatchesStreamCache = []

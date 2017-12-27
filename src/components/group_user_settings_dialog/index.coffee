@@ -89,12 +89,6 @@ module.exports = class GroupUserSettingsDialog
         $content:
           z '.z-group-user-settings-dialog_dialog',
             z 'ul.list',
-              if hasAdminPermission
-                z 'li.item',
-                  z '.text', 'Private (password required)'
-                  z '.toggle',
-                    @$isPrivateToggle
-
               _map items, ({$icon, icon, text, onclick}) ->
                 z 'li.item', {onclick},
                   z '.icon',

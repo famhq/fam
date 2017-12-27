@@ -1,5 +1,7 @@
 _every = require 'lodash/every'
 _find = require 'lodash/find'
+_defaults = require 'lodash/defaults'
+_clone = require 'lodash/clone'
 
 config = require '../config'
 
@@ -8,10 +10,15 @@ module.exports = class GroupUser
 
   constructor: ({@auth}) -> null
 
-  createModeratorByUsername: ({username, groupId, roleId}) =>
-    @auth.call "#{@namespace}.createModeratorByUsername", {
-      username, groupId, roleId
-    }
+  addRoleByGroupIdAndUserId: (groupId, userId, roleId) =>
+    @auth.call "#{@namespace}.addRoleByGroupIdAndUserId", {
+      userId, groupId, roleId
+    }, {invalidateAll: true}
+
+  removeRoleByGroupIdAndUserId: (groupId, userId, roleId) =>
+    @auth.call "#{@namespace}.removeRoleByGroupIdAndUserId", {
+      userId, groupId, roleId
+    }, {invalidateAll: true}
 
   getByGroupIdAndUserId: (groupId, userId) =>
     @auth.stream "#{@namespace}.getByGroupIdAndUserId", {groupId, userId}
@@ -19,8 +26,14 @@ module.exports = class GroupUser
   getTopByGroupId: (groupId) =>
     @auth.stream "#{@namespace}.getTopByGroupId", {groupId}
 
-  hasPermission: ({meGroupUser, me, permissions}) ->
+  hasPermission: ({meGroupUser, me, permissions, channelId, roles}) ->
+    roles ?= meGroupUser?.roles
     isGlobalModerator = me?.flags?.isModerator
     isGlobalModerator or _every permissions, (permission) ->
-      _find meGroupUser?.roles, (role) ->
-        role.globalPermissions.indexOf(permission) isnt -1
+      _find roles, (role) ->
+        channelPermissions = channelId and role.channelPermissions?[channelId]
+        globalPermissions = role.globalPermissions
+        permissions = _defaults(
+          channelPermissions, globalPermissions, config.DEFAULT_PERMISSIONS
+        )
+        permissions[permission]

@@ -8,21 +8,20 @@ if window?
   require './index.styl'
 
 module.exports = class ChannelList
-  constructor: ({@model, @isOpen, group}) ->
+  constructor: ({@model, @isOpen, conversations}) ->
     me = @model.user.getMe()
 
     @state = z.state
       me: me
-      group: group
-      conversations: group.map (group) ->
-        _map group.conversations, (channel) ->
+      conversations: conversations.map (conversations) ->
+        _map conversations, (channel) ->
           {
             channel
             $statusIcon: new Icon()
           }
 
   render: ({onclick, selectedConversationId}) =>
-    {me, group, conversations} = @state.getValue()
+    {me, conversations} = @state.getValue()
 
     z '.z-channel-list',
       _map conversations, ({channel}) ->

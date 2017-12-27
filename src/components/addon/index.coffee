@@ -6,6 +6,7 @@ _reduce = require 'lodash/reduce'
 TopTouchdownCards = require '../top_touchdown_cards'
 TopDraftCards = require '../top_draft_cards'
 TopChallengeDecks = require '../top_challenge_decks'
+Top2v2Decks = require '../top_2v2_decks'
 NewCards = require '../new_cards'
 ChestSimulatorPick = require '../simulator_pick'
 ForumSignature = require '../forum_signature'
@@ -25,6 +26,7 @@ module.exports = class Addon
     @$chestSimulatorPick = new ChestSimulatorPick {@model, @router}
     @$topTouchdownCards = new TopTouchdownCards {@model, @router}
     @$topChallengeDecks = new TopChallengeDecks {@model, @router}
+    @$top2v2Decks = new Top2v2Decks {@model, @router}
     @$topDraftCards = new TopDraftCards {@model, @router}
     @$newCards = new NewCards {@model, @router}
     @$forumSignature = new ForumSignature {@model, @router}
@@ -63,6 +65,8 @@ module.exports = class Addon
         z @$forumSignature
       else if addon?.id is 'a8370ac8-d07e-454a-824d-bee1b5266ea4'
         z @$topChallengeDecks
+      else if addon?.id is '7da4d705-6180-4ceb-869e-cb6f0f8e004d'
+        z @$top2v2Decks
       else if testUrl or addon?.url
         replacements = _defaults replacements, {lang: language}
         vars = addon?.url?.match /\{[a-zA-Z0-9]+\}/g

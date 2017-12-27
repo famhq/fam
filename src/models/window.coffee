@@ -1,7 +1,6 @@
 Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
-CookieService = require '../services/cookie'
 config = require '../config'
 
 DRAWER_RIGHT_PADDING = 56
@@ -9,7 +8,7 @@ DRAWER_MAX_WIDTH = 336
 GRID_WIDTH = 1280
 
 module.exports = class Window
-  constructor: ({@cookieSubject, @experiment}) ->
+  constructor: ({@cookie, @experiment}) ->
     @isPaused = false
 
     @size = new RxBehaviorSubject @getSizeVal()
@@ -24,7 +23,7 @@ module.exports = class Window
       @breakpoint.next @getBreakpointVal()
 
   getSizeVal: =>
-    resolution = CookieService.get @cookieSubject, 'resolution'
+    resolution = @cookie.get 'resolution'
     if window?
       width = window.innerWidth
       height = window.innerHeight

@@ -22,26 +22,22 @@ module.exports = class Dropdown
       error: @error
     }
 
-  render: ({hintText, isFloating, isDisabled, options}) =>
+  render: ({isDisabled, options, isFirstOptionEmpty}) =>
     {value, error, isFocused} = @state.getValue()
 
-    hintText ?= ''
-    isFloating ?= true
     isDisabled ?= false
-    options = [{value: '', text: ''}].concat options
+    if isFirstOptionEmpty
+      options = [{value: '', text: ''}].concat options
 
     z '.zp-dropdown',
       # vdom doesn't key defaultValue correctly if elements are switched
-      key: _kebabCase hintText
+      # key: _kebabCase hintText
       className: z.classKebab {
         hasValue: value isnt ''
         isFocused
-        isFloating
         isDisabled
         isError: error?
       }
-      z '.hint',
-        hintText
       z 'select.select', {
         attributes:
           disabled: if isDisabled then true else undefined

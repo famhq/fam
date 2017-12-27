@@ -8,7 +8,6 @@ _filter = require 'lodash/filter'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 DateService = require '../services/date'
-CookieService = require '../services/cookie'
 config = require '../config'
 
 # missing: card_info, channel picker, edit group, edit group change badge
@@ -19,9 +18,8 @@ config = require '../config'
 # profile page share
 
 class Language
-  constructor: ({language, @cookieSubject} = {}) ->
+  constructor: ({language, @cookie} = {}) ->
     language ?= 'en'
-    @cookieSubject ?= new RxBehaviorSubject null
 
     @language = new RxBehaviorSubject language
 
@@ -65,9 +63,7 @@ class Language
 
   setLanguage: (language) =>
     @language.next language
-    CookieService.set(
-      @cookieSubject, 'language', language
-    )
+    @cookie.set 'language', language
     DateService.setL this
     DateService.setLocale language
 

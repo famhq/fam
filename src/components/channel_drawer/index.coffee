@@ -15,7 +15,11 @@ module.exports = class ChannelDrawer
   constructor: ({@model, @router, @isOpen, group, conversation, gameKey}) ->
     me = @model.user.getMe()
 
-    @$channelList = new ChannelList {@model, @router, group}
+    @$channelList = new ChannelList {
+      @model
+      @router
+      conversations: group.map (group) -> group.conversations
+    }
     @$manageChannelsSettingsIcon = new Icon()
 
     @state = z.state

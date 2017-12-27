@@ -24,7 +24,7 @@ module.exports = class GroupChatPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, @overlay$}) ->
-    group = requests.switchMap ({route}) =>
+    @group = requests.switchMap ({route}) =>
       if isUuid route.params.id
         @model.group.getById route.params.id
       else
@@ -42,7 +42,7 @@ module.exports = class GroupChatPage
     me = @model.user.getMe()
 
     groupAndConversationIdAndMe = RxObservable.combineLatest(
-      group
+      @group
       conversationId
       me
       (vals...) -> vals
@@ -57,26 +57,15 @@ module.exports = class GroupChatPage
         isLoading.next true
 
       currentConversationId = conversationId
-      hasMemberPermission = @model.group.hasPermission group, me
-      conversationId ?= localStorage?['groupConversationId3:' + group.id]
-      unless conversationId
-        if me.country in ['RU', 'LV']
-          conversationId = _find(group.conversations, {name: 'русский'})?.id
-        else if me.country is 'FR'
-          conversationId = _find(group.conversations, {name: 'francais'})?.id
-        else if me.country is 'IT'
-          conversationId = _find(group.conversations, {name: 'italiano'})?.id
-        else if me.country in [
-          'AE', 'EG', 'IQ', 'IL', 'SA', 'JO', 'SY',
-          'YE', 'KW', 'OM', 'LY', 'MA', 'DZ', 'SD'
-        ] or window?.navigator?.language?.split?('-')[0] is 'ar'
-          conversationId = _find(group.conversations, {name: 'عربى'})?.id
-        else
-          conversationId = _find(group.conversations, ({name, isDefault}) ->
-            isDefault or name is 'general'
-          )?.id
-
-        conversationId ?= group.conversations?[0].id
+      hasMemberPermission = @model.group.hasPermission @group, me
+      # TODO
+      # conversationId ?= @model.cookie.get(
+      #   "group_#{group.id}_last_conversation_id"
+      # )
+      conversationId ?= _find(group.conversations, ({name, isDefault}) ->
+        isDefault or name is 'general'
+      )?.id
+      conversationId ?= group.conversations?[0]?.id
       if hasMemberPermission and conversationId
         @model.conversation.getById conversationId
       else
@@ -100,7 +89,7 @@ module.exports = class GroupChatPage
     @$groupChat = new GroupChat {
       @model
       @router
-      group
+      @group
       selectedProfileDialogUser
       @overlay$
       gameKey
@@ -110,14 +99,14 @@ module.exports = class GroupChatPage
     @$profileDialog = new ProfileDialog {
       @model
       @router
-      group
+      @group
       selectedProfileDialogUser
       gameKey
     }
     @$groupUserSettingsDialog = new GroupUserSettingsDialog {
       @model
       @router
-      group
+      @group
       gameKey
       @overlay$
     }
@@ -125,7 +114,7 @@ module.exports = class GroupChatPage
     @$channelDrawer = new ChannelDrawer {
       @model
       @router
-      group
+      @group
       conversation
       gameKey
       isOpen: @isChannelDrawerOpen
@@ -133,12 +122,16 @@ module.exports = class GroupChatPage
 
     @state = z.state
       windowSize: @model.window.getSize()
-      group: group
+      group: @group
       gameKey: gameKey
       me: me
       selectedProfileDialogUser: selectedProfileDialogUser
       isChannelDrawerOpen: @isChannelDrawerOpen
       conversation: conversation
+
+  afterMount: =>
+    @group.take(1).subscribe (group) =>
+      @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
 
   renderHead: => @$head
 

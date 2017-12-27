@@ -88,6 +88,10 @@ module.exports = class ProfileDialog
       group, meGroupUser, me
       permissions: ['permaBan']
     }
+    hasManagePermission = @model.groupUser.hasPermission {
+      group, meGroupUser, me
+      permissions: ['manageRoles']
+    }
 
     userOptions = _filter [
       {
@@ -231,6 +235,18 @@ module.exports = class ProfileDialog
             @model.chatMessage.deleteById user?.chatMessageId
             @selectedProfileDialogUser.next null
         }
+      if hasManagePermission
+        {
+          icon: 'settings'
+          $icon: @$manageIcon
+          text: @model.l.get 'general.manage'
+          isVisible: true
+          onclick: =>
+            @router.go 'groupManage', {
+              gameKey: gameKey, id: group.id, userId: user?.id
+            }
+            @selectedProfileDialogUser.next null
+        }
     ]
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
@@ -278,19 +294,3 @@ module.exports = class ProfileDialog
                         isTouchTarget: false
                       }
                     z '.text', text
-
-
-              # if group and hasAdminPermission
-              #   [
-              #     z 'li.divider'
-              #     z 'li.menu-item', {
-              #       onclick: =>
-              #         @router.go "/group/#{group.id}/manage/#{user?.id}"
-              #     },
-              #       z '.icon',
-              #         z @$manageIcon,
-              #           icon: 'settings'
-              #           color: colors.$primary500
-              #           isTouchTarget: false
-              #       z '.text', 'Manage'
-              #   ]

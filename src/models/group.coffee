@@ -28,6 +28,9 @@ module.exports = class Group
   getByKey: (key) =>
     @auth.stream "#{@namespace}.getByKey", {key}
 
+  getAllChannelsById: (id) =>
+    @auth.stream "#{@namespace}.getAllChannelsById", {id}
+
   joinById: (id) =>
     @auth.call "#{@namespace}.joinById", {id}, {
       invalidateAll: true

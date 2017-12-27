@@ -2,16 +2,15 @@ z = require 'zorium'
 isUuid = require 'isuuid'
 
 Head = require '../../components/head'
-GroupManageMember = require '../../components/group_manage_member'
+GroupManageRoles = require '../../components/group_manage_roles'
 AppBar = require '../../components/app_bar'
-ButtonBack = require '../../components/button_back'
+ButtonMenu = require '../../components/button_menu'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
-module.exports = class GroupManageMemberPage
-  hideDrawer: true
+module.exports = class GroupManageRolesPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData}) ->
@@ -24,19 +23,22 @@ module.exports = class GroupManageMemberPage
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId
 
+    gameKey = requests.map ({route}) ->
+      route.params.gameKey or config.DEFAULT_GAME_KEY
+
     @$head = new Head({
       @model
       requests
       serverData
       meta: {
-        title: @model.l.get 'groupManageMemberPage.title'
-        description: @model.l.get 'groupManageMemberPage.title'
+        title: @model.l.get 'groupManageRolesPage.title'
+        description: @model.l.get 'groupManageRolesPage.title'
       }
     })
     @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@model, @router}
-    @$groupManageMember = new GroupManageMember {
-      @model, @router, serverData, group, user
+    @$buttonMenu = new ButtonMenu {@model, @router}
+    @$groupManageRoles = new GroupManageRoles {
+      @model, @router, serverData, group, user, gameKey
     }
 
     @state = z.state
@@ -47,14 +49,14 @@ module.exports = class GroupManageMemberPage
   render: =>
     {windowSize} = @state.getValue()
 
-    z '.p-group-manage-member', {
+    z '.p-group-manage-roles', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: @model.l.get 'groupManageMemberPage.title'
+        title: @model.l.get 'groupManageRolesPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
       }
-      @$groupManageMember
+      @$groupManageRoles

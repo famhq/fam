@@ -21,6 +21,7 @@ ClashRoyaleCard = require './clash_royale_card'
 ClashRoyaleMatch = require './clash_royale_match'
 ChatMessage = require './chat_message'
 Conversation = require './conversation'
+Cookie = require './cookie'
 DynamicImage = require './dynamic_image'
 Event = require './event'
 Experiment = require './experiment'
@@ -124,16 +125,17 @@ module.exports = class Model
 
     pushToken = new RxBehaviorSubject null
 
-    @l = new Language {language, cookieSubject}
+    @cookie = new Cookie {cookieSubject}
+    @l = new Language {language, @cookie}
 
     @auth = new Auth {@exoid, cookieSubject, pushToken, @l, userAgent}
-    @user = new User {@auth, proxy, @exoid, cookieSubject}
+    @user = new User {@auth, proxy, @exoid, @cookie}
     @userData = new UserData {@auth}
     @userFollower = new UserFollower {@auth}
     @userItem = new UserItem {@auth}
     @userGroupData = new UserGroupData {@auth}
     @player = new Player {@auth}
-    @ad = new Ad {@portal, cookieSubject, userAgent}
+    @ad = new Ad {@portal, @cookie, userAgent}
     @addon = new Addon {@auth, @l}
     @clan = new Clan {@auth}
     @dynamicImage = new DynamicImage {@auth}
@@ -184,7 +186,7 @@ module.exports = class Model
       @pushToken
 
     }
-    @window = new Window {cookieSubject, @experiment}
+    @window = new Window {@cookie, @experiment}
 
   wasCached: => @isFromCache
 

@@ -33,6 +33,8 @@
   "newCards.description": "View stats for the cards in the latest update!",
   "topChallengeDecks.title": "Best 3x elixir decks",
   "topChallengeDecks.description": "See which 3x elixir challenge decks have the higest win rates!",
+  "top2V2Decks.title": "Best 2v2 decks",
+  "top2V2Decks.description": "See which 2v2 decks have the higest win rates!",
   "openTournaments.title": "Open tournaments",
   "openTournaments.description": "View free, open tournaments to join in-game",
   "clanManager.title": "Clan manager",

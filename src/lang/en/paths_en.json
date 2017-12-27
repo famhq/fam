@@ -36,6 +36,7 @@
   "groupLeaderboard": "/:gameKey/group/:id/leaderboard",
   "groupAddRecords": "/:gameKey/group/:id/add-records",
   "groupManageRecords": "/:gameKey/group/:id/manage-records",
+  "groupManageRoles": "/:gameKey/group/:id/manage-roles",
   "groupInvites": "/:gameKey/group-invites",
   "mod": "/:gameKey/mod",
   "modByKey": "/:gameKey/mod/:key",

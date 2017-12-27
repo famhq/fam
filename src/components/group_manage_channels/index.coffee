@@ -13,7 +13,11 @@ module.exports = class GroupManageChannels
 
     @$fab = new Fab()
     @$addIcon = new Icon()
-    @$channelList = new ChannelList {@model, group}
+    @$channelList = new ChannelList {
+      @model
+      conversations: group.switchMap (group) =>
+        @model.group.getAllChannelsById group.id
+    }
 
     @state = z.state {
       group
