@@ -21,6 +21,9 @@ module.exports = class GroupManageRoles
       'manageInfo'
       'manageChannel'
       'manageRoles'
+      'permaBanUser'
+      'tempBanUser'
+      'unbanUser'
     ]
 
     @$groupRolePermissions = new GroupRolePermissions {

@@ -35,6 +35,7 @@
   "groupVideos": "/group/{id}/videos",
   "groupLeaderboard": "/group/{id}/leaderboard",
   "groupAddRecords": "/group/{id}/add-records",
+  "groupBannedUsers": "/group/{id}/banned-users",
   "groupManageRecords": "/group/{id}/manage-records",
   "groupManageRoles": "/group/{id}/manage-roles",
   "groupNewChannel": "/group/{id}/new-channel",

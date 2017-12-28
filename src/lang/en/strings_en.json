@@ -441,6 +441,9 @@
   "groupInvitePage.title": "Group invite",
   "groupInvitesPage.title": "Group invites",
   "groupManageChannelsPage.title": "Manage channels",
+  "groupBannedUsersPage.title": "Banned users",
+  "groupBannedUsersPage.tempBanned": "Temp banned",
+  "groupBannedUsersPage.permBanned": "Perm banned",
   "groupManageRolesPage.title": "Manage roles",
   "groupManageMemberPage.title": "Manage member",
   "groupMembersPage.title": "Group members",
@@ -483,6 +486,9 @@
   "permissions.manageChannel": "Manage channel",
   "permissions.manageInfo": "Manage info",
   "permissions.manageRoles": "Manage roles",
+  "permissions.tempBanUser": "Temp ban user",
+  "permissions.permaBanUser": "Perm ban user",
+  "permissions.unbanUser": "Unban user",
 
 
   "crChest.wooden": "Wooden",

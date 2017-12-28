@@ -194,7 +194,8 @@ module.exports = class Conversation extends Base
               }
               $el = @getCached$ messageCacheKey, ConversationMessage, {
                 message, @model, @router, @overlay$, isMe,
-                isGrouped, selectedProfileDialogUser, $body
+                isGrouped, selectedProfileDialogUser, $body,
+                @messageBatchesStreams
               }
               prevMessage = message
               {$el, isGrouped, timeUuid: message.timeUuid, id}
@@ -234,7 +235,7 @@ module.exports = class Conversation extends Base
     @model.portal.call 'push.setContextId', {
       contextId: 'empty'
     }
-    @model.chatMessage.resetClientChangesStream conversation?.id
+    # @model.chatMessage.resetClientChangesStream conversation?.id
     window?.removeEventListener 'resize', @debouncedOnResize
 
   getMessagesStream: (maxTimeUuid) =>
@@ -334,11 +335,7 @@ module.exports = class Conversation extends Base
     {me, conversation, isPostLoading} = @state.getValue()
 
     messageBody = @message.getValue()
-    # lineBreaks =  messageBody.split(/\r\n|\r|\n/).length
-    # if messageBody.length > MAX_CHARACTERS or
-    #     lineBreaks > MAX_LINES
-    #   @error.next 'Message is too long'
-    #   return
+    console.log 'post', isPostLoading, messageBody
 
     if not isPostLoading and messageBody
       @isPostLoading.next true
@@ -356,10 +353,12 @@ module.exports = class Conversation extends Base
         userId: me?.id
       }, {user: me, time: Date.now()}
       .then (response) =>
+        console.log 'create done'
         # @model.user.emit('chatMessage').catch log.error
         @isPostLoading.next false
         response
       .catch =>
+        console.log 'create caught'
         @isPostLoading.next false
     else
       Promise.resolve null # reject here?
@@ -419,7 +418,7 @@ module.exports = class Conversation extends Base
                   ]
         ]
 
-      if group and groupUser is false
+      if group and groupUser and not groupUser.userId
         z '.bottom.is-gate',
           z '.text',
             @model.l.get 'conversation.joinMessage', {

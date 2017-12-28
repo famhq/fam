@@ -147,6 +147,13 @@ module.exports = class Drawer
                           }
                           title: @model.l.get 'groupManageRolesPage.title'
                         }
+                        {
+                          path: @router.get 'groupBannedUsers', {
+                            gameKey: gameKey
+                            id: group.key or group.id
+                          }
+                          title: @model.l.get 'groupBannedUsersPage.title'
+                        }
                       ]
                     }
                 ]
@@ -224,14 +231,6 @@ module.exports = class Drawer
           #   $ripple: new Ripple()
           #   iconName: 'developers'
           # }
-          if me?.flags.isModerator
-            {
-              path: @router.get 'modHub', {gameKey}
-              title: 'Mod hub'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'edit'
-            }
           if needsApp
             {
               isDivider: true

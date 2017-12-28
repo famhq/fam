@@ -23,7 +23,7 @@ DESCRIPTION_LENGTH = 100
 module.exports = class ConversationMessage
   constructor: (options) ->
     {message, @$body, isGrouped, isMe, @model, @overlay$,
-      @selectedProfileDialogUser, @router} = options
+      @selectedProfileDialogUser, @router, @messageBatchesStreams} = options
 
     @$avatar = new Avatar()
     @$ripple = new Ripple()
@@ -45,6 +45,14 @@ module.exports = class ConversationMessage
       isGrouped: isGrouped
       windowSize: @model.window.getSize()
 
+  openProfileDialog: (id, user) =>
+    @selectedProfileDialogUser.next _defaults {
+      onDeleteMessage: =>
+        @model.chatMessage.deleteById id
+        .then =>
+          @messageBatchesStreams.take(1).toPromise()
+    }, user
+
   render: ({isTextareaFocused}) =>
     {isMe, message, isGrouped, windowSize} = @state.getValue()
 
@@ -56,14 +64,10 @@ module.exports = class ConversationMessage
 
     onclick = =>
       unless isTextareaFocused
-        @selectedProfileDialogUser.next _defaults {
-          chatMessageId: id
-        }, user
+        @openProfileDialog id, user
 
     oncontextmenu = =>
-      @selectedProfileDialogUser.next _defaults {
-        chatMessageId: id
-      }, user
+      @openProfileDialog id, user
 
     isVerified = user and user.gameData?.isVerified
 

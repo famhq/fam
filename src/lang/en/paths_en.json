@@ -35,6 +35,7 @@
   "groupVideos": "/:gameKey/group/:id/videos",
   "groupLeaderboard": "/:gameKey/group/:id/leaderboard",
   "groupAddRecords": "/:gameKey/group/:id/add-records",
+  "groupBannedUsers": "/:gameKey/group/:id/banned-users",
   "groupManageRecords": "/:gameKey/group/:id/manage-records",
   "groupManageRoles": "/:gameKey/group/:id/manage-roles",
   "groupInvites": "/:gameKey/group-invites",

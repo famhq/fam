@@ -62,6 +62,7 @@ module.exports = class ProfileDialog
       isFlagLoading: false
       isFlagged: false
       isConversationLoading: false
+      isDeleteMessageLoading: false
 
   afterMount: =>
     @router.onBack =>
@@ -71,8 +72,9 @@ module.exports = class ProfileDialog
     @router.onBack null
 
   render: =>
-    {me, user, meGroupUser, platform, isFlagLoading, isFlagged, group, clashRoyaleData,
-      isConversationLoading, gameKey} = @state.getValue()
+    {me, user, meGroupUser, platform, isFlagLoading, isFlagged, group,
+      clashRoyaleData, isConversationLoading, gameKey,
+      isDeleteMessageLoading} = @state.getValue()
 
     isBlocked = @model.user.isBlocked me, user?.id
     isMe = user?.id is me?.id
@@ -138,30 +140,6 @@ module.exports = class ProfileDialog
               @model.userData.blockByUserId user?.id
             @selectedProfileDialogUser.next null
         }
-      # {
-      #   icon: 'warning'
-      #   $icon: @$flagIcon
-      #   text:
-      #     if isFlagLoading \
-      #     then @model.l.get 'general.loading'
-      #     else if isFlagged
-      #     then @model.l.get 'profileDialog.reported'
-      #     else @model.l.get 'profileDialog.report'
-      #   isVisible: not isMe
-      #   onclick: =>
-      #     @selectedProfileDialogUser.next null
-      #     # @state.set isFlagLoading: true
-      #     # @model.threadComment.flag user?.chatMessageId
-      #     # .then =>
-      #     #   @state.set isFlagLoading: false, isFlagged: true
-      # }
-      # {
-      #   icon: 'copy'
-      #   $icon: @$copyIcon
-      #   text: @model.l.get 'profileDialog.copy'
-      #   isVisible: true
-      #   onclick:-=> null # TODO
-      # }
     ]
 
     modOptions = _filter [
@@ -177,9 +155,9 @@ module.exports = class ProfileDialog
           isVisible: not isMe
           onclick: =>
             if user?.isChatBanned
-              @model.mod.unbanByUserId user?.id, {groupId: group?.id}
+              @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
             else
-              @model.mod.banByUserId user?.id, {
+              @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
                 duration: '24h', groupId: group?.id
               }
             @selectedProfileDialogUser.next null
@@ -196,11 +174,10 @@ module.exports = class ProfileDialog
           isVisible: not isMe
           onclick: =>
             if user?.isChatBanned
-              @model.mod.unbanByUserId user?.id, {groupId: group?.id}
+              @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
             else
-              @model.mod.banByUserId user?.id, {
+              @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
                 duration: 'permanent'
-                groupId: group?.id
               }
             @selectedProfileDialogUser.next null
         }
@@ -216,24 +193,27 @@ module.exports = class ProfileDialog
           isVisible: not isMe
           onclick: =>
             if user?.isChatBanned
-              @model.mod.unbanByUserId user?.id, {
-                groupId: group?.id
-              }
+              @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
             else
-              @model.mod.banByUserId user?.id, {
+              @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
                 type: 'ip', duration: 'permanent', groupId: group?.id
               }
             @selectedProfileDialogUser.next null
         }
-      if hasDeleteMessagePermission
+      if hasDeleteMessagePermission and user?.onDeleteMessage
         {
           icon: 'delete'
           $icon: @$deleteIcon
-          text: @model.l.get 'profileDialog.delete'
+          text: if isDeleteMessageLoading \
+                then @model.l.get 'general.loading'
+                else @model.l.get 'profileDialog.delete'
           isVisible: true
           onclick: =>
-            @model.chatMessage.deleteById user?.chatMessageId
-            @selectedProfileDialogUser.next null
+            @state.set isDeleteMessageLoading: true
+            user.onDeleteMessage()
+            .then =>
+              @state.set isDeleteMessageLoading: false
+              @selectedProfileDialogUser.next null
         }
       if hasManagePermission
         {

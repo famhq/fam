@@ -111,11 +111,11 @@ module.exports = class GroupSettings
           ]
 
         z 'ul.list',
-          if hasAdminPermission
-            z 'li.item',
-              z '.text', 'Private (password required)'
-              z '.toggle',
-                @$isPrivateToggle
+          # if hasAdminPermission
+          #   z 'li.item',
+          #     z '.text', 'Private (password required)'
+          #     z '.toggle',
+          #       @$isPrivateToggle
 
           _map items, ({$icon, icon, text, onclick}) ->
             z 'li.item', {onclick},

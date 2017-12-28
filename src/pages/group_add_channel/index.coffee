@@ -14,7 +14,7 @@ module.exports = class GroupAddChannelPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) ->
+    group = requests.switchMap ({route}) =>
       if isUuid route.params.id
         @model.group.getById route.params.id
       else
