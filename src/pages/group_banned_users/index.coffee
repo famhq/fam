@@ -44,7 +44,7 @@ module.exports = class GroupBannedUsersPage
 
     @selectedProfileDialogUser = new RxBehaviorSubject null
     @$profileDialog = new ProfileDialog {
-      @model, @portal, @router, @selectedProfileDialogUser, gameKey
+      @model, @portal, @router, @selectedProfileDialogUser, gameKey, group
     }
 
     @$tempBanned = new GroupBannedUsers {
@@ -54,7 +54,7 @@ module.exports = class GroupBannedUsersPage
         @model.ban.getAllByGroupId group.id, {duration: '24h'}
     }
 
-    @$permanentBanned = new GroupBannedUsers {
+    @$permBanned = new GroupBannedUsers {
       @model
       selectedProfileDialogUser: @selectedProfileDialogUser
       bans: group.switchMap (group) =>
@@ -65,11 +65,12 @@ module.exports = class GroupBannedUsersPage
     @state = z.state
       group: group
       windowSize: @model.window.getSize()
+      selectedProfileDialogUser: @selectedProfileDialogUser
 
   renderHead: => @$head
 
   render: =>
-    {group, windowSize} = @state.getValue()
+    {group, windowSize, selectedProfileDialogUser} = @state.getValue()
 
     z '.p-group-banned-users', {
       style:
@@ -94,3 +95,5 @@ module.exports = class GroupBannedUsersPage
             $el: z @$permBanned
           }
         ]
+      if selectedProfileDialogUser
+        @$profileDialog

@@ -124,7 +124,7 @@ module.exports = class Drawer
                     title: @model.l.get 'groupLeaderboardPage.title'
                   }
                   if @model.groupUser.hasPermission {
-                    meGroupUser, me, permissions: ['manageRoles']
+                    meGroupUser, me, permissions: ['manageRole']
                   }
                     {
                       path: @router.get 'groupSettings', {

@@ -11,7 +11,7 @@ Avatar = require '../avatar'
 if window?
   require './index.styl'
 
-module.exports = class BannedUserList
+module.exports = class GroupBannedUsers
   constructor: ({@model, @portal, bans, @selectedProfileDialogUser}) ->
     @state = z.state
       bans: bans.map (bans) ->
@@ -24,7 +24,7 @@ module.exports = class BannedUserList
   render: =>
     {bans} = @state.getValue()
 
-    z '.z-banned-user-list',
+    z '.z-group-banned-users',
       z '.g-grid',
         _map bans, ({$avatar, banInfo}) =>
           z '.user', {

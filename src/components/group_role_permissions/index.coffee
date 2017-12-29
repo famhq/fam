@@ -14,7 +14,7 @@ require 'rxjs/add/operator/switch'
 ActionBar = require '../action_bar'
 FlatButton = require '../flat_button'
 PrimaryButton = require '../primary_button'
-# PrimaryInput = require '../primary_input'
+SecondaryButton = require '../secondary_button'
 Spinner = require '../spinner'
 Dropdown = require '../dropdown'
 Toggle = require '../toggle'
@@ -29,16 +29,16 @@ module.exports = class GroupRolePermissions
       permissionTypes, gameKey, @onSave} = props
     me = @model.user.getMe()
 
-    roles = group.switchMap (group) =>
+    @roles = group.switchMap (group) =>
       @model.groupRole.getAllByGroupId group.id
 
     @roleValueStreams = new RxReplaySubject 1
-    @roleValueStreams.next roles.map (roles) ->
+    @roleValueStreams.next @roles.map (roles) ->
       roles?[0]?.roleId
 
     groupAndRolesAndRoleIdAndConversation = RxObservable.combineLatest(
       group
-      roles
+      @roles
       @roleValueStreams.switch()
       conversation or RxObservable.of null
       (vals...) -> vals
@@ -47,6 +47,7 @@ module.exports = class GroupRolePermissions
     @$roleDropdown = new Dropdown {valueStreams: @roleValueStreams}
     @$cancelButton = new FlatButton()
     @$saveButton = new PrimaryButton()
+    @$deleteRoleButton = new SecondaryButton()
     @$spinner = new Spinner()
 
     @state = z.state
@@ -54,7 +55,7 @@ module.exports = class GroupRolePermissions
       isSaving: false
       group: group
       gameKey: gameKey
-      roles: roles
+      roles: @roles
       roleId: @roleValueStreams.switch()
       permissionTypes: groupAndRolesAndRoleIdAndConversation.map (response) =>
         [group, roles, roleId, conversation] = response
@@ -91,8 +92,18 @@ module.exports = class GroupRolePermissions
     .then =>
       @state.set isSaving: false
 
+  deleteRole: =>
+    {group, roleId, roles} = @state.getValue()
+    if confirm 'Confirm?'
+      @model.groupRole.deleteByGroupIdAndRoleId group.id, roleId
+      @roleValueStreams.next RxObservable.of(
+        _find(roles, {name: 'everyone'})?.roleId
+      )
+
   render: =>
-    {me, isSaving, group, roles, permissionTypes} = @state.getValue()
+    {me, isSaving, group, roles, roleId, permissionTypes} = @state.getValue()
+
+    role = _find roles, {roleId}
 
     z '.z-group-role-permissions',
       if _isEmpty roles
@@ -114,6 +125,14 @@ module.exports = class GroupRolePermissions
                 z '.text', @model.l.get "permissions.#{key}"
                 z '.toggle',
                   z $toggle
+
+          if role?.name isnt 'everyone'
+            z '.delete-button',
+              z @$deleteRoleButton,
+                text: @model.l.get 'groupRolePermissions.deleteRole'
+                onclick: @deleteRole
+                isFullWidth: false
+
           z '.actions',
             z '.cancel-button',
               z @$cancelButton,

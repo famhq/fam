@@ -11,7 +11,10 @@ module.exports = class GroupEditChannelPermissions
     me = @model.user.getMe()
 
     permissionTypes = [
-      'readMessages'
+      'readMessage'
+      'sendMessage'
+      'sendLink'
+      'sendImage'
     ]
 
     @$groupRolePermissions = new GroupRolePermissions {

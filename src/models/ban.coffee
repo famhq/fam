@@ -6,6 +6,7 @@ module.exports = class Ban
   constructor: ({@auth}) -> null
 
   getAllByGroupId: (groupId, {duration} = {}) =>
+    console.log 'g', {duration, groupId}
     @auth.stream "#{@namespace}.getAllByGroupId", {duration, groupId}
 
   banByGroupIdAndUserId: (groupId, userId, {duration} = {}) =>

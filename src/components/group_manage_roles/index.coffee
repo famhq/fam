@@ -20,10 +20,13 @@ module.exports = class GroupManageRoles
     permissionTypes = [
       'manageInfo'
       'manageChannel'
-      'manageRoles'
+      'manageRole'
       'permaBanUser'
       'tempBanUser'
       'unbanUser'
+      'sendMessage'
+      'sendLink'
+      'sendImage'
     ]
 
     @$groupRolePermissions = new GroupRolePermissions {

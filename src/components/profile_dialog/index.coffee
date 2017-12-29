@@ -92,7 +92,7 @@ module.exports = class ProfileDialog
     }
     hasManagePermission = @model.groupUser.hasPermission {
       group, meGroupUser, me
-      permissions: ['manageRoles']
+      permissions: ['manageRole']
     }
 
     userOptions = _filter [
@@ -149,7 +149,7 @@ module.exports = class ProfileDialog
           $icon: @$tempBanIcon
           text:
             if user?.isChatBanned
-              @model.l.get 'profileDialog.chatBanned'
+              @model.l.get 'profileDialog.unban'
             else
               @model.l.get 'profileDialog.tempBan'
           isVisible: not isMe
@@ -168,7 +168,7 @@ module.exports = class ProfileDialog
           $icon: @$permaBanIcon
           text:
             if user?.isChatBanned
-              @model.l.get 'profileDialog.chatBanned'
+              @model.l.get 'profileDialog.unban'
             else
               @model.l.get 'profileDialog.permaBan'
           isVisible: not isMe
@@ -187,7 +187,7 @@ module.exports = class ProfileDialog
           $icon: @$ipBanIcon
           text:
             if user?.isChatBanned
-              @model.l.get 'profileDialog.chatBanned'
+              @model.l.get 'profileDialog.unban'
             else
               @model.l.get 'profileDialog.ipBan'
           isVisible: not isMe

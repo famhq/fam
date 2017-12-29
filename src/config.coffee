@@ -103,8 +103,11 @@ isomorphic =
 
   # ALSO IN RADIOACTIVE
   DEFAULT_PERMISSIONS:
-    readMessages: true
+    readMessage: true
     manageChannel: false
+    sendMessage: true
+    sendLink: true
+    sendImage: true
   CDN_URL: 'https://cdn.wtf/d/images/starfire'
   # d folder has longer cache
   SCRIPTS_CDN_URL: 'https://cdn.wtf/d/scripts/starfire'

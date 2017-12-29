@@ -335,7 +335,6 @@ module.exports = class Conversation extends Base
     {me, conversation, isPostLoading} = @state.getValue()
 
     messageBody = @message.getValue()
-    console.log 'post', isPostLoading, messageBody
 
     if not isPostLoading and messageBody
       @isPostLoading.next true

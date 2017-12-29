@@ -226,6 +226,7 @@
   "groupManageRoles.addRole": "Add role",
   "groupManageMember.addRole": "Add role",
   "groupRolePermissions.selectRole": "Select a role",
+  "groupRolePermissions.deleteRole": "Delete role",
   "groupSettings.leaveGroup": "Leave group",
   "groupSettings.chatMessage": "New chat messages",
   "groupSettings.passwordToJoin": "Password to join",
@@ -294,6 +295,7 @@
   "profileDialog.permaBan": "Perm ban",
   "profileDialog.ipBan": "IP Ban",
   "profileDialog.chatBanned": "Banned",
+  "profileDialog.unban": "Unban",
   "profileDialog.delete": "Delete",
   "profileDialog.copy": "Copy Text",
   "profileHistory.currentTitle": "Current deck",
@@ -482,13 +484,16 @@
   "error.passwordSet": "Password is already set",
 
 
-  "permissions.readMessages": "Read messages",
+  "permissions.readMessage": "Read messages",
   "permissions.manageChannel": "Manage channel",
   "permissions.manageInfo": "Manage info",
-  "permissions.manageRoles": "Manage roles",
+  "permissions.manageRole": "Manage roles",
   "permissions.tempBanUser": "Temp ban user",
   "permissions.permaBanUser": "Perm ban user",
   "permissions.unbanUser": "Unban user",
+  "permissions.sendMessage": "Send messages",
+  "permissions.sendLink": "Send links",
+  "permissions.sendImage": "Send images",
 
 
   "crChest.wooden": "Wooden",
