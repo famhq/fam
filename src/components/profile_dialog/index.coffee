@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
+_clone = require 'lodash/clone'
 _isEmpty = require 'lodash/isEmpty'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
@@ -28,11 +29,16 @@ module.exports = class ProfileDialog
     @$manageIcon = new Icon()
     @$flagIcon = new Icon()
     @$blockIcon = new Icon()
+    @$banIcon = new Icon()
     @$tempBanIcon = new Icon()
     @$permaBanIcon = new Icon()
     @$ipBanIcon = new Icon()
     @$deleteIcon = new Icon()
-    @$chevronIcon = new Icon()
+    @$delete1Icon = new Icon()
+    @$delete24hIcon = new Icon()
+    @$delete7dIcon = new Icon()
+    @$banChevronIcon = new Icon()
+    @$deleteChevronIcon = new Icon()
     @$closeIcon = new Icon()
     @$copyIcon = new Icon()
 
@@ -59,10 +65,9 @@ module.exports = class ProfileDialog
         else
           RxObservable.of null
       group: group
-      isFlagLoading: false
-      isFlagged: false
-      isConversationLoading: false
-      isDeleteMessageLoading: false
+      loadingItems: []
+      expandedItems: []
+      windowSize: @model.window.getSize()
 
   afterMount: =>
     @router.onBack =>
@@ -71,13 +76,25 @@ module.exports = class ProfileDialog
   beforeUnmount: =>
     @router.onBack null
 
-  render: =>
-    {me, user, meGroupUser, platform, isFlagLoading, isFlagged, group,
-      clashRoyaleData, isConversationLoading, gameKey,
-      isDeleteMessageLoading} = @state.getValue()
+  isLoadingByText: (text) =>
+    {loadingItems} = @state.getValue()
+    loadingItems.indexOf(text) isnt -1
 
-    isBlocked = @model.user.isBlocked me, user?.id
+  setLoadingByText: (text) =>
+    {loadingItems} = @state.getValue()
+    @state.set loadingItems: loadingItems.concat [text]
+
+  unsetLoadingByText: (text) =>
+    {loadingItems} = @state.getValue()
+    loadingItems = _clone loadingItems
+    loadingItems.splice loadingItems.indexOf(text), 1
+    @state.set loadingItems: loadingItems
+
+  getModOptions: =>
+    {me, user, meGroupUser, group, clashRoyaleData, gameKey} = @state.getValue()
+
     isMe = user?.id is me?.id
+
     hasDeleteMessagePermission = @model.groupUser.hasPermission {
       group, meGroupUser, me
       permissions: ['deleteMessage']
@@ -95,7 +112,160 @@ module.exports = class ProfileDialog
       permissions: ['manageRole']
     }
 
-    userOptions = _filter [
+    modOptions = _filter [
+      if hasTempBanPermission
+        {
+          icon: 'warning'
+          $icon: @$banIcon
+          $chevronIcon: @$banChevronIcon
+          text: @model.l.get 'profileDialog.ban'
+          isVisible: not isMe
+          children: _filter [
+            if hasTempBanPermission
+              {
+                icon: 'warning'
+                $icon: @$tempBanIcon
+                text:
+                  if user?.isChatBanned
+                    @model.l.get 'profileDialog.unban'
+                  else
+                    @model.l.get 'profileDialog.tempBan'
+                isVisible: not isMe
+                onclick: =>
+                  if user?.isChatBanned
+                    @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
+                  else
+                    @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
+                      duration: '24h', groupId: group?.id
+                    }
+                  @selectedProfileDialogUser.next null
+              }
+            if hasPermaBanPermission
+              {
+                icon: 'perma-ban'
+                $icon: @$permaBanIcon
+                text:
+                  if user?.isChatBanned
+                    @model.l.get 'profileDialog.unban'
+                  else
+                    @model.l.get 'profileDialog.permaBan'
+                isVisible: not isMe
+                onclick: =>
+                  if user?.isChatBanned
+                    @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
+                  else
+                    @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
+                      duration: 'permanent'
+                    }
+                  @selectedProfileDialogUser.next null
+              }
+            if hasPermaBanPermission
+              {
+                icon: 'ip-ban'
+                $icon: @$ipBanIcon
+                text:
+                  if user?.isChatBanned
+                    @model.l.get 'profileDialog.unban'
+                  else
+                    @model.l.get 'profileDialog.ipBan'
+                isVisible: not isMe
+                onclick: =>
+                  if user?.isChatBanned
+                    @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
+                  else
+                    @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
+                      type: 'ip', duration: 'permanent', groupId: group?.id
+                    }
+                  @selectedProfileDialogUser.next null
+              }
+          ]
+        }
+      if hasDeleteMessagePermission and user?.onDeleteMessage
+        {
+          icon: 'delete'
+          $icon: @$deleteIcon
+          $chevronIcon: @$deleteChevronIcon
+          text: @model.l.get 'profileDialog.delete'
+          isVisible: true
+          children: _filter [
+            {
+              icon: 'delete'
+              $icon: @$delete1Icon
+              text: if @isLoadingByText @model.l.get 'profileDialog.deleteMessage' \
+                    then @model.l.get 'general.loading'
+                    else @model.l.get 'profileDialog.deleteMessage'
+              isVisible: true
+              onclick: =>
+                @setLoadingByText @model.l.get 'profileDialog.deleteMessage'
+                user.onDeleteMessage()
+                .then =>
+                  @unsetLoadingByText @model.l.get 'profileDialog.deleteMessage'
+                  @selectedProfileDialogUser.next null
+            }
+            # TODO: backend for doing 24h instead of ~1wk
+            # {
+            #   icon: 'delete'
+            #   $icon: @$delete24hIcon
+            #   text: if @isLoadingByText @model.l.get 'profileDialog.deleteMessagesLast24hr' \
+            #         then @model.l.get 'general.loading'
+            #         else @model.l.get 'profileDialog.deleteMessagesLast24hr'
+            #   isVisible: true
+            #   onclick: =>
+            #     @setLoadingByText(
+            #       @model.l.get 'profileDialog.deleteMessagesLast24hr'
+            #     )
+            #     @model.chatMessage.deleteAllByGroupIdAndUserId(
+            #       group.id, user.id, {duration: '24h'}
+            #     )
+            #     .then =>
+            #       @unsetLoadingByText(
+            #         @model.l.get 'profileDialog.deleteMessagesLast24hr'
+            #       )
+            #       @selectedProfileDialogUser.next null
+            # }
+            {
+              icon: 'delete'
+              $icon: @$delete7dIcon
+              text: if @isLoadingByText @model.l.get 'profileDialog.deleteMessagesLast7d' \
+                    then @model.l.get 'general.loading'
+                    else @model.l.get 'profileDialog.deleteMessagesLast7d'
+              isVisible: true
+              onclick: =>
+                @setLoadingByText(
+                  @model.l.get 'profileDialog.deleteMessagesLast7d'
+                )
+                @model.chatMessage.deleteAllByGroupIdAndUserId(
+                  group.id, user.id, {duration: '7d'}
+                )
+                .then =>
+                  @unsetLoadingByText(
+                    @model.l.get 'profileDialog.deleteMessagesLast7d'
+                  )
+                  @selectedProfileDialogUser.next null
+            }
+          ]
+        }
+      if hasManagePermission
+        {
+          icon: 'settings'
+          $icon: @$manageIcon
+          text: @model.l.get 'general.manage'
+          isVisible: true
+          onclick: =>
+            @router.go 'groupManage', {
+              gameKey: gameKey, id: group.id, userId: user?.id
+            }
+            @selectedProfileDialogUser.next null
+        }
+    ]
+
+  getUserOptions: =>
+    {me, user, gameKey} = @state.getValue()
+
+    isBlocked = @model.user.isBlocked me, user?.id
+    isMe = user?.id is me?.id
+
+    _filter [
       {
         icon: 'profile'
         $icon: @$profileIcon
@@ -109,18 +279,18 @@ module.exports = class ProfileDialog
         icon: 'chat-bubble'
         $icon: @$messageIcon
         text:
-          if isConversationLoading
+          if @isLoadingByText @model.l.get 'profileDialog.message'
           then @model.l.get 'general.loading'
           else @model.l.get 'profileDialog.message'
         isVisible: not isMe
         onclick: =>
-          unless isConversationLoading
-            @state.set isConversationLoading: true
+          unless @isLoadingByText @model.l.get 'profileDialog.message'
+            @setLoadingByText @model.l.get 'profileDialog.message'
             @model.conversation.create {
               userIds: [user.id]
             }
             .then (conversation) =>
-              @state.set isConversationLoading: false
+              @unsetLoadingByText @model.l.get 'profileDialog.message'
               @router.go 'conversation', {gameKey, id: conversation.id}
               @selectedProfileDialogUser.next null
       }
@@ -142,105 +312,74 @@ module.exports = class ProfileDialog
         }
     ]
 
-    modOptions = _filter [
-      if hasTempBanPermission
-        {
-          icon: 'warning'
-          $icon: @$tempBanIcon
-          text:
-            if user?.isChatBanned
-              @model.l.get 'profileDialog.unban'
-            else
-              @model.l.get 'profileDialog.tempBan'
-          isVisible: not isMe
-          onclick: =>
-            if user?.isChatBanned
-              @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
-            else
-              @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
-                duration: '24h', groupId: group?.id
-              }
-            @selectedProfileDialogUser.next null
-        }
-      if hasPermaBanPermission
-        {
-          icon: 'perma-ban'
-          $icon: @$permaBanIcon
-          text:
-            if user?.isChatBanned
-              @model.l.get 'profileDialog.unban'
-            else
-              @model.l.get 'profileDialog.permaBan'
-          isVisible: not isMe
-          onclick: =>
-            if user?.isChatBanned
-              @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
-            else
-              @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
-                duration: 'permanent'
-              }
-            @selectedProfileDialogUser.next null
-        }
-      if hasPermaBanPermission
-        {
-          icon: 'ip-ban'
-          $icon: @$ipBanIcon
-          text:
-            if user?.isChatBanned
-              @model.l.get 'profileDialog.unban'
-            else
-              @model.l.get 'profileDialog.ipBan'
-          isVisible: not isMe
-          onclick: =>
-            if user?.isChatBanned
-              @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
-            else
-              @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
-                type: 'ip', duration: 'permanent', groupId: group?.id
-              }
-            @selectedProfileDialogUser.next null
-        }
-      if hasDeleteMessagePermission and user?.onDeleteMessage
-        {
-          icon: 'delete'
-          $icon: @$deleteIcon
-          text: if isDeleteMessageLoading \
-                then @model.l.get 'general.loading'
-                else @model.l.get 'profileDialog.delete'
-          isVisible: true
-          onclick: =>
-            @state.set isDeleteMessageLoading: true
-            user.onDeleteMessage()
-            .then =>
-              @state.set isDeleteMessageLoading: false
-              @selectedProfileDialogUser.next null
-        }
-      if hasManagePermission
-        {
-          icon: 'settings'
-          $icon: @$manageIcon
-          text: @model.l.get 'general.manage'
-          isVisible: true
-          onclick: =>
-            @router.go 'groupManage', {
-              gameKey: gameKey, id: group.id, userId: user?.id
-            }
-            @selectedProfileDialogUser.next null
-        }
-    ]
+  renderItem: (options) =>
+    {icon, $icon, $chevronIcon, text, onclick,
+      children, isVisible} = options
+
+    {expandedItems} = @state.getValue()
+
+    hasChildren = not _isEmpty children
+    isExpanded = expandedItems.indexOf(text) isnt -1
+
+    z 'li.menu-item', {
+      onclick: =>
+        console.log expandedItems, text
+        if hasChildren and isExpanded
+          expandedItems = _clone expandedItems
+          expandedItems.splice expandedItems.indexOf(text), 1
+          @state.set expandedItems: expandedItems
+        else if hasChildren
+          @state.set expandedItems: expandedItems.concat [text]
+        else
+          onclick()
+    },
+      z '.menu-item-link',
+        z '.icon',
+          z $icon, {
+            icon: icon
+            color: colors.$primary500
+            isTouchTarget: false
+          }
+        z '.text', text
+        if not _isEmpty children
+          z '.chevron',
+            z $chevronIcon,
+              icon: if isExpanded \
+                    then 'chevron-up'
+                    else 'chevron-down'
+              color: colors.$tertiary500Text70
+              isTouchTarget: false
+      if isExpanded
+        z 'ul.menu',
+        _map children, @renderItem
+
+
+  render: =>
+    {me, user, group, clashRoyaleData, windowSize} = @state.getValue()
+
+    isBlocked = @model.user.isBlocked me, user?.id
+    isMe = user?.id is me?.id
+
+    userOptions = @getUserOptions()
+    modOptions = @getModOptions()
 
     z '.z-profile-dialog', {className: z.classKebab {isVisible: me and user}},
       z @$dialog,
         onLeave: =>
           @selectedProfileDialogUser.next null
         $content:
-          z '.z-profile-dialog_dialog',
+          z '.z-profile-dialog_dialog', {
+            style:
+              maxHeight: "#{windowSize.height}px"
+          },
             z '.header',
               z '.avatar',
                 z @$avatar, {user, bgColor: colors.$grey100, size: '72px'}
               z '.about',
                 z '.name', @model.user.getDisplayName user
                 z '.roles', clashRoyaleData?.data?.clan?.name
+                if not _isEmpty user?.groupUser?.roleNames
+                  z '.roles', user?.groupUser?.roleNames.join ', '
               z '.close',
                 z '.icon',
                   z @$closeIcon,
@@ -251,26 +390,14 @@ module.exports = class ProfileDialog
                     onclick: =>
                       @selectedProfileDialogUser.next null
 
-            z 'ul.content',
-              _map userOptions, ({icon, $icon, text, onclick, isVisible}) ->
-                z 'li.menu-item', {onclick},
-                  z '.icon',
-                    z $icon, {
-                      icon: icon
-                      color: colors.$primary500
-                      isTouchTarget: false
-                    }
-                  z '.text', text
+            z 'ul.menu',
+              [
+                _map userOptions, @renderItem
 
-            if not _isEmpty modOptions
-              z 'ul.content',
-                z '.divider'
-                _map modOptions, ({icon, $icon, text, onclick, isVisible}) ->
-                  z 'li.menu-item', {onclick},
-                    z '.icon',
-                      z $icon, {
-                        icon: icon
-                        color: colors.$primary500
-                        isTouchTarget: false
-                      }
-                    z '.text', text
+                if not _isEmpty modOptions
+                  [
+                  # z 'ul.content',
+                    z '.divider'
+                    _map modOptions, @renderItem
+                  ]
+              ]

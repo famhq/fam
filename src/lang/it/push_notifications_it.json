@@ -5,7 +5,7 @@
   "newClanMember.title": "Nuovo membro del clan",
   "newClanMember.text": "{name} è entrato nel tuo clan Starfire",
   "newGroupMember.title": "Nuovo membro del gruppo",
-  "newGroupMember.text": "{name} é entrato nel gruppo Starfire",
+  "newGroupMember.text": "{name} è entrato nel tuo gruppo su Starfire",
   "newFollower.title": "Nuovo seguace",
   "newFollower.text": "{name} ti segue"
 }

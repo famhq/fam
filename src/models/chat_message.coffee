@@ -27,9 +27,9 @@ module.exports = class ChatMessage
     .catch (err) ->
       console.log 'err', err
 
-  # hacky: without this, when leaving a conversation, then coming back, the
-  # client-created messages will show for a split-second before the rest
-  # laod in
+  # hacky: without this, when leaving a conversation, changing browser tabs,
+  # then coming back and going back to conversation, the client-created
+  # messages will show for a split-second before the rest load in
   # resetClientChangesStream: (conversationId) =>
   #   @clientChangesStream[conversationId] = null
 
@@ -37,6 +37,11 @@ module.exports = class ChatMessage
     @auth.call "#{@namespace}.deleteById", {id}, {
       invalidateAll: true
     }
+
+  deleteAllByGroupIdAndUserId: (groupId, userId, {duration} = {}) =>
+    @auth.call "#{@namespace}.deleteAllByGroupIdAndUserId", {
+      groupId, userId, duration
+    }, {invalidateAll: true}
 
   getAllByConversationId: (conversationId, {maxTimeUuid, isStreamed} = {}) =>
     # buffer 0 so future streams don't try to add the client changes

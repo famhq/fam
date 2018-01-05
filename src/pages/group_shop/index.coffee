@@ -98,10 +98,10 @@ module.exports = class GroupShopPage
             $menuText: @model.l.get 'general.shop'
             $el: @$shop
           }
-          # {
-          #   $menuText: @model.l.get 'shop.specialOffers'
-          #   $el: z @$specialOffers
-          # }
+          {
+            $menuText: @model.l.get 'shop.specialOffers'
+            $el: z @$specialOffers
+          }
           {
             $menuText: @model.l.get 'general.earn'
             $el: z @$earnFire

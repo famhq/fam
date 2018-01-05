@@ -29,6 +29,7 @@ module.exports = class ConversationMessage
     @$ripple = new Ripple()
     @$trophyIcon = new Icon()
     @$statusIcon = new Icon()
+    @$starIcon = new Icon()
     @$verifiedIcon = new Icon()
 
     @imageData = new RxBehaviorSubject null
@@ -45,8 +46,9 @@ module.exports = class ConversationMessage
       isGrouped: isGrouped
       windowSize: @model.window.getSize()
 
-  openProfileDialog: (id, user) =>
+  openProfileDialog: (id, user, groupUser) =>
     @selectedProfileDialogUser.next _defaults {
+      groupUser: groupUser
       onDeleteMessage: =>
         @model.chatMessage.deleteById id
         .then =>
@@ -64,12 +66,14 @@ module.exports = class ConversationMessage
 
     onclick = =>
       unless isTextareaFocused
-        @openProfileDialog id, user
+        @openProfileDialog id, user, groupUser
 
     oncontextmenu = =>
       @openProfileDialog id, user
 
     isVerified = user and user.gameData?.isVerified
+    isModerator = groupUser?.roleNames and
+                  groupUser.roleNames.indexOf('mods') isnt -1
 
     z '.z-conversation-message', {
       # re-use elements in v-dom. doesn't seem to work with prepending more
@@ -96,6 +100,13 @@ module.exports = class ConversationMessage
       z '.content',
         unless isGrouped
           z '.author', {onclick},
+            if user?.flags?.isStar
+              z '.icon',
+                z @$starIcon,
+                  icon: 'star-tag'
+                  color: colors.$white
+                  isTouchTarget: false
+                  size: '22px'
             if user?.flags?.isDev
               z '.icon',
                 z @$statusIcon,
@@ -103,17 +114,10 @@ module.exports = class ConversationMessage
                   color: colors.$white
                   isTouchTarget: false
                   size: '22px'
-            else if user?.flags?.isModerator
+            else if user?.flags?.isModerator or isModerator
               z '.icon',
                 z @$statusIcon,
                   icon: 'mod'
-                  color: colors.$white
-                  isTouchTarget: false
-                  size: '22px'
-            else if user?.flags?.isStar
-              z '.icon',
-                z @$statusIcon,
-                  icon: 'star-tag'
                   color: colors.$white
                   isTouchTarget: false
                   size: '22px'

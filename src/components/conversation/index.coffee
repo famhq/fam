@@ -235,6 +235,11 @@ module.exports = class Conversation extends Base
     @model.portal.call 'push.setContextId', {
       contextId: 'empty'
     }
+    # hacky: without this, when leaving a conversation, changing browser tabs,
+    # then coming back and going back to conversation, the client-created
+    # messages will show for a split-second before the rest load in.
+    # but WITH this, leaving a conversation and coming back to it sometimes
+    # causes new messages to not post FIXME FIXME
     # @model.chatMessage.resetClientChangesStream conversation?.id
     window?.removeEventListener 'resize', @debouncedOnResize
 

@@ -63,7 +63,7 @@ class Language
 
   setLanguage: (language) =>
     @language.next language
-    @cookie.set 'language', language
+    @cookie?.set 'language', language
     DateService.setL this
     DateService.setLocale language
 

@@ -7,5 +7,5 @@
   "newGroupMember.title": "새 그룹 멤버",
   "newGroupMember.text": "{name} 님이 Starfire에서 당신의 그룹에 가입했습니다.",
   "newFollower.title": "새로운 팔로워",
-  "newFollower.text": "{name}을(를)팔로우 하였습니다"
+  "newFollower.text": "{name}이 당신을 팔로우 하였습니다"
 }

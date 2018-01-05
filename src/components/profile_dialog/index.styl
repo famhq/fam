@@ -11,6 +11,8 @@
 .z-profile-dialog_dialog
   background: getColor('$tertiary700')
   border-radius: 2px
+  display: flex
+  flex-direction: column
 
   > .header
     padding: 24px 16px 16px 16px
@@ -18,7 +20,8 @@
     border-top-left-radius: 2px
     border-top-right-radius: 2px
     position: relative
-    text-align: center
+    // text-align: center
+    display: flex
 
     > .close
       position: absolute
@@ -27,10 +30,11 @@
 
     > .avatar
       width: 72px
-      margin: 0 auto
+      // margin: 0 auto
 
     > .about
-      margin-top: 8px
+      // margin-top: 8px
+      margin-left: 16px
 
       > .name
         font-title()
@@ -41,10 +45,13 @@
         font-caption2()
         min-height: 20px
 
-  > .content
+  .menu
     list-style-type: none
     margin: 0
     padding: 8px 0
+    flex: 1
+    overflow: auto
+    -webkit-overflow-scrolling: touch
 
     > .divider
       background: getColor('$white12')
@@ -53,16 +60,23 @@
       margin: 8px 0
 
     > .menu-item
-      cursor: pointer
       margin: 0
-      padding: 8px 0
-      display: inline-block
-      box-sizing: border-box
-      width: 25%
-      text-align: center
 
-      > .icon
-        margin-bottom: 12px
+      > .menu-item-link
+        cursor: pointer
+        display: flex
+        padding: 8px 16px
+        box-sizing: border-box
 
-      > .text
-        font-caption2()
+        > .icon
+          margin-right: 16px
+
+        > .chevron
+          margin-left: auto
+
+        > .text
+          font-caption2()
+
+      > .menu
+        margin-left: 16px
+        padding: 0

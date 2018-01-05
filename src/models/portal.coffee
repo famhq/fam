@@ -222,7 +222,10 @@ module.exports = class Portal
       href: url
     }
 
-  clashRoyalePlayerGetMe: ({refreshIfStale} = {}) =>
+  clashRoyalePlayerGetMe: ({refreshIfStale, appId} = {}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyalePlayerGetMe'
+
     @user.getMe()
     .switchMap (me) =>
       @player.getByUserIdAndGameId me?.id, config.CLASH_ROYALE_ID, {
@@ -231,7 +234,10 @@ module.exports = class Portal
       .map (player) -> player.data
     .take(1).toPromise()
 
-  clashRoyalePlayerGetByTag: ({tag, refreshIfStale}) =>
+  clashRoyalePlayerGetByTag: ({tag, refreshIfStale, appId}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyalePlayerGetByTag'
+
     @player.getByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID, {
       refreshIfStale
     }
@@ -241,7 +247,10 @@ module.exports = class Portal
       player.data
     .take(1).toPromise()
 
-  clashRoyaleClanGetByTag: ({tag, refreshIfStale}) =>
+  clashRoyaleClanGetByTag: ({tag, refreshIfStale, appId}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyaleClanGetByTag'
+
     @clan.getByClanIdAndGameId tag, config.CLASH_ROYALE_ID, {refreshIfStale}
     .map (clan) ->
       unless clan
@@ -249,11 +258,17 @@ module.exports = class Portal
       clan.data
     .take(1).toPromise()
 
-  clashRoyaleUserGetAllByPlayerTag: ({playerTag}) =>
+  clashRoyaleUserGetAllByPlayerTag: ({playerTag, appId}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyaleUserGetAllByPlayerTag'
+
     @user.getAllByPlayerIdAndGameId playerTag, config.CLASH_ROYALE_ID
     .take(1).toPromise()
 
-  clashRoyaleMatchGetAllByTag: ({tag, limit, cursor}) =>
+  clashRoyaleMatchGetAllByTag: ({tag, limit, cursor, appId}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyaleMatchGetAllByTag'
+
     @clashRoyaleMatch.getAllByPlayerId tag, {
       limit, cursor
     }
@@ -264,17 +279,26 @@ module.exports = class Portal
         cursor
       }
 
-  clashRoyaleDeckGetAllByTag: ({tag}) =>
+  clashRoyaleDeckGetAllByTag: ({tag, appId}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyaleDeckGetAllByTag'
+
     @clashRoyalePlayerDeck.getAllByPlayerId tag, config.CLASH_ROYALE_ID
     .take(1).toPromise()
 
-  clashRoyaleUserRecordGetAllByTag: ({tag}) =>
+  clashRoyaleUserRecordGetAllByTag: ({tag, appId}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyaleUserRecordGetAllByTag'
+
     @gameRecordType.getAllByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID, {
       embed: ['meValues']
     }
     .take(1).toPromise()
 
-  clashRoyaleClanRecordGetAllByTag: ({tag}) =>
+  clashRoyaleClanRecordGetAllByTag: ({tag, appId}) =>
+    if appId
+      ga? 'send', 'event', 'sdk', appId, 'clashRoyaleClanRecordGetAllByTag'
+
     @clanRecordType.getAllByClanIdAndGameId tag, config.CLASH_ROYALE_ID, {
       embed: ['clanValues']
     }

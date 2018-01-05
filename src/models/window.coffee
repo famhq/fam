@@ -1,5 +1,7 @@
 Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+uuid = require 'uuid'
+_forEach = require 'lodash/forEach'
 
 config = require '../config'
 
@@ -15,6 +17,7 @@ module.exports = class Window
     @breakpoint = new RxBehaviorSubject @getBreakpointVal()
     @drawerWidth = new RxBehaviorSubject @getDrawerWidthVal()
     @appBarHeight = new RxBehaviorSubject @getAppBarHeightVal()
+    @resumeFns = {}
     window?.addEventListener 'resize', @updateSize
 
   updateSize: =>
@@ -80,3 +83,13 @@ module.exports = class Window
   resumeResizing: =>
     @isPaused = false
     @updateSize()
+
+  resume: =>
+    _forEach @resumeFns, (fn) ->
+      fn()
+
+  onResume: (fn) =>
+    id = uuid.v4()
+    @resumeFns[id] = fn
+    unsubscribe: =>
+      delete @resumeFns[id]

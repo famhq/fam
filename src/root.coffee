@@ -286,6 +286,7 @@ init = ->
     model.portal.call 'app.onResume', ->
       console.log 'resume invalidate'
       model.exoid.invalidateAll()
+      model.window.resume()
       if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
         model.portal.call 'push.setBadgeNumber', {number: 0}
 

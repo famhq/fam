@@ -10,5 +10,4 @@ module.exports = class ClashRoyaleDeck
     @auth.stream "#{@namespace}.getById", {id}
 
   getPopular: ({gameType} = {}) =>
-    console.log 'get pop', gameType
     @auth.stream "#{@namespace}.getPopular", {gameType}
