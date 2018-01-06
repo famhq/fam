@@ -323,7 +323,6 @@ module.exports = class ProfileDialog
 
     z 'li.menu-item', {
       onclick: =>
-        console.log expandedItems, text
         if hasChildren and isExpanded
           expandedItems = _clone expandedItems
           expandedItems.splice expandedItems.indexOf(text), 1

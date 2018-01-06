@@ -50,7 +50,7 @@ module.exports = class Groups
     @isTranslateCardVisibleStreams = new RxReplaySubject 1
     @isTranslateCardVisibleStreams.next language.map (lang) ->
       needTranslations = ['es', 'it', 'fr', 'ja', 'ko', 'zh',
-                          'pt', 'de', 'pl', 'tr', 'ru']
+                          'pt', 'de', 'pl', 'tr', 'ru', 'id']
       isNeededLanguage = lang in needTranslations
       localStorage? and isNeededLanguage and
                               not localStorage['hideTranslateCard']

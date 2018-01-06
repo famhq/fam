@@ -147,6 +147,16 @@ module.exports = class Drawer
                           }
                           title: @model.l.get 'groupManageRolesPage.title'
                         }
+                        if @model.groupUser.hasPermission {
+                          meGroupUser, me, permissions: ['readAuditLog']
+                        }
+                          {
+                            path: @router.get 'groupAuditLog', {
+                              gameKey: gameKey
+                              id: group.key or group.id
+                            }
+                            title: @model.l.get 'groupAuditLogPage.title'
+                          }
                         {
                           path: @router.get 'groupBannedUsers', {
                             gameKey: gameKey
@@ -336,11 +346,7 @@ module.exports = class Drawer
       language, windowSize} = @state.getValue()
 
     translateX = if isOpen then 0 else "-#{drawerWidth}px"
-    buttonColors =
-      c200: colors.$tertiary500
-      c500: colors.$tertiary700
-      c600: colors.$tertiary700
-      c700: colors.$tertiary500
+    hasAd = not Environment.isMobile() and windowSize?.height > 880
 
     renderChild = ({path, title, children}, depth = 0) =>
       isSelected = currentPath?.indexOf(path) is 0
@@ -361,7 +367,7 @@ module.exports = class Drawer
               renderChild child, depth + 1
 
     z '.z-drawer', {
-      className: z.classKebab {isOpen}
+      className: z.classKebab {isOpen, hasAd}
       key: 'drawer'
       style:
         display: if windowSize.width then 'block' else 'none'
@@ -490,7 +496,7 @@ module.exports = class Drawer
                           z $ripple
                 ]
 
-            if not Environment.isMobile() and windowSize?.height > 880
+            if hasAd
               z '.ad',
                 z @$adsenseAd, {
                   slot: 'desktop336x280'

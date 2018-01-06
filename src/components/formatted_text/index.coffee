@@ -3,6 +3,7 @@ supportsWebP = window? and require 'supports-webp'
 remark = require 'remark'
 vdom = require 'remark-vdom'
 _uniq = require 'lodash/uniq'
+_find = require 'lodash/find'
 _reduce = require 'lodash/reduce'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
@@ -14,7 +15,10 @@ if window?
   require './index.styl'
 
 module.exports = class FormattedText
-  constructor: ({text, @imageWidth, model, @router, @skipImages}) ->
+  constructor: (options) ->
+    {text, @imageWidth, model, @router, @skipImages, @mentionedUsers,
+      @selectedProfileDialogUser} = options
+
     unless text?.map
       @$el = @get$ {text, model}
 
@@ -34,6 +38,16 @@ module.exports = class FormattedText
       newText.replace(
         find
         "![sticker](#{config.CDN_URL}/stickers/#{sticker}_#{level}_tiny.png)"
+      )
+    , text
+
+    mentions = text?.match /\@[a-zA-Z0-9-]+/g
+    text = _reduce mentions, (newText, find) ->
+      # TODO: change clash-royale
+      username = find.replace('@', '').toLowerCase()
+      newText.replace(
+        find
+        "[#{find}](/clash-royale/user/#{username} \"user:#{username}\")"
       )
     , text
 
@@ -96,13 +110,19 @@ module.exports = class FormattedText
               }
 
         a: (tagName, props, children) =>
+          isMention = props.title and props.title.indexOf('user:') isnt -1
           z 'a.link', {
             href: props.href
+            className: z.classKebab {isMention}
             onclick: (e) =>
               e?.stopPropagation()
               e?.preventDefault()
-
-              @router.openLink props.href
+              if isMention and @selectedProfileDialogUser
+                username = props.title.replace 'user:', ''
+                user = _find @mentionedUsers, {username}
+                @selectedProfileDialogUser.next user
+              else
+                @router.openLink props.href
           }, children
     }
     .process text

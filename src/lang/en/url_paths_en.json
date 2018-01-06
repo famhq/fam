@@ -38,6 +38,7 @@
   "groupBannedUsers": "/group/{id}/banned-users",
   "groupManageRecords": "/group/{id}/manage-records",
   "groupManageRoles": "/group/{id}/manage-roles",
+  "groupAuditLog": "/group/{id}/audit-log",
   "groupNewChannel": "/group/{id}/new-channel",
   "groupInvites": "/group-invites",
   "mod": "/mod",

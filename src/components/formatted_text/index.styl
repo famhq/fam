@@ -3,6 +3,18 @@
 .z-formatted-text
   max-width: 700px
 
+  a
+    &.is-mention
+      font-title()
+      display: inline-block
+      text-decoration: none !important
+      padding: 2px 4px
+      background: getColor('$tertiary500')
+      color: getColor('$primary500')
+
+      &:hover
+        background: getColor('$tertiary400')
+
   ul
     margin: 4px 0
 

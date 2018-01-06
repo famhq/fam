@@ -189,8 +189,10 @@ module.exports = class Conversation extends Base
               # state to get set
               bodyCacheKey = "#{message.clientId}:text"
               messageCacheKey = "#{id}:#{message.lastUpdateTime}:message"
+
               $body = @getCached$ bodyCacheKey, FormattedText, {
-                @model, @router, text: message.body
+                @model, @router, text: message.body, selectedProfileDialogUser
+                mentionedUsers: message.mentionedUsers
               }
               $el = @getCached$ messageCacheKey, ConversationMessage, {
                 message, @model, @router, @overlay$, isMe,
@@ -357,12 +359,10 @@ module.exports = class Conversation extends Base
         userId: me?.id
       }, {user: me, time: Date.now()}
       .then (response) =>
-        console.log 'create done'
         # @model.user.emit('chatMessage').catch log.error
         @isPostLoading.next false
         response
       .catch =>
-        console.log 'create caught'
         @isPostLoading.next false
     else
       Promise.resolve null # reject here?

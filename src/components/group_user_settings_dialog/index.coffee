@@ -3,6 +3,7 @@ _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/operator/combineLatest'
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
 
@@ -22,6 +23,10 @@ module.exports = class GroupUserSettingsDialog
         name: @model.l.get 'groupSettings.chatMessage'
         key: 'chatMessage'
       }
+      {
+        name: @model.l.get 'groupSettings.chatMessageMention'
+        key: 'chatMention'
+      }
       # {
       #   name: 'New announcments'
       #   key: 'announcement'
@@ -32,18 +37,23 @@ module.exports = class GroupUserSettingsDialog
     @$leaveIcon = new Icon()
     @$dialog = new Dialog()
 
+    groupAndMe = RxObservable.combineLatest(group, me, (vals...) -> vals)
+
     @state = z.state
       me: me
       group: group
       gameKey: gameKey
       isSaving: false
       isLeaveGroupLoading: false
-      notificationTypes: group.switchMap (group) =>
-        @model.userGroupData.getMeByGroupId(group.id).map (data) ->
+      notificationTypes: groupAndMe.switchMap ([group, me]) =>
+        @model.groupUser.getMeSettingsByGroupId group.id
+        .map (groupUserSettings) ->
           _map notificationTypes, (type) ->
-            isSelected = new RxBehaviorSubject(
-              not data.globalBlockedNotifications?[type.key]
+            notifications = _defaults(
+              groupUserSettings?.globalNotifications
+              config.DEFAULT_NOTIFICATIONS
             )
+            isSelected = new RxBehaviorSubject notifications?[type.key]
 
             _defaults {
               $toggle: new Toggle {isSelected}
@@ -105,9 +115,9 @@ module.exports = class GroupUserSettingsDialog
                   z '.toggle',
                     z $toggle, {
                       onToggle: (isSelected) =>
-                        @model.userGroupData.updateMeByGroupId group.id, {
-                          globalBlockedNotifications:
-                            "#{key}": not isSelected
+                        @model.groupUser.updateMeSettingsByGroupId group.id, {
+                          globalNotifications:
+                            "#{key}": isSelected
                         }
                     }
 

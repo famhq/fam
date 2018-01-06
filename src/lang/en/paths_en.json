@@ -38,6 +38,7 @@
   "groupBannedUsers": "/:gameKey/group/:id/banned-users",
   "groupManageRecords": "/:gameKey/group/:id/manage-records",
   "groupManageRoles": "/:gameKey/group/:id/manage-roles",
+  "groupAuditLog": "/:gameKey/group/:id/audit-log",
   "groupInvites": "/:gameKey/group-invites",
   "mod": "/:gameKey/mod",
   "modByKey": "/:gameKey/mod/:key",

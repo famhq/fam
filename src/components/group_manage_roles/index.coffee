@@ -19,6 +19,7 @@ module.exports = class GroupManageRoles
 
     permissionTypes = [
       'manageInfo'
+      'readAuditLog'
       'manageChannel'
       'manageRole'
       'permaBanUser'

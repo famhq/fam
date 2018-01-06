@@ -26,6 +26,14 @@ module.exports = class GroupUser
   getTopByGroupId: (groupId) =>
     @auth.stream "#{@namespace}.getTopByGroupId", {groupId}
 
+  getMeSettingsByGroupId: (groupId) =>
+    @auth.stream "#{@namespace}.getMeSettingsByGroupId", {groupId}
+
+  updateMeSettingsByGroupId: (groupId, {globalNotifications}) =>
+    @auth.call "#{@namespace}.updateMeSettingsByGroupId", {
+      groupId, globalNotifications
+    }
+
   hasPermission: ({meGroupUser, me, permissions, channelId, roles}) ->
     roles ?= meGroupUser?.roles
     isGlobalModerator = me?.flags?.isModerator
