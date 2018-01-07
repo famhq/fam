@@ -45,7 +45,7 @@ module.exports = class SpecialOffers
           isInstalled = Boolean stats
           wasPreviouslyInstalled = isInstalled and not offer.transaction
           isCompleted = offer.transaction?.status is 'completed'
-          if wasPreviouslyInstalled or isCompleted
+          if (wasPreviouslyInstalled or isCompleted) and config.ENV isnt config.ENVS.DEV
             return
 
           _defaults {
@@ -160,62 +160,70 @@ module.exports = class SpecialOffers
     @state.set loadingOfferId: offer.id
     @model.specialOffer.logClickById offer.id, {deviceId, country}
     .then =>
-      openGooglePlay = =>
-        @model.portal.call 'browser.openWindow', {
-          url: "https://play.google.com/store/apps/details?id=#{offer.androidPackage}"
-          target: '_system'
-        }
-        .then =>
-          @state.set loadingOfferId: null
-      if _find usageStats, {PackageName: offer.androidPackage}
+      appVersion = Environment.getAppVersion config.GAME_KEY
+      openCustomMappstreet = SemverService.gte(appVersion, '1.4.15') and
+                              offer.defaultData.sourceType is 'mappstreet'
+
+      if _find usageStats, {PackageName: offer.androidPackage} and config.ENV isnt config.ENVS.DEV
         @model.portal.call 'launcher.launch', {
           options:
             packageName: offer.androidPackage
         }
         .then =>
           @state.set loadingOfferId: null
-      else if offer.trackUrl
+      else if openCustomMappstreet
         @model.portal.call 'browser.openWindow', {
           url: offer.trackUrl
-          target: '_system'
-          # executeJs: '{onclick: document.body.getAttribute("onclick"), url: window.location.href}'
-          # closeAfterExecute: true
-          # options:
-          #   statusbar: {
-          #     color: colors.$primary700
-          #   }
-          #   toolbar: {
-          #     height: 56
-          #     color: colors.$tertiary700
-          #   }
-          #   title: {
-          #     color: colors.$tertiary700Text
-          #     staticText: ''
-          #   }
-          #   closeButton: {
-          #     # https://jgilfelt.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=clipart&foreground.space.trim=1&foreground.space.pad=0.5&foreground.clipart=res%2Fclipart%2Ficons%2Fnavigation_close.svg&foreColor=fff%2C0&crop=0&backgroundShape=none&backColor=fff%2C100&effects=none&elevate=0
-          #     image: 'close'
-          #     # imagePressed: 'close_grey'
-          #     align: 'left'
-          #     event: 'closePressed'
-          #   }
-          # resolveOnLoad: true
-          # options:
-          #   hidden: true
+          # target: '_system'
+          target: '_blank'
+          executeJs: 'try { var response = document.body.getAttribute(\'onclick\') } catch (err) { var response = \'\' }; response || window.location.href'
+          options:
+            hidden: true
+            statusbar: {
+              color: colors.$primary700
+            }
+            toolbar: {
+              height: 56
+              color: colors.$tertiary700
+            }
+            title: {
+              color: colors.$tertiary700Text
+              staticText: ''
+            }
+            closeButton: {
+              image: 'close'
+              align: 'left'
+              event: 'closePressed'
+            }
         }
-        .then (a) =>
-          console.log 'got', a
+        .then (response) =>
+          text = response?[0] or ''
+
+          if googlePlayLink = text.match /(https:\/\/play\.google[^"]+)/i
+            url = googlePlayLink[0]
+            @model.portal.call 'browser.openWindow', {
+              url, target: '_system'
+            }
+          else if code = text.match /10482__0__0.05__([^&]*)/
+            @model.portal.call 'browser.openWindow', {
+              url: "https://play.google.com/store/apps/details?id=#{offer.androidPackage}&referrer=utm_source%3D#{code}"
+              target: '_system'
+            }
+          else
+            @model.portal.call 'browser.openWindow', {
+              url: offer.trackUrl
+              target: '_system'
+            }
+        .then =>
           @state.set loadingOfferId: null
-        # .then ->
-        #   appVersion = Environment.getAppVersion config.GAME_KEY
-        #   if SemverService.gte(appVersion, '1.4.14')
-        #     openGooglePlay()
-        #   else
-        #     # give time to load
-        #     setTimeout openGooglePlay, 3000
 
       else
-        openGooglePlay()
+        @model.portal.call 'browser.openWindow', {
+          url: offer.trackUrl or "https://play.google.com/store/apps/details?id=#{offer.androidPackage}"
+          target: '_system'
+        }
+        .then =>
+          @state.set loadingOfferId: null
     .catch =>
       @state.set loadingOfferId: null
 

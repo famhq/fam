@@ -59,11 +59,18 @@ module.exports = class ProfileInfo
       isVisible: isRequestNotificationCardVisible
     }
 
-    @$addonListItem = new AddonListItem {
+    @$addonListItem1 = new AddonListItem {
       @model
       @router
       gameKey
       addon: @model.addon.getByKey 'cardCollection'
+    }
+
+    @$addonListItem2 = new AddonListItem {
+      @model
+      @router
+      gameKey
+      addon: @model.addon.getByKey 'deckBandit'
     }
 
     @state = z.state {
@@ -397,7 +404,13 @@ module.exports = class ProfileInfo
         z '.block',
           z '.g-grid',
             z '.title', @model.l.get 'addonsPage.title'
-            z @$addonListItem, {
-              hasPadding: false
-              replacements: {playerTag: player?.id?.replace '#', ''}
-            }
+            z '.addon',
+              z @$addonListItem1, {
+                hasPadding: false
+                replacements: {playerTag: player?.id?.replace '#', ''}
+              }
+            z '.addon',
+              z @$addonListItem2, {
+                hasPadding: false
+                replacements: {playerTag: player?.id?.replace '#', ''}
+              }
