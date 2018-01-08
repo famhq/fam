@@ -346,7 +346,8 @@ module.exports = class Drawer
       language, windowSize} = @state.getValue()
 
     translateX = if isOpen then 0 else "-#{drawerWidth}px"
-    hasAd = not Environment.isMobile() and windowSize?.height > 880
+    # adblock plus blocks has-ad
+    hasA = not Environment.isMobile() and windowSize?.height > 880
 
     renderChild = ({path, title, children}, depth = 0) =>
       isSelected = currentPath?.indexOf(path) is 0
@@ -367,7 +368,7 @@ module.exports = class Drawer
               renderChild child, depth + 1
 
     z '.z-drawer', {
-      className: z.classKebab {isOpen, hasAd}
+      className: z.classKebab {isOpen, hasA}
       key: 'drawer'
       style:
         display: if windowSize.width then 'block' else 'none'
@@ -496,7 +497,7 @@ module.exports = class Drawer
                           z $ripple
                 ]
 
-            if hasAd
+            if hasA
               z '.ad',
                 z @$adsenseAd, {
                   slot: 'desktop336x280'

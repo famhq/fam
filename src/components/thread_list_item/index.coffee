@@ -20,6 +20,7 @@ module.exports = class Threads
     @$threadDownvoteButton = new ThreadVoteButton {@model}
     @$commentsIcon = new Icon()
     @$textIcon = new Icon()
+    @$starIcon = new Icon()
     @$icon = if thread.data.clan then new ClanBadge() else null
     @$deck = if thread.playerDeck then new DeckCards {
       @model, @router, deck: thread.playerDeck.deck, cardsPerRow: 4
@@ -109,6 +110,13 @@ module.exports = class Threads
           z '.bottom',
             z '.author',
               z '.name', @model.user.getDisplayName thread.creator
+              if thread.creator?.flags?.isStar
+                z '.icon',
+                  z @$starIcon,
+                    icon: 'star-tag'
+                    color: colors.$white
+                    isTouchTarget: false
+                    size: '22px'
               z '.middot',
                 innerHTML: '&middot;'
               z '.time',

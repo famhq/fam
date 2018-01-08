@@ -54,6 +54,7 @@ module.exports = class Thread extends Base
     @$editIcon = new Icon()
     @$deleteIcon = new Icon()
     @$filterIcon = new Icon()
+    @$starIcon = new Icon()
     @$threadUpvoteButton = new ThreadVoteButton {@model}
     @$threadDownvoteButton = new ThreadVoteButton {@model}
 
@@ -314,6 +315,14 @@ module.exports = class Thread extends Base
                   'ClashRoyaleES (Oficial)'
                 else
                   @model.user.getDisplayName thread?.creator
+
+                if thread?.creator?.flags?.isStar
+                  z '.icon',
+                    z @$starIcon,
+                      icon: 'star-tag'
+                      color: colors.$white
+                      isTouchTarget: false
+                      size: '22px'
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               z '.time',
                 if thread?.addTime
