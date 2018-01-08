@@ -34,6 +34,7 @@ module.exports = class ThreadComment
     @$downvoteButton = new ThreadVoteButton {@model}
     @$threadReplyIcon = new Icon()
     @$trophyIcon = new Icon()
+    @$starIcon = new Icon()
 
     @imageData = new RxBehaviorSubject null
     @$conversationImageView = new ConversationImageView {
@@ -150,6 +151,13 @@ module.exports = class ThreadComment
         z '.content',
           z '.author', {onclick},
             z '.name', @model.user.getDisplayName creator
+            if creator?.flags?.isStar
+              z '.icon',
+                z @$starIcon,
+                  icon: 'star-tag'
+                  color: colors.$white
+                  isTouchTarget: false
+                  size: '22px'
             if creator?.gameData
               [
                 z 'span', innerHTML: '&nbsp;&middot;&nbsp;'

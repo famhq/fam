@@ -20,6 +20,7 @@ IMAGE_REGEX_STR = '(\\!\\[(.*?)\\]\\((.*?)\\=([0-9.]+)x([0-9.]+)\\))'
 IMAGE_REGEX_BASE_STR = '(\\!\\[(?:.*?)\\]\\((?:.*?)\\))'
 LOCAL_IMAGE_REGEX_STR =
   '(\\!\\[(.*?)\\]\\(local://(.*?) \\=([0-9.]+)x([0-9.]+)\\))'
+MENTION_REGEX_STR = '\\@[a-zA-Z0-9-]+'
 
 ONE_HOUR_SECONDS = 3600 * 1
 TWO_HOURS_SECONDS = 3600 * 2
@@ -227,6 +228,7 @@ isomorphic =
   IMAGE_REGEX_BASE_STR: IMAGE_REGEX_BASE_STR
   IMAGE_REGEX_STR: IMAGE_REGEX_STR
   IMAGE_REGEX: new RegExp IMAGE_REGEX_STR, 'gi'
+  MENTION_REGEX: new RegExp MENTION_REGEX_STR, 'gi'
 
   EVENT_DURATIONS:
     "#{ONE_HOUR_SECONDS}": '1 hour'

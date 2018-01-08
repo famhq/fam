@@ -3,6 +3,7 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _truncate = require 'lodash/truncate'
 _defaults = require 'lodash/defaults'
+_find = require 'lodash/find'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Avatar = require '../avatar'
@@ -40,10 +41,17 @@ module.exports = class ConversationMessage
       @router
     }
 
+    me = @model.user.getMe()
+
     @state = z.state
       message: message
       isMe: isMe
       isGrouped: isGrouped
+      isMeMentioned: me.map (me) ->
+        mentions = message?.body?.match? config.MENTION_REGEX
+        _find mentions, (mention) ->
+          username = mention.replace('@', '').toLowerCase()
+          username and username is me?.username
       windowSize: @model.window.getSize()
 
   openProfileDialog: (id, user, groupUser) =>
@@ -56,7 +64,7 @@ module.exports = class ConversationMessage
     }, user
 
   render: ({isTextareaFocused}) =>
-    {isMe, message, isGrouped, windowSize} = @state.getValue()
+    {isMe, message, isGrouped, isMeMentioned, windowSize} = @state.getValue()
 
     {user, groupUser, body, time, card, id, clientId} = message
 
@@ -78,7 +86,7 @@ module.exports = class ConversationMessage
     z '.z-conversation-message', {
       # re-use elements in v-dom. doesn't seem to work with prepending more
       key: "message-#{id or clientId}"
-      className: z.classKebab {isGrouped, isMe}
+      className: z.classKebab {isGrouped, isMe, isMeMentioned}
       oncontextmenu: (e) ->
         e?.preventDefault()
         oncontextmenu?()

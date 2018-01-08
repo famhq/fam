@@ -11,6 +11,13 @@
   overflow: hidden
   position: relative
 
+  &.is-me-mentioned
+    > .content > .body
+      background: getColor('$tertiary700')
+      border-left: 2px solid getColor('$primary500')
+      border-radius: 2px
+      padding-left: 4px
+
   &.is-grouped
     padding-top: 4px
 

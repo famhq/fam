@@ -41,7 +41,7 @@ module.exports = class FormattedText
       )
     , text
 
-    mentions = text?.match /\@[a-zA-Z0-9-]+/g
+    mentions = text?.match config.MENTION_REGEX
     text = _reduce mentions, (newText, find) ->
       # TODO: change clash-royale
       username = find.replace('@', '').toLowerCase()
