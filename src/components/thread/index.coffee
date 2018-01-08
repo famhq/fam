@@ -146,6 +146,7 @@ module.exports = class Thread extends Base
       clan: clan
       playerDeck: playerDeck
       isPostLoading: @isPostLoading
+      isLoading: true
       windowSize: @model.window.getSize()
       threadComments: @commentStreams.switch().map (threadComments) =>
         if threadComments?.length is 1 and threadComments[0] is null
