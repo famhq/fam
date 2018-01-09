@@ -12,6 +12,7 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
 
 
 colors = require '../../colors'
@@ -90,16 +91,16 @@ module.exports = class Thread extends Base
     @$threadPreview = new ThreadPreview {@model, thread}
 
     clan = thread.switchMap (thread) =>
-      if thread?.data?.clan
-        @model.clan.getById thread.data?.clan.id
+      if thread?.data?.extras?.clan
+        @model.clan.getById thread.data?.extras?.clan.id
       else
         RxObservable.of null
 
     playerDeck = thread.switchMap (thread) =>
-      if thread?.data?.playerId
+      if thread?.data?.extras?.deckId
         @model.clashRoyalePlayerDeck.getByDeckIdAndPlayerId(
-          thread.data.deckId
-          thread.data.playerId
+          thread.data.extras.deckId
+          thread.data.extras.playerId
         )
         .map (playerDeck) =>
           {
@@ -111,6 +112,12 @@ module.exports = class Thread extends Base
           }
       else
         RxObservable.of null
+
+    commentsAndThread = RxObservable.combineLatest(
+      @commentStreams.switch()
+      thread
+      (vals...) -> vals
+    )
 
     @message = new RxBehaviorSubject ''
     @isPostLoading = new RxBehaviorSubject false
@@ -136,7 +143,7 @@ module.exports = class Thread extends Base
       gameKey: gameKey
       $body: new FormattedText {
         text: thread.map (thread) ->
-          thread?.body
+          thread?.data?.body
         imageWidth: 'auto'
         @model
         @router
@@ -146,9 +153,8 @@ module.exports = class Thread extends Base
       clan: clan
       playerDeck: playerDeck
       isPostLoading: @isPostLoading
-      isLoading: true
       windowSize: @model.window.getSize()
-      threadComments: @commentStreams.switch().map (threadComments) =>
+      threadComments: commentsAndThread.map ([threadComments, thread]) =>
         if threadComments?.length is 1 and threadComments[0] is null
           return null
         threadComments = _filter threadComments
@@ -157,6 +163,7 @@ module.exports = class Thread extends Base
           cacheId = "threadComment-#{threadComment.id}"
           $el = @getCached$ cacheId, ThreadComment, {
             @model, @router, @selectedProfileDialogUser, threadComment
+            @commentStreams, groupId: thread.groupId
           }
           # update cached version
           $el.setThreadComment threadComment
@@ -210,6 +217,9 @@ module.exports = class Thread extends Base
       @state.set
         isLoading: false
         hasLoadedAll: _isEmpty comments
+    .catch =>
+      @state.set
+        isLoading: false
 
   appendCommentStream: (commentStream) =>
     @commentStreamCache = @commentStreamCache.concat [commentStream]
@@ -244,7 +254,7 @@ module.exports = class Thread extends Base
       selectedProfileDialogUser, clan, $clanMetrics, gameKey, isLoading,
       isPostLoading} = @state.getValue()
 
-    headerAttachment = _find thread?.attachments, {type: 'video'}
+    headerAttachment = _find thread?.data?.attachments, {type: 'video'}
     headerImageSrc = headerAttachment?.previewSrc
 
     videoWidth = Math.min(windowSize.width, 700)
@@ -296,8 +306,8 @@ module.exports = class Thread extends Base
             else
               z '.header-image', {
                 onclick: =>
-                  if videoAttachment
-                    @state.set isVideoVisible: true
+                  # if videoAttachment
+                  @state.set isVideoVisible: true
                 style:
                   backgroundImage: "url(#{headerImageSrc})"
               },
@@ -326,11 +336,11 @@ module.exports = class Thread extends Base
                       size: '22px'
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'
               z '.time',
-                if thread?.addTime
-                then DateService.fromNow thread.addTime
+                if thread?.time
+                then DateService.fromNow thread.time
                 else '...'
             z '.title',
-              thread?.title
+              thread?.data?.title
 
             if playerDeck
               z '.deck', {
@@ -354,7 +364,7 @@ module.exports = class Thread extends Base
                   z '.tag', "##{clan?.id}"
               $clanMetrics
           ]
-        else if thread?.data?.clan?.id
+        else if thread?.data?.extras?.clan?.id
           [
             z '.divider'
             z '.clan',

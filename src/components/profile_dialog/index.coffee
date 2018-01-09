@@ -223,29 +223,30 @@ module.exports = class ProfileDialog
             #       )
             #       @selectedProfileDialogUser.next null
             # }
-            {
-              icon: 'delete'
-              $icon: @$delete7dIcon
-              text: if @isLoadingByText @model.l.get 'profileDialog.deleteMessagesLast7d' \
-                    then @model.l.get 'general.loading'
-                    else @model.l.get 'profileDialog.deleteMessagesLast7d'
-              isVisible: true
-              onclick: =>
-                @setLoadingByText(
-                  @model.l.get 'profileDialog.deleteMessagesLast7d'
-                )
-                @model.chatMessage.deleteAllByGroupIdAndUserId(
-                  group.id, user.id, {duration: '7d'}
-                )
-                .then =>
-                  @unsetLoadingByText(
+            if group
+              {
+                icon: 'delete'
+                $icon: @$delete7dIcon
+                text: if @isLoadingByText @model.l.get 'profileDialog.deleteMessagesLast7d' \
+                      then @model.l.get 'general.loading'
+                      else @model.l.get 'profileDialog.deleteMessagesLast7d'
+                isVisible: true
+                onclick: =>
+                  @setLoadingByText(
                     @model.l.get 'profileDialog.deleteMessagesLast7d'
                   )
-                  @selectedProfileDialogUser.next null
-            }
+                  @model.chatMessage.deleteAllByGroupIdAndUserId(
+                    group.id, user.id, {duration: '7d'}
+                  )
+                  .then =>
+                    @unsetLoadingByText(
+                      @model.l.get 'profileDialog.deleteMessagesLast7d'
+                    )
+                    @selectedProfileDialogUser.next null
+              }
           ]
         }
-      if hasManagePermission
+      if hasManagePermission and group
         {
           icon: 'settings'
           $icon: @$manageIcon

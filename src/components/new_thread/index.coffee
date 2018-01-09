@@ -28,8 +28,8 @@ module.exports = class NewThread
     category ?= RxObservable.of null
 
     if thread
-      @titleValueStreams.next thread.map (thread) -> thread?.title
-      @bodyValueStreams.next thread.map (thread) -> thread?.body
+      @titleValueStreams.next thread.map (thread) -> thread?.data?.title
+      @bodyValueStreams.next thread.map (thread) -> thread?.data?.body
     else
       @titleValueStreams.next new RxBehaviorSubject ''
       @bodyValueStreams.next new RxBehaviorSubject ''
@@ -138,18 +138,20 @@ module.exports = class NewThread
           @model.signInDialog.openIfGuest me
           .then =>
             newThread = {
-              title: titleValue
-              body: bodyValue
-              attachments: attachmentsValue
-              category: category
-              data: data
+              thread:
+                data:
+                  title: titleValue
+                  body: bodyValue
+                  attachments: attachmentsValue
+                  extras: data
+                category: category
+              gameKey: config.DEFAULT_GAME_KEY
               language: language
-              gameId: config.CLASH_ROYALE_ID
             }
             (if thread
-              @model.thread.updateById thread.id, newThread
+              @model.thread.upsert _defaults({id: thread.id}, newThread)
             else
-              @model.thread.create newThread)
+              @model.thread.upsert newThread)
             .then (newThread) =>
               @bodyValueStreams.next RxObservable.of null
               @attachmentsValueStreams.next RxObservable.of null

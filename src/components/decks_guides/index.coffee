@@ -2,12 +2,13 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
 
-colors = require '../../colors'
 DeckCards = require '../deck_cards'
 Base = require '../base'
 Avatar = require '../avatar'
 Spinner = require '../spinner'
 DateService = require '../../services/date'
+colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -20,7 +21,9 @@ module.exports = class DecksGuides extends Base
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
-    guides = @model.thread.getAll({category: 'decks', sort})
+    guides = @model.thread.getAll {
+      gameKey: config.DEFAULT_GAME_KEY, category: 'decks', sort
+    }
     .map (guides) ->
       guides
 

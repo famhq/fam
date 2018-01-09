@@ -21,7 +21,7 @@ module.exports = class Threads
     @$commentsIcon = new Icon()
     @$textIcon = new Icon()
     @$starIcon = new Icon()
-    @$icon = if thread.data.clan then new ClanBadge() else null
+    @$icon = if thread.data?.extras?.clan then new ClanBadge() else null
     @$deck = if thread.playerDeck then new DeckCards {
       @model, @router, deck: thread.playerDeck.deck, cardsPerRow: 4
     }
@@ -45,7 +45,7 @@ module.exports = class Threads
         @isImageLoaded = true
 
   getImageUrl: (thread) ->
-    mediaAttachment = thread.attachments?[0]
+    mediaAttachment = thread.data?.attachments?[0]
     mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
 
   render: =>
@@ -53,7 +53,7 @@ module.exports = class Threads
 
     # thread ?= {data: {}, playerDeck: {}}
 
-    mediaAttachment = thread.attachments?[0]
+    mediaAttachment = thread.data?.attachments?[0]
     mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
     hasVotedUp = thread.myVote?.vote is 1
     hasVotedDown = thread.myVote?.vote is -1
@@ -75,9 +75,9 @@ module.exports = class Threads
         @router.goPath @model.thread.getPath(thread, @router)
     },
       z '.content',
-        if thread.data.clan
+        if thread.data?.extras?.clan
           z '.icon',
-            z @$icon, {clan: thread.data.clan, size: '34px'}
+            z @$icon, {clan: thread.data?.extras?.clan, size: '34px'}
         else if mediaSrc
           z '.image',
             style:
@@ -106,7 +106,7 @@ module.exports = class Threads
               isTouchTarget: false
               color: colors.$white
         z '.info',
-          z '.title', thread.title
+          z '.title', thread.data?.title
           z '.bottom',
             z '.author',
               z '.name', @model.user.getDisplayName thread.creator
@@ -120,8 +120,8 @@ module.exports = class Threads
               z '.middot',
                 innerHTML: '&middot;'
               z '.time',
-                if thread.addTime
-                then DateService.fromNow thread.addTime
+                if thread.time
+                then DateService.fromNow thread.time
                 else '...'
               z '.comments',
                 thread.commentCount or 0

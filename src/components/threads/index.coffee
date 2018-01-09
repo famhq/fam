@@ -8,15 +8,17 @@ _orderBy = require 'lodash/orderBy'
 _flatten = require 'lodash/flatten'
 _isEmpty = require 'lodash/isEmpty'
 _uniqBy = require 'lodash/uniqBy'
+_last = require 'lodash/last'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/switch'
 require 'rxjs/add/operator/map'
 
-colors = require '../../colors'
 ThreadListItem = require '../thread_list_item'
 Spinner = require '../spinner'
+colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -78,12 +80,14 @@ module.exports = class Threads
     if totalScrollHeight - totalScrolled < SCROLL_THRESHOLD
       @loadMore()
 
-  getTopStream: (skip = 0) =>
+  getTopStream: (skip = 0, maxTimeUuid) =>
     @filter.switchMap (filter) =>
       @model.thread.getAll {
-        categories: [filter.filter]
+        gameKey: config.DEFAULT_GAME_KEY
+        category: filter.filter
         sort: filter.sort
         skip
+        maxTimeUuid
         limit: SCROLL_THREAD_LOAD_COUNT
       }
 
@@ -91,8 +95,11 @@ module.exports = class Threads
     @state.set
       isLoading: true
 
+    {chunkedThreads} = @state.getValue()
+
     skip = @threadStreamCache.length * SCROLL_THREAD_LOAD_COUNT
-    threadStream = @getTopStream skip
+    maxTimeUuid = _last(_last(chunkedThreads))?.thread.id
+    threadStream = @getTopStream skip, maxTimeUuid
     @appendThreadStream threadStream
 
     threadStream.take(1).toPromise()

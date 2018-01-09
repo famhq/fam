@@ -21,8 +21,8 @@ module.exports = class ThreadPreview
     unless thread
       return
 
-    imageAttachment = _find thread.attachments, {type: 'image'}
-    videoAttachment = _find thread.attachments, {type: 'video'}
+    imageAttachment = _find thread.data.attachments, {type: 'image'}
+    videoAttachment = _find thread.data.attachments, {type: 'video'}
     width ?= windowSize.width - PADDING * 2
     heightAspect = if videoAttachment?.aspectRatio \
                    then 1 / videoAttachment.aspectRatio

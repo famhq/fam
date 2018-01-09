@@ -63,7 +63,7 @@ module.exports = class GroupChatPage
       #   "group_#{group.id}_last_conversation_id"
       # )
       conversationId ?= _find(group.conversations, ({name, isDefault}) ->
-        isDefault or name is 'general'
+        isDefault or name is 'general' or name is 'geral'
       )?.id
       conversationId ?= group.conversations?[0]?.id
       if hasMemberPermission and conversationId

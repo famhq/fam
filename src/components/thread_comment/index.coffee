@@ -3,6 +3,7 @@ supportsWebP = window? and require 'supports-webp'
 _map = require 'lodash/map'
 _pick = require 'lodash/pick'
 _truncate = require 'lodash/truncate'
+_defaults = require 'lodash/defaults'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Icon = require '../icon'
@@ -25,7 +26,8 @@ MAX_COMMENT_DEPTH = 3
 module.exports = class ThreadComment
   constructor: (options) ->
     {@threadComment, @depth, @isMe, @model, @overlay$, gameKey,
-      @selectedProfileDialogUser, @router} = options
+      @selectedProfileDialogUser, @router, @commentStreams,
+      groupId} = options
 
     @depth ?= 0
 
@@ -65,6 +67,7 @@ module.exports = class ThreadComment
       isMe: @isMe
       isReplyVisible: false
       isPostLoading: @isPostLoading
+      groupId: groupId
       windowSize: @model.window.getSize()
 
   # for cached components
@@ -111,7 +114,7 @@ module.exports = class ThreadComment
         @isPostLoading.next false
 
   render: =>
-    {depth, isMe, threadComment, isReplyVisible, $body, gameKey,
+    {depth, isMe, threadComment, isReplyVisible, $body, gameKey, groupId,
       windowSize, $children} = @state.getValue()
 
     {creator, time, card, body, id, clientId} = threadComment
@@ -129,7 +132,12 @@ module.exports = class ThreadComment
     voteParent.type = 'threadComment'
 
     onclick = =>
-      @selectedProfileDialogUser.next creator
+      @selectedProfileDialogUser.next _defaults {
+        onDeleteMessage: =>
+          @model.threadComment.deleteByThreadComment voteParent, {groupId}
+          .then =>
+            @commentStreams.take(1).toPromise()
+      }, creator
 
     z '.z-thread-comment', {
       # re-use elements in v-dom

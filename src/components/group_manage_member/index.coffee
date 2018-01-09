@@ -72,7 +72,7 @@ module.exports = class GroupManageMember
                 z '.role', {
                   onclick: =>
                     @model.groupUser.removeRoleByGroupIdAndUserId(
-                      group.id, user.id, roleId
+                      group.id, user.id, role.roleId
                     )
                 }, role.name
           z '.row',

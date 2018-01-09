@@ -8,14 +8,15 @@ module.exports = class Thread
 
   constructor: ({@auth, @l}) -> null
 
-  create: (diff) =>
-    ga? 'send', 'event', 'social_interaction', 'thread', diff.category
-    @auth.call "#{@namespace}.create", diff, {invalidateAll: true}
+  upsert: (options) =>
+    ga? 'send', 'event', 'social_interaction', 'thread', options.thread.category
+    @auth.call "#{@namespace}.upsert", options, {invalidateAll: true}
 
-  getAll: ({categories, sort, skip, limit, ignoreCache} = {}) =>
+  getAll: (options = {}) =>
+    {gameKey, category, sort, skip, maxTimeUuid, limit, ignoreCache} = options
     language = @l.getLanguageStr()
     @auth.stream "#{@namespace}.getAll", {
-      categories, language, skip, limit, sort
+      gameKey, category, language, skip, maxTimeUuid, limit, sort
     }, {ignoreCache}
 
   getById: (id, {ignoreCache} = {}) =>
