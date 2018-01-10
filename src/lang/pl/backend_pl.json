@@ -1,0 +1,17 @@
+{
+  "message.userJoinedChatMessage": "{name} dołącza",
+  "card.addFriendCardTitle": "Dodaj mnie do znajomych",
+  "card.addFriendCardDescription": "Tapnij, aby dodać mnie do znajomych w grze",
+  "card.joinClanCardTitle": "Dołącz do mojego klanu",
+  "card.joinClanCardDescription": "Tapnij, aby dołączyć do mojego klanu",
+  "audit.ban": "Zbanowany {name}",
+  "audit.unban": "Odbanowany {name}",
+  "audit.deleteMessage": "Wiadomość usunięta przez {name}",
+  "audit.deleteMessagesLast7d": "Wiadomości z ostatnich 7 dni zostały usunięte przez {name}",
+  "audit.addRole": "Dodano rolę {role}",
+  "audit.deleteRole": "Usunięto rolę {role}",
+  "audit.updateRole": "Zaktualizowano uprawnienia roli dla {role}",
+  "audit.updateRoleChannel": "Zaktualizowano uprawnienia roli dla {role} w {channel}",
+  "audit.addChannel": "Dodano kanał {channel}",
+  "audit.updateChannel": "Zaktualizowano kanał {channel}"
+}

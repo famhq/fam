@@ -62,7 +62,7 @@ module.exports = class AddonListItem
     }, (data) =>
       @model.portal.portal.onMessageInAppBrowserWindow data
 
-  render: ({hasPadding, replacements} = {}) =>
+  render: ({hasPadding, replacements, onclick} = {}) =>
     hasPadding ?= true
     {addon, gameKey} = @state.getValue()
 
@@ -77,23 +77,26 @@ module.exports = class AddonListItem
       onclick: (e) =>
         e?.preventDefault()
 
-        isNative = Environment.isGameApp config.GAME_KEY
-        appVersion = isNative and Environment.getAppVersion(
-          config.GAME_KEY
-        )
-        isNewIAB = isNative and SemverService.gte appVersion, '1.4.0'
-        isExternalAddon = addon.url.substr(0, 4) is 'http'
-        isInAppBrowser = isNative and isNewIAB and isExternalAddon
-
-        if not isInAppBrowser
-          @router.go 'modByKey', {
-            key: _kebabCase(addon.key), gameKey
-          }, {
-            qs:
-              replacements: JSON.stringify replacements
-          }
+        if onclick
+          onclick()
         else
-          @openInAppBrowser addon, {replacements}
+          isNative = Environment.isGameApp config.GAME_KEY
+          appVersion = isNative and Environment.getAppVersion(
+            config.GAME_KEY
+          )
+          isNewIAB = isNative and SemverService.gte appVersion, '1.4.0'
+          isExternalAddon = addon.url.substr(0, 4) is 'http'
+          isInAppBrowser = isNative and isNewIAB and isExternalAddon
+
+          if not isInAppBrowser
+            @router.go 'modByKey', {
+              key: _kebabCase(addon.key), gameKey
+            }, {
+              qs:
+                replacements: JSON.stringify replacements
+            }
+          else
+            @openInAppBrowser addon, {replacements}
     },
       z '.icon-wrapper',
         z 'img.icon',

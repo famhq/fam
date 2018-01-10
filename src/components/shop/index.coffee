@@ -14,6 +14,7 @@ PrimaryButton = require '../primary_button'
 BuyGiftCardDialog = require '../buy_gift_card_dialog'
 OpenPack = require '../open_pack'
 ConfirmPackPurchase = require '../confirm_pack_purchase'
+UiCard = require '../ui_card'
 DateService = require '../../services/date'
 FormatService = require '../../services/format'
 colors = require '../../colors'
@@ -32,10 +33,13 @@ module.exports = class Shop
     products ?= @model.product.getAll()
     @isPurchaseLoading = new RxBehaviorSubject false
 
+    @$infoCard = new UiCard()
+
     @state = z.state
       me: @model.user.getMe()
       gameKey: gameKey
       isPurchaseLoading: @isPurchaseLoading
+      isInfoCardVisible: window? and not localStorage?['hideShopInfo']
       products: products.map (products) =>
         products = _orderBy products, 'cost', 'asc'
         _map products, (product) =>
@@ -83,10 +87,20 @@ module.exports = class Shop
           }
 
   render: =>
-    {me, products, gameKey, isPurchaseLoading} = @state.getValue()
+    {me, products, gameKey, isPurchaseLoading,
+      isInfoCardVisible} = @state.getValue()
 
     z '.z-shop',
       z '.g-grid',
+        if isInfoCardVisible
+          z '.info-card',
+            z @$infoCard,
+              text: @model.l.get 'shop.infoCardText'
+              submit:
+                text: @model.l.get 'installOverlay.closeButtonText'
+                onclick: =>
+                  @state.set isInfoCardVisible: false
+                  localStorage?['hideShopInfo'] = '1'
         if products and _isEmpty products
           z '.no-products',
             @model.l.get 'shop.empty'

@@ -9,6 +9,7 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 
 Sticker = require '../sticker'
+AddonListItem = require '../addon_list_item'
 config = require '../../config'
 
 if window?
@@ -19,14 +20,25 @@ module.exports = class FormattedText
     {text, @imageWidth, model, @router, @skipImages, @mentionedUsers,
       @selectedProfileDialogUser} = options
 
-    unless text?.map
-      @$el = @get$ {text, model}
+    if text?.map
+      $el = text.map((text) => @get$ {text, model})
+    else
+      hasAddon = text.match /\([^\)]+"addon:([a-zA-Z0-9-]+)\|([a-zA-Z0-9-]+)/
+      if hasAddon
+        @minHeight = '60px'
+        $el = model.addon.getByKey hasAddon[2]
+        .map (addon) =>
+          state = {addon}
+          @get$ {text, model, state}
+      else
+        @$el = @get$ {text, model} # use right away
+        $el = null
 
     @state = z.state {
-      $el: text?.map?((text) => @get$ {text, model})
+      $el: $el
     }
 
-  get$: ({text, model}) =>
+  get$: ({text, model, state}) =>
     isSticker = text?.match /^:[a-z_\^0-9]+:$/
 
     stickers = _uniq text?.match /:[a-z_\^0-9]+:/g
@@ -53,6 +65,7 @@ module.exports = class FormattedText
 
     remark()
     .use vdom, {
+      # zorium components' states aren't subscribed in here
       components:
         img: (tagName, props, children) =>
           isSticker = props.alt is 'sticker'
@@ -111,19 +124,33 @@ module.exports = class FormattedText
 
         a: (tagName, props, children) =>
           isMention = props.title and props.title.indexOf('user:') isnt -1
-          z 'a.link', {
-            href: props.href
-            className: z.classKebab {isMention}
-            onclick: (e) =>
-              e?.stopPropagation()
-              e?.preventDefault()
-              if isMention and @selectedProfileDialogUser
-                username = props.title.replace 'user:', ''
-                user = _find @mentionedUsers, {username}
-                @selectedProfileDialogUser.next user
-              else
-                @router.openLink props.href
-          }, children
+          isAddon = props.title and props.title.indexOf('addon:') isnt -1
+
+          if isAddon
+            parts = props.title.replace('addon:', '').split('|')
+            [gameKey, addonKey] = parts
+            if gameKey and addonKey
+              $addonListItem = new AddonListItem {
+                model
+                @router
+                addon: state?.addon
+                gameKey
+              }
+              z $addonListItem, {hasPadding: false}
+          else
+            z 'a.link', {
+              href: props.href
+              className: z.classKebab {isMention}
+              onclick: (e) =>
+                e?.stopPropagation()
+                e?.preventDefault()
+                if isMention and @selectedProfileDialogUser
+                  username = props.title.replace 'user:', ''
+                  user = _find @mentionedUsers, {username}
+                  @selectedProfileDialogUser.next user
+                else
+                  @router.openLink props.href
+            }, children
     }
     .process text
     .contents
@@ -131,5 +158,13 @@ module.exports = class FormattedText
   render: =>
     {$el} = @state.getValue()
 
-    z '.z-formatted-text',
+    if @minHeight
+      props = {
+        style:
+          minHeight: @minHeight
+      }
+    else
+      props = null
+
+    z '.z-formatted-text', props,
       @$el or $el

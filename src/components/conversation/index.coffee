@@ -130,7 +130,7 @@ module.exports = class Conversation extends Base
       allowedPanels: @conversation.map (conversation) ->
         # TODO: conversation-specific settings
         # if conversation.type is 'pm' or not conversation.groupId
-        ['text', 'stickers', 'image', 'gifs']
+        ['text', 'stickers', 'image', 'gifs', 'addons']
         # else
         #   ['text', 'stickers', 'gifs']
     }

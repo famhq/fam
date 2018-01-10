@@ -1,0 +1,17 @@
+{
+  "message.userJoinedChatMessage": "{name} ay sumali",
+  "card.addFriendCardTitle": "Idagdag akong bilang kaibigan",
+  "card.addFriendCardDescription": "I-tap para madagdag ako bilang kaibigan sa Clash Royale",
+  "card.joinClanCardTitle": "Sumali sa akong clan",
+  "card.joinClanCardDescription": "I-tap para makasali sa akong clan sa Clash Royale",
+  "audit.ban": "na-ban si {name}",
+  "audit.unban": "natanggal sa ban si {name}",
+  "audit.deleteMessage": "nagtanggal ng mensahe si {name}",
+  "audit.deleteMessagesLast7d": "nagtanggal ng huling 7 araw ng mga mensahe si {name}",
+  "audit.addRole": "nagdagdag ng tungkulin: {role}",
+  "audit.deleteRole": "nagtanggal ng tungkulin: {role}",
+  "audit.updateRole": "binago ang mga pahintulot ng tungkulin para sa {role}",
+  "audit.updateRoleChannel": "binago ang mga pahintulot ng tungkulin para sa {role} sa {channel}",
+  "audit.addChannel": "nagdagdag ng channel: {channel}",
+  "audit.updateChannel": "binago ang channel: {channel}"
+}

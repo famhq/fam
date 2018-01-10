@@ -15,6 +15,7 @@ ConversationImagePreview = require '../conversation_image_preview'
 ConversationInputTextarea = require '../conversation_input_textarea'
 ConversationInputStickers = require '../conversation_input_stickers'
 ConversationInputGifs = require '../conversation_input_gifs'
+ConversationInputAddons = require '../conversation_input_addons'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -27,7 +28,9 @@ module.exports = class ConversationInput
       @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$,
       isPostLoading, gameKey, conversation} = options
 
-    allowedPanels ?= RxObservable.of ['text', 'stickers', 'gifs', 'image']
+    allowedPanels ?= RxObservable.of [
+      'text', 'stickers', 'gifs', 'image', 'addons'
+    ]
     @imageData = new RxBehaviorSubject null
     @hasText = new RxBehaviorSubject false
     @isTextareaFocused ?= new RxBehaviorSubject false
@@ -100,6 +103,19 @@ module.exports = class ConversationInput
           @message
           @model
           @currentPanel
+        }
+      }
+      addons: {
+        $icon: new Icon()
+        icon: 'ellipsis'
+        name: 'addons'
+        $el: new ConversationInputAddons {
+          onPost: @post
+          @message
+          @model
+          @router
+          @currentPanel
+          gameKey
         }
       }
 

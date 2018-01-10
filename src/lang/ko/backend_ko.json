@@ -1,0 +1,17 @@
+{
+  "message.userJoinedChatMessage": "{name} 님이 들어오셨습니다.",
+  "card.addFriendCardTitle": "친구 추가 해주세요.",
+  "card.addFriendCardDescription": "클래시 로얄에서 저를 친구로 추가 하려면 여기를 탭하세요.",
+  "card.joinClanCardTitle": "저의 클랜에 가입하세요",
+  "card.joinClanCardDescription": "클래시 로얄에서 저의 클랜에 가입하려면 탭하세요",
+  "audit.ban": "{name} 님을 강퇴하였습니다.",
+  "audit.unban": "{name} 의 강퇴 조치를 취소하였습니다.",
+  "audit.deleteMessage": "{name} 에 의해 메시지가 삭제되었습니다.",
+  "audit.deleteMessagesLast7d": "{name} 에 의해 최근 7일간의 메시지가 삭제되었습니다.",
+  "audit.addRole": "역할 추가: {role}",
+  "audit.deleteRole": "역할 삭제: {role}",
+  "audit.updateRole": "{role} 의 역할 권한이 변경되었습니다.",
+  "audit.updateRoleChannel": "{channel} 에서 {role} 의 역할 권한이 변경되었습니다.",
+  "audit.addChannel": "채널 추가됨: {channel}",
+  "audit.updateChannel": "채널 업데이트됨: {channel}"
+}

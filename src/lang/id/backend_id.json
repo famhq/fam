@@ -1,0 +1,17 @@
+{
+  "message.userJoinedChatMessage": "{name} joined",
+  "card.addFriendCardTitle": "Add me as a friend",
+  "card.addFriendCardDescription": "Ketuk untuk menambahkan saya sebagai teman di Clash Royale",
+  "card.joinClanCardTitle": "Join my clan",
+  "card.joinClanCardDescription": "Ketuk untuk bergabung dengan klan saya di Clash Royale",
+  "audit.ban": "banned {name}",
+  "audit.unban": "unbanned {name}",
+  "audit.deleteMessage": "deleted a message by {name}",
+  "audit.deleteMessagesLast7d": "deleted last 7 days of messages by {name}",
+  "audit.addRole": "added the role: {role}",
+  "audit.deleteRole": "deleted the role: {role}",
+  "audit.updateRole": "updated role permissions for {role}",
+  "audit.updateRoleChannel": "updated role permissions for {role} in {channel}",
+  "audit.addChannel": "added the channel: {channel}",
+  "audit.updateChannel": "updated the channel: {channel}"
+}

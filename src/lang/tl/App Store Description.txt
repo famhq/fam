@@ -1,15 +1,15 @@
-Starfire for Clash Royale
+Startfire para sa Clash Royale
 
-The ultimate Clash Royale companion app for stats, clans, chat, and more
+Ang tunay na kasama na app ng Clash Royale para sa stats, mga clan, chat, at iba pa.
 
-Starfire is the ultimate companion app for Clash Royale.
+Ang Starfire is ang tunay na kasamang app para sa Clash Royale.
 
-Starfire features:
+Mga tampok ng Starfire:
 
-• Automatic stat and chest cycle tracking
-• Clan stats and recruiting
-• Real-time chat channels - share text, images, and gifs
-• Private messaging
-• Push notifications - stay up to date with chats, announcements, and events
+• Awtomatikong stat at pagsubaybay ng chest cycle
+• Stats ng clan at pagri-recruit
+• Mga base sa totoong oras na channel ng chat - magbahagi ng text, mga larawan, at mga gif
+• Pribadong pagmemensahe
+• Mga push notification - manataling napapanahon sa mga chat, anunsiyo, at mga kaganapan
 
-...and much, much more! Starfire is constantly evolving based on community feedback!
+...and higit pa! Patuloy na nagbabago ang Starfire batay sa feedback ng komunidad!

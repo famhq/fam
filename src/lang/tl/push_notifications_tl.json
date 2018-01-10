@@ -1,11 +1,11 @@
 {
-  "dailyRecap.title": "Daily Recap",
-  "dailyRecap.textWithWins": "{countUntilNextGoodChest} chests until a {nextGoodChest}. You had {wins} wins and {losses} losses today.",
-  "dailyRecap.text": "{countUntilNextGoodChest} chests until a {nextGoodChest}.",
-  "newClanMember.title": "New clan member",
-  "newClanMember.text": "{name} joined your clan in Starfire",
-  "newGroupMember.title": "New group member",
-  "newGroupMember.text": "{name} joined your group in Starfire",
-  "newFollower.title": "New follower",
-  "newFollower.text": "{name} followed you"
+  "dailyRecap.title": "Pang-araw-araw ng Pagbabalik-tanaw",
+  "dailyRecap.textWithWins": "{countUntilNextGoodChest} chest hangang sa {nextGoodChest}. Ikaw ay mayroon ng {wins} na panalo at {losses} na pagkatalo ngayon.",
+  "dailyRecap.text": "{countUntilNextGoodChest} chest hanggang sa {nextGoodChest}.",
+  "newClanMember.title": "Bagong miyembro ng clan",
+  "newClanMember.text": "{name} ay sumali sa inyong clan sa Starfire",
+  "newGroupMember.title": "Bagong miyembro ng grupo",
+  "newGroupMember.text": "{name} ay sumali sa inyong grupo sa Starfire",
+  "newFollower.title": "Bagong follower",
+  "newFollower.text": "{name} ay nag-follow sa iyo"
 }

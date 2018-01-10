@@ -1,0 +1,17 @@
+{
+  "message.userJoinedChatMessage": "{name} katıldı",
+  "card.addFriendCardTitle": "Beni arkadaş olarak ekleyin",
+  "card.addFriendCardDescription": "Clash Royale'de beni arkadaş olarak eklemek için tıklayın",
+  "card.joinClanCardTitle": "Klanıma katıl",
+  "card.joinClanCardDescription": "Clash Royale klanıma katılmak için dokunun",
+  "audit.ban": "engellendi {name}",
+  "audit.unban": "engeli kaldırıldı {name}",
+  "audit.deleteMessage": "bir mesaj {name} tarafından silindi",
+  "audit.deleteMessagesLast7d": "son 7 günün mesajları {name} tarafından silindi",
+  "audit.addRole": "rol eklendi: {role}",
+  "audit.deleteRole": "rol silindi: {role}",
+  "audit.updateRole": "rol izinleri {role} için güncellendi",
+  "audit.updateRoleChannel": "rol izinleri {channel}da {role} için güncellendi",
+  "audit.addChannel": "kanal eklendi: {channel}",
+  "audit.updateChannel": "kanal güncellendi: {channel}"
+}

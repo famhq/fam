@@ -1,0 +1,17 @@
+{
+  "message.userJoinedChatMessage": "{name} が参加しました",
+  "card.addFriendCardTitle": "フレンドとして追加",
+  "card.addFriendCardDescription": "タップでクラロワのフレンドとして追加",
+  "card.joinClanCardTitle": "クランに参加",
+  "card.joinClanCardDescription": "タップでクランに参加",
+  "audit.ban": "{name} を追放しました",
+  "audit.unban": "{name} の追放をやめました",
+  "audit.deleteMessage": "{name} がメッセージを削除しました",
+  "audit.deleteMessagesLast7d": "{name} が最近7日間のメッセージを削除しました",
+  "audit.addRole": "役職を追加しました: {role}",
+  "audit.deleteRole": "役職を削除しました: {role}",
+  "audit.updateRole": "{role} の権限を更新しました",
+  "audit.updateRoleChannel": "{channel} における {role} の権限を更新しました",
+  "audit.addChannel": "{channel} チャンネルを追加",
+  "audit.updateChannel": "{channel} チャンネルを更新"
+}

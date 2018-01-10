@@ -1,0 +1,17 @@
+{
+  "message.userJoinedChatMessage": "{name} 加入了",
+  "card.addFriendCardTitle": "加我为好友",
+  "card.addFriendCardDescription": "点击我来在皇室战争中添加我为好友",
+  "card.joinClanCardTitle": "加入我的部落",
+  "card.joinClanCardDescription": "点击来加入我在皇室战争中的部落",
+  "audit.ban": "禁止{name}",
+  "audit.unban": "取消封禁{name}",
+  "audit.deleteMessage": "删除{name} 的一条消息",
+  "audit.deleteMessagesLast7d": "删除有关{name} 的七天前的消息",
+  "audit.addRole": "添加这个角色：{role}",
+  "audit.deleteRole": "删除这个角色：{role}",
+  "audit.updateRole": "更新了{role} 的角色权限",
+  "audit.updateRoleChannel": "更新了{channel} 中{role} 的角色权限",
+  "audit.addChannel": "已添加频道: {channel}",
+  "audit.updateChannel": "更新了频道: {channel}"
+}
