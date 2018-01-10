@@ -15,11 +15,11 @@ module.exports = class Group
     null
 
   getAll: ({filter, language, embed} = {}) =>
-    embed ?= ['conversations', 'userId', 'star', 'userCount', 'clan']
+    embed ?= ['meGroupUser', 'conversations', 'star', 'userCount']
     @auth.stream "#{@namespace}.getAll", {filter, language, embed}
 
   getAllByUserId: (userId, {embed} = {}) =>
-    embed ?= ['conversations', 'userId', 'star', 'userCount', 'clan']
+    embed ?= ['meGroupUser', 'conversations', 'star', 'userCount']
     @auth.stream "#{@namespace}.getAllByUserId", {userId, embed}
 
   getById: (id) =>

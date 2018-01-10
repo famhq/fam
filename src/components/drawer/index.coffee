@@ -42,7 +42,8 @@ module.exports = class Drawer
       (vals...) -> vals
     )
 
-    myGroups = @model.group.getAll({filter: 'mine'})
+    myGroups = me.switchMap (me) =>
+      @model.group.getAllByUserId me.id
     groupAndMyGroupsAndGameKey = RxObservable.combineLatest(
       group
       myGroups
@@ -61,7 +62,7 @@ module.exports = class Drawer
       language: @model.l.getLanguage()
       me: me
       gameKey: gameKey
-      myGroups: groupAndMyGroupsAndGameKey.switchMap (props) =>
+      myGroups: groupAndMyGroupsAndGameKey.map (props) =>
         [group, groups, gameKey, me] = props
         groups = _orderBy groups, (group) =>
           @model.cookie.get("group_#{group.id}_lastVisit") or 0
@@ -71,103 +72,99 @@ module.exports = class Drawer
             id isnt group.id
           groups = [group].concat groups
         groups = _take(groups, GROUPS_IN_DRAWER)
-        groupUserObs = _map groups, (group) =>
-          @model.groupUser.getByGroupIdAndUserId group.id, me.id
-        RxObservable.combineLatest groupUserObs..., (vals...) -> vals
-        .map (meGroupUsers) =>
-          _map groups, (group, i) =>
-            meGroupUser = meGroupUsers[i]
-            {
-              group
-              $badge: if group.clan \
-                      then new ClanBadge {@model, clan: group.clan}
-                      else new GroupBadge {@model, group}
-              $chevronIcon: new Icon()
-              $ripple: new Ripple()
-              children: if group.type is 'public'
-                _filter [
+        _map groups, (group, i) =>
+          meGroupUser = group.meGroupUser
+          {
+            group
+            $badge: if group.clan \
+                    then new ClanBadge {@model, clan: group.clan}
+                    else new GroupBadge {@model, group}
+            $chevronIcon: new Icon()
+            $ripple: new Ripple()
+            children: if group.type is 'public'
+              _filter [
+                {
+                  path: @router.get 'groupChat', {
+                    gameKey: gameKey
+                    id: group.key or group.id
+                  }
+                  title: @model.l.get 'general.chat'
+                }
+                {
+                  path: @router.get 'groupShop', {
+                    gameKey: gameKey
+                    id: group.key or group.id
+                  }
+                  # title: @model.l.get 'general.shop'
+                  title: @model.l.get 'general.freeStuff'
+                }
+                {
+                  path: @router.get 'groupCollection', {
+                    gameKey: gameKey
+                    id: group.key or group.id
+                  }
+                  title: @model.l.get 'collectionPage.title'
+                }
+                if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
                   {
-                    path: @router.get 'groupChat', {
+                    path: @router.get 'groupVideos', {
                       gameKey: gameKey
                       id: group.key or group.id
                     }
-                    title: @model.l.get 'general.chat'
+                    title: @model.l.get 'videosPage.title'
                   }
+                {
+                  path: @router.get 'groupLeaderboard', {
+                    gameKey: gameKey
+                    id: group.key or group.id
+                  }
+                  title: @model.l.get 'groupLeaderboardPage.title'
+                }
+                if @model.groupUser.hasPermission {
+                  meGroupUser, me, permissions: ['manageRole']
+                }
                   {
-                    path: @router.get 'groupShop', {
+                    path: @router.get 'groupSettings', {
                       gameKey: gameKey
                       id: group.key or group.id
                     }
-                    # title: @model.l.get 'general.shop'
-                    title: @model.l.get 'general.freeStuff'
-                  }
-                  {
-                    path: @router.get 'groupCollection', {
-                      gameKey: gameKey
-                      id: group.key or group.id
-                    }
-                    title: @model.l.get 'collectionPage.title'
-                  }
-                  if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
-                    {
-                      path: @router.get 'groupVideos', {
-                        gameKey: gameKey
-                        id: group.key or group.id
+                    title: @model.l.get 'groupSettingsPage.title'
+                    children: [
+                      {
+                        path: @router.get 'groupManageChannels', {
+                          gameKey: gameKey
+                          id: group.key or group.id
+                        }
+                        title: @model.l.get 'groupManageChannelsPage.title'
                       }
-                      title: @model.l.get 'videosPage.title'
-                    }
-                  {
-                    path: @router.get 'groupLeaderboard', {
-                      gameKey: gameKey
-                      id: group.key or group.id
-                    }
-                    title: @model.l.get 'groupLeaderboardPage.title'
-                  }
-                  if @model.groupUser.hasPermission {
-                    meGroupUser, me, permissions: ['manageRole']
-                  }
-                    {
-                      path: @router.get 'groupSettings', {
-                        gameKey: gameKey
-                        id: group.key or group.id
+                      {
+                        path: @router.get 'groupManageRoles', {
+                          gameKey: gameKey
+                          id: group.key or group.id
+                        }
+                        title: @model.l.get 'groupManageRolesPage.title'
                       }
-                      title: @model.l.get 'groupSettingsPage.title'
-                      children: [
+                      if @model.groupUser.hasPermission {
+                        meGroupUser, me, permissions: ['readAuditLog']
+                      }
                         {
-                          path: @router.get 'groupManageChannels', {
+                          path: @router.get 'groupAuditLog', {
                             gameKey: gameKey
                             id: group.key or group.id
                           }
-                          title: @model.l.get 'groupManageChannelsPage.title'
+                          title: @model.l.get 'groupAuditLogPage.title'
                         }
-                        {
-                          path: @router.get 'groupManageRoles', {
-                            gameKey: gameKey
-                            id: group.key or group.id
-                          }
-                          title: @model.l.get 'groupManageRolesPage.title'
+                      {
+                        path: @router.get 'groupBannedUsers', {
+                          gameKey: gameKey
+                          id: group.key or group.id
                         }
-                        if @model.groupUser.hasPermission {
-                          meGroupUser, me, permissions: ['readAuditLog']
-                        }
-                          {
-                            path: @router.get 'groupAuditLog', {
-                              gameKey: gameKey
-                              id: group.key or group.id
-                            }
-                            title: @model.l.get 'groupAuditLogPage.title'
-                          }
-                        {
-                          path: @router.get 'groupBannedUsers', {
-                            gameKey: gameKey
-                            id: group.key or group.id
-                          }
-                          title: @model.l.get 'groupBannedUsersPage.title'
-                        }
-                      ]
-                    }
-                ]
-            }
+                        title: @model.l.get 'groupBannedUsersPage.title'
+                      }
+                    ]
+                  }
+              ]
+          }
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()

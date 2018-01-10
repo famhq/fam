@@ -19,7 +19,9 @@ if window?
 
 module.exports = class Groups
   constructor: ({@model, @router, gameKey}) ->
-    myGroups = @model.group.getAll({filter: 'mine'})
+    me = @model.user.getMe()
+    myGroups = me.switchMap (me) =>
+      @model.group.getAllByUserId me.id
     publicGroups = @model.l.getLanguage().switchMap (language) =>
       @model.group.getAll({filter: 'public', language})
     myGroupsAndPublicGroups = RxObservable.combineLatest(
@@ -56,7 +58,7 @@ module.exports = class Groups
                               not localStorage['hideTranslateCard']
 
     @state = z.state
-      me: @model.user.getMe()
+      me: me
       language: language
       gameKey: gameKey
       groups: myGroupsAndPublicGroups
