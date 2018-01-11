@@ -4,6 +4,7 @@ _filter = require 'lodash/filter'
 _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
 _orderBy = require 'lodash/orderBy'
+_clone = require 'lodash/clone'
 Environment = require 'clay-environment'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
@@ -62,6 +63,7 @@ module.exports = class Drawer
       language: @model.l.getLanguage()
       me: me
       gameKey: gameKey
+      expandedItems: []
       myGroups: groupAndMyGroupsAndGameKey.map (props) =>
         [group, groups, gameKey, me] = props
         groups = _orderBy groups, (group) =>
@@ -129,6 +131,7 @@ module.exports = class Drawer
                       id: group.key or group.id
                     }
                     title: @model.l.get 'groupSettingsPage.title'
+                    $chevronIcon: new Icon()
                     children: [
                       {
                         path: @router.get 'groupManageChannels', {
@@ -338,6 +341,21 @@ module.exports = class Drawer
       else if not newIsOpen and isOpen
         @model.drawer.close()
 
+  isExpandedByPath: (path) =>
+    {expandedItems} = @state.getValue()
+    expandedItems.indexOf(path) isnt -1
+
+  toggleExpandItemByPath: (path) =>
+    {expandedItems} = @state.getValue()
+    isExpanded = @isExpandedByPath path
+
+    if isExpanded
+      expandedItems = _clone expandedItems
+      expandedItems.splice expandedItems.indexOf(path), 1
+      @state.set expandedItems: expandedItems
+    else
+      @state.set expandedItems: expandedItems.concat [path]
+
   render: ({currentPath}) =>
     {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, gameKey,
       language, windowSize} = @state.getValue()
@@ -346,8 +364,11 @@ module.exports = class Drawer
     # adblock plus blocks has-ad
     hasA = not Environment.isMobile() and windowSize?.height > 880
 
-    renderChild = ({path, title, children}, depth = 0) =>
+    renderChild = ({path, title, $chevronIcon, children}, depth = 0) =>
       isSelected = currentPath?.indexOf(path) is 0
+      isExpanded = isSelected or @isExpandedByPath path
+
+      hasChildren = not _isEmpty children
       z 'li.menu-item',
         z 'a.menu-item-link.is-child', {
           className: z.classKebab {isSelected}
@@ -359,7 +380,19 @@ module.exports = class Drawer
         },
           z '.icon'
           title
-        if children
+          if hasChildren
+            z '.chevron',
+              z $chevronIcon,
+                icon: if isExpanded \
+                      then 'chevron-up'
+                      else 'chevron-down'
+                color: colors.$tertiary500Text70
+                isAlignedRight: true
+                onclick: (e) =>
+                  e?.stopPropagation()
+                  e?.preventDefault()
+                  @toggleExpandItemByPath path
+        if hasChildren and isExpanded
           z "ul.children-#{depth}",
             _map children, (child) ->
               renderChild child, depth + 1
@@ -420,8 +453,11 @@ module.exports = class Drawer
                     groupEnPath = @router.get 'group', {
                       gameKey, id: group.key or group.id
                       }, {language: 'en'}
+
                     isSelected = currentPath?.indexOf(groupPath) is 0 or
                       currentPath?.indexOf(groupEnPath) is 0
+                    isExpanded = isSelected or @isExpandedByPath groupPath
+
                     z 'li.menu-item', {
                       className: z.classKebab {isSelected}
                     },
@@ -440,14 +476,18 @@ module.exports = class Drawer
                         if not _isEmpty children
                           z '.chevron',
                             z $chevronIcon,
-                              icon: if isSelected \
+                              icon: if isExpanded \
                                     then 'chevron-up'
                                     else 'chevron-down'
                               color: colors.$tertiary500Text70
-                              isTouchTarget: false
+                              isAlignedRight: true
+                              onclick: (e) =>
+                                e?.stopPropagation()
+                                e?.preventDefault()
+                                @toggleExpandItemByPath groupPath
                         if breakpoint is 'desktop'
                           $ripple
-                      if isSelected
+                      if isExpanded
                         z 'ul',
                           _map children, (child) -> renderChild child
 

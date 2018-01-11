@@ -15,13 +15,9 @@ if window?
 
 module.exports = class Collection
   constructor: ({@model, @router, gameKey, group, @overlay$}) ->
-    # TODO: group-specific?
     userItems = @model.userItem.getAll()
-    if group
-      allItems = group.switchMap ({id}) =>
-        @model.item.getAllByGroupId id
-    else
-      allItems = @model.item.getAll()
+    allItems = group.switchMap ({id}) =>
+      @model.item.getAllByGroupId id
 
     allItems = allItems.map (items) ->
       _map items, (item) ->

@@ -291,6 +291,11 @@ module.exports = class App
         z '#zorium-root', {
           className: z.classKebab {isIos}
         },
+          # z '.warning', {
+          #   style:
+          #     textAlign: 'center'
+          # }
+          #   'We\'re working on bring back up all features'
           z '.z-root',
             unless hideDrawer
               z @$drawer, {currentPath: request?.req.path}

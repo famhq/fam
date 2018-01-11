@@ -176,9 +176,6 @@ $zIndexDrawer = 300
                 align-items: center
                 padding: 10px 16px
 
-                &:hover
-                  background: getColor('$tertiary600')
-
                 &:active
                   background: getColor('$tertiary500')
 
@@ -233,3 +230,6 @@ $zIndexDrawer = 300
   @media (pointer: fine) and (min-width: $contentMaxWidth)
     > .drawer-wrapper > .drawer-tab > .drawer > .content > .menu .menu-item > .menu-item-link
       padding: 4px 16px
+
+      &:hover
+        background: getColor('$tertiary600')

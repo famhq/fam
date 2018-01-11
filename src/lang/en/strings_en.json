@@ -513,6 +513,7 @@
   "permissions.sendMessage": "Send messages",
   "permissions.sendLink": "Send links",
   "permissions.sendImage": "Send images",
+  "permissions.sendAddon": "Send tools",
 
 
   "crChest.wooden": "Wooden",

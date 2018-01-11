@@ -111,6 +111,7 @@ isomorphic =
     sendMessage: true
     sendLink: true
     sendImage: true
+    sendAddon: true
   DEFAULT_NOTIFICATIONS:
     chatMessage: true
     chatMention: true

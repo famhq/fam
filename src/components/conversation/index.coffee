@@ -111,6 +111,13 @@ module.exports = class Conversation extends Base
 
     messageBatches = RxObservable.merge @messageBatches, loadedMessages
 
+    @groupUser = group.map (group) ->
+      group?.meGroupUser
+
+    groupUserAndConversation = RxObservable.combineLatest(
+      @groupUser, @conversation, (vals...) -> vals
+    )
+
     @inputTranslateY = new RxReplaySubject 1
 
     @$loadingSpinner = new Spinner()
@@ -127,12 +134,28 @@ module.exports = class Conversation extends Base
       @conversation
       onPost: @postMessage
       onResize: @onResize
-      allowedPanels: @conversation.map (conversation) ->
-        # TODO: conversation-specific settings
-        # if conversation.type is 'pm' or not conversation.groupId
-        ['text', 'stickers', 'image', 'gifs', 'addons']
-        # else
-        #   ['text', 'stickers', 'gifs']
+      allowedPanels: groupUserAndConversation.map ([groupUser, conversation]) =>
+        if conversation.groupId
+          panels = ['text', 'stickers']
+          meGroupUser = groupUser
+          permissions = ['sendImage']
+          channelId = conversation.id
+          hasImagePermission = @model.groupUser.hasPermission {
+            meGroupUser, permissions, channelId
+          }
+          if hasImagePermission
+            panels = panels.concat ['image', 'gifs']
+
+          permissions = ['sendAddon']
+          hasAddonPermission = @model.groupUser.hasPermission {
+            meGroupUser, permissions, channelId
+          }
+          if hasAddonPermission
+            panels = panels.concat ['addons']
+
+          panels
+        else
+          ['text', 'stickers', 'gifs', 'addons']
     }
 
     @debouncedOnResize = _debounce @onResize
@@ -143,20 +166,6 @@ module.exports = class Conversation extends Base
       me
       (vals...) -> vals
     )
-
-    groupAndMe = RxObservable.combineLatest(
-      group or RxObservable.of null
-      me
-      (vals...) -> vals
-    )
-
-    @groupUser = groupAndMe.switchMap ([group, me]) =>
-      if group and me
-        @model.groupUser.getByGroupIdAndUserId group.id, me.id
-        .map (groupUser) ->
-          groupUser or false
-      else
-        RxObservable.of null
 
     @state = z.state
       me: me

@@ -7,6 +7,3 @@ module.exports = class Item
 
   getAllByGroupId: (groupId) =>
     @auth.stream "#{@namespace}.getAllByGroupId", {groupId}
-
-  getAll: =>
-    @auth.stream "#{@namespace}.getAll"
