@@ -215,7 +215,6 @@ app.use (req, res, next) ->
              else RENDER_TO_STRING_TIMEOUT_MS
   }
   .then (html) ->
-    console.log Date.now() - start
     io.disconnect()
     hasSent = true
     res.send '<!DOCTYPE html>' + html

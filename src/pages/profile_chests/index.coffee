@@ -35,7 +35,7 @@ module.exports = class ProfileChestsPage
       serverData
       meta: player.map (player) =>
         playerName = player?.data?.name
-        smcCount = _find(player?.data?.upcomingChests.items, {
+        smcCount = _find(player?.data?.upcomingChests?.items, {
           name: 'Super Magical Chest'
         })?.index
         {

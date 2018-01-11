@@ -111,8 +111,9 @@ module.exports = class Conversation extends Base
 
     messageBatches = RxObservable.merge @messageBatches, loadedMessages
 
-    @groupUser = group.map (group) ->
-      group?.meGroupUser
+    @groupUser = if group \
+                then group.map (group) -> group?.meGroupUser
+                else RxObservable.of null
 
     groupUserAndConversation = RxObservable.combineLatest(
       @groupUser, @conversation, (vals...) -> vals
