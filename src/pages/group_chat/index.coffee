@@ -26,9 +26,9 @@ module.exports = class GroupChatPage
   constructor: ({@model, requests, @router, serverData, @overlay$}) ->
     @group = requests.switchMap ({route}) =>
       if isUuid route.params.id
-        @model.group.getById route.params.id
+        @model.group.getById route.params.groupId or route.params.id
       else
-        @model.group.getByKey route.params.id
+        @model.group.getByKey route.params.groupId or route.params.id
 
     conversationId = requests.map ({route}) ->
       route.params.conversationId
@@ -70,6 +70,8 @@ module.exports = class GroupChatPage
         @model.conversation.getById conversationId
       else
         RxObservable.of null
+    # breaks switching groups (leaves getMessagesStream as prev val)
+    # .publishReplay(1).refCount()
 
     @$head = new Head({
       @model

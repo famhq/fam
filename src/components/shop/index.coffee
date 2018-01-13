@@ -95,7 +95,7 @@ module.exports = class Shop
         if isInfoCardVisible
           z '.info-card',
             z @$infoCard,
-              text: @model.l.get 'shop.infoCardText'
+              $content: @model.l.get 'shop.infoCardText'
               submit:
                 text: @model.l.get 'installOverlay.closeButtonText'
                 onclick: =>

@@ -60,7 +60,7 @@ module.exports = class Conversation extends Base
 
     # not putting in state because re-render is too slow on type
     @message = new RxBehaviorSubject ''
-    @messageBatches = new RxBehaviorSubject null
+    @resetMessageBatches = new RxBehaviorSubject null
 
     lastConversationId = null
     @isLoadingMore
@@ -109,7 +109,7 @@ module.exports = class Conversation extends Base
         RxObservable.of []
     .share()
 
-    messageBatches = RxObservable.merge @messageBatches, loadedMessages
+    messageBatches = RxObservable.merge @resetMessageBatches, loadedMessages
 
     @groupUser = if group \
                 then group.map (group) -> group?.meGroupUser
@@ -218,41 +218,60 @@ module.exports = class Conversation extends Base
     # fn is simple enough we don't need to debounce/throttle
     @$$messages?.addEventListener 'scroll', @scrollListener
 
-    @conversation.take(1).subscribe (conversation) =>
+    prevConversation = null
+    @disposable = @conversation.subscribe (newConversation) =>
+
       @model.portal.call 'push.setContextId', {
-        contextId: conversation?.id
+        contextId: newConversation?.id
       }
+      # server doesn't need to push us new updates
+      if prevConversation and prevConversation.id isnt newConversation.id
+        @model.chatMessage.unsubscribeByConversationId prevConversation.id
+
+      prevConversation = newConversation
+
     @scrollToBottom()
     window?.addEventListener 'resize', @debouncedOnResize
 
   beforeUnmount: =>
     super()
+
     {conversation} = @state.getValue()
+    if conversation
+      @model.chatMessage.unsubscribeByConversationId conversation?.id
+
+    @disposable.unsubscribe()
 
     @$$messages?.removeEventListener 'scroll', @scrollListener
     @$$loadingSpinner?.style.display = 'block'
-    @state.set isLoaded: false
 
     # to update conversations page, etc...
+    # TODO: should update via streaming or just ignore cache?
     unless @isGroup
-      # race condition without timeout.
-      # new page tries to get new exoid stuff, but it gets cleared at same
-      # exact time. caused an issue of leaving event page back to home,
-      # and home had no responses / empty streams / unobserved streams
-      # for group data
+    #   # race condition without timeout.
+    #   # new page tries to get new exoid stuff, but it gets cleared at same
+    #   # exact time. caused an issue of leaving event page back to home,
+    #   # and home had no responses / empty streams / unobserved streams
+    #   # for group data
       setImmediate =>
         @model.exoid.invalidateAll()
-    @messageBatches.next [[]]
+    @resetMessageBatches.next [[]]
+    setTimeout =>
+      @state.set isLoaded: false
+    , 0
 
     @model.portal.call 'push.setContextId', {
       contextId: 'empty'
     }
+
+
     # hacky: without this, when leaving a conversation, changing browser tabs,
     # then coming back and going back to conversation, the client-created
     # messages will show for a split-second before the rest load in.
     # but WITH this, leaving a conversation and coming back to it sometimes
     # causes new messages to not post FIXME FIXME
     # @model.chatMessage.resetClientChangesStream conversation?.id
+
     window?.removeEventListener 'resize', @debouncedOnResize
 
   getMessagesStream: (maxTimeUuid) =>

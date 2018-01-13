@@ -119,7 +119,7 @@ module.exports = class EarnFire
         if isInfoCardVisible
           z '.info-card',
             z @$infoCard,
-              text:
+              $content:
                 z 'div',
                   z 'p', @model.l.get 'earnFire.description1'
                   z 'p', @model.l.get 'earnFire.description2'

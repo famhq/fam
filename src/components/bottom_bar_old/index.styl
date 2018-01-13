@@ -1,0 +1,27 @@
+@require '../../vars'
+
+.z-bottom-bar
+  display: flex
+  background: getColor('$tertiary700')
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.24)
+  border-top: 1px solid getColor('$white4')
+
+  @media (min-width: $contentMaxWidth)
+    display: none
+
+  > .menu-item
+    ripple(getColor('$primary500'))
+    flex: 1
+    text-align: center
+    padding: 8px 0
+    cursor: pointer
+    user-select: none
+
+    &.is-selected
+      > .text
+        color: getColor('$primary500')
+
+    > .text
+      font-caption1()
+      color: getColor('$tertiary300')
+      margin-top: 2px

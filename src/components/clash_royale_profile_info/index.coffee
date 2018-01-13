@@ -20,10 +20,10 @@ PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 AddonListItem = require '../addon_list_item'
 VerifyAccountDialog = require '../verify_account_dialog'
-AutoRefreshDialog = require '../auto_refresh_dialog'
+ClashRoyaleChestCycle = require '../clash_royale_chest_cycle'
+ProfileRefreshBar = require '../profile_refresh_bar'
 AdsenseAd = require '../adsense_ad'
 FormatService = require '../../services/format'
-DateService = require '../../services/date'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -44,8 +44,11 @@ module.exports = class ProfileInfo
     @$clanBadge = new ClanBadge()
     @$dialog = new Dialog()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
-    @$autoRefreshDialog = new AutoRefreshDialog {
-      @model, @router, @overlay$, gameKey
+    @$clashRoyaleChestCycle = new ClashRoyaleChestCycle {
+      @model, @router, player
+    }
+    @$profileRefreshBar = new ProfileRefreshBar {
+      @model, @router, player, @overlay$
     }
     @$autoRefreshInfoIcon = new Icon()
     @$adsenseAd = new AdsenseAd {@model}
@@ -75,12 +78,6 @@ module.exports = class ProfileInfo
 
     @state = z.state {
       isRequestNotificationCardVisible
-      hasUpdatedPlayer: false
-      isRefreshing: false
-      isAutoRefresh: player.switchMap (player) =>
-        @model.player.getIsAutoRefreshByPlayerIdAndGameId(
-          player.id, config.CLASH_ROYALE_ID
-        )
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
       user: user
       me: @model.user.getMe()
@@ -89,9 +86,6 @@ module.exports = class ProfileInfo
       player: player
       serverData: serverData
     }
-
-  beforeUnmount: =>
-    @state.set isRefreshing: false, hasUpdatedPlayer: false
 
   getWinRateFromStats: (stats) ->
     winsAndLosses = stats?.wins + stats?.losses
@@ -130,8 +124,8 @@ module.exports = class ProfileInfo
     ]
 
   render: =>
-    {player, isRequestNotificationCardVisible, hasUpdatedPlayer, isRefreshing,
-      isAutoRefresh, isSplitsInfoCardVisible, user, me, gameKey, serverData,
+    {player, isRequestNotificationCardVisible,
+      isSplitsInfoCardVisible, user, me, gameKey, serverData,
       followingIds} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
@@ -200,9 +194,6 @@ module.exports = class ProfileInfo
       }
       '2v2': @getTypeStats _find player?.counters, {gameType: '2v2'}
 
-    lastUpdateTime = player?.lastUpdateTime
-
-    canRefresh = @model.player.canRefresh player, hasUpdatedPlayer, isRefreshing
     userAgent = serverData?.req?.headers?['user-agent'] or
                   navigator?.userAgent or ''
     isNativeApp = Environment.isGameApp config.GAME_KEY, {userAgent}
@@ -271,66 +262,7 @@ module.exports = class ProfileInfo
             #     FormatService.number player?.fire
         z '.divider'
         z '.g-grid',
-          z '.last-updated',
-            z '.time',
-              @model.l.get 'profileInfo.lastUpdatedTime'
-              ' '
-              DateService.fromNow lastUpdateTime
-            z '.auto-refresh', {
-              onclick: =>
-                ga? 'send', 'event', 'verify', 'auto_refresh', 'click'
-                @overlay$.next @$autoRefreshDialog
-            },
-              @model.l.get 'profileInfo.autoRefresh'
-              ': '
-              if isAutoRefresh
-                z '.status',
-                  @model.l.get 'general.on'
-              else
-                [
-                  z '.status',
-                    z 'div',
-                      @model.l.get 'general.off'
-                  z '.info',
-                    z @$autoRefreshInfoIcon,
-                      icon: 'help'
-                      isTouchTarget: false
-                      size: '14px'
-                      color: colors.$white
-                ]
-            z '.refresh',
-              z @$refreshIcon,
-                icon: if isRefreshing then 'ellipsis' else 'refresh'
-                isTouchTarget: false
-                color: if canRefresh \
-                       then colors.$primary500
-                       else colors.$tertiary300
-                onclick: =>
-                  if isRefreshing
-                    return
-                  if canRefresh
-                    tag = player?.id
-                    @state.set isRefreshing: true
-                    # re-rendering with new state isn't instantaneous, this is
-                    canRefresh = false
-                    @model.clashRoyaleAPI.refreshByPlayerId tag
-                    .then =>
-                      @state.set hasUpdatedPlayer: true, isRefreshing: false
-                  else
-                    @overlay$.next z @$dialog, {
-                      isVanilla: true
-                      $title: @model.l.get 'profileInfo.waitTitle'
-                      $content: @model.l.get 'profileInfo.waitDescription', {
-                        replacements:
-                          number: '10'
-                      }
-                      onLeave: =>
-                        @overlay$.next null
-                      submitButton:
-                        text: @model.l.get 'installOverlay.closeButtonText'
-                        onclick: =>
-                          @overlay$.next null
-                    }
+          @$profileRefreshBar
 
           if isMe and player and not player?.isVerified
             z '.verify-button',
@@ -355,29 +287,20 @@ module.exports = class ProfileInfo
               slot: 'desktop728x90'
             }
 
-        if player?.data?.upcomingChests
-          upcomingChests = _filter player?.data.upcomingChests.items, (item) ->
-            item.index? and item.index < 8
-          z '.block',
-            z '.g-grid',
-              z '.title', @model.l.get 'profileChests.chestsTitle'
-              z '.chests', {
-                ontouchstart: (e) ->
-                  e?.stopPropagation()
-              },
-                _map upcomingChests, ({name, index}, i) ->
-                  chest = _snakeCase name
-                  z 'img.chest',
-                    src: "#{config.CDN_URL}/chests/#{chest}.png"
-                    width: 90
-                    height: 90
+        z '.block',
+          z '.g-grid',
+            z '.title', @model.l.get 'profileChests.chestsTitle'
+            z @$clashRoyaleChestCycle, {
+              showAll: @model.experiment.get('newHome') is 'new'
+            }
+            unless @model.experiment.get('newHome') is 'new'
               z '.chests-button',
                 z 'div',
                   z @$moreDetailsButton,
                     text: @model.l.get 'profileInfo.moreDetailsButtonText'
                     onclick: =>
                       @router.go 'chestCycleByPlayerId', {
-                        gameKey: gameKey
+                        gameKey: 'clash-royale'
                         playerId: player?.id
                       }
 
@@ -387,7 +310,7 @@ module.exports = class ProfileInfo
               if key is 'ladder' and isSplitsInfoCardVisible
                 z '.splits-info-card',
                   z @$splitsInfoCard,
-                    text: @model.l.get 'profileInfo.splitsInfoCardText'
+                    $content: @model.l.get 'profileInfo.splitsInfoCardText'
                     submit:
                       text: @model.l.get 'installOverlay.closeButtonText'
                       onclick: =>

@@ -20,7 +20,7 @@ module.exports = class RequestNotificationsCard
     z '.z-request-notifications-card',
       z @$uiCard,
         isHighlighted: state is 'ask'
-        text:
+        $content:
           if state is 'turnedOn'
             @model.l.get 'requestNotificationsCard.turnedOn'
           else if state is 'noThanks'

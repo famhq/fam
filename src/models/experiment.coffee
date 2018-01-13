@@ -1,15 +1,15 @@
 module.exports = class Experiment
-  constructor: ->
-    expThreadsGroup = localStorage?['exp:threads']
-    unless expThreadsGroup
-      expThreadsGroup = if Math.random() > 0.5 \
-                               then 'lite'
+  constructor: ({@cookie}) ->
+    expNewHome = @cookie.get 'exp:newHome'
+    unless expNewHome
+      expNewHome = if Math.random() > 0.5 \
+                               then 'new'
                                else 'control'
-      localStorage?['exp:threads'] = expThreadsGroup
-    ga? 'send', 'event', 'exp', 'threads', expThreadsGroup
+      @cookie.set 'exp:newHome', expNewHome
+    ga? 'send', 'event', 'exp', 'newHome', expNewHome
 
     @experiments =
-      threads: expThreadsGroup
+      newHome: expNewHome
 
   get: (key) =>
     @experiments[key]

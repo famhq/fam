@@ -175,6 +175,7 @@ module.exports = class Thread extends Base
     @$$content?.addEventListener 'resize', @scrollListener
 
   beforeUnmount: =>
+    super()
     @$$content?.removeEventListener 'scroll', @scrollListener
     @$$content?.removeEventListener 'resize', @scrollListener
 

@@ -20,10 +20,38 @@
   "forumSignature": "/:gameKey/forum-signature",
   "friends": "/:gameKey/friends",
   "friendsWithAction": "/:gameKey/friends/:action",
+
+
+
+  "+group": "/g/:groupId",
+  "+groupChat": "/g/:groupId/chat",
+  "+groupChatConversation": "/g/:groupId/chat/:conversationId",
+  "+groupCollection": "/g/:groupId/collection",
+  "+groupForum": "/g/:groupId/forum",
+  "+groupHome": "/g/:groupId/home",
+  "+groupMembers": "/g/:groupId/members",
+  "+groupInvite": "/g/:groupId/invite",
+  "+groupManage": "/g/:groupId/manage/:userId",
+  "+groupNewChannel": "/g/:groupId/new-channel",
+  "+groupEditChannel": "/g/:groupId/chat/:conversationId/edit",
+  "+groupManageChannels": "/g/:groupId/manage-channels",
+  "+groupSettings": "/g/:groupId/settings",
+  "+groupShop": "/g/:groupId/shop",
+  "+groupVideos": "/g/:groupId/videos",
+  "+groupLeaderboard": "/g/:groupId/leaderboard",
+  "+groupAddRecords": "/g/:groupId/add-records",
+  "+groupBannedUsers": "/g/:groupId/banned-users",
+  "+groupManageRecords": "/g/:groupId/manage-records",
+  "+groupManageRoles": "/g/:groupId/manage-roles",
+  "+groupAuditLog": "/g/:groupId/audit-log",
+
+
+
   "group": "/:gameKey/group/:id",
   "groupChat": "/:gameKey/group/:id/chat",
   "groupChatConversation": "/:gameKey/group/:id/chat/:conversationId",
   "groupCollection": "/:gameKey/group/:id/collection",
+  "groupHome": "/:gameKey/group/:id/home",
   "groupMembers": "/:gameKey/group/:id/members",
   "groupInvite": "/:gameKey/group/:id/invite",
   "groupManage": "/:gameKey/group/:id/manage/:userId",

@@ -24,6 +24,7 @@
   "groupChat": "/group/{id}/chat",
   "groupChatConversation": "/group/{id}/chat/{conversationId}",
   "groupCollection": "/group/{id}/collection",
+  "groupHome": "/group/{id}/home",
   "groupMembers": "/group/{id}/members",
   "groupInvite": "/group/{id}/invite",
   "groupManage": "/group/{id}/manage/{userId}",

@@ -117,7 +117,7 @@ module.exports = class Groups
               if isTranslateCardVisible
                 z @$translateCard,
                   isHighlighted: true
-                  text:
+                  $content:
                     z 'div',
                       z 'p', @model.l.get 'translateCard.request1'
                       z 'p', @model.l.get 'translateCard.request2', {

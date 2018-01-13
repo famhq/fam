@@ -174,6 +174,15 @@ module.exports = class Drawer
 
       menuItems: meAndLanguageAndGameKey.map ([me, language, gameKey]) =>
         _filter([
+          if @model.experiment.get('newHome') is 'new'
+            {
+              path: @router.get 'groupHome', {gameKey}
+              title: @model.l.get 'general.home'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'home'
+              isDefault: true
+            }
           {
             path: @router.get 'home', {gameKey}
             title: @model.l.get 'drawer.menuItemProfile'

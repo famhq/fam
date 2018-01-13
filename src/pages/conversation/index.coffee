@@ -18,6 +18,7 @@ module.exports = class ConversationPage
   constructor: ({@model, requests, @router, serverData}) ->
     conversation = requests.switchMap ({route}) =>
       @model.conversation.getById route.params.id
+    .publishReplay(1).refCount()
     gameKey = requests.map ({route}) ->
       route.params.gameKey or config.DEFAULT_GAME_KEY
 

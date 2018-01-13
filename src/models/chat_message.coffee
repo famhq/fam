@@ -60,7 +60,16 @@ module.exports = class ChatMessage
     @auth.stream "#{@namespace}.getAllByConversationId", {
       conversationId
       maxTimeUuid
+      isStreamed
     }, options
+
+  unsubscribeByConversationId: (conversationId) =>
+    @auth.call "#{@namespace}.unsubscribeByConversationId", {conversationId}
+    @exoid.invalidate "#{@namespace}.getAllByConversationId", {
+      conversationId
+      maxTimeUuid: undefined
+      isStreamed: true
+    }
 
   uploadImage: (file) =>
     formData = new FormData()

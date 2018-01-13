@@ -16,7 +16,6 @@ require 'rxjs/add/operator/map'
 require 'rxjs/add/observable/fromPromise'
 
 Icon = require '../icon'
-UiCard = require '../ui_card'
 Spinner = require '../spinner'
 PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'

@@ -16,20 +16,23 @@ module.exports = class UiCard
       state: 'ask'
     }
 
-  render: ({isHighlighted, text, cancel, submit}) =>
+  render: ({isHighlighted, $title, $content, cancel, submit}) =>
     {state} = @state.getValue()
 
     z '.z-ui-card', {
       className: z.classKebab {isHighlighted}
     },
-      z '.text', text
+      if $title
+        z '.title', $title
+      z '.text', $content
       z '.buttons',
         if cancel
           z @$cancelButton,
             text: cancel.text
             isFullWidth: false
             onclick: cancel.onclick
-        z @$submitButton,
-          text: submit.text
-          isFullWidth: false
-          onclick: submit.onclick
+        if submit
+          z @$submitButton,
+            text: submit.text
+            isFullWidth: false
+            onclick: submit.onclick

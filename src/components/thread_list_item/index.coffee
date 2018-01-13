@@ -48,7 +48,9 @@ module.exports = class Threads
     mediaAttachment = thread.data?.attachments?[0]
     mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
 
-  render: =>
+  render: ({hasPadding} = {}) =>
+    hasPadding ?= true
+
     {me, language, gameKey, isExpanded, thread} = @state.getValue()
 
     # thread ?= {data: {}, playerDeck: {}}
@@ -61,7 +63,7 @@ module.exports = class Threads
     z 'a.z-thread-list-item', {
       key: "thread-list-item-#{thread.id}"
       href: @model.thread.getPath thread, @router
-      className: z.classKebab {isExpanded, @isImageLoaded}
+      className: z.classKebab {isExpanded, @isImageLoaded, hasPadding}
       onclick: (e) =>
         e.preventDefault()
         # set cache manually so we don't have to re-fetch

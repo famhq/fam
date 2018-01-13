@@ -1,5 +1,3 @@
-
-
 @require '../../vars'
 
 .z-ui-card
@@ -11,6 +9,11 @@
 
   &.is-highlighted
     background: getColor('$primary500')
+
+  > .title
+    font-subhead()
+    color: getColor('$primary500')
+    margin-bottom: 8px
 
   > .buttons
     display: flex

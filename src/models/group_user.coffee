@@ -29,6 +29,9 @@ module.exports = class GroupUser
   getMeSettingsByGroupId: (groupId) =>
     @auth.stream "#{@namespace}.getMeSettingsByGroupId", {groupId}
 
+  getOnlineCountByGroupId: (groupId) =>
+    @auth.stream "#{@namespace}.getOnlineCountByGroupId", {groupId}
+
   updateMeSettingsByGroupId: (groupId, {globalNotifications}) =>
     @auth.call "#{@namespace}.updateMeSettingsByGroupId", {
       groupId, globalNotifications

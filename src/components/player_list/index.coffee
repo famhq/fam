@@ -28,7 +28,9 @@ module.exports = class PlayerList
 
     z '.z-player-list',
       _map players, ({$avatar, $trophyIcon, $verifiedIcon, player}) =>
-        path = @router.get 'player', {gameKey, id: player.tag?.replace('#', '')}
+        path = @router.get 'player', {
+          gameKey, playerId: player.tag?.replace('#', '')
+        }
         z 'a.player', {
           href: path
           onclick: (e) =>

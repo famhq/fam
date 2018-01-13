@@ -133,7 +133,7 @@ module.exports = class ProfileDecks
               if shouldShowPostDeckCard
                 z @$postDeckCard, {
                   isHighlighted: true
-                  text: @model.l.get 'profileDecks.postGuide'
+                  $content: @model.l.get 'profileDecks.postGuide'
                   cancel:
                     text: @model.l.get 'translateCard.cancelText'
                     onclick: =>

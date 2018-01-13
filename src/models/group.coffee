@@ -28,6 +28,9 @@ module.exports = class Group
   getByKey: (key) =>
     @auth.stream "#{@namespace}.getByKey", {key}
 
+  getByKeyAndLanguage: (key, language) =>
+    @auth.stream "#{@namespace}.getByKeyAndLanguage", {key, language}
+
   getAllChannelsById: (id) =>
     @auth.stream "#{@namespace}.getAllChannelsById", {id}
 

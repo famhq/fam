@@ -8,7 +8,6 @@ _isEmpty = require 'lodash/isEmpty'
 FormatService = require '../../services/format'
 DeckCards = require '../deck_cards'
 PlayerDeckStats = require '../player_deck_stats'
-UiCard = require '../ui_card'
 config = require '../../config'
 colors = require '../../colors'
 

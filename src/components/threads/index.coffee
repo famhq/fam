@@ -12,6 +12,7 @@ _last = require 'lodash/last'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/switch'
 require 'rxjs/add/operator/map'
 
@@ -27,8 +28,14 @@ SCROLL_THRESHOLD = 250
 SCROLL_THREAD_LOAD_COUNT = 20
 
 module.exports = class Threads
-  constructor: ({@model, @router, @filter, gameKey}) ->
+  constructor: ({@model, @router, @filter, gameKey, group}) ->
     @$spinner = new Spinner()
+
+    @groupAndFilter = RxObservable.combineLatest(
+      group or RxObservable.of null
+      @filter
+      (vals...) -> vals
+    )
 
     @threadStreams = new RxReplaySubject(1)
     @threadStreamCache = []
@@ -81,8 +88,9 @@ module.exports = class Threads
       @loadMore()
 
   getTopStream: (skip = 0, maxTimeUuid) =>
-    @filter.switchMap (filter) =>
+    @groupAndFilter.switchMap ([group, filter]) =>
       @model.thread.getAll {
+        groupId: group?.id
         gameKey: config.DEFAULT_GAME_KEY
         category: filter.filter
         sort: filter.sort
