@@ -83,7 +83,7 @@ TIME_UNTIL_ADD_TO_HOME_PROMPT_MS = 90000 # 1.5 min
 
 module.exports = class App
   constructor: (options) ->
-    {requests, @serverData, @model, @router, cookieSubject, isOffline} = options
+    {requests, @serverData, @model, @router, isOffline} = options
     @$cachedPages = []
     routes = @model.window.getBreakpoint().map @getRoutes
             .publishReplay(1).refCount()
@@ -93,11 +93,10 @@ module.exports = class App
     )
 
     isFirstRequest = true
-    @requests = requestsAndRoutes.map ([req, routes]) ->
+    @requests = requestsAndRoutes.map ([req, routes]) =>
       userAgent = navigator?.userAgent or req.headers?['user-agent']
-      cookies = req.cookies or cookieSubject.getValue()
       if isFirstRequest and Environment.isGameApp(config.GAME_KEY, {userAgent})
-        path = cookies?.currentPath or req.path
+        path = @model.cookie.get('currentPath') or req.path
         if window?
           req.path = path # doesn't work server-side
         else
@@ -124,7 +123,7 @@ module.exports = class App
     $backupPage = if @serverData?
       userAgent = @serverData.req.headers?['user-agent']
       if Environment.isGameApp config.GAME_KEY, {userAgent}
-        serverPath = @serverData.req.cookies.currentPath or @serverData.req.path
+        serverPath = @model.cookie.get('currentPath') or @serverData.req.path
       else
         serverPath = @serverData.req.path
       @getRoutes().get(serverPath).handler?()
@@ -272,7 +271,10 @@ module.exports = class App
     ], 'ProfileChestsPage'
     routeGame 'editProfile', 'EditProfilePage'
 
-    route ['home', 'siteHome'], 'ProfilePage'
+    if @model.experiment.get('newHome') is 'new'
+      route ['home', 'siteHome'], 'GroupHomePage'
+    else
+      route ['home', 'siteHome'], 'ProfilePage'
     route '404', 'FourOhFourPage'
     routes
 

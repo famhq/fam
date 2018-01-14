@@ -4,6 +4,8 @@ _filter = require 'lodash/filter'
 _snakeCase = require 'lodash/snakeCase'
 
 AutoRefreshDialog = require '../auto_refresh_dialog'
+Icon = require '../icon'
+Dialog = require '../dialog'
 DateService = require '../../services/date'
 colors = require '../../colors'
 config = require '../../config'
@@ -18,6 +20,8 @@ module.exports = class ProfileRefreshBar
     @$autoRefreshDialog = new AutoRefreshDialog {
       @model, @router, @overlay$, gameKey: config.GAME_KEY
     }
+    @$refreshIcon = new Icon()
+    @$dialog = new Dialog()
 
     @state = z.state {
       player: player

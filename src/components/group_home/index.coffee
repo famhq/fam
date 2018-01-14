@@ -2,7 +2,11 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 
+Base = require '../base'
 ClashRoyaleChestCycle = require '../clash_royale_chest_cycle'
+ProfileRefreshBar = require '../profile_refresh_bar'
+GetPlayerTagForm = require '../get_player_tag_form'
+Spinner = require '../spinner'
 AddonListItem = require '../addon_list_item'
 ThreadListItem = require '../thread_list_item'
 DeckCards = require '../deck_cards'
@@ -16,14 +20,8 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-# TODO TODO: have the profile page for users in this ab group show all chests
-
-# TODO: grid component that orders correctly and groups in flexboxes
-
-# TODO: refresh profile in chest cycle card?
-
-module.exports = class GroupHome
-  constructor: ({@model, @router, group, gameKey}) ->
+module.exports = class GroupHome extends Base
+  constructor: ({@model, @router, group, gameKey, @overlay$}) ->
     me = @model.user.getMe()
 
     # FIXME: rm
@@ -37,6 +35,11 @@ module.exports = class GroupHome
     @$clashRoyaleChestCycle = new ClashRoyaleChestCycle {
       @model, @router, player
     }
+    @$profileRefreshBar = new ProfileRefreshBar {
+      @model, @router, player, @overlay$
+    }
+    @$clashRoyaleChestCycleSpinner = new Spinner()
+    @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}
     @$chestCycleUiCard = new UiCard()
     @$threadsUiCard = new UiCard()
     @$chatUiCard = new UiCard()
@@ -47,8 +50,9 @@ module.exports = class GroupHome
     @state = z.state {
       group
       gameKey
+      player
+      language: @model.l.getLanguage()
       $threads: group.switchMap (group) =>
-        console.log 'tm', group
         @model.thread.getAll {
           groupId: group?.id
           gameKey: config.DEFAULT_GAME_KEY
@@ -58,7 +62,7 @@ module.exports = class GroupHome
         }
       .map (threads) =>
         _map threads, (thread) =>
-          new ThreadListItem {
+          @getCached$ "thread-#{thread.id}", ThreadListItem, {
             @model, @router, gameKey, thread
           }
       $addons: @model.addon.getAll({}).map (addons) =>
@@ -73,9 +77,12 @@ module.exports = class GroupHome
       .map (playerDecks) =>
         playerDeck = playerDecks?[0]
         if playerDeck?.deck
+          $deck = @getCached$ (playerDeck?.deckId), DeckCards, {
+            deck: playerDeck?.deck, cardsPerRow: 8
+          }
           {
             playerDeck: playerDeck
-            $deck: new DeckCards {deck: playerDeck?.deck, cardsPerRow: 8}
+            $deck: $deck
             $stats: new PlayerDeckStats {@model, playerDeck}
           }
       groupUsersOnline: group.switchMap (group) =>
@@ -83,8 +90,11 @@ module.exports = class GroupHome
       me: me
     }
 
+  beforeUnmount: ->
+    super()
+
   render: =>
-    {me, group, $threads, $addons, deck,
+    {me, group, player, $threads, $addons, deck, language,
       groupUsersOnline, gameKey} = @state.getValue()
 
     gameKey ?= config.DEFAULT_GAME_KEY # TODO: rm
@@ -94,30 +104,46 @@ module.exports = class GroupHome
         z '.card',
           z @$chestCycleUiCard,
             $title: @model.l.get 'profileChestsPage.title'
+            minHeightPx: 200
             $content:
               z '.z-group-home_ui-card',
-                z @$clashRoyaleChestCycle
+                if player?.id
+                  [
+                    z @$clashRoyaleChestCycle
+                    z @$profileRefreshBar
+                  ]
+                else if player
+                  z @$getPlayerTagForm
+                else
+                  @$clashRoyaleChestCycleSpinner
             submit:
-              text: @model.l.get 'groupHome.viewAllStats'
-              onclick: =>
-                @router.go 'profile', {gameKey}
+              if player?.id
+                {
+                  text: @model.l.get 'groupHome.viewAllStats'
+                  onclick: =>
+                    @router.go 'profile', {gameKey}
+                }
 
         z @$masonryGrid,
           columnCounts:
             mobile: 1
             desktop: 2
-          $elements: [
-            z @$threadsUiCard, {
-              $title: @model.l.get 'groupHome.topForumThreads'
-              $content:
-                z '.z-group-home_ui-card',
-                  _map $threads, ($thread) ->
-                    z '.list-item', $thread
-              submit:
-                text: @model.l.get 'general.viewAll'
-                onclick: =>
-                  @router.go 'forum', {gameKey}
-            }
+          $elements: _filter [
+            # TODO: give each of these their own comonent with defined height
+            if language in ['es', 'pt']
+              z @$threadsUiCard, {
+                $title: @model.l.get 'groupHome.topForumThreads'
+                minHeightPx: 354
+                $content:
+                  z '.z-group-home_ui-card',
+                    _map $threads, ($thread) ->
+                      z '.list-item',
+                        z $thread, {hasPadding: false}
+                submit:
+                  text: @model.l.get 'general.viewAll'
+                  onclick: =>
+                    @router.go 'forum', {gameKey}
+              }
             z @$chatUiCard,
               $title: @model.l.get 'general.chat'
               $content:
@@ -131,6 +157,19 @@ module.exports = class GroupHome
                 onclick: =>
                   @router.go 'groupChat', {gameKey, id: group?.id}
 
+            if player?.id
+              z @$currentDeckUiCard,
+                $title: @model.l.get 'profileHistory.currentTitle'
+                $content:
+                  z '.z-group-home_ui-card',
+                    z '.deck',
+                      z deck?.$deck, {cardMarginPx: 0}
+                      z deck?.$stats
+                submit:
+                  text: @model.l.get 'general.viewAll'
+                  onclick: =>
+                    @router.go 'profile', {gameKey}
+
             z @$addonsUiCard,
               $title: @model.l.get 'groupHome.popularAddons'
               $content:
@@ -142,18 +181,6 @@ module.exports = class GroupHome
                 text: @model.l.get 'general.viewAll'
                 onclick: =>
                   @router.go 'mods', {gameKey}
-
-            z @$currentDeckUiCard,
-              $title: @model.l.get 'profileHistory.currentTitle'
-              $content:
-                z '.z-group-home_ui-card',
-                  z '.deck',
-                    z deck?.$deck, {cardMarginPx: 0}
-                    z deck?.$stats
-              submit:
-                text: @model.l.get 'general.viewAll'
-                onclick: =>
-                  @router.go 'profile', {gameKey}
           ]
 
           # z '.title', @model.l.get 'groupHome.notifications'

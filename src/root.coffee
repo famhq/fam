@@ -141,7 +141,6 @@ init = ->
     requests
     model
     router
-    cookieSubject
     isOffline
     isBackendUnavailable
     currentNotification

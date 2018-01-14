@@ -13,10 +13,11 @@ module.exports = class Thread
     @auth.call "#{@namespace}.upsert", options, {invalidateAll: true}
 
   getAll: (options = {}) =>
-    {gameKey, category, sort, skip, maxTimeUuid, limit, ignoreCache} = options
+    {groupId, gameKey, category, sort, skip, maxTimeUuid,
+      limit, ignoreCache} = options
     language = @l.getLanguageStr()
     @auth.stream "#{@namespace}.getAll", {
-      gameKey, category, language, skip, maxTimeUuid, limit, sort
+      groupId, gameKey, category, language, skip, maxTimeUuid, limit, sort
     }, {ignoreCache}
 
   getById: (id, {ignoreCache} = {}) =>

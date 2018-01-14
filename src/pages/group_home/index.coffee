@@ -1,5 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
+RxObservable = require('rxjs/Observable').Observable
 
 Head = require '../../components/head'
 GroupHome = require '../../components/group_home'
@@ -15,12 +16,18 @@ if window?
 module.exports = class GroupHomePage
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) =>
+  constructor: ({@model, requests, @router, serverData, overlay$}) ->
+    requestsAndLanguage = RxObservable.combineLatest(
+      requests, @model.l.getLanguage(), (vals...) -> vals
+    )
+    group = requestsAndLanguage.switchMap ([{route}, language]) =>
       if isUuid route.params.id
         @model.group.getById route.params.groupId or route.params.id
-      else
+      else if route.params.groupId or route.params.id
         @model.group.getByKey route.params.groupId or route.params.id
+      else
+        console.log 'get', config.DEFAULT_GAME_KEY, language
+        @model.group.getByGameKeyAndLanguage config.DEFAULT_GAME_KEY, language
 
     @$head = new Head({
       @model
@@ -35,7 +42,7 @@ module.exports = class GroupHomePage
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$bottomBar = new BottomBar {@model, @router, requests, group}
     @$groupHome = new GroupHome {
-      @model, @router, serverData, group
+      @model, @router, serverData, group, overlay$
     }
 
     @state = z.state

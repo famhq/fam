@@ -28,7 +28,7 @@ module.exports = class BottomBar
       language: language
       group: group or gameKeyAndLanguage.switchMap ([gameKey, language]) =>
         if gameKey and language
-          @model.group.getByKeyAndLanguage gameKey, language
+          @model.group.getByGameKeyAndLanguage gameKey, language
         else
           RxObservable.of null
 
@@ -63,7 +63,7 @@ module.exports = class BottomBar
           groupId: group?.key or config.CLASH_ROYALE_ID
         }
         text: @model.l.get 'general.home'
-        # isDefault: true
+        isDefault: true
       }
       {
         $icon: new Icon()
@@ -86,6 +86,9 @@ module.exports = class BottomBar
           isSelected =  currentPath in [
             @router.get 'siteHome'
             @router.get 'home', {gameKey}
+            @router.get '+groupHome', {
+              gameKey, groupId: group?.key or group?.id
+            }
             '/'
           ]
         else

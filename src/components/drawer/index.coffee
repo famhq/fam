@@ -176,7 +176,7 @@ module.exports = class Drawer
         _filter([
           if @model.experiment.get('newHome') is 'new'
             {
-              path: @router.get 'groupHome', {gameKey}
+              path: @router.get 'home', {gameKey}
               title: @model.l.get 'general.home'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -184,12 +184,12 @@ module.exports = class Drawer
               isDefault: true
             }
           {
-            path: @router.get 'home', {gameKey}
+            path: @router.get 'profile', {gameKey}
             title: @model.l.get 'drawer.menuItemProfile'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'profile'
-            isDefault: true
+            isDefault: @model.experiment.get('newHome') isnt 'new'
           }
           {
             path: @router.get 'clan', {gameKey}

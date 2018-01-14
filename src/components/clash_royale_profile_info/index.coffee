@@ -13,7 +13,6 @@ require 'rxjs/add/operator/switchMap'
 
 Icon = require '../icon'
 UiCard = require '../ui_card'
-Dialog = require '../dialog'
 RequestNotificationsCard = require '../request_notifications_card'
 ClanBadge = require '../clan_badge'
 PrimaryButton = require '../primary_button'
@@ -37,12 +36,10 @@ module.exports = class ProfileInfo
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
     @$fireIcon = new Icon()
-    @$refreshIcon = new Icon()
     @$splitsInfoCard = new UiCard()
     @$moreDetailsButton = new PrimaryButton()
     @$verifyAccountButton = new SecondaryButton()
     @$clanBadge = new ClanBadge()
-    @$dialog = new Dialog()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
     @$clashRoyaleChestCycle = new ClashRoyaleChestCycle {
       @model, @router, player
@@ -246,9 +243,10 @@ module.exports = class ProfileInfo
             z '.arena',
               style:
                 backgroundImage:
-                  "url(
-                    #{config.CDN_URL}/arenas/#{arena}.png
-                  )"
+                  if arena
+                    "url(
+                      #{config.CDN_URL}/arenas/#{arena}.png
+                    )"
           z '.g-cols',
             # z '.g-col.g-xs-3', {
             #   onclick: =>
@@ -262,7 +260,8 @@ module.exports = class ProfileInfo
             #     FormatService.number player?.fire
         z '.divider'
         z '.g-grid',
-          @$profileRefreshBar
+          z '.profile-refresh-bar',
+            @$profileRefreshBar
 
           if isMe and player and not player?.isVerified
             z '.verify-button',

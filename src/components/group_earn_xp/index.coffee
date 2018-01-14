@@ -48,22 +48,23 @@ module.exports = class GroupEarnXp
               }
               isClaimed: not videosLeft
               onclick: =>
-                @state.set loadingActionKey: 'rewardedVideos'
-                @model.portal.call 'admob.prepareRewardedVideo', {
-                  adId: if Environment.isiOS() \
-                        then 'ca-app-pub-9043203456638369/5979905134'
-                        else 'ca-app-pub-9043203456638369/8896044215'
-                }
-                .then =>
-                  timestamp = Date.now()
-                  @model.portal.call 'admob.showRewardedVideo', {timestamp}
-                  .then (successKey) =>
+                unless loadingActionKey is 'rewardedVideos'
+                  @state.set loadingActionKey: 'rewardedVideos'
+                  @model.portal.call 'admob.prepareRewardedVideo', {
+                    adId: if Environment.isiOS() \
+                          then 'ca-app-pub-9043203456638369/5979905134'
+                          else 'ca-app-pub-9043203456638369/8896044215'
+                  }
+                  .then =>
+                    timestamp = Date.now()
+                    @model.portal.call 'admob.showRewardedVideo', {timestamp}
+                    .then (successKey) =>
+                      @state.set loadingActionKey: null
+                      @model.groupUserXpTransaction.incrementByGroupIdAndActionKey(
+                        group.id, 'rewardedVideos', {timestamp, successKey}
+                      )
+                  .catch =>
                     @state.set loadingActionKey: null
-                    @model.groupUserXpTransaction.incrementByGroupIdAndActionKey(
-                      group.id, 'rewardedVideos', {timestamp, successKey}
-                    )
-                .catch =>
-                  @state.set loadingActionKey: null
             }
           {
             action: @model.l.get 'earnXp.dailyVisit'

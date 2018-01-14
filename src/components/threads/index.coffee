@@ -16,6 +16,7 @@ require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/switch'
 require 'rxjs/add/operator/map'
 
+Base = require '../base'
 ThreadListItem = require '../thread_list_item'
 Spinner = require '../spinner'
 colors = require '../../colors'
@@ -27,7 +28,7 @@ if window?
 SCROLL_THRESHOLD = 250
 SCROLL_THREAD_LOAD_COUNT = 20
 
-module.exports = class Threads
+module.exports = class Threads extends Base
   constructor: ({@model, @router, @filter, gameKey, group}) ->
     @$spinner = new Spinner()
 
@@ -56,11 +57,12 @@ module.exports = class Threads
           cols = 1
 
         threads = _map threads, (thread) =>
+          $threadListItem = @getCached$ thread.id, ThreadListItem, {
+            @model, @router, gameKey, thread
+          }
           {
             thread
-            $threadListItem: new ThreadListItem {
-              @model, @router, gameKey, thread
-            }
+            $threadListItem
           }
         return _map _range(cols), (colIndex) ->
           _filter threads, (thread, i) -> i % cols is colIndex
@@ -70,6 +72,7 @@ module.exports = class Threads
     @$$el?.addEventListener 'resize', @scrollListener
 
   beforeUnmount: =>
+    super()
     @$$el?.removeEventListener 'scroll', @scrollListener
     @$$el?.removeEventListener 'resize', @scrollListener
 

@@ -16,11 +16,14 @@ module.exports = class UiCard
       state: 'ask'
     }
 
-  render: ({isHighlighted, $title, $content, cancel, submit}) =>
+  render: ({minHeightPx, isHighlighted, $title, $content, cancel, submit}) =>
     {state} = @state.getValue()
 
     z '.z-ui-card', {
       className: z.classKebab {isHighlighted}
+      style:
+        if minHeightPx
+          minHeight: "#{minHeightPx}px"
     },
       if $title
         z '.title', $title

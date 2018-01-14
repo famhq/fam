@@ -10,9 +10,10 @@ if window?
 module.exports = class HomePage
   hideDrawer: true
 
-  constructor: ({@model, @router, serverData}) ->
+  constructor: ({@model, @router, requests, serverData}) ->
     @$head = new Head({
       @model
+      requests
       serverData
       meta:
         canonical: "https://#{config.HOST}"

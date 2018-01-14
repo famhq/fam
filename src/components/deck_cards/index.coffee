@@ -25,23 +25,24 @@ getCardSizeInfo = ->
     {cardsPerRow: DEFAULT_CARDS_PER_ROW}
 
 module.exports = class DeckCards extends Base
-  constructor: ({deck, cardsPerRow}) ->
-    unless deck.map
-      deck = RxObservable.of deck
-
+  constructor: ({deck, @cardsPerRow}) ->
     @cardSizeInfo = getCardSizeInfo()
+
+    if deck.map
+      deck = RxObservable.of deck
+      cardGroups = deck.map @getCardGroupsFromDeck
+    else
+      # if not obs, skip state since it flashes on invalidation
+      cardGroups = null
+      @cardGroups = @getCardGroupsFromDeck deck
+
     @cachedCards = []
 
     @state = z.state
       deck: deck
-      cardsPerRow: cardsPerRow
+      cardsPerRow: @cardsPerRow
       cardWidth: 0
-      cardGroups: deck.map (deck) =>
-        cards = _map deck?.cards, (card, i) =>
-          # can have multiple of same cardId per deck
-          $el = @getCached$ ("#{card?.id}#{i}" or "empty-#{i}"), Card, {card}
-          {card, $el}
-        _chunk cards, cardsPerRow or @cardSizeInfo.cardsPerRow
+      cardGroups: cardGroups
 
   afterMount: (@$$el) =>
     {cardsPerRow} = @state.getValue()
@@ -52,15 +53,26 @@ module.exports = class DeckCards extends Base
     maxTries = 5
     retryTimeMs = 200
     setWidth = =>
+      # chrome seems to round up? so subtract 1
       width = @$$el?.offsetWidth
       if width
-        @state.set cardWidth: Math.floor(width / cardsPerRow)
+        @state.set cardWidth: Math.floor((width - 1) / cardsPerRow)
       else if tries < maxTries
         tries += 1
         setTimeout setWidth, retryTimeMs
       else
         @state.set cardWidth: 320 / cardsPerRow
     setWidth()
+
+  beforeUnmount: ->
+    super()
+
+  getCardGroupsFromDeck: (deck) =>
+    cards = _map deck?.cards, (card, i) =>
+      # can have multiple of same cardId per deck
+      $el = @getCached$ ("#{card?.id}#{i}" or "empty-#{i}"), Card, {card}
+      {card, $el}
+    _chunk cards, @cardsPerRow or @cardSizeInfo.cardsPerRow
 
   render: ({onCardClick, maxCardWidth, cardMarginPx} = {}) =>
     {cardWidth, cardGroups, cardsPerRow} = @state.getValue()
@@ -77,7 +89,7 @@ module.exports = class DeckCards extends Base
       # style:
       #   minHeight: "#{(96 / 76) * cardWidth}px"
     },
-      _map cardGroups, (cards) ->
+      _map @cardGroups or cardGroups, (cards) ->
         z '.row',
         _map cards, ({card, $el}) ->
           z '.card', {
