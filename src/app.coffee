@@ -271,10 +271,7 @@ module.exports = class App
     ], 'ProfileChestsPage'
     routeGame 'editProfile', 'EditProfilePage'
 
-    if @model.experiment.get('newHome') is 'new'
-      route ['home', 'siteHome'], 'GroupHomePage'
-    else
-      route ['home', 'siteHome'], 'ProfilePage'
+    route ['home', 'siteHome'], 'GroupHomePage'
     route '404', 'FourOhFourPage'
     routes
 

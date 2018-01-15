@@ -290,18 +290,8 @@ module.exports = class ProfileInfo
           z '.g-grid',
             z '.title', @model.l.get 'profileChests.chestsTitle'
             z @$clashRoyaleChestCycle, {
-              showAll: @model.experiment.get('newHome') is 'new'
+              showAll: true
             }
-            unless @model.experiment.get('newHome') is 'new'
-              z '.chests-button',
-                z 'div',
-                  z @$moreDetailsButton,
-                    text: @model.l.get 'profileInfo.moreDetailsButtonText'
-                    onclick: =>
-                      @router.go 'chestCycleByPlayerId', {
-                        gameKey: 'clash-royale'
-                        playerId: player?.id
-                      }
 
         z '.block',
           _map metrics, (stats, key) =>
