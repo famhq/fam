@@ -1,6 +1,6 @@
 {
   "dailyRecap.title": "Ежедневное вознаграждение",
-  "dailyRecap.textWithWins": "{countUntilNextGoodChest} до {nextGoodChest}. Вы {wins} выиграли и {losses} проиграли сегодня.",
+  "dailyRecap.textWithWins": "{countUntilNextGoodChest} до {nextGoodChest}. Сегодня вы сделали {wins} побед и {losses} поражений.",
   "dailyRecap.text": "{countUntilNextGoodChest} сундуков до {nextGoodChest}.",
   "newClanMember.title": "Новый участник клана",
   "newClanMember.text": "{name} присоединился к вашему клану в Starfire",

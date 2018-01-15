@@ -4,14 +4,14 @@
   "card.addFriendCardDescription": "Нажми, чтобы принять меня в друзья в Clash Royale",
   "card.joinClanCardTitle": "Вступи в мой клан",
   "card.joinClanCardDescription": "Нажми, чтобы вступить в мой клан в Clash Royale",
-  "audit.ban": "забанен {name}",
-  "audit.unban": "разбанен {name}",
+  "audit.ban": "заблокирован {name}",
+  "audit.unban": "разблокирован {name}",
   "audit.deleteMessage": "сообщение удалено {name}",
   "audit.deleteMessagesLast7d": "{name} удалены сообщения последних 7 дней",
   "audit.addRole": "добавлена роль: {role}",
   "audit.deleteRole": "удалена роль: {role}",
   "audit.updateRole": "обновлены привилегии роли: {role}",
   "audit.updateRoleChannel": "обновлены привилегии роли {role} в {channel}",
-  "audit.addChannel": "добавили канал: {channel}",
+  "audit.addChannel": "добавлен канал: {channel}",
   "audit.updateChannel": "канал обновлён: {channel}"
 }
