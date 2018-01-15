@@ -27,7 +27,7 @@ MIN_GAMES_FOR_GUIDE = 20
 MIN_WIN_RATE_FOR_GUIDE = 0.6
 
 module.exports = class ProfileDecks
-  constructor: ({@model, @router, user, player, gameKey}) ->
+  constructor: ({@model, @router, user, player}) ->
     @typeValue = new RxBehaviorSubject 'all'
     @$dropdown = new Dropdown {value: @typeValue}
     @$postDeckCard = new UiCard()
@@ -44,7 +44,6 @@ module.exports = class ProfileDecks
     @state = z.state {
       me: @model.user.getMe()
       language: @model.l.getLanguage()
-      gameKey: gameKey
       hidePostDeckCard: localStorage?.hidePostDeckCard
       player: player
       isPrivate: playerDecks
@@ -82,7 +81,7 @@ module.exports = class ProfileDecks
     }
 
   render: =>
-    {me, player, currentDeck, otherDecks, language, gameKey,
+    {me, player, currentDeck, otherDecks, language,
       hidePostDeckCard, isPrivate} = @state.getValue()
 
     currentDeckGamesPlayed = currentDeck?.playerDeck?.wins +
@@ -145,7 +144,6 @@ module.exports = class ProfileDecks
                       {deckId} = currentDeck.playerDeck
                       id = "#{deckId}:#{player.id}"
                       @router.go 'newThreadWithCategoryAndId', {
-                        gameKey: gameKey
                         category: 'deckGuide'
                         id: id
                       }

@@ -14,11 +14,11 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileRefreshBar
-  constructor: ({@model, @router, player, @overlay$}) ->
+  constructor: ({@model, @router, player, @overlay$, group}) ->
     me = @model.user.getMe()
 
     @$autoRefreshDialog = new AutoRefreshDialog {
-      @model, @router, @overlay$, gameKey: config.GAME_KEY
+      @model, @router, @overlay$, group
     }
     @$refreshIcon = new Icon()
     @$dialog = new Dialog()

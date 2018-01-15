@@ -13,16 +13,7 @@ if window?
 module.exports = class GroupCollectionPage
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData, overlay$}) ->
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.id
-      else
-        @model.group.getByKey route.params.id
-
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
+  constructor: ({@model, requests, @router, serverData, overlay$, group}) ->
     @$head = new Head({
       @model
       requests
@@ -37,7 +28,6 @@ module.exports = class GroupCollectionPage
     @$collection = new Collection {
       @model
       @router
-      gameKey
       group
       overlay$
     }

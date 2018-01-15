@@ -14,27 +14,23 @@ ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
 GroupUserSettingsDialog = require '../../components/group_user_settings_dialog'
 Icon = require '../../components/icon'
-BottomBar = require '../../components/bottom_bar'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
+BOTTOM_BAR_HIDE_DELAY_MS = 500
+
 module.exports = class GroupChatPage
   isGroup: true
+  @hasBottomBar: true
 
-  constructor: ({@model, requests, @router, serverData, @overlay$}) ->
-    @group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.groupId or route.params.id
-      else
-        @model.group.getByKey route.params.groupId or route.params.id
+  constructor: (options) ->
+    {@model, requests, @router, serverData,
+      @overlay$, @group, @$bottomBar} = options
 
     conversationId = requests.map ({route}) ->
       route.params.conversationId
-
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey
 
     @isChannelDrawerOpen = new RxBehaviorSubject false
     selectedProfileDialogUser = new RxBehaviorSubject null
@@ -73,6 +69,9 @@ module.exports = class GroupChatPage
     # breaks switching groups (leaves getMessagesStream as prev val)
     # .publishReplay(1).refCount()
 
+    hasBottomBar = @model.window.getBreakpoint().map (breakpoint) ->
+      breakpoint isnt 'desktop'
+
     @$head = new Head({
       @model
       requests
@@ -86,7 +85,6 @@ module.exports = class GroupChatPage
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
     @$linkIcon = new Icon()
-    @$bottomBar = new BottomBar {@model, @router, requests}
 
     @$groupChat = new GroupChat {
       @model
@@ -94,22 +92,25 @@ module.exports = class GroupChatPage
       @group
       selectedProfileDialogUser
       @overlay$
-      gameKey
+      @group
       isLoading: isLoading
       conversation: conversation
+      onScrollUp: @showBottomBar
+      onScrollDown: @hideBottomBar
+      hasBottomBar: hasBottomBar
     }
     @$profileDialog = new ProfileDialog {
       @model
       @router
       @group
       selectedProfileDialogUser
-      gameKey
+      @group
     }
     @$groupUserSettingsDialog = new GroupUserSettingsDialog {
       @model
       @router
       @group
-      gameKey
+      @group
       @overlay$
     }
 
@@ -118,33 +119,55 @@ module.exports = class GroupChatPage
       @router
       @group
       conversation
-      gameKey
+      @group
       isOpen: @isChannelDrawerOpen
     }
+
+    @isBottomBarVisible = false
 
     @state = z.state
       windowSize: @model.window.getSize()
       group: @group
-      gameKey: gameKey
       me: me
       selectedProfileDialogUser: selectedProfileDialogUser
       isChannelDrawerOpen: @isChannelDrawerOpen
       conversation: conversation
+      shouldShowBottomBar: hasBottomBar
 
-  afterMount: =>
+  afterMount: (@$$el) =>
+    @$$content = @$$el?.querySelector '.content'
+    @isBottomBarVisible = true
+    setTimeout @hideBottomBar, BOTTOM_BAR_HIDE_DELAY_MS
+
     @group.take(1).subscribe (group) =>
       @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
+
+  showBottomBar: =>
+    {shouldShowBottomBar} = @state.getValue()
+    if shouldShowBottomBar and not @isBottomBarVisible
+      @isBottomBarVisible = true
+      @$bottomBar.show()
+      @$$content.style.transform = 'translateY(0)'
+
+  hideBottomBar: =>
+    {shouldShowBottomBar} = @state.getValue()
+    if shouldShowBottomBar and @isBottomBarVisible
+      @isBottomBarVisible = false
+      @$bottomBar.hide()
+      @$$content.style.transform = 'translateY(64px)'
 
   renderHead: => @$head
 
   render: =>
     {windowSize, group, me, conversation, isChannelDrawerOpen
-      selectedProfileDialogUser, gameKey} = @state.getValue()
+      selectedProfileDialogUser, shouldShowBottomBar} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.p-group-chat', {
+      key: 'group-chat' # since we change css (transform) manually
+      className: z.classKebab {shouldShowBottomBar}
       style:
         height: "#{windowSize.height}px"
     },
@@ -168,7 +191,6 @@ module.exports = class GroupChatPage
                 color: colors.$primary500
                 onclick: =>
                   @overlay$.next @$groupUserSettingsDialog
-                  # @router.go 'groupSettings', {gameKey, id: group?.id}
             if group?.type is 'public'
               z '.icon',
                 z @$linkIcon,
@@ -177,12 +199,12 @@ module.exports = class GroupChatPage
                   onclick: =>
                     @router.go 'groupShop', {
                       id: group.key or group.id
-                      gameKey: gameKey
                     }
 
       }
       z '.content',
-        @$groupChat
+        z @$groupChat
+      @$bottomBar
 
       if selectedProfileDialogUser
         z @$profileDialog

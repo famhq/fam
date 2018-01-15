@@ -127,14 +127,12 @@ module.exports = class FormattedText
           isAddon = props.title and props.title.indexOf('addon:') isnt -1
 
           if isAddon
-            parts = props.title.replace('addon:', '').split('|')
-            [gameKey, addonKey] = parts
-            if gameKey and addonKey
+            addonKey = props.title.replace('addon:', '')
+            if addonKey
               $addonListItem = new AddonListItem {
                 model
                 @router
                 addon: state?.addon
-                gameKey
               }
               z $addonListItem, {hasPadding: false}
           else

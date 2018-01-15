@@ -15,30 +15,24 @@ GROUPS_IN_DRAWER = 2
 
 module.exports = class BottomBar
   constructor: ({@model, @router, requests, group}) ->
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey
-    language = @model.l.getLanguage()
-
-    gameKeyAndLanguage = RxObservable.combineLatest(
-      gameKey, language, (vals...) -> vals
-    )
-
     @state = z.state
       requests: requests
-      language: language
-      group: group or gameKeyAndLanguage.switchMap ([gameKey, language]) =>
-        if gameKey and language
-          @model.group.getByGameKeyAndLanguage gameKey, language
-        else
-          RxObservable.of null
+      group: group
 
-      gameKey: gameKey
+  afterMount: (@$$el) => null
 
-  render: =>
-    {requests, language, gameKey, group} = @state.getValue()
+  hide: =>
+    @$$el?.classList.add 'is-hidden'
+
+  show: =>
+    @$$el?.classList.remove 'is-hidden'
+
+  render: ({isAbsolute} = {}) =>
+    {requests, group} = @state.getValue()
     currentPath = requests?.req.path
 
-    gameKey or= config.DEFAULT_GAME_KEY
+    groupId = group?.key or config.CLASH_ROYALE_ID
+    isLoaded = Boolean group
 
     # per-group menu:
     # profile, tools, home, forum, chat
@@ -46,49 +40,58 @@ module.exports = class BottomBar
       {
         $icon: new Icon()
         icon: 'profile'
-        route: @router.get 'profile', {gameKey}
+        route: @router.get 'groupProfile', {groupId}
         text: @model.l.get 'general.profile'
       }
       {
         $icon: new Icon()
         icon: 'chat'
-        # route: @router.get '+groupChat', {groupId: 'playhard'}
-        route: @router.get 'chat', {gameKey}
+        # route: @router.get 'groupChat', {groupId: 'playhard'}
+        route: @router.get 'groupChat', {groupId}
         text: @model.l.get 'general.chat'
       }
       {
         $icon: new Icon()
         icon: 'home'
-        route: @router.get '+groupHome', {
-          groupId: group?.key or config.CLASH_ROYALE_ID
+        route: @router.get 'groupHome', {
+          groupId
         }
         text: @model.l.get 'general.home'
         isDefault: true
       }
-      {
-        $icon: new Icon()
-        icon: 'rss'
-        # route: @router.get '+groupForum', {groupId: 'playhard'}
-        route: @router.get 'forum', {gameKey}
-        text: @model.l.get 'general.forum'
-      }
+      if group?.key is 'playhard'
+        {
+          $icon: new Icon()
+          icon: 'shop'
+          # route: @router.get 'groupForum', {groupId: 'playhard'}
+          route: @router.get 'groupShop', {groupId}
+          text: @model.l.get 'general.shop'
+        }
+      else if group?.type is 'public'
+        {
+          $icon: new Icon()
+          icon: 'rss'
+          # route: @router.get 'groupForum', {groupId: 'playhard'}
+          route: @router.get 'groupForum', {groupId}
+          text: @model.l.get 'general.forum'
+        }
       {
         $icon: new Icon()
         icon: 'ellipsis'
-        route: @router.get 'mods', {gameKey}
+        route: @router.get 'groupTools', {groupId}
         text: @model.l.get 'general.tools'
       }
     ]
 
-    z '.z-bottom-bar', {key: 'bottom-bar'},
+    z '.z-bottom-bar', {
+      key: 'bottom-bar'
+      className: z.classKebab {isLoaded, isAbsolute}
+    },
       _map @menuItems, ({$icon, icon, route, text, $ripple, isDefault}, i) =>
         if isDefault
           isSelected =  currentPath in [
             @router.get 'siteHome'
-            @router.get 'home', {gameKey}
-            @router.get '+groupHome', {
-              gameKey, groupId: group?.key or group?.id
-            }
+            @router.get 'groupHome', {groupId}
             '/'
           ]
         else

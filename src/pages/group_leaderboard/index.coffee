@@ -15,16 +15,7 @@ if window?
 module.exports = class GroupLeaderboardPage
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.id
-      else
-        @model.group.getByKey route.params.id
-
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
+  constructor: ({@model, requests, @router, serverData, group}) ->
     @$head = new Head({
       @model
       requests
@@ -38,10 +29,10 @@ module.exports = class GroupLeaderboardPage
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$tabs = new Tabs {@model}
     @$groupLeaderboard = new GroupLeaderboard {
-      @model, @router, serverData, group, gameKey
+      @model, @router, serverData, group
     }
     @$earnXp = new GroupEarnXp {
-      @model, @router, serverData, group, gameKey
+      @model, @router, serverData, group
     }
 
     @state = z.state

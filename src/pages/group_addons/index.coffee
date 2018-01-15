@@ -2,33 +2,31 @@ z = require 'zorium'
 
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
-BottomBar = require '../../components/bottom_bar'
 ButtonMenu = require '../../components/button_menu'
-Stars = require '../../components/stars'
+GroupAddons = require '../../components/group_addons'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
-module.exports = class StarsPage
-  constructor: ({@model, requests, @router, serverData}) ->
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
+module.exports = class GroupAddonsPage
+  isGroup: true
+  @hasBottomBar: true
 
+  constructor: ({@model, requests, @router, serverData, group, @$bottomBar}) ->
     @$head = new Head({
       @model
       requests
       serverData
       meta: {
-        title: @model.l.get 'starsPage.title'
-        description: @model.l.get 'starsPage.title'
+        title: @model.l.get 'addonsPage.title'
+        description: @model.l.get 'addonsPage.title'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
-    @$bottomBar = new BottomBar {@model, @router, requests}
 
-    @$stars = new Stars {@model, @router, sort: 'popular', gameKey}
+    @$groupAddons = new GroupAddons {@model, @router, sort: 'popular', group}
 
     @state = z.state
       windowSize: @model.window.getSize()
@@ -38,14 +36,14 @@ module.exports = class StarsPage
   render: =>
     {windowSize} = @state.getValue()
 
-    z '.p-stars', {
+    z '.p-group-addons', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: @model.l.get 'starsPage.title'
+        title: @model.l.get 'addonsPage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
       }
-      @$stars
-      @$bottomBar
+      @$groupAddons
+      z @$bottomBar

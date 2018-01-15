@@ -27,20 +27,11 @@ module.exports = class GroupPage
   hideDrawer: true
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData, group}) ->
     selectedProfileDialogUser = new RxBehaviorSubject null
     selectedIndex = new RxBehaviorSubject 0
 
     overlay$ = new RxBehaviorSubject null
-
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.id
-      else
-        @model.group.getByKey route.params.id
-
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$head = new Head({
       @model
@@ -56,9 +47,9 @@ module.exports = class GroupPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$tabs = new Tabs {@model, selectedIndex}
-    @$groupInfo = new GroupInfo {@model, @router, group, gameKey}
+    @$groupInfo = new GroupInfo {@model, @router, group}
     @$groupMembers = new GroupMembers {
-      @model, @router, group, selectedProfileDialogUser, gameKey
+      @model, @router, group, selectedProfileDialogUser
     }
     @$editIcon = new Icon()
     @$settingsIcon = new Icon()
@@ -73,13 +64,11 @@ module.exports = class GroupPage
       @router
       selectedProfileDialogUser
       group
-      gameKey
     }
 
     @state = z.state
       group: group
       me: @model.user.getMe()
-      gameKey: gameKey
       selectedProfileDialogUser: selectedProfileDialogUser
       windowSize: @model.window.getSize()
       selectedIndex: selectedIndex
@@ -87,7 +76,7 @@ module.exports = class GroupPage
   renderHead: => @$head
 
   render: =>
-    {group, me, selectedProfileDialogUser, selectedIndex, gameKey
+    {group, me, selectedProfileDialogUser, selectedIndex
       windowSize} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
@@ -109,7 +98,7 @@ module.exports = class GroupPage
                 icon: 'settings'
                 color: colors.$primary500
                 onclick: =>
-                  @router.go 'groupSettings', {gameKey, id: group?.id}
+                  @router.go 'groupSettings', {id: group?.id}
 
       }
       # don't load prematurely, or 4 tabs will go to 2 and break vDomKey
@@ -146,7 +135,7 @@ module.exports = class GroupPage
             onclick: =>
               tab = TABS[selectedIndex]
               if tab is 'members' and hasAdminPermission
-                @router.go 'groupInvite', {gameKey, id: group?.id}
+                @router.go 'groupInvite', {id: group?.id}
 
       if selectedProfileDialogUser
         z @$profileDialog

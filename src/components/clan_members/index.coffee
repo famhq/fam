@@ -10,11 +10,10 @@ if window?
   require './index.styl'
 
 module.exports = class ClanMembers
-  constructor: ({@model, @router, clan, selectedProfileDialogUser, gameKey}) ->
+  constructor: ({@model, @router, clan, selectedProfileDialogUser}) ->
     @$playerList = new PlayerList {
       @model
       @router
-      gameKey
       selectedProfileDialogUser
       players: clan.map ({players}) ->
         players

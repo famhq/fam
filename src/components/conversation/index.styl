@@ -9,6 +9,13 @@ $zIndexTextarea = 2
   flex-direction: column
   width: 100%
 
+  &.has-bottom-bar
+    > .messages
+      padding-top: 30px + 64px
+
+      > .loading
+        top: 64px
+
   > .messages
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
     flex: 1
@@ -24,7 +31,8 @@ $zIndexTextarea = 2
     padding: 8px
     box-sizing: border-box
     padding-top: 30px // for loading more indicator
-    padding-bottom: 120px // for bottom input bar
+    // padding-bottom: 120px // for bottom input bar
+    padding-bottom: 90px
     position: relative
 
     > .loading
@@ -47,7 +55,7 @@ $zIndexTextarea = 2
         margin: 0
 
   > .bottom
-    padding: 0 16px 16px 16px
+    // padding: 0 16px 16px 16px
     position: absolute
     bottom: 0
     left: 0

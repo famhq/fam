@@ -4,7 +4,6 @@ RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
-BottomBar = require '../../components/bottom_bar'
 FilterThreadsDialog = require '../../components/filter_threads_dialog'
 Icon = require '../../components/icon'
 Social = require '../../components/social'
@@ -16,10 +15,7 @@ if window?
 TABS = ['groups', 'conversations']
 
 module.exports = class SocialPage
-  constructor: ({@model, requests, @router, serverData}) ->
-    gameKey = requests.map ({route}) ->
-      route?.params.gameKey or config.DEFAULT_GAME_KEY
-
+  constructor: ({@model, requests, @router, serverData, group}) ->
     pageTitle = new RxBehaviorSubject @model.l.get 'communityPage.menuText'
     selectedIndex = new RxBehaviorSubject 0
     @isFilterThreadsDialogVisible = new RxBehaviorSubject false
@@ -52,12 +48,11 @@ module.exports = class SocialPage
       selectedIndex
       threadsFilter
       @isFilterThreadsDialogVisible
-      gameKey
+      group
     }
     @$filterThreadsDialog = new FilterThreadsDialog {
       @model, filter: threadsFilter, isVisible: @isFilterThreadsDialogVisible
     }
-    @$bottomBar = new BottomBar {@model, @router, requests}
     @$filterIcon = new Icon()
 
     @state = z.state
@@ -85,6 +80,5 @@ module.exports = class SocialPage
           z @$buttonMenu, {color: colors.$primary500}
       }
       @$social
-      @$bottomBar
       if isFilterThreadsDialogVisible
         z @$filterThreadsDialog

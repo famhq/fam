@@ -22,7 +22,7 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class ConversationInputAddons
-  constructor: ({@model, @router, @message, @onPost, currentPanel, gameKey}) ->
+  constructor: ({@model, @router, @message, @onPost, currentPanel}) ->
     @searchValue = new RxBehaviorSubject null
     debouncedSearchValue = @searchValue.debounceTime(SEARCH_DEBOUNCE)
 
@@ -52,7 +52,6 @@ module.exports = class ConversationInputAddons
           $el: new AddonListItem {
             @model
             @router
-            gameKey
             addon
           }
       else
@@ -60,14 +59,13 @@ module.exports = class ConversationInputAddons
 
     @state = z.state
       addons: addons
-      gameKey: gameKey
       windowSize: @model.window.getSize()
 
   getHeightPx: ->
     RxObservable.of 114
 
   render: =>
-    {addons, gameKey, windowSize} = @state.getValue()
+    {addons, windowSize} = @state.getValue()
 
     isLoading = false
 
@@ -93,12 +91,11 @@ module.exports = class ConversationInputAddons
                 hasPadding: false
                 onclick: =>
                   title = @model.l.get("#{addon.key}.title", {file: 'addons'})
-                  path = @router.get 'modByKey', {
-                    gameKey: gameKey
+                  path = @router.get 'toolByKey', {
                     key: _kebabCase addon.key
                   }
 
                   @message.next "[#{title}](#{path} " +
-                                "\"addon:#{gameKey}|#{addon.key}\")"
+                                "\"addon:#{addon.key}\")"
                   @onPost()
               }

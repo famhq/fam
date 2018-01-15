@@ -2,55 +2,36 @@ z = require 'zorium'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/map'
 
-AppBar = require '../../components/app_bar'
-ButtonMenu = require '../../components/button_menu'
-BottomBar = require '../../components/bottom_bar'
-Tabs = require '../../components/tabs'
-Icon = require '../../components/icon'
-PlayersTop = require '../../components/players_top'
-PlayersFollowing = require '../../components/players_following'
-ProfileDialog = require '../../components/profile_dialog'
-Head = require '../../components/head'
+Tabs = require '../tabs'
+Icon = require '../icon'
+PlayersTop = require '../players_top'
+PlayersFollowing = require '../players_following'
+ProfileDialog = require '../profile_dialog'
+Head = require '../head'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
 module.exports = class PlayersPage
-  constructor: ({@model, requests, router, serverData}) ->
+  constructor: ({@model, router, group}) ->
     me = @model.user.getMe()
     selectedProfileDialogUser = new RxBehaviorSubject null
     overlay$ = new RxBehaviorSubject null
-
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'playersPage.playersTop'
-        description: @model.l.get 'playersPage.playersTop'
-      }
-    })
-    @$appBar = new AppBar {@model}
-    @$buttonMenu = new ButtonMenu {router, @model}
-    @$bottomBar = new BottomBar {@model, router, requests}
 
     @$tabs = new Tabs {@model}
     @$profileDialog = new ProfileDialog {
       @model
       router
       selectedProfileDialogUser
-      gameKey
+      group
     }
 
     @$playersTop = new PlayersTop {
-      @model, router, selectedProfileDialogUser, gameKey
+      @model, router, selectedProfileDialogUser
     }
     @$playersFollowing = new PlayersFollowing {
-      @model, router, selectedProfileDialogUser, gameKey
+      @model, router, selectedProfileDialogUser
     }
 
     @$followingIcon = new Icon()
@@ -66,7 +47,7 @@ module.exports = class PlayersPage
   render: =>
     {me, selectedProfileDialogUser, windowSize, overlay$} = @state.getValue()
 
-    z '.p-players', {
+    z '.z-players', {
       style:
         height: "#{windowSize.height}px"
     },
@@ -90,8 +71,6 @@ module.exports = class PlayersPage
             menuIconName: 'friends'
           }
         ]
-
-      @$bottomBar
 
       if selectedProfileDialogUser
         @$profileDialog

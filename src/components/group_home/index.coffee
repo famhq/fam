@@ -21,11 +21,8 @@ if window?
   require './index.styl'
 
 module.exports = class GroupHome extends Base
-  constructor: ({@model, @router, group, gameKey, @overlay$}) ->
+  constructor: ({@model, @router, group, @overlay$}) ->
     me = @model.user.getMe()
-
-    # FIXME: rm
-    group ?= Rx.Observable.of {id: config.CLASH_ROYALE_ID}
 
     player = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
@@ -36,7 +33,7 @@ module.exports = class GroupHome extends Base
       @model, @router, player
     }
     @$profileRefreshBar = new ProfileRefreshBar {
-      @model, @router, player, @overlay$
+      @model, @router, player, @overlay$, group
     }
     @$clashRoyaleChestCycleSpinner = new Spinner()
     @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}
@@ -49,13 +46,11 @@ module.exports = class GroupHome extends Base
 
     @state = z.state {
       group
-      gameKey
       player
       language: @model.l.getLanguage()
       $threads: group.switchMap (group) =>
         @model.thread.getAll {
           groupId: group?.id
-          gameKey: config.DEFAULT_GAME_KEY
           category: 'all'
           sort: 'popular'
           limit: 3
@@ -63,13 +58,13 @@ module.exports = class GroupHome extends Base
       .map (threads) =>
         _map threads, (thread) =>
           @getCached$ "thread-#{thread.id}", ThreadListItem, {
-            @model, @router, gameKey, thread
+            @model, @router, thread, group
           }
       $addons: @model.addon.getAll({}).map (addons) =>
         addons = _filter addons, (addon) ->
           addon.key in ['chestSimulator', 'clanManager', 'deckBandit']
         _map addons, (addon) =>
-          new AddonListItem {@model, @router, gameKey, addon}
+          new AddonListItem {@model, @router, addon}
       deck: player.switchMap (player) =>
         @model.clashRoyalePlayerDeck.getAllByPlayerId player.id, {
           type: 'all', sort: 'recent', limit: 1
@@ -95,9 +90,7 @@ module.exports = class GroupHome extends Base
 
   render: =>
     {me, group, player, $threads, $addons, deck, language,
-      groupUsersOnline, gameKey} = @state.getValue()
-
-    gameKey ?= config.DEFAULT_GAME_KEY # TODO: rm
+      groupUsersOnline} = @state.getValue()
 
     z '.z-group-home',
       z '.g-grid',
@@ -121,7 +114,7 @@ module.exports = class GroupHome extends Base
                 {
                   text: @model.l.get 'groupHome.viewAllStats'
                   onclick: =>
-                    @router.go 'profile', {gameKey}
+                    @router.go 'groupProfile', {groupId: group.key or group.id}
                 }
 
         z @$masonryGrid,
@@ -142,7 +135,7 @@ module.exports = class GroupHome extends Base
                 submit:
                   text: @model.l.get 'general.viewAll'
                   onclick: =>
-                    @router.go 'forum', {gameKey}
+                    @router.go 'groupForum', {groupId: group.key or group.id}
               }
             z @$chatUiCard,
               $title: @model.l.get 'general.chat'
@@ -155,7 +148,7 @@ module.exports = class GroupHome extends Base
               submit:
                 text: @model.l.get 'earnXp.dailyChatMessageButton'
                 onclick: =>
-                  @router.go 'groupChat', {gameKey, id: group?.id}
+                  @router.go 'groupChat', {groupId: group.key or group.id}
 
             if player?.id
               z @$currentDeckUiCard,
@@ -168,7 +161,7 @@ module.exports = class GroupHome extends Base
                 submit:
                   text: @model.l.get 'general.viewAll'
                   onclick: =>
-                    @router.go 'profile', {gameKey}
+                    @router.go 'groupProfile', {groupId: group.key or group.id}
 
             z @$addonsUiCard,
               $title: @model.l.get 'groupHome.popularAddons'
@@ -180,7 +173,7 @@ module.exports = class GroupHome extends Base
               submit:
                 text: @model.l.get 'general.viewAll'
                 onclick: =>
-                  @router.go 'mods', {gameKey}
+                  @router.go 'tools', {groupId: group.key or group.id}
           ]
 
           # z '.title', @model.l.get 'groupHome.notifications'

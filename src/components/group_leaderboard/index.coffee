@@ -19,7 +19,7 @@ if window?
 MAX_TITLE_LENGTH = 60
 
 module.exports = class GroupLeaderboard
-  constructor: ({@model, @router, group, sort, filter}) ->
+  constructor: ({@model, @router, group}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()

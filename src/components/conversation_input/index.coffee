@@ -26,7 +26,7 @@ module.exports = class ConversationInput
   constructor: (options) ->
     {@model, @router, @message, @onPost, @onResize, toggleIScroll,
       @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$,
-      isPostLoading, gameKey, conversation} = options
+      isPostLoading, conversation} = options
 
     allowedPanels ?= RxObservable.of [
       'text', 'stickers', 'gifs', 'image', 'addons'
@@ -81,7 +81,6 @@ module.exports = class ConversationInput
           selectionStart
           selectionEnd
           @currentPanel
-          gameKey
           conversation
         }
       }
@@ -115,7 +114,6 @@ module.exports = class ConversationInput
           @model
           @router
           @currentPanel
-          gameKey
         }
       }
 

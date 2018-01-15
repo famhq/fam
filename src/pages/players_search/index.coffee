@@ -13,9 +13,6 @@ module.exports = class PlayersSearchPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData}) ->
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
     @$head = new Head({
       @model
       requests

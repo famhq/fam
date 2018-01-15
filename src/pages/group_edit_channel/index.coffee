@@ -16,16 +16,7 @@ if window?
 module.exports = class GroupEditChannelPage
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.id
-      else
-        @model.group.getByKey route.params.id
-
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
+  constructor: ({@model, requests, @router, serverData, group}) ->
     conversation = requests.switchMap ({route}) =>
       @model.conversation.getById route.params.conversationId
 
@@ -41,10 +32,10 @@ module.exports = class GroupEditChannelPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupEditChannel = new GroupEditChannel {
-      @model, @router, serverData, group, conversation, gameKey
+      @model, @router, serverData, group, conversation
     }
     @$groupEditChannelPermissions = new GroupEditChannelPermissions {
-      @model, @router, serverData, group, conversation, gameKey
+      @model, @router, serverData, group, conversation
     }
     @$tabs = new Tabs {@model}
 

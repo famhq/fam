@@ -11,12 +11,10 @@ require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/map'
 
 Icon = require '../icon'
-Avatar = require '../avatar'
 FlatButton = require '../flat_button'
 AdsenseAd = require '../adsense_ad'
 ClanBadge = require '../clan_badge'
 GroupBadge = require '../group_badge'
-SetLanguageDialog = require '../set_language_dialog'
 SemverService = require '../../services/semver'
 Ripple = require '../ripple'
 colors = require '../../colors'
@@ -30,25 +28,24 @@ GROUPS_IN_DRAWER = 2
 MAX_OVERLAY_OPACITY = 0.5
 
 module.exports = class Drawer
-  constructor: ({@model, @router, gameKey, group, @overlay$}) ->
+  constructor: ({@model, @router, group, @overlay$}) ->
     @transformProperty = window?.getTransformProperty()
-    @$avatar = new Avatar()
     @$adsenseAd = new AdsenseAd {@model}
+    @$groupBadge = new GroupBadge {@model, group}
 
     me = @model.user.getMe()
-    meAndLanguageAndGameKey = RxObservable.combineLatest(
+    meAndGroupAndLanguage = RxObservable.combineLatest(
       me
+      group
       @model.l.getLanguage()
-      gameKey
       (vals...) -> vals
     )
 
     myGroups = me.switchMap (me) =>
       @model.group.getAllByUserId me.id
-    groupAndMyGroupsAndGameKey = RxObservable.combineLatest(
+    groupAndMyGroups = RxObservable.combineLatest(
       group
       myGroups
-      gameKey
       me
       (vals...) -> vals
     )
@@ -62,10 +59,10 @@ module.exports = class Drawer
       isOpen: @model.drawer.isOpen()
       language: @model.l.getLanguage()
       me: me
-      gameKey: gameKey
       expandedItems: []
-      myGroups: groupAndMyGroupsAndGameKey.map (props) =>
-        [group, groups, gameKey, me] = props
+      group: group
+      myGroups: groupAndMyGroups.map (props) =>
+        [group, groups, me] = props
         groups = _orderBy groups, (group) =>
           @model.cookie.get("group_#{group.id}_lastVisit") or 0
         , 'desc'
@@ -83,99 +80,17 @@ module.exports = class Drawer
                     else new GroupBadge {@model, group}
             $chevronIcon: new Icon()
             $ripple: new Ripple()
-            children: if group.type is 'public'
-              _filter [
-                {
-                  path: @router.get 'groupChat', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  title: @model.l.get 'general.chat'
-                }
-                {
-                  path: @router.get 'groupShop', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  # title: @model.l.get 'general.shop'
-                  title: @model.l.get 'general.freeStuff'
-                }
-                {
-                  path: @router.get 'groupCollection', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  title: @model.l.get 'collectionPage.title'
-                }
-                if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
-                  {
-                    path: @router.get 'groupVideos', {
-                      gameKey: gameKey
-                      id: group.key or group.id
-                    }
-                    title: @model.l.get 'videosPage.title'
-                  }
-                {
-                  path: @router.get 'groupLeaderboard', {
-                    gameKey: gameKey
-                    id: group.key or group.id
-                  }
-                  title: @model.l.get 'groupLeaderboardPage.title'
-                }
-                if @model.groupUser.hasPermission {
-                  meGroupUser, me, permissions: ['manageRole']
-                }
-                  {
-                    path: @router.get 'groupSettings', {
-                      gameKey: gameKey
-                      id: group.key or group.id
-                    }
-                    title: @model.l.get 'groupSettingsPage.title'
-                    $chevronIcon: new Icon()
-                    children: [
-                      {
-                        path: @router.get 'groupManageChannels', {
-                          gameKey: gameKey
-                          id: group.key or group.id
-                        }
-                        title: @model.l.get 'groupManageChannelsPage.title'
-                      }
-                      {
-                        path: @router.get 'groupManageRoles', {
-                          gameKey: gameKey
-                          id: group.key or group.id
-                        }
-                        title: @model.l.get 'groupManageRolesPage.title'
-                      }
-                      if @model.groupUser.hasPermission {
-                        meGroupUser, me, permissions: ['readAuditLog']
-                      }
-                        {
-                          path: @router.get 'groupAuditLog', {
-                            gameKey: gameKey
-                            id: group.key or group.id
-                          }
-                          title: @model.l.get 'groupAuditLogPage.title'
-                        }
-                      {
-                        path: @router.get 'groupBannedUsers', {
-                          gameKey: gameKey
-                          id: group.key or group.id
-                        }
-                        title: @model.l.get 'groupBannedUsersPage.title'
-                      }
-                    ]
-                  }
-              ]
           }
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
 
-      menuItems: meAndLanguageAndGameKey.map ([me, language, gameKey]) =>
+      menuItems: meAndGroupAndLanguage.map ([me, group, language]) =>
+        groupId = group.key or group.id
+        meGroupUser = group.meGroupUser
         _filter([
           {
-            path: @router.get 'home', {gameKey}
+            path: @router.get 'groupHome', {groupId}
             title: @model.l.get 'general.home'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -183,71 +98,98 @@ module.exports = class Drawer
             isDefault: true
           }
           {
-            path: @router.get 'profile', {gameKey}
+            path: @router.get 'groupChat', {groupId}
+            title: @model.l.get 'general.chat'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'chat'
+          }
+          if language in config.COMMUNITY_LANGUAGES and
+              group.key isnt 'playhard' and group.type is 'public'
+            {
+              path: @router.get 'groupForum', {groupId}
+              title: @model.l.get 'general.forum'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'rss'
+            }
+          {
+            path: @router.get 'groupShop', {groupId}
+            # title: @model.l.get 'general.shop'
+            title: @model.l.get 'general.freeStuff'
+            $icon: new Icon()
+            iconName: 'shop'
+          }
+          {
+            path: @router.get 'groupCollection', {groupId}
+            title: @model.l.get 'collectionPage.title'
+            $icon: new Icon()
+            iconName: 'cards'
+          }
+          if group.key is 'playhard'
+            {
+              path: @router.get 'groupVideos', {groupId}
+              title: @model.l.get 'videosPage.title'
+              $icon: new Icon()
+              iconName: 'video'
+            }
+          {
+            path: @router.get 'groupLeaderboard', {groupId}
+            title: @model.l.get 'groupLeaderboardPage.title'
+            $icon: new Icon()
+            iconName: 'trophy'
+          }
+          {
+            path: @router.get 'groupProfile', {groupId}
             title: @model.l.get 'drawer.menuItemProfile'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'profile'
           }
           {
-            path: @router.get 'clan', {gameKey}
-            title: @model.l.get 'drawer.menuItemClan'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'clan'
-          }
-          {
-            path: @router.get 'chat', {gameKey}
-            title: @model.l.get 'general.chat'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'chat'
-          }
-          if language in config.COMMUNITY_LANGUAGES
-            {
-              path: @router.get 'forum', {gameKey}
-              title: @model.l.get 'general.forum'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'rss'
-            }
-
-          {
-            isDivider: true
-          }
-          {
-            path: @router.get 'mods', {gameKey}
+            path: @router.get 'groupTools', {groupId}
             title: @model.l.get 'addonsPage.title'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'ellipsis'
           }
-          {
-            path: @router.get 'players', {gameKey}
-            title: @model.l.get 'drawer.menuItemPlayers'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'friends'
+          if @model.groupUser.hasPermission {
+            meGroupUser, me, permissions: ['manageRole']
           }
-          {
-            path: @router.get 'recruit', {gameKey}
-            title: @model.l.get 'general.recruiting'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'recruit'
-          }
-
-          # {
-          #   onclick: =>
-          #     @model.portal.call 'browser.openWindow', {
-          #       url: 'https://github.com/starfirehq/starfire-sdk'
-          #       target: '_system'
-          #     }
-          #   title: @model.l.get 'general.developers'
-          #   $icon: new Icon()
-          #   $ripple: new Ripple()
-          #   iconName: 'developers'
-          # }
+            {
+              path: @router.get 'groupSettings', {groupId}
+              title: @model.l.get 'groupSettingsPage.title'
+              $icon: new Icon()
+              iconName: 'settings'
+              $chevronIcon: new Icon()
+              children: [
+                {
+                  path: @router.get 'groupManageChannels', {
+                    id: group.key or group.id
+                  }
+                  title: @model.l.get 'groupManageChannelsPage.title'
+                }
+                {
+                  path: @router.get 'groupManageRoles', {
+                    id: group.key or group.id
+                  }
+                  title: @model.l.get 'groupManageRolesPage.title'
+                }
+                if @model.groupUser.hasPermission {
+                  meGroupUser, me, permissions: ['readAuditLog']
+                }
+                  {
+                    path: @router.get 'groupAuditLog', {groupId}
+                    title: @model.l.get 'groupAuditLogPage.title'
+                  }
+                {
+                  path: @router.get 'groupBannedUsers', {
+                    id: group.key or group.id
+                  }
+                  title: @model.l.get 'groupBannedUsersPage.title'
+                }
+              ]
+            }
           if needsApp
             {
               isDivider: true
@@ -261,13 +203,6 @@ module.exports = class Drawer
               $ripple: new Ripple()
               iconName: 'get'
             }
-          # {
-          #   path: '/settings'
-          #   title: 'Settings'
-          #   $icon: new Icon()
-          #   $ripple: new Ripple()
-          #   iconName: 'settings'
-          # }
           ])
 
   afterMount: (@$$el) =>
@@ -364,8 +299,11 @@ module.exports = class Drawer
       @state.set expandedItems: expandedItems.concat [path]
 
   render: ({currentPath}) =>
-    {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, gameKey,
+    {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, group,
       language, windowSize} = @state.getValue()
+
+    group ?= {}
+    groupId = group.key or group.id
 
     translateX = if isOpen then 0 else "-#{drawerWidth}px"
     # adblock plus blocks has-ad
@@ -426,16 +364,10 @@ module.exports = class Drawer
               width: "#{drawerWidth}px"
           },
             z '.header',
-              z '.logo'
-              z '.beta'
-              z '.language', {
-                onclick: =>
-                  @overlay$.next new SetLanguageDialog {
-                    @model, @router, @overlay$
-                  }
-              },
-                language
-                z '.arrow'
+              z '.icon',
+                z @$groupBadge
+              z '.name',
+                @model.group.getDisplayName group
             z '.content',
               z 'ul.menu',
                 [
@@ -450,60 +382,14 @@ module.exports = class Drawer
                           onclick: =>
                             @model.signInDialog.open()
                         }, @model.l.get 'general.signUp'
-                      z '.divider'
+                      z 'li.divider'
                     ]
-                  _map myGroups, (myGroup) =>
-                    {$badge, $ripple, group, $chevronIcon, children} = myGroup
-                    groupPath = @router.get 'group', {
-                      gameKey, id: group.key or group.id
-                    }
-                    groupEnPath = @router.get 'group', {
-                      gameKey, id: group.key or group.id
-                      }, {language: 'en'}
-
-                    isSelected = currentPath?.indexOf(groupPath) is 0 or
-                      currentPath?.indexOf(groupEnPath) is 0
-                    isExpanded = isSelected or @isExpandedByPath groupPath
-
-                    z 'li.menu-item', {
-                      className: z.classKebab {isSelected}
-                    },
-                      z 'a.menu-item-link', {
-                        href: groupPath
-                        onclick: (e) =>
-                          e.preventDefault()
-                          @model.drawer.close()
-                          @router.go 'groupChat', {
-                            gameKey, id: group.key or group.id
-                          }
-                      },
-                        z '.icon',
-                          z $badge
-                        @model.group.getDisplayName group
-                        if not _isEmpty children
-                          z '.chevron',
-                            z $chevronIcon,
-                              icon: if isExpanded \
-                                    then 'chevron-up'
-                                    else 'chevron-down'
-                              color: colors.$tertiary500Text70
-                              isAlignedRight: true
-                              onclick: (e) =>
-                                e?.stopPropagation()
-                                e?.preventDefault()
-                                @toggleExpandItemByPath groupPath
-                        if breakpoint is 'desktop'
-                          $ripple
-                      if isExpanded
-                        z 'ul',
-                          _map children, (child) -> renderChild child
-
-                  unless _isEmpty myGroups
-                    z '.divider'
-
                   _map menuItems, (menuItem) =>
-                    {path, onclick, title, $icon, $ripple, isNew,
-                      iconName, isDivider} = menuItem
+                    {path, onclick, title, $icon, $chevronIcon, $ripple, isNew,
+                      iconName, isDivider, children} = menuItem
+
+                    hasChildren = not _isEmpty children
+                    groupId = group.key or group.id
 
                     if isDivider
                       return z 'li.divider'
@@ -511,11 +397,14 @@ module.exports = class Drawer
                     if menuItem.isDefault
                       isSelected = currentPath in [
                         @router.get 'siteHome'
-                        @router.get 'home', {gameKey}
+                        @router.get 'groupHome', {groupId}
                         '/'
                       ]
                     else
                       isSelected = currentPath?.indexOf(path) is 0
+
+                    isExpanded = isSelected or @isExpandedByPath path
+
                     z 'li.menu-item', {
                       className: z.classKebab {isSelected}
                     },
@@ -537,8 +426,58 @@ module.exports = class Drawer
                         title
                         if isNew
                           z '.new', @model.l.get 'general.new'
+                        if hasChildren
+                          z '.chevron',
+                            z $chevronIcon,
+                              icon: if isExpanded \
+                                    then 'chevron-up'
+                                    else 'chevron-down'
+                              color: colors.$tertiary500Text70
+                              isAlignedRight: true
+                              touchHeight: '28px'
+                              onclick: (e) =>
+                                e?.stopPropagation()
+                                e?.preventDefault()
+                                @toggleExpandItemByPath path
+                      if hasChildren and isExpanded
+                        z 'ul.children',
+                          _map children, (child) ->
+                            renderChild child, 1
                         if breakpoint is 'desktop'
                           z $ripple
+
+                  unless _isEmpty myGroups
+                    z 'li.divider'
+
+                  z 'li.subhead', @model.l.get 'drawer.otherGroups'
+
+                  _map myGroups, (myGroup) =>
+                    {$badge, $ripple, group, $chevronIcon, children} = myGroup
+                    groupPath = @router.get 'group', {groupId}
+                    groupEnPath = @router.get 'group', {
+                      id: group.key or group.id
+                      }, {language: 'en'}
+
+                    isSelected = currentPath?.indexOf(groupPath) is 0 or
+                      currentPath?.indexOf(groupEnPath) is 0
+
+                    z 'li.menu-item', {
+                      className: z.classKebab {isSelected}
+                    },
+                      z 'a.menu-item-link', {
+                        href: groupPath
+                        onclick: (e) =>
+                          e.preventDefault()
+                          @model.drawer.close()
+                          @router.go 'groupHome', {
+                            groupId: group.key or group.id
+                          }
+                      },
+                        z '.icon',
+                          z $badge
+                        @model.group.getDisplayName group
+                        if breakpoint is 'desktop'
+                          $ripple
                 ]
 
             if hasA

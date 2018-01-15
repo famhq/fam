@@ -19,8 +19,6 @@ module.exports = class ConversationPage
     conversation = requests.switchMap ({route}) =>
       @model.conversation.getById route.params.id
     .publishReplay(1).refCount()
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     selectedProfileDialogUser = new RxBehaviorSubject null
     overlay$ = new RxBehaviorSubject null
@@ -37,11 +35,10 @@ module.exports = class ConversationPage
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$profileDialog = new ProfileDialog {
-      @model, @router, selectedProfileDialogUser, gameKey
+      @model, @router, selectedProfileDialogUser
     }
     @$conversation = new Conversation {
       @model, @router, conversation, selectedProfileDialogUser, overlay$
-      gameKey
     }
 
     @state = z.state

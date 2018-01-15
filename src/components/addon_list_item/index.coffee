@@ -14,10 +14,9 @@ if window?
   require './index.styl'
 
 module.exports = class AddonListItem
-  constructor: ({@model, @router, addon, gameKey}) ->
+  constructor: ({@model, @router, addon}) ->
     @state = z.state
       addon: addon
-      gameKey: gameKey
 
   openInAppBrowser: (addon, {replacements} = {}) =>
     if _isEmpty(addon.supportedLanguages) or
@@ -64,14 +63,14 @@ module.exports = class AddonListItem
 
   render: ({hasPadding, replacements, onclick} = {}) =>
     hasPadding ?= true
-    {addon, gameKey} = @state.getValue()
+    {addon} = @state.getValue()
 
     unless addon?.key
       return null
 
     z 'a.z-addon-list-item', {
-      href: @router.get 'modByKey', {
-        gameKey, key: _kebabCase(addon.key)
+      href: @router.get 'toolByKey', {
+        key: _kebabCase(addon.key)
       }
       className: z.classKebab {hasPadding}
       onclick: (e) =>
@@ -89,8 +88,8 @@ module.exports = class AddonListItem
           isInAppBrowser = isNative and isNewIAB and isExternalAddon
 
           if not isInAppBrowser
-            @router.go 'modByKey', {
-              key: _kebabCase(addon.key), gameKey
+            @router.go 'toolByKey', {
+              key: _kebabCase(addon.key)
             }, {
               qs:
                 replacements: JSON.stringify replacements

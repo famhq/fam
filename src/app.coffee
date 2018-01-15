@@ -17,6 +17,7 @@ require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/publishReplay'
 
 Drawer = require './components/drawer'
+BottomBar = require './components/bottom_bar'
 XpGain = require './components/xp_gain'
 SignInDialog = require './components/sign_in_dialog'
 InstallOverlay = require './components/install_overlay'
@@ -31,14 +32,10 @@ config = require './config'
 Pages =
   HomePage: require './pages/home'
   FriendsPage: require './pages/friends'
-  VideosPage: require './pages/videos'
-  AddonPage: require './pages/addon'
-  AddonsPage: require './pages/addons'
-  ClanPage: require './pages/clan'
+  ToolPage: require './pages/addon'
   ConversationPage: require './pages/conversation'
   ConversationsPage: require './pages/conversations'
   NewConversationPage: require './pages/new_conversation'
-  FacebookLoginPage: require './pages/facebook_login'
   # GroupPage: require './pages/group'
   GroupChatPage: require './pages/group_chat'
   GroupCollectionPage: require './pages/group_collection'
@@ -59,19 +56,15 @@ Pages =
   GroupManageMemberPage: require './pages/group_manage_member'
   GroupVideosPage: require './pages/group_videos'
   GroupLeaderboardPage: require './pages/group_leaderboard'
+  GroupProfilePage: require './pages/group_profile'
+  GroupToolsPage: require './pages/group_addons'
   EditThreadPage: require './pages/edit_thread'
   ThreadPage: require './pages/thread'
   NewThreadPage: require './pages/new_thread'
-  DeckPage: require './pages/deck'
-  PlayersPage: require './pages/players'
   PlayersSearchPage: require './pages/players_search'
-  ProfilePage: require './pages/profile'
   ProfileChestsPage: require './pages/profile_chests'
-  SocialPage: require './pages/social'
-  ForumPage: require './pages/forum'
-  RecruitingPage: require './pages/recruiting'
-  StarPage: require './pages/star'
-  StarsPage: require './pages/stars'
+  # TODO: rename groups
+  # SocialPage: require './pages/social'
   TosPage: require './pages/tos'
   UserOfWeekPage: require './pages/user_of_week'
   PoliciesPage: require './pages/policies'
@@ -96,7 +89,7 @@ module.exports = class App
     @requests = requestsAndRoutes.map ([req, routes]) =>
       userAgent = navigator?.userAgent or req.headers?['user-agent']
       if isFirstRequest and Environment.isGameApp(config.GAME_KEY, {userAgent})
-        path = @model.cookie.get('currentPath') or req.path
+        path = @model.cookie.get('lastPath') or req.path
         if window?
           req.path = path # doesn't work server-side
         else
@@ -107,23 +100,29 @@ module.exports = class App
       {req, route, $page: $page}
     .publishReplay(1).refCount()
 
-    gameKey = @requests.map ({route}) ->
-      route?.params.gameKey or config.DEFAULT_GAME_KEY
+    requestsAndLanguage = RxObservable.combineLatest(
+      @requests, @model.l.getLanguage(), (vals...) -> vals
+    )
 
-    group = @requests.switchMap ({$page, route}) =>
+    @group = requestsAndLanguage.switchMap ([{$page, route}, language]) =>
       isGroup = $page?.isGroup
-      if isGroup and isUuid route.params.id
-        @model.group.getById route.params.id
-      else if isGroup and route.params.id
-        @model.group.getByKey route.params.id
+      groupId = route.params.groupId or @model.cookie.get 'lastGroupId'
+      if isGroup and isUuid groupId
+        @model.cookie.set 'lastGroupId', groupId
+        @model.group.getById groupId
+      else if isGroup and groupId
+        @model.cookie.set 'lastGroupId', groupId
+        @model.group.getByKey groupId
       else
-        RxObservable.of null
+        @model.group.getByGameKeyAndLanguage(
+          config.DEFAULT_GAME_KEY, language
+        )
 
     # used if state / requests fails to work
     $backupPage = if @serverData?
       userAgent = @serverData.req.headers?['user-agent']
       if Environment.isGameApp config.GAME_KEY, {userAgent}
-        serverPath = @model.cookie.get('currentPath') or @serverData.req.path
+        serverPath = @model.cookie.get('lastPath') or @serverData.req.path
       else
         serverPath = @serverData.req.path
       @getRoutes().get(serverPath).handler?()
@@ -136,7 +135,7 @@ module.exports = class App
     @overlay$ = new RxBehaviorSubject null
 
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
-    @$drawer = new Drawer {@model, @router, gameKey, group, @overlay$}
+    @$drawer = new Drawer {@model, @router, @group, @overlay$}
     @$xpGain = new XpGain {@model}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router}
@@ -148,6 +147,7 @@ module.exports = class App
       isVisible: addToHomeSheetIsVisible
     }
     @$pushNotificationsSheet = new PushNotificationsSheet {@model, @router}
+    @$bottomBar = new BottomBar {@model, @router, @requests, @group}
 
     @$nps = new Nps {@model}
 
@@ -194,10 +194,9 @@ module.exports = class App
         routeKeys = [routeKeys]
 
       paths = _flatten _map routeKeys, (routeKey) =>
-        if routeKey is '404'
-          # /* will still just look for a gameKey
-          return _map languages, (lang) ->
-            if lang is 'en' then '/:gameKey/*' else "/#{lang}/:gameKey/*"
+        # if routeKey is '404'
+        #   return _map languages, (lang) ->
+        #     if lang is 'en' then '/:gameKey/*' else "/#{lang}/:gameKey/*"
         _values @model.l.getAllPathsByRouteKey routeKey, isGamePath
 
       _map paths, (path) =>
@@ -208,6 +207,8 @@ module.exports = class App
               @router
               @serverData
               @overlay$
+              @group
+              $bottomBar: if Page.hasBottomBar then @$bottomBar
               requests: @requests.filter ({$page}) ->
                 $page instanceof Page
             })
@@ -217,55 +218,48 @@ module.exports = class App
       route routeKeys, pageKey, true
 
     routeGame ['friendsWithAction', 'friends'], 'FriendsPage'
-    routeGame 'videos', 'VideosPage'
-    routeGame ['mod', 'modByKey'], 'AddonPage'
-    routeGame 'mods', 'AddonsPage'
-    routeGame 'clan', 'ClanPage'
+    routeGame ['tool', 'toolByKey'], 'ToolPage'
     routeGame 'conversation', 'ConversationPage'
     routeGame 'conversations', 'ConversationsPage'
     routeGame 'newConversation', 'NewConversationPage'
     routeGame ['thread', 'threadWithTitle'], 'ThreadPage'
     routeGame 'threadEdit', 'EditThreadPage'
-    routeGame ['+group', 'group'], 'GroupChatPage'
-    routeGame ['+groupChat', 'groupChat'], 'GroupChatPage'
-    routeGame ['+groupCollection', 'groupCollection'], 'GroupCollectionPage'
-    routeGame '+groupForum', 'GroupForumPage'
-    routeGame ['+groupHome', 'groupHome'], 'GroupHomePage'
-    routeGame ['+groupMembers', 'groupMembers'], 'GroupMembersPage'
-    routeGame ['+groupChatConversation', 'groupChatConversation'], 'GroupChatPage'
-    routeGame ['+groupInvite', 'groupInvite'], 'GroupInvitePage'
+    routeGame 'group', 'GroupChatPage'
+    routeGame 'groupChat', 'GroupChatPage'
+    routeGame 'groupCollection', 'GroupCollectionPage'
+    routeGame 'groupForum', 'GroupForumPage'
+    routeGame 'groupHome', 'GroupHomePage'
+    routeGame 'groupMembers', 'GroupMembersPage'
+    routeGame 'groupChatConversation', 'GroupChatPage'
+    routeGame 'groupInvite', 'GroupInvitePage'
     routeGame 'groupInvites', 'GroupInvitesPage'
-    routeGame ['+groupShop', 'groupShop'], 'GroupShopPage'
-    routeGame ['+groupManage', 'groupManage'], 'GroupManageMemberPage'
-    routeGame ['+groupManageChannels', 'groupManageChannels'], 'GroupManageChannelsPage'
-    routeGame ['+groupNewChannel', 'groupNewChannel'], 'GroupAddChannelPage'
-    routeGame ['+groupEditChannel', 'groupEditChannel'], 'GroupEditChannelPage'
-    routeGame ['+groupSettings', 'groupSettings'], 'GroupSettingsPage'
-    routeGame ['+groupVideos', 'groupVideos'], 'GroupVideosPage'
-    routeGame ['+groupLeaderboard', 'groupLeaderboard'], 'GroupLeaderboardPage'
-    routeGame ['+groupAddRecords', 'groupAddRecords'], 'GroupAddRecordsPage'
-    routeGame ['+groupBannedUsers', 'groupBannedUsers'], 'GroupBannedUsersPage'
-    routeGame ['+groupManageRoles', 'groupManageRoles'], 'GroupManageRolesPage'
-    routeGame ['+groupAuditLog', 'groupAuditLog'], 'GroupAuditLogPage'
+    routeGame 'groupShop', 'GroupShopPage'
+    routeGame 'groupTools', 'GroupToolsPage'
+    routeGame 'groupManage', 'GroupManageMemberPage'
+    routeGame 'groupManageChannels', 'GroupManageChannelsPage'
+    routeGame 'groupNewChannel', 'GroupAddChannelPage'
+    routeGame 'groupEditChannel', 'GroupEditChannelPage'
+    routeGame 'groupSettings', 'GroupSettingsPage'
+    routeGame 'groupVideos', 'GroupVideosPage'
+    routeGame 'groupLeaderboard', 'GroupLeaderboardPage'
+    routeGame 'groupAddRecords', 'GroupAddRecordsPage'
+    routeGame 'groupBannedUsers', 'GroupBannedUsersPage'
+    routeGame 'groupManageRoles', 'GroupManageRolesPage'
+    routeGame 'groupAuditLog', 'GroupAuditLogPage'
     routeGame [
       'newThread', 'newThreadWithCategory', 'newThreadWithCategoryAndId'
     ], 'NewThreadPage'
-    routeGame 'deck', 'DeckPage'
-    routeGame 'facebookLogin', 'FacebookLoginPage'
-    routeGame 'players', 'PlayersPage'
     routeGame 'playersSearch', 'PlayersSearchPage'
     routeGame 'policies', 'PoliciesPage'
-    routeGame ['chat', 'chatWithTab'], 'SocialPage'
-    routeGame 'forum', 'ForumPage'
-    routeGame 'recruit', 'RecruitingPage'
     routeGame 'star', 'StarPage'
     routeGame 'stars', 'StarsPage'
     routeGame 'termsOfService', 'TosPage'
     routeGame 'userOfWeek', 'UserOfWeekPage'
     routeGame 'privacy', 'PrivacyPage'
     routeGame [
-      'profile', 'player', 'playerEmbed', 'user', 'userById'
-    ], 'ProfilePage'
+      'profile', 'clashRoyalePlayer', 'playerEmbed', 'user', 'userById'
+      'groupProfile'
+    ], 'GroupProfilePage'
     routeGame [
       'chestCycleByPlayerId', 'chestCycleByPlayerIdEmbed'
     ], 'ProfileChestsPage'
@@ -328,7 +322,6 @@ module.exports = class App
             if @$nps.shouldBeShown()
               z @$nps,
                 gameName: 'Starfire'
-                gameKey: config.GAME_KEY
                 onRate: =>
                   @model.portal.call 'app.rate'
             if $overlay

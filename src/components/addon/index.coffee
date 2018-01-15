@@ -10,6 +10,9 @@ Top2v2Decks = require '../top_2v2_decks'
 NewCards = require '../new_cards'
 ChestSimulatorPick = require '../simulator_pick'
 ForumSignature = require '../forum_signature'
+Clan = require '../clan'
+Players = require '../clash_royale_players'
+Recruiting = require '../clash_royale_recruiting'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -19,7 +22,9 @@ if window?
 module.exports = class Addon
   constructor: ({@model, @router, addon, testUrl, replacements}) ->
     player = @model.user.getMe().switchMap ({id}) =>
-      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      (if playerId = replacements?.playerTag
+      then @model.player.getByPlayerIdAndGameId playerId, config.CLASH_ROYALE_ID
+      else @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID)
       .map (player) ->
         return player or {}
 
@@ -30,6 +35,9 @@ module.exports = class Addon
     @$topDraftCards = new TopDraftCards {@model, @router}
     @$newCards = new NewCards {@model, @router}
     @$forumSignature = new ForumSignature {@model, @router}
+    @$clan = new Clan {@model, @router, player}
+    @$players = new Players {@model, @router}
+    @$recruiting = new Recruiting {@model, @router}
 
     @state = z.state
       addon: addon
@@ -46,6 +54,8 @@ module.exports = class Addon
       language = @model.l.getLanguageStr()
     else
       language = 'en'
+
+    console.log addon, 'addon'
 
     z '.z-addon', {
       style:
@@ -67,6 +77,12 @@ module.exports = class Addon
         z @$topChallengeDecks
       else if addon?.id is '7da4d705-6180-4ceb-869e-cb6f0f8e004d'
         z @$top2v2Decks
+      else if addon?.id is '32758e1c-af5b-44b1-bfe5-7379ca8fdfa2'
+        z @$clan
+      else if addon?.id is 'fc71726d-d721-443e-b247-9d1439d09b60'
+        z @$players
+      else if addon?.id is '3278305f-1e2e-450f-8611-0fa290216753'
+        z @$recruiting
       else if testUrl or addon?.url
         replacements = _defaults replacements, {lang: language}
         vars = addon?.url?.match /\{[a-zA-Z0-9]+\}/g

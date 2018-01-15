@@ -9,12 +9,7 @@ if window?
 module.exports = class NewConversationPage
   hideDrawer: true
 
-  constructor: ({model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) ->
-      model.group.getById route.params.id
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
+  constructor: ({model, requests, @router, serverData, group}) ->
     @$head = new Head({
       model
       requests
@@ -25,7 +20,7 @@ module.exports = class NewConversationPage
       }
     })
     @$newConversation = new NewConversation {
-      model, @router, serverData, group, gameKey
+      model, @router, serverData, group
     }
 
     @state = z.state

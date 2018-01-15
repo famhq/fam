@@ -10,8 +10,8 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-module.exports = class Addons
-  constructor: ({@model, @router, gameKey, sort, filter}) ->
+module.exports = class GroupAddons
+  constructor: ({@model, @router, group, sort, filter}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -20,13 +20,12 @@ module.exports = class Addons
 
     @state = z.state
       me: @model.user.getMe()
-      gameKey: gameKey
       $addons: addons.map (addons) =>
         _map addons, (addon) =>
-          new AddonListItem {@model, @router, gameKey, addon}
+          new AddonListItem {@model, @router, addon}
 
   render: =>
-    {me, $addons, gameKey} = @state.getValue()
+    {me, $addons} = @state.getValue()
 
     z '.z-addons',
       z 'h2.title', @model.l.get 'addons.discover'

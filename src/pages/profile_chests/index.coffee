@@ -24,9 +24,6 @@ module.exports = class ProfileChestsPage
       .map (player) ->
         return player or {}
 
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
     @$spinner = new Spinner()
 
     @$head = new Head({
@@ -59,7 +56,6 @@ module.exports = class ProfileChestsPage
     @state = z.state
       windowSize: @model.window.getSize()
       player: player
-      gameKey: gameKey
 
   renderHead: => @$head
 
@@ -75,7 +71,7 @@ module.exports = class ProfileChestsPage
         style: 'primary'
         $topLeftButton: z @$buttonBack, {
           color: colors.$primary500
-          fallbackPath: @router.get 'player', {gameKey, playerId: player?.id}
+          fallbackPath: @router.get 'clashRoyalePlayer', {playerId: player?.id}
         }
       }
       if player

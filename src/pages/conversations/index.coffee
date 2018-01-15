@@ -11,8 +11,6 @@ if window?
 
 module.exports = class ConversationsPage
   constructor: ({@model, requests, @router, serverData}) ->
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
     @$head = new Head({
       @model
       requests
@@ -24,7 +22,7 @@ module.exports = class ConversationsPage
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
-    @$conversations = new Conversations {@model, @router, gameKey}
+    @$conversations = new Conversations {@model, @router}
 
     @state = z.state
       windowSize: @model.window.getSize()
