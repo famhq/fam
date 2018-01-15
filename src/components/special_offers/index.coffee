@@ -64,7 +64,10 @@ module.exports = class SpecialOffers
     @state = z.state
       me: me
       deviceId: @deviceId
-      country: me.map (me) -> me?.country or 'br' # TODO
+      country: @model.user.getCountry().map (country) ->
+        unless country
+          language = navigator?.languages?[0]
+          country = language?.split?('-')?[1]?.toLowercase() or 'br'
       usageStats: @usageStatsStreams.switch()
       loadingOfferId: null
       offers: @offers.map (offers) ->
@@ -160,8 +163,13 @@ module.exports = class SpecialOffers
     @model.specialOffer.logClickById offer.id, {deviceId, country}
     .then =>
       appVersion = Environment.getAppVersion config.GAME_KEY
-      openCustomMappstreet = SemverService.gte(appVersion, '1.4.15') and
+      openCustomMappstreet = appVersion and
+                              SemverService.gte(appVersion, '1.4.15') and
                               offer.defaultData.sourceType is 'mappstreet'
+
+      trackUrl = offer.defaultData.trackUrl
+      if trackUrl
+        trackUrl = trackUrl.replace '{deviceId}', deviceId
 
       if _find usageStats, {PackageName: offer.androidPackage} and config.ENV isnt config.ENVS.DEV
         @model.portal.call 'launcher.launch', {
@@ -172,7 +180,7 @@ module.exports = class SpecialOffers
           @state.set loadingOfferId: null
       else if openCustomMappstreet
         @model.portal.call 'browser.openWindow', {
-          url: offer.trackUrl
+          url: trackUrl
           # target: '_system'
           target: '_blank'
           executeJs: 'try { var response = document.body.getAttribute(\'onclick\') } catch (err) { var response = \'\' }; response || window.location.href'
@@ -210,26 +218,30 @@ module.exports = class SpecialOffers
             }
           else
             @model.portal.call 'browser.openWindow', {
-              url: offer.trackUrl
+              url: trackUrl
               target: '_system'
             }
         .then =>
           @state.set loadingOfferId: null
 
       else
-        @model.portal.call 'browser.openWindow', {
-          url: offer.trackUrl or "https://play.google.com/store/apps/details?id=#{offer.androidPackage}"
-          target: '_system'
-        }
-        .then =>
-          @state.set loadingOfferId: null
-    .catch =>
+        # FIXME FIXME
+        console.log trackUrl
+        # @model.portal.call 'browser.openWindow', {
+        #   url: trackUrl or "https://play.google.com/store/apps/details?id=#{offer.androidPackage}"
+        #   target: '_system'
+        # }
+        # .then =>
+        #   @state.set loadingOfferId: null
+    .catch (err) =>
+      console.log 'caught', err
       @state.set loadingOfferId: null
 
   render: =>
     {me, country, offers, usageStats, loadingOfferId} = @state.getValue()
 
-    noPermissions = _isEmpty usageStats
+    isDev = config.ENV is config.ENVS.DEV
+    noPermissions = not isDev and _isEmpty usageStats
 
     isAndroidApp = Environment.isGameApp(config.GAME_KEY) and
                     Environment.isAndroid()
@@ -243,7 +255,7 @@ module.exports = class SpecialOffers
         z '.info-box',
           z '.text',
             @model.l.get 'specialOffers.notAvailableiOS'
-      else if not isAndroidApp
+      else if not isAndroidApp and not isDev
         z '.info-box',
           z '.text',
             @model.l.get 'specialOffers.requiresAndroidApp'
@@ -282,6 +294,8 @@ module.exports = class SpecialOffers
               {days, dailyPayout, installPayout,
                 minutesPerDay} = data
               totalPayout = installPayout + days * dailyPayout
+              unless totalPayout
+                return
               z '.g-col.g-xs-12.g-md-6',
                 z '.offer', {
                   onclick: =>

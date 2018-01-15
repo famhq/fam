@@ -77,24 +77,31 @@ module.exports = class DeckCards extends Base
   render: ({onCardClick, maxCardWidth, cardMarginPx} = {}) =>
     {cardWidth, cardGroups, cardsPerRow} = @state.getValue()
 
+    cardsPerRow ?= @cardSizeInfo.cardsPerRow
     cardMarginPx ?= 8
     hasNoMargins = cardMarginPx is 0
 
     if maxCardWidth
       cardWidth = Math.min(maxCardWidth, cardWidth)
 
+    paddingBottom = 100 * (8 / cardsPerRow) / (76 / 96 * cardsPerRow)
+    cardWidthWithoutMargins = cardWidth - cardMarginPx
+    if cardWidth and false
+      cardSizePercentage = cardWidthWithoutMargins / cardWidth
+      paddingBottom *= cardSizePercentage
+
     z '.z-deck-cards', {
       className: z.classKebab {hasNoMargins}
-      # seems too tall?
-      # style:
-      #   minHeight: "#{(96 / 76) * cardWidth}px"
+      style:
+        paddingBottom: "#{paddingBottom}%"
     },
-      _map @cardGroups or cardGroups, (cards) ->
-        z '.row',
-        _map cards, ({card, $el}) ->
-          z '.card', {
-            style:
-              width: "#{cardWidth}px"
-              height: "#{(96 / 76) * cardWidth}px"
-          },
-            z $el, {onclick: onCardClick, width: cardWidth - cardMarginPx}
+      z '.cards',
+        _map @cardGroups or cardGroups, (cards) ->
+          z '.row',
+          _map cards, ({card, $el}) ->
+            z '.card', {
+              style:
+                width: "#{cardWidth}px"
+                height: "#{(96 / 76) * cardWidth}px"
+            },
+              z $el, {onclick: onCardClick, width: cardWidthWithoutMargins}

@@ -13,6 +13,9 @@ module.exports = class User
   getIp: =>
     @cookie.get 'ip'
 
+  getCountry: =>
+    @auth.stream "#{@namespace}.getCountry"
+
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}
 
