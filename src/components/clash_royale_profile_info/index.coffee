@@ -73,6 +73,13 @@ module.exports = class ProfileInfo
       addon: @model.addon.getByKey 'deckBandit'
     }
 
+    @$addonListItem3 = new AddonListItem {
+      @model
+      @router
+      gameKey
+      addon: @model.addon.getByKey 'battles'
+    }
+
     @state = z.state {
       isRequestNotificationCardVisible
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
@@ -323,6 +330,11 @@ module.exports = class ProfileInfo
               }
             z '.addon',
               z @$addonListItem2, {
+                hasPadding: false
+                replacements: {playerTag: player?.id?.replace '#', ''}
+              }
+            z '.addon',
+              z @$addonListItem3, {
                 hasPadding: false
                 replacements: {playerTag: player?.id?.replace '#', ''}
               }

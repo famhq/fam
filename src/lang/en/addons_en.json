@@ -21,6 +21,8 @@
   "forumSignature.description": "Generate a custom signature for forums",
   "battleHistory.title": "Battle history",
   "battleHistory.description": "View your recent battles",
+  "battles.title": "Battles Analysis",
+  "battles.description": "View analytics for your recently played battles and find out how you can improve",
   "popularDecks.title": "Popular decks",
   "popularDecks.description": "View popular decks and their win rates",
   "top200Decks.title": "Top 200 decks",

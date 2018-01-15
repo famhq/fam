@@ -2,25 +2,27 @@
 
 .z-deck-cards
   max-width: 600px
-  position: relative
   width: 100%
 
   &.has-no-margins
-    > .cards > .row > .card
+    > .cards-wrapper > .cards > .row > .card
       margin: 0
       padding: 0
 
-  > .cards
-    position: absolute
-    left: 0
-    top: 0
-    width: 100%
+  > .cards-wrapper
+    position: relative
 
-    > .row
-      clearfix()
+    > .cards
+      position: absolute
+      left: 0
+      top: 0
+      width: 100%
 
-      > .card
-        margin: -4px 0
-        float: left
-        padding: 4px
-        box-sizing: border-box
+      > .row
+        clearfix()
+
+        > .card
+          margin: -4px 0
+          float: left
+          padding: 4px
+          box-sizing: border-box

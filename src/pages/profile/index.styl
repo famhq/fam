@@ -22,7 +22,9 @@
       display: flex
       flex-direction: column
       padding-bottom: 80px
-      margin-bottom: -160px
+      // -160px is too far when scrolling to bottom
+      // -80px leaves margin at bottom w/o adding negative 80 in z-profile
+      margin-bottom: -80px
 
     > .profile-info
       width: 100%
