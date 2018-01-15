@@ -220,7 +220,7 @@
   "groupEditChannel.nameInputHintText": "Nome do canal",
   "groupHome.viewAllStats": "Ver todos os status",
   "groupHome.topForumThreads": "Principais assuntos do fórum",
-  "groupHome.peopleInChat": "pessoas ativas no chat",
+  "groupHome.peopleInChat": "{count} pessoas ativas no chat",
   "groupHome.popularAddons": "Ferramentas populares",
   "groupInfo.joinButtonText": "Juntar ao grupo",
   "groupInfo.title": "Sobre",
