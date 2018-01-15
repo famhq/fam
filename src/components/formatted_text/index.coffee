@@ -152,7 +152,7 @@ module.exports = class FormattedText
                   @router.openLink props.href
             }, children
     }
-    .process text
+    .processSync text
     .contents
 
   render: =>

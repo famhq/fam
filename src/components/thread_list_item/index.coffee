@@ -12,7 +12,7 @@ DateService = require '../../services/date'
 if window?
   require './index.styl'
 
-module.exports = class Threads
+module.exports = class ThreadListItem
   constructor: ({@model, @router, thread, gameKey}) ->
     @$threadPreview = new ThreadPreview {@model, thread}
     @$pointsIcon = new Icon()

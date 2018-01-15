@@ -10,11 +10,10 @@ DEFAULT_WIDTH = 80
 DEFAULT_HEIGHT = 96
 
 module.exports = class Card
-  constructor: ({card}) ->
-    @state = z.state {card}
+  constructor: ({@card}) -> null
 
   render: ({width, onclick} = {}) =>
-    {card} = @state.getValue()
+    card = @card
 
     width ?= DEFAULT_WIDTH
     height = width * (DEFAULT_HEIGHT / DEFAULT_WIDTH)
