@@ -156,7 +156,7 @@ module.exports = class Conversation extends Base
 
           panels
         else
-          ['text', 'stickers', 'gifs', 'addons']
+          ['text', 'stickers', 'image', 'gifs', 'addons']
     }
 
     @debouncedOnResize = _debounce @onResize

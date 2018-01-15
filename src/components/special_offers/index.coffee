@@ -225,14 +225,12 @@ module.exports = class SpecialOffers
           @state.set loadingOfferId: null
 
       else
-        # FIXME FIXME
-        console.log trackUrl
-        # @model.portal.call 'browser.openWindow', {
-        #   url: trackUrl or "https://play.google.com/store/apps/details?id=#{offer.androidPackage}"
-        #   target: '_system'
-        # }
-        # .then =>
-        #   @state.set loadingOfferId: null
+        @model.portal.call 'browser.openWindow', {
+          url: trackUrl or "https://play.google.com/store/apps/details?id=#{offer.androidPackage}"
+          target: '_system'
+        }
+        .then =>
+          @state.set loadingOfferId: null
     .catch (err) =>
       console.log 'caught', err
       @state.set loadingOfferId: null
@@ -289,7 +287,8 @@ module.exports = class SpecialOffers
 
               isLoading = loadingOfferId is offer.id
 
-              data = _defaults offer.countryData[country], offer.defaultData
+              countryData = offer.countryData[country] or {}
+              data = _defaults countryData, offer.defaultData
 
               {days, dailyPayout, installPayout,
                 minutesPerDay} = data

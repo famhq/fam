@@ -35,7 +35,7 @@ module.exports = class MarkdownEditor
           {type: 'image', src: smallUrl, smallSrc: smallUrl, largeSrc: largeUrl}
         ])
         @setModifier {
-          pattern: "![](#{largeUrl} =#{width}x#{height})"
+          pattern: "![](<#{largeUrl} =#{width}x#{height}>)"
         }
     }
 

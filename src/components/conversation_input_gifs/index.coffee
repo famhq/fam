@@ -82,8 +82,8 @@ module.exports = class ConversationInputGifs
               width: width
               height: height
               onclick: =>
-                @message.next "![](#{gif.images.fixed_height.url} " +
-                              "=#{width}x#{height})"
+                @message.next "![](<#{gif.images.fixed_height.url} " +
+                              "=#{width}x#{height}>)"
                 @onPost()
               src: if supportsWebP \
                    then gif.images.fixed_height.webp
