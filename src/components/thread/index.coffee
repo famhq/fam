@@ -45,7 +45,7 @@ SCROLL_THRESHOLD = 250
 SCROLL_COMMENT_LOAD_COUNT = 50
 
 module.exports = class Thread extends Base
-  constructor: ({@model, @router, @overlay$, thread, @isInline, gameKey}) ->
+  constructor: ({@model, @router, @overlay$, thread, @isInline, group}) ->
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
 
@@ -64,7 +64,7 @@ module.exports = class Thread extends Base
 
     @selectedProfileDialogUser = new RxBehaviorSubject false
     @$profileDialog = new ProfileDialog {
-      @model, @router, @selectedProfileDialogUser, gameKey
+      @model, @router, @selectedProfileDialogUser
     }
 
     filter = new RxBehaviorSubject {
@@ -127,7 +127,6 @@ module.exports = class Thread extends Base
       @message
       @overlay$
       @isPostLoading
-      gameKey
       onPost: @postMessage
       onResize: -> null
     }
@@ -140,7 +139,7 @@ module.exports = class Thread extends Base
       isCardDialogVisible: false
       isVideoVisible: false
       hasLoadedAll: false
-      gameKey: gameKey
+      group: group
       $body: new FormattedText {
         text: thread.map (thread) ->
           thread?.data?.body
@@ -252,7 +251,7 @@ module.exports = class Thread extends Base
 
   render: =>
     {me, thread, $body, threadComments, isVideoVisible, windowSize, playerDeck,
-      selectedProfileDialogUser, clan, $clanMetrics, gameKey, isLoading,
+      selectedProfileDialogUser, clan, $clanMetrics, isLoading, group,
       isPostLoading} = @state.getValue()
 
     headerAttachment = _find thread?.data?.attachments, {type: 'video'}
@@ -278,7 +277,9 @@ module.exports = class Thread extends Base
                         then z @$buttonBack, {
                           color: colors.$primary500
                           onclick: =>
-                            @router.go 'forum', {gameKey}
+                            @router.go 'groupForum', {
+                              groupId: group.key or group.id
+                            }
                         }
         $topRightButton:
           z '.z-thread_top-right',
@@ -288,7 +289,10 @@ module.exports = class Thread extends Base
                   icon: 'edit'
                   color: colors.$primary500
                   onclick: =>
-                    @router.go 'threadEdit', {gameKey, id: thread.id}
+                    @router.go 'groupThreadEdit', {
+                      groupId: group.key or group.id
+                      id: thread.id
+                    }
               if me?.flags?.isModerator
                 z @$deleteIcon,
                   icon: 'delete'
@@ -296,7 +300,9 @@ module.exports = class Thread extends Base
                   onclick: =>
                     @model.thread.deleteById thread.id
                     .then =>
-                      @router.go 'forum', {gameKey}
+                      @router.go 'groupForum', {
+                        groupId: group.key or group.id
+                      }
             ]
       }
       z '.content',

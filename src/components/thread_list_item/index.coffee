@@ -13,7 +13,7 @@ if window?
   require './index.styl'
 
 module.exports = class ThreadListItem
-  constructor: ({@model, @router, thread, gameKey}) ->
+  constructor: ({@model, @router, thread, group}) ->
     @$threadPreview = new ThreadPreview {@model, thread}
     @$pointsIcon = new Icon()
     @$threadUpvoteButton = new ThreadVoteButton {@model}
@@ -31,8 +31,8 @@ module.exports = class ThreadListItem
     @state = z.state
       me: @model.user.getMe()
       language: @model.l.getLanguage()
+      group: group
       isExpanded: false
-      gameKey: gameKey
       thread: thread
 
   afterMount: (@$$el) =>
@@ -51,7 +51,7 @@ module.exports = class ThreadListItem
   render: ({hasPadding} = {}) =>
     hasPadding ?= true
 
-    {me, language, gameKey, isExpanded, thread} = @state.getValue()
+    {me, language, isExpanded, thread, group} = @state.getValue()
 
     # thread ?= {data: {}, playerDeck: {}}
 
@@ -62,7 +62,7 @@ module.exports = class ThreadListItem
 
     z 'a.z-thread-list-item', {
       key: "thread-list-item-#{thread.id}"
-      href: @model.thread.getPath thread, @router
+      href: @model.thread.getPath thread, group, @router
       className: z.classKebab {isExpanded, @isImageLoaded, hasPadding}
       onclick: (e) =>
         e.preventDefault()
@@ -74,7 +74,7 @@ module.exports = class ThreadListItem
           path: 'threads.getById'
         }
         @model.exoid.setDataCache req, thread
-        @router.goPath @model.thread.getPath(thread, @router)
+        @router.goPath @model.thread.getPath(thread, group, @router)
     },
       z '.content',
         if thread.data?.extras?.clan

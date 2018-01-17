@@ -29,7 +29,7 @@ module.exports = class GroupManageChannelsPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupManageChannels = new GroupManageChannels {
-      @model, @router, serverData, group, user, gameKey
+      @model, @router, serverData, group, user
     }
 
     @state = z.state

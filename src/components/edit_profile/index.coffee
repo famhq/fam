@@ -20,7 +20,7 @@ if window?
   require './index.styl'
 
 module.exports = class EditProfile
-  constructor: ({@model, @router, gameKey}) ->
+  constructor: ({@model, @router, group}) ->
     me = @model.user.getMe()
 
     @usernameValueStreams = new RxReplaySubject 1
@@ -56,18 +56,18 @@ module.exports = class EditProfile
 
     @state = z.state
       me: me
-      gameKey: gameKey
       avatarImage: null
       avatarDataUrl: null
       avatarUploadError: null
+      group: group
       username: @usernameValueStreams.switch()
       playerTag: @playerTagValueStreams.switch()
       currentPlayerTag: currentPlayerTag
       isSaving: false
 
   save: =>
-    {avatarImage, username, playerTag, gameKey,
-      me, isSaving, currentPlayerTag} = @state.getValue()
+    {avatarImage, username, playerTag,
+      me, isSaving, currentPlayerTag, group} = @state.getValue()
     if isSaving
       return
 
@@ -88,7 +88,7 @@ module.exports = class EditProfile
         @upload avatarImage
     .then =>
       @state.set isSaving: false
-      @router.go 'profile', {gameKey}
+      @router.go 'groupProfile', {groupId: group.key or group.id}
 
   upload: (file) =>
     @model.user.setAvatarImage file
@@ -101,8 +101,7 @@ module.exports = class EditProfile
       @state.set avatarUploadError: err?.detail or JSON.stringify err
 
   render: =>
-    {me, avatarUploadError, avatarDataUrl,
-      isSaving, gameKey} = @state.getValue()
+    {me, avatarUploadError, avatarDataUrl, isSaving} = @state.getValue()
 
     z '.z-edit-profile',
       z @$actionBar, {
@@ -152,4 +151,4 @@ module.exports = class EditProfile
           text: @model.l.get 'editProfile.logoutButtonText'
           onclick: =>
             @model.auth.logout()
-            @router.go 'home', {gameKey}
+            @router.go 'home'

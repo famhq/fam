@@ -11,23 +11,18 @@ if window?
   require './index.styl'
 
 module.exports = class PlayersTop
-  constructor: ({@model, @router, @selectedProfileDialogUser, gameKey}) ->
+  constructor: ({@model, @router, @selectedProfileDialogUser}) ->
     @$searchInput = new SearchInput {@model}
     @$adsenseAd = new AdsenseAd {@model}
 
     @$playerList = new PlayerList {
       @model
       @router
-      gameKey
       @selectedProfileDialogUser
       players: @model.player.getTop()
     }
 
-    @state = z.state {gameKey}
-
   render: =>
-    {gameKey} = @state.getValue()
-
     z '.z-players-top',
       z '.g-grid',
         z '.search',
@@ -55,5 +50,5 @@ module.exports = class PlayersTop
         z @$playerList, {
           onclick: ({player}) =>
             userId = player?.userId
-            @router.go 'userById', {gameKey, id: userId}
+            @router.go 'userById', {id: userId}
         }

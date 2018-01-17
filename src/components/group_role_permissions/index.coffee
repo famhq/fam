@@ -25,8 +25,7 @@ if window?
 
 module.exports = class GroupRolePermissions
   constructor: (props) ->
-    {@model, @router, group, conversation,
-      permissionTypes, gameKey, @onSave} = props
+    {@model, @router, group, conversation, permissionTypes, @onSave} = props
     me = @model.user.getMe()
 
     @roles = group.switchMap (group) =>
@@ -54,7 +53,6 @@ module.exports = class GroupRolePermissions
       me: me
       isSaving: false
       group: group
-      gameKey: gameKey
       roles: @roles
       roleId: @roleValueStreams.switch()
       permissionTypes: groupAndRolesAndRoleIdAndConversation.map (response) =>
@@ -77,7 +75,7 @@ module.exports = class GroupRolePermissions
           }
 
   save: =>
-    {me, isSaving, roleId, gameKey, permissionTypes} = @state.getValue()
+    {me, isSaving, roleId, permissionTypes} = @state.getValue()
 
     if isSaving
       return

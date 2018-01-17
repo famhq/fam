@@ -7,7 +7,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupEditChannelPermissions
-  constructor: ({@model, @router, group, conversation, gameKey}) ->
+  constructor: ({@model, @router, group, conversation}) ->
     me = @model.user.getMe()
 
     permissionTypes = [
@@ -19,7 +19,7 @@ module.exports = class GroupEditChannelPermissions
     ]
 
     @$groupRolePermissions = new GroupRolePermissions {
-      @model, @router, group, gameKey, permissionTypes
+      @model, @router, group, permissionTypes
       conversation, onSave: @save
     }
 

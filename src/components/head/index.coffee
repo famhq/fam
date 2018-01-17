@@ -181,39 +181,8 @@ module.exports = class Head
           z 'script',
             async: true
             src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-
-          # z 'script',
-          #   src: 'https://js.stripe.com/v2/'
-          # z 'script',
-          #   innerHTML: "
-          #     Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
-          #   "
-          # z 'script',
-          #   innerHTML: "
-          #     (function(d, s, id) {
-          #       var js, fjs = d.getElementsByTagName(s)[0];
-          #       if (d.getElementById(id)) return;
-          #       js = d.createElement(s); js.id = id;
-          #       js.src = '//connect.facebook.net/en_US/sdk.js';
-          #       fjs.parentNode.insertBefore(js, fjs);
-          #     }(document, 'script', 'facebook-jssdk'));
-          #     window.fbAsyncInit = function() {
-          #       FB.init({
-          #         appId  : '#{config.FB_ID}',
-          #         cookie : true,
-          #         xfbml  : true,
-          #         version: 'v2.2'
-          #       });
-          #     }
-          #   "
         ]
 
-      # fonts
-      # z 'link',
-      #   rel: 'stylesheet'
-      #   type: 'text/css'
-      #   href: 'https://fonts.googleapis.com/css?family=Rubik:400,500,700'
-      # inline to improve pageload / lighthouse score
       z 'style.rubik', rubikCss
 
       # styles

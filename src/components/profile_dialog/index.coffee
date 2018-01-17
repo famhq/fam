@@ -19,7 +19,7 @@ if window?
 
 module.exports = class ProfileDialog
   constructor: (options) ->
-    {@model, @router, @selectedProfileDialogUser, group, gameKey} = options
+    {@model, @router, @selectedProfileDialogUser, group} = options
     @$dialog = new Dialog()
     @$avatar = new Avatar()
 
@@ -58,7 +58,6 @@ module.exports = class ProfileDialog
         else
           RxObservable.of null
       user: @selectedProfileDialogUser
-      gameKey: gameKey
       clashRoyaleData: @selectedProfileDialogUser.switchMap (user) =>
         if user
           @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
@@ -91,7 +90,7 @@ module.exports = class ProfileDialog
     @state.set loadingItems: loadingItems
 
   getModOptions: =>
-    {me, user, meGroupUser, group, clashRoyaleData, gameKey} = @state.getValue()
+    {me, user, meGroupUser, group, clashRoyaleData} = @state.getValue()
 
     isMe = user?.id is me?.id
 
@@ -254,14 +253,14 @@ module.exports = class ProfileDialog
           isVisible: true
           onclick: =>
             @router.go 'groupManage', {
-              gameKey: gameKey, id: group.id, userId: user?.id
+              groupId: group.key or group.id, userId: user?.id
             }
             @selectedProfileDialogUser.next null
         }
     ]
 
   getUserOptions: =>
-    {me, user, gameKey} = @state.getValue()
+    {me, user} = @state.getValue()
 
     isBlocked = @model.user.isBlocked me, user?.id
     isMe = user?.id is me?.id
@@ -273,7 +272,7 @@ module.exports = class ProfileDialog
         text: @model.l.get 'general.profile'
         isVisible: not isMe
         onclick: =>
-          @router.go 'userById', {gameKey, id: user?.id}
+          @router.go 'userById', {id: user?.id}
           @selectedProfileDialogUser.next null
       }
       {
@@ -292,7 +291,7 @@ module.exports = class ProfileDialog
             }
             .then (conversation) =>
               @unsetLoadingByText @model.l.get 'profileDialog.message'
-              @router.go 'conversation', {gameKey, id: conversation.id}
+              @router.go 'conversation', {id: conversation.id}
               @selectedProfileDialogUser.next null
       }
       unless user?.flags?.isModerator

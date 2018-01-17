@@ -101,6 +101,7 @@ module.exports = class GroupProfilePage
       user: user
       routeId: id
       routePlayerId: routePlayerId
+      group: group
       isShareSheetVisible: @isShareSheetVisible
       me: me
       player: player
@@ -135,7 +136,7 @@ module.exports = class GroupProfilePage
 
   render: =>
     {windowSize, player, me, routeUsername, routeId, routePlayerId, user,
-      isShareSheetVisible, overlay$} = @state.getValue()
+      isShareSheetVisible, overlay$, group} = @state.getValue()
 
     isTagSet = player?.id
     isOtherProfile = routeId or routeUsername or routePlayerId

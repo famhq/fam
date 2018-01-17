@@ -89,7 +89,7 @@ class Language
       route is routeValue) or _findKey(@files['paths']['en'], (route) ->
         route is routeValue)
 
-  getAllPathsByRouteKey: (routeKey, isGamePath) =>
+  getAllPathsByRouteKey: (routeKey) =>
     languages = @getAllUrlLanguages()
     _reduce languages, (paths, language) =>
       path = @files['paths'][language]?[routeKey]

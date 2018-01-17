@@ -15,19 +15,18 @@ IMAGE_REGEX_STR = '\!\\[(.*?)\\]\\((.*?)\\)'
 IMAGE_REGEX = new RegExp IMAGE_REGEX_STR, 'gi'
 
 module.exports = class Conversations
-  constructor: ({@model, @router, gameKey}) ->
+  constructor: ({@model, @router}) ->
     @$spinner = new Spinner()
     @$addIcon = new Icon()
 
     @state = z.state
       me: @model.user.getMe()
-      gameKey: gameKey
       conversations: @model.conversation.getAll().map (conversations) ->
         _map conversations, (conversation) ->
           {conversation, $avatar: new Avatar()}
 
   render: =>
-    {me, conversations, gameKey} = @state.getValue()
+    {me, conversations} = @state.getValue()
 
     z '.z-conversations',
       z '.g-grid',
@@ -43,7 +42,7 @@ module.exports = class Conversations
             isLastMessageFromMe = conversation.lastMessage?.userId is me?.id
 
             @router.link z 'a.conversation', {
-              href: @router.get 'conversation', {gameKey, id: conversation.id}
+              href: @router.get 'conversation', {id: conversation.id}
               className: z.classKebab {isUnread}
             },
               z '.status'

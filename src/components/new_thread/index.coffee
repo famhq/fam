@@ -20,7 +20,7 @@ if window?
   require './index.styl'
 
 module.exports = class NewThread
-  constructor: ({@model, @router, category, thread, id}) ->
+  constructor: ({@model, @router, category, thread, id, group}) ->
     @titleValueStreams ?= new RxBehaviorSubject ''
     @bodyValueStreams ?= new RxReplaySubject 1
     @attachmentsValueStreams ?= new RxReplaySubject 1
@@ -65,6 +65,7 @@ module.exports = class NewThread
       language: @model.l.getLanguage()
       category: category
       thread: thread
+      group: group
       attachedContent: categoryAndId.switchMap ([category, id]) =>
         if category is 'deckGuide'
           [deckId, playerId] = decodeURIComponent(id).split ':'
@@ -96,7 +97,7 @@ module.exports = class NewThread
 
   render: =>
     {me, titleValue, bodyValue, attachmentsValue, attachedContent, clan,
-      category, thread, language} = @state.getValue()
+      category, thread, language, group} = @state.getValue()
 
     if clan
       data =
@@ -145,8 +146,8 @@ module.exports = class NewThread
                   attachments: attachmentsValue
                   extras: data
                 category: category
-              gameKey: config.DEFAULT_GAME_KEY
               language: language
+              groupId: group.id
             }
             (if thread
               @model.thread.upsert _defaults({id: thread.id}, newThread)
@@ -156,6 +157,8 @@ module.exports = class NewThread
               @bodyValueStreams.next RxObservable.of null
               @attachmentsValueStreams.next RxObservable.of null
               @router.goPath(
-                @model.thread.getPath(_defaults(newThread, thread), @router)
+                @model.thread.getPath(
+                  _defaults(newThread, thread), group, @router
+                )
                 {reset: true}
               )

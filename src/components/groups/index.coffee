@@ -18,7 +18,7 @@ if window?
   require './index.styl'
 
 module.exports = class Groups
-  constructor: ({@model, @router, gameKey}) ->
+  constructor: ({@model, @router}) ->
     me = @model.user.getMe()
     myGroups = me.switchMap (me) =>
       @model.group.getAllByUserId me.id
@@ -34,7 +34,6 @@ module.exports = class Groups
       @model
       @router
       groups: myGroupsAndPublicGroups
-      gameKey: gameKey
     }
     # @$suggestedGroupsList = new GroupList {
     #   @model
@@ -60,12 +59,11 @@ module.exports = class Groups
     @state = z.state
       me: me
       language: language
-      gameKey: gameKey
       groups: myGroupsAndPublicGroups
       isTranslateCardVisible: @isTranslateCardVisibleStreams.switch()
 
   render: =>
-    {me, isTranslateCardVisible, language, gameKey, groups} = @state.getValue()
+    {me, isTranslateCardVisible, language, groups} = @state.getValue()
 
     groupTypes = [
       {
@@ -90,21 +88,21 @@ module.exports = class Groups
       pt: 'português'
 
     z '.z-groups',
-      if unreadGroupInvites
-        @router.link z 'a.unread-invites', {
-          href: @router.get 'groupInvites', {gameKey}
-        },
-          z '.icon',
-            z @$unreadInvitesIcon,
-              icon: 'notifications'
-              isTouchTarget: false
-              color: colors.$tertiary500
-          z '.text', "You have #{unreadGroupInvites} new group #{inviteStr}"
-          z '.chevron',
-            z @$unreadInvitesChevronIcon,
-              icon: 'chevron-right'
-              isTouchTarget: false
-              color: colors.$primary500
+      # if unreadGroupInvites
+      #   @router.link z 'a.unread-invites', {
+      #     href: @router.get 'groupInvites'
+      #   },
+      #     z '.icon',
+      #       z @$unreadInvitesIcon,
+      #         icon: 'notifications'
+      #         isTouchTarget: false
+      #         color: colors.$tertiary500
+      #     z '.text', "You have #{unreadGroupInvites} new group #{inviteStr}"
+      #     z '.chevron',
+      #       z @$unreadInvitesChevronIcon,
+      #         icon: 'chevron-right'
+      #         isTouchTarget: false
+      #         color: colors.$primary500
       _map groupTypes, ({title, $groupList}) ->
         z '.group-list',
           z '.g-grid',

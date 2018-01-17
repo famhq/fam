@@ -13,7 +13,7 @@ if window?
 module.exports = class EditThreadPage
   hideDrawer: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData, group}) ->
     thread = requests.switchMap ({route}) =>
       if route.params.id
         @model.thread.getById route.params.id
@@ -33,6 +33,7 @@ module.exports = class EditThreadPage
       @model
       @router
       thread
+      group
     }
 
     @state = z.state

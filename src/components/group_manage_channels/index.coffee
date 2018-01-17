@@ -9,7 +9,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupManageChannels
-  constructor: ({@model, @router, group, gameKey}) ->
+  constructor: ({@model, @router, group}) ->
 
     @$fab = new Fab()
     @$addIcon = new Icon()
@@ -21,20 +21,18 @@ module.exports = class GroupManageChannels
 
     @state = z.state {
       group
-      gameKey: gameKey
       me: @model.user.getMe()
     }
 
   render: =>
-    {me, group, gameKey} = @state.getValue()
+    {me, group} = @state.getValue()
 
     z '.z-group-manage-channels',
       z @$channelList, {
         onclick: (e, {id}) =>
           @router.go 'groupEditChannel', {
-            id: group.id
+            groupId: group.key or group.id
             conversationId: id
-            gameKey: gameKey
           }
       }
 
@@ -48,4 +46,4 @@ module.exports = class GroupManageChannels
             color: colors.$white
           }
           onclick: =>
-            @router.go 'groupNewChannel', {gameKey, id: group.id}
+            @router.go 'groupNewChannel', {groupId: group.key or group.id}

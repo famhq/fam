@@ -97,4 +97,4 @@ module.exports = class GroupForumPage
             color: colors.$white
           }
           onclick: =>
-            @router.go 'newThread', {group}
+            @router.go 'groupNewThread', {groupId: group.key or group.id}

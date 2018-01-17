@@ -60,7 +60,7 @@ module.exports = class ProfileChestsPage
   renderHead: => @$head
 
   render: =>
-    {windowSize, player, gameKey} = @state.getValue()
+    {windowSize, player} = @state.getValue()
 
     z '.p-profile-chests', {
       style:

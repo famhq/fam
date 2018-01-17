@@ -5,7 +5,7 @@ EditProfile = require '../../components/edit_profile'
 config = require '../../config'
 
 module.exports = class EditProfilePage
-  constructor: ({model, requests, router, serverData}) ->
+  constructor: ({model, requests, router, serverData, group}) ->
     @$head = new Head({
       model
       requests
@@ -15,7 +15,7 @@ module.exports = class EditProfilePage
         description: model.l.get 'editProfilePage.title'
       }
     })
-    @$editProfile = new EditProfile {model, router}
+    @$editProfile = new EditProfile {model, router, group}
 
   renderHead: => @$head
 

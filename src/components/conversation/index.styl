@@ -31,8 +31,8 @@ $zIndexTextarea = 2
     padding: 8px
     box-sizing: border-box
     padding-top: 30px // for loading more indicator
-    // padding-bottom: 120px // for bottom input bar
-    padding-bottom: 90px
+    padding-bottom: 100px // for bottom input bar
+    // padding-bottom: 90px
     position: relative
 
     > .loading
@@ -55,9 +55,9 @@ $zIndexTextarea = 2
         margin: 0
 
   > .bottom
-    // padding: 0 16px 16px 16px
+    padding: 0 8px 8px 8px
     position: absolute
-    bottom: 0
+    bottom: -1px // fix text showing behind for bottom 1px
     left: 0
     right: 0
     background: getColor('$tertiary900')

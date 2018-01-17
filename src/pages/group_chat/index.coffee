@@ -166,7 +166,6 @@ module.exports = class GroupChatPage
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.p-group-chat', {
-      key: 'group-chat' # since we change css (transform) manually
       className: z.classKebab {shouldShowBottomBar}
       style:
         height: "#{windowSize.height}px"
@@ -198,11 +197,13 @@ module.exports = class GroupChatPage
                   color: colors.$primary500
                   onclick: =>
                     @router.go 'groupShop', {
-                      id: group.key or group.id
+                      groupId: group.key or group.id
                     }
 
       }
-      z '.content',
+      z '.content', {
+        key: 'group-chat-content' # since we change css (transform) manually
+      },
         z @$groupChat
       @$bottomBar
 

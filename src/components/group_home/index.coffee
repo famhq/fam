@@ -123,7 +123,7 @@ module.exports = class GroupHome extends Base
             desktop: 2
           $elements: _filter [
             # TODO: give each of these their own comonent with defined height
-            if language in ['es', 'pt']
+            if language in ['es', 'pt'] and group?.type is 'public' and group?.key isnt 'playhard'
               z @$threadsUiCard, {
                 $title: @model.l.get 'groupHome.topForumThreads'
                 minHeightPx: 354
@@ -173,7 +173,7 @@ module.exports = class GroupHome extends Base
               submit:
                 text: @model.l.get 'general.viewAll'
                 onclick: =>
-                  @router.go 'tools', {groupId: group.key or group.id}
+                  @router.go 'groupTools', {groupId: group.key or group.id}
           ]
 
           # z '.title', @model.l.get 'groupHome.notifications'

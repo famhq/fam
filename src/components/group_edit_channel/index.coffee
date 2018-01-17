@@ -19,7 +19,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupEditChannel
-  constructor: ({@model, @router, group, conversation, gameKey}) ->
+  constructor: ({@model, @router, group, conversation}) ->
     me = @model.user.getMe()
 
     @nameValueStreams = new RxReplaySubject 1
@@ -47,14 +47,12 @@ module.exports = class GroupEditChannel
       me: me
       isSaving: false
       group: group
-      gameKey: gameKey
       conversation: conversation
       name: @nameValueStreams.switch()
       description: @descriptionValueStreams.switch()
 
   save: (isNewChannel) =>
-    {me, isSaving, group, conversation, name,
-      gameKey, description} = @state.getValue()
+    {me, isSaving, group, conversation, name, description} = @state.getValue()
 
     if isSaving
       return
@@ -77,7 +75,7 @@ module.exports = class GroupEditChannel
     .then (newConversation) =>
       conversation or= newConversation
       @state.set isSaving: false
-      @router.go 'groupManageChannels', {gameKey, id: group.id}
+      @router.go 'groupManageChannels', {groupId: group.key or group.id}
 
   render: ({isNewChannel} = {}) =>
     {me, isSaving, group, name, description} = @state.getValue()

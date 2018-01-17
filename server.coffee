@@ -86,37 +86,50 @@ app.use '/setCookie', (req, res) ->
 
 # legacy 301s. can remove in jan 2018
 redirects =
-  '/addon/clash-royale/:key': '/clash-royale/mod/:key'
-  '/addons': '/clash-royale/mods'
-  '/addon': '/clash-royale/mod'
-  '/social': '/clash-royale/chat'
-  '/social/:tab': '/clash-royale/chat'
-  '/clan': '/clash-royale/clan'
-  '/profile': '/clash-royale/profile'
-  '/recruiting': '/clash-royale/recruit'
-  '/forum': '/clash-royale/forum'
-  '/pt/clash-royale/player/:playerId/embed': '/clash-royale/player/:playerId'
-  '/clay-royale-player/:playerId': '/clash-royale/:playerId'
-  '/players': '/clash-royale/players'
-  '/player/:playerId': '/clash-royale/player/:playerId'
-  '/players/search': '/clash-royale/players/search'
-  '/user/:id': '/clash-royale/user/:id'
-  '/conversation/:id': '/clash-royale/conversation/:id'
-  '/thread/*': '/clash-royale/thread/*'
-  # '/group/*': '/clash-royale/group/*'
-  # '/user/id/:id/chests': '/clash-royale/chest-cycle/:id' # userId != playerId
-  '/player/:playerId/chests': '/clash-royale/chest-cycle/:playerId'
+  '/clash-royale/mod/:key': '/tool/:key'
+  '/pt/clash-royale/jogador/:playerId/embutir': '/tool/clash-royale-player/:playerId'
+  '/clash-royale/player/:playerId/embed': '/tool/clash-royale-player/:playerId'
+  '/clash-royale/user/id/:userId': '/user/id/:userId'
+  '/clash-royale/user/:username': '/user/:username'
+  '/:lang/clash-royale/user/id/:userId': '/user/id/:userId'
+  '/:lang/clash-royale/user/:username': '/user/:username'
+  '/:lang/clash-royale/*': '/g/clashroyale/*'
+  '/clash-royale/*': '/g/clashroyale/*'
+  '/:lang/clash-royale': '/g/clashroyale'
+
+  # '/addons': '/clash-royale/mods'
+  # '/addon': '/clash-royale/mod'
+  # '/social': '/clash-royale/chat'
+  # '/social/:tab': '/clash-royale/chat'
+  # '/clan': '/clash-royale/clan'
+  # '/profile': '/clash-royale/profile'
+  # '/recruiting': '/clash-royale/recruit'
+  # '/forum': '/clash-royale/forum'
+  # '/clay-royale-player/:playerId': '/clash-royale/:playerId'
+  # '/players': '/clash-royale/players'
+  # '/player/:playerId': '/clash-royale/player/:playerId'
+  # '/players/search': '/clash-royale/players/search'
+  # '/user/:id': '/clash-royale/user/:id'
+  # '/conversation/:id': '/clash-royale/conversation/:id'
+  # '/thread/*': '/clash-royale/thread/*'
+  # # '/group/*': '/clash-royale/group/*'
+  # # '/user/id/:id/chests': '/clash-royale/chest-cycle/:id' # userId != playerId
+  # '/player/:playerId/chests': '/clash-royale/chest-cycle/:playerId'
 
 _map redirects, (newPath, oldPath) ->
   app.use oldPath, (req, res) ->
     goPath = newPath
+    _map req.params, (value, key) ->
+      goPath = goPath.replace ":#{key}", value
+      oldPath = oldPath.replace ":#{key}", value
+
     if oldPath.indexOf('*') isnt -1
       oldPathRegex = new RegExp oldPath.replace('*', '(.*?)$')
       matches = oldPathRegex.exec req.originalUrl
       goPath = goPath.replace '*', matches[1]
-    _map req.params, (value, key) ->
-      goPath = goPath.replace ":#{key}", value
-    res.redirect 301, goPath
+    console.log goPath
+    # FIXME: 301
+    res.redirect 302, goPath
 
 # end legacy
 
@@ -217,14 +230,22 @@ app.use (req, res, next) ->
   .then (html) ->
     io.disconnect()
     hasSent = true
-    res.send '<!DOCTYPE html>' + html
+    # TODO: not sure why, but some paths (eg /g/clashroyale/somerandompage)
+    # send back before head exists
+    if html.indexOf('<head>') is -1
+      res.redirect 302, '/'
+    else
+      res.send '<!DOCTYPE html>' + html
   .catch (err) ->
     io.disconnect()
     # console.log 'err', err
     log.error err
     if err.html
       hasSent = true
-      res.send '<!DOCTYPE html>' + err.html
+      if err.html.indexOf('<head>') is -1
+        res.redirect 302, '/'
+      else
+        res.send '<!DOCTYPE html>' + err.html
     else
       next err
 

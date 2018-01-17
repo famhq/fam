@@ -13,7 +13,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileInfo
-  constructor: ({@model, @router, user, gameKey}) ->
+  constructor: ({@model, @router, user}) ->
     @$avatar = new Avatar()
     @$fireIcon = new Icon()
     @$setAvatarButton = new SecondaryButton()
@@ -24,14 +24,13 @@ module.exports = class ProfileInfo
 
     @state = z.state
       user: user.map (user) -> user or false
-      gameKey: gameKey
       followingIds: @model.userFollower.getAllFollowingIds()
       groups: user.switchMap (user) =>
         @model.group.getAllByUserId user.id, {embed: []}
       me: @model.user.getMe()
 
   render: ({isOtherProfile} = {}) =>
-    {me, user, gameKey, followingIds, groups} = @state.getValue()
+    {me, user, followingIds, groups} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
     isFollowing = followingIds and followingIds.indexOf(user?.id) isnt -1
@@ -71,14 +70,14 @@ module.exports = class ProfileInfo
                       text: @model.l.get 'editProfile.avatarButtonText'
                       heightPx: 26
                       onclick: =>
-                        @router.go 'editProfile', {gameKey}
+                        @router.go 'editProfile'
                 unless user?.username
                   z '.set-username',
                     z @$setUsernameButton,
                       text: @model.l.get 'profileInfo.setUsername'
                       heightPx: 26
                       onclick: =>
-                        @router.go 'editProfile', {gameKey}
+                        @router.go 'editProfile'
               ]
             else if not isMe
               [
@@ -104,5 +103,5 @@ module.exports = class ProfileInfo
                           userIds: [user.id]
                         }
                         .then ({id}) =>
-                          @router.go 'conversation', {gameKey, id}
+                          @router.go 'conversation', {id}
               ]

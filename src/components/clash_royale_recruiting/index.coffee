@@ -49,4 +49,6 @@ module.exports = class Recruiting
             color: colors.$white
           }
           onclick: =>
-            @router.go 'newThreadWithCategory', {group, category: 'clan'}
+            @router.go 'groupNewThreadWithCategory', {
+              groupId: group.key or group.id, category: 'clan'
+            }

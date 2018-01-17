@@ -199,7 +199,7 @@ module.exports = class ProfileInfo
                   navigator?.userAgent or ''
     isNativeApp = Environment.isGameApp config.GAME_KEY, {userAgent}
     isMobile = Environment.isMobile {userAgent}
-    arena = player?.data?.arena?.number % 1000
+    arena = (player?.data?.arena?.number % 1000) + 1
 
     z '.z-clash-royale-profile-info',
       z '.header',

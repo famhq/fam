@@ -21,7 +21,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupSettings
-  constructor: ({@model, @router, group, gameKey}) ->
+  constructor: ({@model, @router, group}) ->
     me = @model.user.getMe()
     @nameValueStreams = new RxReplaySubject 1
     @nameValueStreams.next (group?.map (group) ->
@@ -59,7 +59,6 @@ module.exports = class GroupSettings
     @state = z.state
       me: me
       group: group
-      gameKey: gameKey
       isSaving: false
       isLeaveGroupLoading: false
       name: @nameValueStreams.switch()
@@ -68,7 +67,7 @@ module.exports = class GroupSettings
       isPrivate: @isPrivateStreams.switch()
 
   save: =>
-    {group, name, description, password, gameKey,
+    {group, name, description, password,
       isPrivate, isSaving} = @state.getValue()
 
     if isSaving
@@ -80,11 +79,10 @@ module.exports = class GroupSettings
     @model.group.updateById group.id, {name, description, password, isPrivate}
     .then =>
       @state.set isSaving: false
-      @router.go 'groupChat', {gameKey, id: group.id}
+      @router.go 'groupChat', {groupId: group.id}
 
   render: =>
-    {me, group, isSaving, gameKey,
-      isPrivate} = @state.getValue()
+    {me, group, isSaving, isPrivate} = @state.getValue()
 
     items = []
 

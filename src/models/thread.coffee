@@ -13,11 +13,11 @@ module.exports = class Thread
     @auth.call "#{@namespace}.upsert", options, {invalidateAll: true}
 
   getAll: (options = {}) =>
-    {groupId, gameKey, category, sort, skip, maxTimeUuid,
+    {groupId, category, sort, skip, maxTimeUuid,
       limit, ignoreCache} = options
     language = @l.getLanguageStr()
     @auth.stream "#{@namespace}.getAll", {
-      groupId, gameKey, category, language, skip, maxTimeUuid, limit, sort
+      groupId, category, language, skip, maxTimeUuid, limit, sort
     }, {ignoreCache}
 
   getById: (id, {ignoreCache} = {}) =>
@@ -34,12 +34,11 @@ module.exports = class Thread
       invalidateAll: true
     }
 
-  getPath: (thread, router) ->
-    # TODO: switch thread to use gameKey and use gameKey from that
-    formattedTitle = _kebabCase thread?.title
-    router.get 'threadWithTitle', {
+  getPath: (thread, group, router) ->
+    formattedTitle = _kebabCase thread?.data?.title
+    router.get 'groupThreadWithTitle', {
       id: thread?.id
-      gameKey: config.DEFAULT_GAME_KEY
+      groupId: group?.key or group?.id or thread.groupId
       title: formattedTitle or 'thread'
     }
 

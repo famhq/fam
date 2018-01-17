@@ -130,7 +130,7 @@ module.exports = class ItemList
         )
     if groupKeyFilter and groupKeyFilter isnt 'All'
       items = _filter items, ({item}) ->
-        item.gameKey is groupKeyFilter
+        item.groupKey is groupKeyFilter
     items
 
   sort: (items, sortFn) ->

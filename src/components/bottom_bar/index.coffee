@@ -27,6 +27,9 @@ module.exports = class BottomBar
   show: =>
     @$$el?.classList.remove 'is-hidden'
 
+  beforeUnmount: =>
+    @show()
+
   render: ({isAbsolute} = {}) =>
     {requests, group} = @state.getValue()
     currentPath = requests?.req.path

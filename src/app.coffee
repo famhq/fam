@@ -36,12 +36,11 @@ Pages =
   ConversationPage: require './pages/conversation'
   ConversationsPage: require './pages/conversations'
   NewConversationPage: require './pages/new_conversation'
-  # GroupPage: require './pages/group'
+  GroupsPage: require './pages/groups'
   GroupChatPage: require './pages/group_chat'
   GroupCollectionPage: require './pages/group_collection'
   GroupForumPage: require './pages/group_forum'
   GroupHomePage: require './pages/group_home'
-  GroupMembersPage: require './pages/group_members'
   GroupSettingsPage: require './pages/group_settings'
   GroupShopPage: require './pages/group_shop'
   GroupInvitesPage: require './pages/group_invites'
@@ -104,13 +103,12 @@ module.exports = class App
       @requests, @model.l.getLanguage(), (vals...) -> vals
     )
 
-    @group = requestsAndLanguage.switchMap ([{$page, route}, language]) =>
-      isGroup = $page?.isGroup
+    @group = requestsAndLanguage.switchMap ([{route}, language]) =>
       groupId = route.params.groupId or @model.cookie.get 'lastGroupId'
-      if isGroup and isUuid groupId
+      if isUuid groupId
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getById groupId
-      else if isGroup and groupId
+      else if groupId
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getByKey groupId
       else
@@ -188,7 +186,7 @@ module.exports = class App
     routes = new HttpHash()
     languages = @model.l.getAllUrlLanguages()
 
-    route = (routeKeys, pageKey, isGamePath) =>
+    route = (routeKeys, pageKey) =>
       Page = Pages[pageKey]
       if typeof routeKeys is 'string'
         routeKeys = [routeKeys]
@@ -197,7 +195,7 @@ module.exports = class App
         # if routeKey is '404'
         #   return _map languages, (lang) ->
         #     if lang is 'en' then '/:gameKey/*' else "/#{lang}/:gameKey/*"
-        _values @model.l.getAllPathsByRouteKey routeKey, isGamePath
+        _values @model.l.getAllPathsByRouteKey routeKey
 
       _map paths, (path) =>
         routes.set path, =>
@@ -214,56 +212,54 @@ module.exports = class App
             })
           return @$cachedPages[pageKey]
 
-    routeGame = (routeKeys, pageKey) ->
-      route routeKeys, pageKey, true
-
-    routeGame ['friendsWithAction', 'friends'], 'FriendsPage'
-    routeGame ['tool', 'toolByKey'], 'ToolPage'
-    routeGame 'conversation', 'ConversationPage'
-    routeGame 'conversations', 'ConversationsPage'
-    routeGame 'newConversation', 'NewConversationPage'
-    routeGame ['thread', 'threadWithTitle'], 'ThreadPage'
-    routeGame 'threadEdit', 'EditThreadPage'
-    routeGame 'group', 'GroupChatPage'
-    routeGame 'groupChat', 'GroupChatPage'
-    routeGame 'groupCollection', 'GroupCollectionPage'
-    routeGame 'groupForum', 'GroupForumPage'
-    routeGame 'groupHome', 'GroupHomePage'
-    routeGame 'groupMembers', 'GroupMembersPage'
-    routeGame 'groupChatConversation', 'GroupChatPage'
-    routeGame 'groupInvite', 'GroupInvitePage'
-    routeGame 'groupInvites', 'GroupInvitesPage'
-    routeGame 'groupShop', 'GroupShopPage'
-    routeGame 'groupTools', 'GroupToolsPage'
-    routeGame 'groupManage', 'GroupManageMemberPage'
-    routeGame 'groupManageChannels', 'GroupManageChannelsPage'
-    routeGame 'groupNewChannel', 'GroupAddChannelPage'
-    routeGame 'groupEditChannel', 'GroupEditChannelPage'
-    routeGame 'groupSettings', 'GroupSettingsPage'
-    routeGame 'groupVideos', 'GroupVideosPage'
-    routeGame 'groupLeaderboard', 'GroupLeaderboardPage'
-    routeGame 'groupAddRecords', 'GroupAddRecordsPage'
-    routeGame 'groupBannedUsers', 'GroupBannedUsersPage'
-    routeGame 'groupManageRoles', 'GroupManageRolesPage'
-    routeGame 'groupAuditLog', 'GroupAuditLogPage'
-    routeGame [
-      'newThread', 'newThreadWithCategory', 'newThreadWithCategoryAndId'
+    route ['friendsWithAction', 'friends'], 'FriendsPage'
+    route ['tool', 'toolByKey'], 'ToolPage'
+    route 'conversation', 'ConversationPage'
+    route 'conversations', 'ConversationsPage'
+    route 'newConversation', 'NewConversationPage'
+    route 'groups', 'GroupsPage'
+    route 'group', 'GroupChatPage'
+    route 'groupChat', 'GroupChatPage'
+    route 'groupCollection', 'GroupCollectionPage'
+    route 'groupForum', 'GroupForumPage'
+    route 'groupHome', 'GroupHomePage'
+    route 'groupChatConversation', 'GroupChatPage'
+    route 'groupInvite', 'GroupInvitePage'
+    route 'groupInvites', 'GroupInvitesPage'
+    route 'groupShop', 'GroupShopPage'
+    route 'groupTools', 'GroupToolsPage'
+    route 'groupManage', 'GroupManageMemberPage'
+    route 'groupManageChannels', 'GroupManageChannelsPage'
+    route 'groupNewChannel', 'GroupAddChannelPage'
+    route 'groupEditChannel', 'GroupEditChannelPage'
+    route 'groupSettings', 'GroupSettingsPage'
+    route 'groupVideos', 'GroupVideosPage'
+    route 'groupLeaderboard', 'GroupLeaderboardPage'
+    route 'groupAddRecords', 'GroupAddRecordsPage'
+    route 'groupBannedUsers', 'GroupBannedUsersPage'
+    route 'groupManageRoles', 'GroupManageRolesPage'
+    route 'groupAuditLog', 'GroupAuditLogPage'
+    route [
+      'groupNewThread', 'groupNewThreadWithCategory',
+      'groupNewThreadWithCategoryAndId'
     ], 'NewThreadPage'
-    routeGame 'playersSearch', 'PlayersSearchPage'
-    routeGame 'policies', 'PoliciesPage'
-    routeGame 'star', 'StarPage'
-    routeGame 'stars', 'StarsPage'
-    routeGame 'termsOfService', 'TosPage'
-    routeGame 'userOfWeek', 'UserOfWeekPage'
-    routeGame 'privacy', 'PrivacyPage'
-    routeGame [
+    route 'groupThreadEdit', 'EditThreadPage'
+    route ['groupThread', 'groupThreadWithTitle'], 'ThreadPage'
+    route 'playersSearch', 'PlayersSearchPage'
+    route 'policies', 'PoliciesPage'
+    route 'star', 'StarPage'
+    route 'stars', 'StarsPage'
+    route 'termsOfService', 'TosPage'
+    route 'userOfWeek', 'UserOfWeekPage'
+    route 'privacy', 'PrivacyPage'
+    route [
       'profile', 'clashRoyalePlayer', 'playerEmbed', 'user', 'userById'
       'groupProfile'
     ], 'GroupProfilePage'
-    routeGame [
+    route [
       'chestCycleByPlayerId', 'chestCycleByPlayerIdEmbed'
     ], 'ProfileChestsPage'
-    routeGame 'editProfile', 'EditProfilePage'
+    route 'editProfile', 'EditProfilePage'
 
     route ['home', 'siteHome'], 'GroupHomePage'
     route '404', 'FourOhFourPage'

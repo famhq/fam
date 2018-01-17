@@ -12,17 +12,16 @@ if window?
   require './index.styl'
 
 module.exports = class GroupList
-  constructor: ({@model, @router, groups, gameKey}) ->
+  constructor: ({@model, @router, groups}) ->
     @$spinner = new Spinner()
     @state = z.state
       me: @model.user.getMe()
-      gameKey: gameKey
       groups: groups.map (groups) =>
         _map groups, (group) =>
           {group, $header: new GroupHeader({@model, group})}
 
   render: =>
-    {groups, me, gameKey} = @state.getValue()
+    {groups, me} = @state.getValue()
 
     z '.z-group-list',
       if groups and _isEmpty groups
@@ -40,14 +39,9 @@ module.exports = class GroupList
                 hasMemberPermission = @model.group.hasPermission group, me, {
                   level: 'member'
                 }
-                if hasMemberPermission
-                  route = @router.get 'groupChat', {
-                    gameKey, id: group.key or group.id
-                  }
-                else
-                  route = @router.get 'group', {
-                    gameKey, id: group.key or group.id
-                  }
+                route = @router.get 'groupHome', {
+                  groupId: group.key or group.id
+                }
                 z '.g-col.g-xs-12.g-md-6',
                   @router.link z 'a.group', {
                     href: route

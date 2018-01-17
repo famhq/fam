@@ -24,7 +24,7 @@ module.exports = class PlayersSearchPage
     })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$playersSearch = new PlayersSearch {@model, @router, serverData, gameKey}
+    @$playersSearch = new PlayersSearch {@model, @router, serverData}
 
     @state = z.state
       windowSize: @model.window.getSize()

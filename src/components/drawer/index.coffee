@@ -32,6 +32,7 @@ module.exports = class Drawer
     @transformProperty = window?.getTransformProperty()
     @$adsenseAd = new AdsenseAd {@model}
     @$groupBadge = new GroupBadge {@model, group}
+    @$socialIcon = new Icon()
 
     me = @model.user.getMe()
     meAndGroupAndLanguage = RxObservable.combineLatest(
@@ -66,10 +67,8 @@ module.exports = class Drawer
         groups = _orderBy groups, (group) =>
           @model.cookie.get("group_#{group.id}_lastVisit") or 0
         , 'desc'
-        if group # current group, show up top
-          groups = _filter groups, ({id}) ->
-            id isnt group.id
-          groups = [group].concat groups
+        groups = _filter groups, ({id}) ->
+          id isnt group.id
         groups = _take(groups, GROUPS_IN_DRAWER)
         _map groups, (group, i) =>
           meGroupUser = group.meGroupUser
@@ -104,6 +103,13 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'chat'
           }
+          {
+            path: @router.get 'conversations'
+            title: @model.l.get 'drawer.menuItemPrivateMessages'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'chat-bubble'
+          }
           if language in config.COMMUNITY_LANGUAGES and
               group.key isnt 'playhard' and group.type is 'public'
             {
@@ -113,19 +119,21 @@ module.exports = class Drawer
               $ripple: new Ripple()
               iconName: 'rss'
             }
-          {
-            path: @router.get 'groupShop', {groupId}
-            # title: @model.l.get 'general.shop'
-            title: @model.l.get 'general.freeStuff'
-            $icon: new Icon()
-            iconName: 'shop'
-          }
-          {
-            path: @router.get 'groupCollection', {groupId}
-            title: @model.l.get 'collectionPage.title'
-            $icon: new Icon()
-            iconName: 'cards'
-          }
+          if group.type is 'public'
+            {
+              path: @router.get 'groupShop', {groupId}
+              # title: @model.l.get 'general.shop'
+              title: @model.l.get 'general.freeStuff'
+              $icon: new Icon()
+              iconName: 'shop'
+            }
+          if group.type is 'public'
+            {
+              path: @router.get 'groupCollection', {groupId}
+              title: @model.l.get 'collectionPage.title'
+              $icon: new Icon()
+              iconName: 'cards'
+            }
           if group.key is 'playhard'
             {
               path: @router.get 'groupVideos', {groupId}
@@ -164,15 +172,11 @@ module.exports = class Drawer
               $chevronIcon: new Icon()
               children: [
                 {
-                  path: @router.get 'groupManageChannels', {
-                    id: group.key or group.id
-                  }
+                  path: @router.get 'groupManageChannels', {groupId}
                   title: @model.l.get 'groupManageChannelsPage.title'
                 }
                 {
-                  path: @router.get 'groupManageRoles', {
-                    id: group.key or group.id
-                  }
+                  path: @router.get 'groupManageRoles', {groupId}
                   title: @model.l.get 'groupManageRolesPage.title'
                 }
                 if @model.groupUser.hasPermission {
@@ -183,9 +187,7 @@ module.exports = class Drawer
                     title: @model.l.get 'groupAuditLogPage.title'
                   }
                 {
-                  path: @router.get 'groupBannedUsers', {
-                    id: group.key or group.id
-                  }
+                  path: @router.get 'groupBannedUsers', {groupId}
                   title: @model.l.get 'groupBannedUsersPage.title'
                 }
               ]
@@ -439,12 +441,12 @@ module.exports = class Drawer
                                 e?.stopPropagation()
                                 e?.preventDefault()
                                 @toggleExpandItemByPath path
+                        if breakpoint is 'desktop'
+                          z $ripple
                       if hasChildren and isExpanded
                         z 'ul.children',
                           _map children, (child) ->
                             renderChild child, 1
-                        if breakpoint is 'desktop'
-                          z $ripple
 
                   unless _isEmpty myGroups
                     z 'li.divider'
@@ -452,10 +454,12 @@ module.exports = class Drawer
                   z 'li.subhead', @model.l.get 'drawer.otherGroups'
 
                   _map myGroups, (myGroup) =>
-                    {$badge, $ripple, group, $chevronIcon, children} = myGroup
-                    groupPath = @router.get 'group', {groupId}
-                    groupEnPath = @router.get 'group', {
-                      id: group.key or group.id
+                    {$badge, $ripple, $chevronIcon, children} = myGroup
+                    groupPath = @router.get 'groupHome', {
+                      groupId: myGroup.group.key or myGroup.group.id
+                    }
+                    groupEnPath = @router.get 'groupHome', {
+                      groupId: myGroup.group.key or myGroup.group.id
                       }, {language: 'en'}
 
                     isSelected = currentPath?.indexOf(groupPath) is 0 or
@@ -470,14 +474,31 @@ module.exports = class Drawer
                           e.preventDefault()
                           @model.drawer.close()
                           @router.go 'groupHome', {
-                            groupId: group.key or group.id
+                            groupId: myGroup.group.key or myGroup.group.id
                           }
                       },
                         z '.icon',
                           z $badge
-                        @model.group.getDisplayName group
+                        @model.group.getDisplayName myGroup.group
                         if breakpoint is 'desktop'
                           $ripple
+
+                  z 'li.menu-item', {
+                    className: z.classKebab {isSelected: false}
+                  },
+                    z 'a.menu-item-link', {
+                      href: @router.get 'groups'
+                      onclick: (e) =>
+                        e.preventDefault()
+                        @model.drawer.close()
+                        @router.go 'groups'
+                    },
+                      z '.icon',
+                        z @$socialIcon,
+                          icon: 'friends'
+                          isTouchTarget: false
+                          color: colors.$primary500
+                      @model.l.get 'drawer.menuItemMoreGroups'
                 ]
 
             if hasA

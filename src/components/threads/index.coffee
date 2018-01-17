@@ -29,7 +29,7 @@ SCROLL_THRESHOLD = 250
 SCROLL_THREAD_LOAD_COUNT = 20
 
 module.exports = class Threads extends Base
-  constructor: ({@model, @router, @filter, gameKey, group}) ->
+  constructor: ({@model, @router, @filter, group}) ->
     @$spinner = new Spinner()
 
     @groupAndFilter = RxObservable.combineLatest(
@@ -48,7 +48,6 @@ module.exports = class Threads extends Base
       filter: @filter
       expandedId: null
       isLoading: false
-      gameKey: gameKey
       chunkedThreads: @threadStreams.switch().map (threads) =>
         # TODO: json file with these vars, stylus uses this
         if window?.matchMedia('(min-width: 768px)').matches
@@ -58,7 +57,7 @@ module.exports = class Threads extends Base
 
         threads = _map threads, (thread) =>
           $threadListItem = @getCached$ thread.id, ThreadListItem, {
-            @model, @router, gameKey, thread
+            @model, @router, thread, group
           }
           {
             thread
@@ -94,7 +93,6 @@ module.exports = class Threads extends Base
     @groupAndFilter.switchMap ([group, filter]) =>
       @model.thread.getAll {
         groupId: group?.id
-        gameKey: config.DEFAULT_GAME_KEY
         category: filter.filter
         sort: filter.sort
         skip
@@ -125,7 +123,7 @@ module.exports = class Threads extends Base
         _flatten threads
 
   render: =>
-    {me, chunkedThreads, language, filter, gameKey,
+    {me, chunkedThreads, language, filter,
       expandedId, isLoading} = @state.getValue()
 
     # isLite = @model.experiment.get('threads') is 'lite' and
@@ -144,7 +142,7 @@ module.exports = class Threads extends Base
           # if language is 'es'
           #   z '.user-of-week', {
           #     onclick: =>
-          #       @router.go 'userOfWeek', {gameKey}
+          #       @router.go 'userOfWeek'
           #   },
           #     z 'span.title', @model.l.get 'threads.userOfWeek'
           #     z 'div',

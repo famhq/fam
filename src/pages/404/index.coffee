@@ -21,12 +21,13 @@ module.exports = class FourOhFourPage
     @$buttonMenu = new ButtonMenu {@model}
     @$homeButton = new PrimaryButton()
 
-  renderHead: => @$head
+  renderHead: =>
+    @$head
 
   render: =>
     z '.p-404',
       z @$appBar, {
-        title: @model.l.get 'starsPage.title'
+        title: @model.l.get '404Page.text'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
       }

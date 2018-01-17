@@ -17,7 +17,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupUserSettingsDialog
-  constructor: ({@model, @router, group, gameKey, @overlay$}) ->
+  constructor: ({@model, @router, group, @overlay$}) ->
     notificationTypes = [
       {
         name: @model.l.get 'groupSettings.chatMessage'
@@ -42,7 +42,6 @@ module.exports = class GroupUserSettingsDialog
     @state = z.state
       me: me
       group: group
-      gameKey: gameKey
       isSaving: false
       isLeaveGroupLoading: false
       notificationTypes: groupAndMe.switchMap ([group, me]) =>
@@ -61,19 +60,19 @@ module.exports = class GroupUserSettingsDialog
             }, type
 
   leaveGroup: =>
-    {isLeaveGroupLoading, group, gameKey} = @state.getValue()
+    {isLeaveGroupLoading, group} = @state.getValue()
 
     unless isLeaveGroupLoading
       @state.set isLeaveGroupLoading: true
       @model.group.leaveById group.id
       .then =>
         @state.set isLeaveGroupLoading: false
-        @router.go 'chat', {gameKey}
+        @router.go 'home'
         @overlay$.next null
 
   render: =>
-    {me, notificationTypes, group, isLeaveGroupLoading, isSaving, gameKey,
-      } = @state.getValue()
+    {me, notificationTypes, group, isLeaveGroupLoading,
+      isSaving} = @state.getValue()
 
     items = []
 

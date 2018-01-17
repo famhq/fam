@@ -1,34 +1,28 @@
 z = require 'zorium'
-isUuid = require 'isuuid'
 
 Head = require '../../components/head'
-GroupAuditLog = require '../../components/group_audit_log'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
+Groups = require '../../components/groups'
 colors = require '../../colors'
-config = require '../../config'
 
 if window?
   require './index.styl'
 
-module.exports = class GroupAuditLogPage
-  isGroup: true
-
-  constructor: ({@model, requests, @router, serverData, group}) ->
+module.exports = class GroupsPage
+  constructor: ({@model, requests, @router, serverData}) ->
     @$head = new Head({
       @model
       requests
       serverData
       meta: {
-        title: @model.l.get 'groupAuditLogPage.title'
-        description: @model.l.get 'groupAuditLogPage.title'
+        title: @model.l.get 'drawer.menuItemGroups'
+        description: @model.l.get 'drawer.menuItemGroups'
       }
     })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
-    @$groupAuditLog = new GroupAuditLog {
-      @model, @router, serverData, group
-    }
+    @$conversations = new Groups {@model, @router}
 
     @state = z.state
       windowSize: @model.window.getSize()
@@ -38,14 +32,12 @@ module.exports = class GroupAuditLogPage
   render: =>
     {windowSize} = @state.getValue()
 
-    z '.p-group-audit-log', {
+    z '.p-groups', {
       style:
         height: "#{windowSize.height}px"
     },
-      z @$appBar, {
-        title: @model.l.get 'groupAuditLogPage.title'
-        style: 'primary'
+      z @$appBar,
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
-      }
-      @$groupAuditLog
+        title: @model.l.get 'communityPage.menuText'
+      @$conversations

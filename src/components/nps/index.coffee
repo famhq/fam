@@ -54,7 +54,7 @@ module.exports = class Nps
     {isVisible} = @state.getValue()
     isVisible
 
-  submitNps: ({gameKey}) =>
+  submitNps: =>
     {isLoading, npsValue, commentValue} = @state.getValue()
 
     if isLoading
@@ -69,13 +69,12 @@ module.exports = class Nps
     @model.nps.create {
       score: npsValue
       comment: commentValue
-      gameKey: gameKey
     }
     .then =>
       console.log 'done'
       @state.set isLoading: false
 
-  render: ({gameName, gameKey, onSubmit, onCancel, onRate}) =>
+  render: ({gameName, onSubmit, onCancel, onRate}) =>
     {npsValue, isLoading, step} = @state.getValue()
 
     z '.z-nps',
@@ -179,9 +178,9 @@ module.exports = class Nps
                   else @model.l.get 'general.submit'
             isShort: true
             onclick: =>
-              @submitNps {gameKey}
-
-              if npsValue >= 8 and onRate and Environment.isGameApp(gameKey)
+              @submitNps()
+              isGameApp = Environment.isGameApp config.GAME_KEY
+              if npsValue >= 8 and onRate and isGameApp
                 @state.set step: 'rate'
               else
                 @state.set isVisible: false

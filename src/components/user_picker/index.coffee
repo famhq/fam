@@ -16,7 +16,7 @@ if window?
   require './index.styl'
 
 module.exports = class UserPicker
-  constructor: ({@model, @router, @pickedStreams, users, gameKey}) ->
+  constructor: ({@model, @router, @pickedStreams, users}) ->
 
     @$findFriendsButton = new PrimaryButton()
 
@@ -24,7 +24,6 @@ module.exports = class UserPicker
 
     @state = z.state
       me: @model.user.getMe()
-      gameKey: gameKey
       users: users.map (users) =>
         _map users, (user) =>
           {
@@ -41,10 +40,11 @@ module.exports = class UserPicker
             $checkIcon: new Icon()
           }
 
-  render: ({isUnavailableFn, unavailableMessage, isSelectAllEnabled,
-      noUsersMessage, title} = {}) =>
+  render: (props = {}) =>
+    {isUnavailableFn, unavailableMessage, isSelectAllEnabled,
+        noUsersMessage, title} = props
 
-    {me, picked, pickedWithComponents, users, gameKey} = @state.getValue()
+    {me, picked, pickedWithComponents, users} = @state.getValue()
 
     isUsersEmpty = Boolean users
     users ?= []
@@ -62,7 +62,7 @@ module.exports = class UserPicker
           text: 'Find Friends'
           onclick: =>
             @router.go 'friendsWithAction', 'friends', {
-              gameKey, action: 'find'
+              action: 'find'
             }
 
     z '.z-user-picker',

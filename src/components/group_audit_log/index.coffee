@@ -10,11 +10,10 @@ if window?
   require './index.styl'
 
 module.exports = class GroupAuditLog
-  constructor: ({@model, @router, group, gameKey}) ->
+  constructor: ({@model, @router, group}) ->
 
     @state = z.state {
       group
-      gameKey: gameKey
       logs: group.switchMap (group) =>
         @model.groupAuditLog.getAllByGroupId group.id
         .map (logs) ->
@@ -27,7 +26,7 @@ module.exports = class GroupAuditLog
     }
 
   render: =>
-    {me, group, gameKey, logs} = @state.getValue()
+    {me, group, logs} = @state.getValue()
 
     z '.z-group-audit-log',
       z '.logs',

@@ -6,15 +6,14 @@ if window?
   require './index.styl'
 
 module.exports = class NewConversation
-  constructor: ({@model, @router, gameKey}) ->
+  constructor: ({@model, @router}) ->
     @$findFriends = new FindFriends {@model}
 
     @state = z.state
       isLoading: false
-      gameKey: gameKey
 
   render: ({noNewConversationMessage} = {}) =>
-    {isLoading, gameKey} = @state.getValue()
+    {isLoading} = @state.getValue()
 
     z '.z-new-conversation',
       z @$findFriends, {
@@ -29,5 +28,5 @@ module.exports = class NewConversation
             }
             .then (conversation) =>
               @state.set isLoading: false
-              @router.go 'conversation', {gameKey, id: conversation.id}
+              @router.go 'conversation', {groupId: conversation.id}
       }

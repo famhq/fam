@@ -12,7 +12,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupManageRoles
-  constructor: ({@model, @router, group, gameKey}) ->
+  constructor: ({@model, @router, group}) ->
 
     @$fab = new Fab()
     @$addIcon = new Icon()
@@ -32,7 +32,7 @@ module.exports = class GroupManageRoles
     ]
 
     @$groupRolePermissions = new GroupRolePermissions {
-      @model, @router, group, gameKey, permissionTypes, onSave: @save
+      @model, @router, group, permissionTypes, onSave: @save
     }
     @$newRoleDialog = new Dialog()
     @newRoleNameValue = new RxBehaviorSubject ''
@@ -40,7 +40,6 @@ module.exports = class GroupManageRoles
 
     @state = z.state {
       group
-      gameKey: gameKey
       isNewRoleDialogVisible: false
       me: @model.user.getMe()
     }
@@ -58,7 +57,7 @@ module.exports = class GroupManageRoles
     @model.groupRole.createByGroupId group.id, {name}
 
   render: =>
-    {me, group, roles, gameKey, isNewRoleDialogVisible} = @state.getValue()
+    {me, group, roles, isNewRoleDialogVisible} = @state.getValue()
 
     z '.z-group-manage-roles',
       @$groupRolePermissions

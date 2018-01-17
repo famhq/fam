@@ -26,7 +26,7 @@ if window?
   require './index.styl'
 
 module.exports = class Shop
-  constructor: ({@model, @router, gameKey, products, @overlay$, @goToEarnFn}) ->
+  constructor: ({@model, @router, products, @overlay$, @goToEarnFn}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -37,7 +37,6 @@ module.exports = class Shop
 
     @state = z.state
       me: @model.user.getMe()
-      gameKey: gameKey
       isPurchaseLoading: @isPurchaseLoading
       isInfoCardVisible: window? and not localStorage?['hideShopInfo']
       products: products.map (products) =>
@@ -68,7 +67,7 @@ module.exports = class Shop
                 new Promise (resolve, reject) =>
                  # TODO: groupid
                   @overlay$.next new ConfirmPackPurchase {
-                    @model, @router, gameKey, @overlay$,
+                    @model, @router, @overlay$,
                     @isPurchaseLoading, pack: product
                     onConfirm: resolve, onCancel: =>
                       @overlay$.next null
@@ -87,8 +86,7 @@ module.exports = class Shop
           }
 
   render: =>
-    {me, products, gameKey, isPurchaseLoading,
-      isInfoCardVisible} = @state.getValue()
+    {me, products, isPurchaseLoading, isInfoCardVisible} = @state.getValue()
 
     z '.z-shop',
       z '.g-grid',

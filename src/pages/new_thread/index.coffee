@@ -7,7 +7,7 @@ if window?
   require './index.styl'
 
 module.exports = class NewThreadPage
-  constructor: ({model, requests, @router, serverData}) ->
+  constructor: ({model, requests, @router, serverData, group}) ->
     category = requests.map ({route}) ->
       route.params.category
     id = requests.map ({route}) ->
@@ -22,7 +22,7 @@ module.exports = class NewThreadPage
         description: model.l.get 'newThreadPage.title'
       }
     })
-    @$newThread = new NewThread {model, @router, category, id}
+    @$newThread = new NewThread {model, @router, category, id, group}
 
     @state = z.state
       windowSize: model.window.getSize()
