@@ -31,7 +31,7 @@ if window?
 
 module.exports = class ProfileInfo
   constructor: (options) ->
-    {@model, @router, user, player, @overlay$, gameKey, serverData} = options
+    {@model, @router, user, player, @overlay$, group, serverData} = options
     @$trophyIcon = new Icon()
     @$arenaIcon = new Icon()
     @$levelIcon = new Icon()
@@ -45,7 +45,7 @@ module.exports = class ProfileInfo
       @model, @router, player
     }
     @$profileRefreshBar = new ProfileRefreshBar {
-      @model, @router, player, @overlay$
+      @model, @router, player, @overlay$, group
     }
     @$autoRefreshInfoIcon = new Icon()
     @$adsenseAd = new AdsenseAd {@model}
@@ -62,21 +62,18 @@ module.exports = class ProfileInfo
     @$addonListItem1 = new AddonListItem {
       @model
       @router
-      gameKey
       addon: @model.addon.getByKey 'cardCollection'
     }
 
     @$addonListItem2 = new AddonListItem {
       @model
       @router
-      gameKey
       addon: @model.addon.getByKey 'deckBandit'
     }
 
     @$addonListItem3 = new AddonListItem {
       @model
       @router
-      gameKey
       addon: @model.addon.getByKey 'battles'
     }
 
@@ -85,7 +82,7 @@ module.exports = class ProfileInfo
       isSplitsInfoCardVisible: window? and not localStorage?['hideSplitsInfo']
       user: user
       me: @model.user.getMe()
-      gameKey: gameKey
+      group: group
       followingIds: @model.userFollower.getAllFollowingIds()
       player: player
       serverData: serverData
@@ -129,7 +126,7 @@ module.exports = class ProfileInfo
 
   render: =>
     {player, isRequestNotificationCardVisible,
-      isSplitsInfoCardVisible, user, me, gameKey, serverData,
+      isSplitsInfoCardVisible, user, me, group, serverData,
       followingIds} = @state.getValue()
 
     isMe = user?.id and user?.id is me?.id
@@ -225,7 +222,15 @@ module.exports = class ProfileInfo
                 if player?.data?.clan
                   [
                     z 'span', innerHTML: ' &middot; '
-                    player?.data?.clan.name
+                    z 'span', {
+                      onclick: =>
+                        @router.go 'toolByKey', {
+                          key: 'clash-royale-clan'
+                        }, {
+                          qs:
+                            replacements: JSON.stringify {playerTag: player.id}
+                        }
+                    }, player?.data?.clan.name
                   ]
 
               z '.stats',
@@ -257,7 +262,7 @@ module.exports = class ProfileInfo
           z '.g-cols',
             # z '.g-col.g-xs-3', {
             #   onclick: =>
-            #     @router.go 'fire', {gameKey}
+            #     @router.go 'fire', {group}
             # },
             #   z '.icon',
             #     z @$fireIcon,

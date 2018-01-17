@@ -23,17 +23,13 @@ if window?
 
 module.exports = class GroupShopPage
   isGroup: true
+  @hasBottomBar: true
 
-  constructor: ({@model, requests, @router, serverData, overlay$}) ->
+  constructor: (options) ->
+    {@model, requests, @router, serverData, overlay$,
+      group, @$bottomBar} = options
+
     selectedIndex = new RxBehaviorSubject 0
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.id
-      else
-        @model.group.getByKey route.params.id
-
-    gameKey = requests.map ({route}) ->
-      route?.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$head = new Head({
       @model
@@ -51,7 +47,6 @@ module.exports = class GroupShopPage
     @$shop = new Shop {
       @model
       @router
-      gameKey
       overlay$
       goToEarnFn: ->
         selectedIndex.next 1
@@ -61,19 +56,18 @@ module.exports = class GroupShopPage
         else
           RxObservable.of null
     }
-    @$specialOffers = new SpecialOffers {@model, @router, gameKey, overlay$}
-    @$earnFire = new EarnFire {@model, @router, gameKey, overlay$}
+    @$specialOffers = new SpecialOffers {@model, @router, overlay$}
+    @$earnFire = new EarnFire {@model, @router, overlay$}
 
     @state = z.state
       me: @model.user.getMe()
       windowSize: @model.window.getSize()
-      gameKey: gameKey
       language: @model.l.getLanguage()
 
   renderHead: => @$head
 
   render: =>
-    {me, windowSize, gameKey, language} = @state.getValue()
+    {me, windowSize, language} = @state.getValue()
 
     z '.p-group-shop', {
       style:
@@ -107,3 +101,4 @@ module.exports = class GroupShopPage
             $el: z @$earnFire
           }
         ]
+      z @$bottomBar

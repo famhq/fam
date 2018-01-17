@@ -20,8 +20,6 @@ if window?
 
 module.exports = class FriendsPage
   constructor: ({@model, @router, requests, serverData}) ->
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
     @isFindFriendsVisible = new RxReplaySubject 1
     @isFindFriendsVisible.next(
       requests.map ({route}) ->
@@ -64,7 +62,7 @@ module.exports = class FriendsPage
       @model, @isFindFriendsVisible, @selectedProfileDialogUser
     }
     @$profileDialog = new ProfileDialog {
-      @model, @router, @selectedProfileDialogUser, gameKey
+      @model, @router, @selectedProfileDialogUser
     }
 
     @state = z.state

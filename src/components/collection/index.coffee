@@ -14,7 +14,7 @@ if window?
   require './index.styl'
 
 module.exports = class Collection
-  constructor: ({@model, @router, gameKey, group, @overlay$}) ->
+  constructor: ({@model, @router, group, @overlay$}) ->
     userItems = @model.userItem.getAll()
     allItems = group.switchMap ({id}) =>
       @model.item.getAllByGroupId id
@@ -46,10 +46,9 @@ module.exports = class Collection
 
     @state = z.state
       me: @model.user.getMe()
-      gameKey: gameKey
 
   render: =>
-    {me, gameKey} = @state.getValue()
+    {me} = @state.getValue()
 
     z '.z-collection',
       z '.g-grid',

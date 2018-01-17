@@ -11,9 +11,8 @@ if window?
 
 module.exports = class PlayerList
   constructor: (options) ->
-    {@model, @router, players, @selectedProfileDialogUser, gameKey} = options
+    {@model, @router, players, @selectedProfileDialogUser} = options
     @state = z.state
-      gameKey: gameKey
       players: players.map (players) ->
         _map players, (player) ->
           {
@@ -24,12 +23,12 @@ module.exports = class PlayerList
           }
 
   render: ({onclick} = {}) =>
-    {players, gameKey} = @state.getValue()
+    {players} = @state.getValue()
 
     z '.z-player-list',
       _map players, ({$avatar, $trophyIcon, $verifiedIcon, player}) =>
-        path = @router.get 'player', {
-          gameKey, playerId: player.tag?.replace('#', '')
+        path = @router.get 'clashRoyalePlayer', {
+          playerId: player.tag?.replace('#', '')
         }
         z 'a.player', {
           href: path

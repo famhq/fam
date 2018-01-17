@@ -14,11 +14,9 @@ if window?
 module.exports = class AddonPage
   hideDrawer: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData, group}) ->
     key = requests.map ({route}) ->
       route.params.key
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
     addon = key.switchMap (key) =>
       @model.addon.getByKey _camelCase key
     testUrl = requests.map ({req}) ->
@@ -53,12 +51,12 @@ module.exports = class AddonPage
       windowSize: @model.window.getSize()
       me: @model.user.getMe()
       addon: addon
-      gameKey: gameKey
+      group: group
 
   renderHead: => @$head
 
   render: =>
-    {windowSize, addon, me, gameKey} = @state.getValue()
+    {windowSize, addon, me, group} = @state.getValue()
 
     hasVotedUp = addon?.myVote?.vote is 1
     hasVotedDown = addon?.myVote?.vote is -1
@@ -72,7 +70,7 @@ module.exports = class AddonPage
         isFlat: true
         $topLeftButton: z @$buttonBack, {
           color: colors.$primary500
-          fallbackPath: @router.get 'mods', {gameKey}
+          fallbackPath: @router.get 'groupTools', {group}
         }
         $topRightButton:
           z '.p-addon_vote',

@@ -15,8 +15,15 @@ if window?
   require './index.styl'
 
 module.exports = class Clan
-  constructor: ({@model, @router, clan, gameKey}) ->
+  constructor: ({@model, @router, player}) ->
     me = @model.user.getMe()
+
+    clan = player.switchMap (player) =>
+      if player?.data?.clan?.tag
+        @model.clan.getById player?.data?.clan?.tag?.replace('#', '')
+        .map (clan) -> clan or false
+      else
+        RxObservable.of false
 
     @$tabs = new Tabs {@model}
     @$infoIcon = new Icon()
@@ -26,16 +33,16 @@ module.exports = class Clan
     selectedProfileDialogUser = new RxBehaviorSubject false
 
     @$selectedProfileDialog = new ProfileDialog {
-      @model, @router, selectedProfileDialogUser, gameKey
+      @model, @router, selectedProfileDialogUser
     }
 
     @overlay$ = new RxBehaviorSubject null
 
     @$clanInfo = new ClanInfo {
-      @model, @router, clan, @overlay$, gameKey
+      @model, @router, clan, @overlay$
     }
     @$clanMembers = new ClanMembers {
-      @model, @router, clan, selectedProfileDialogUser, gameKey
+      @model, @router, clan, selectedProfileDialogUser
     }
     @$clanGraphs = new ClanGraphs {@model, @router, clan}
 

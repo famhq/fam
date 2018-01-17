@@ -10,7 +10,6 @@ ButtonBack = require '../../components/button_back'
 Profile = require '../../components/profile'
 ProfileInfo = require '../../components/profile_info'
 ProfileLanding = require '../../components/clash_royale_profile_landing'
-BottomBar = require '../../components/bottom_bar'
 ShareSheet = require '../../components/share_sheet'
 Spinner = require '../../components/spinner'
 Icon = require '../../components/icon'
@@ -22,8 +21,10 @@ if window?
 
 PROFILE_INFO_HEIGHT_PX = 80
 
-module.exports = class ProfilePage
-  constructor: ({@model, requests, @router, serverData}) ->
+module.exports = class GroupProfilePage
+  isGroup: true
+  @hasBottomBar: true
+  constructor: ({@model, requests, @router, serverData, group, @$bottomBar}) ->
     username = requests.map ({route}) ->
       if route.params.username then route.params.username else false
 
@@ -47,9 +48,6 @@ module.exports = class ProfilePage
 
     routePlayerId = requests. map ({route}) ->
       if route.params.playerId then route.params.playerId else false
-
-    gameKey = requests. map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     player = routePlayerId.switchMap (playerId) =>
       if playerId
@@ -86,11 +84,10 @@ module.exports = class ProfilePage
     @$buttonMenu = new ButtonMenu {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$profile = new Profile {
-      @model, @router, user, player, @overlay$, gameKey, serverData
+      @model, @router, user, player, @overlay$, group, serverData
     }
-    @$profileInfo = new ProfileInfo {@model, @router, gameKey, user}
-    @$profileLanding = new ProfileLanding {@model, @router, gameKey}
-    @$bottomBar = new BottomBar {@model, @router, requests}
+    @$profileInfo = new ProfileInfo {@model, @router, group, user}
+    @$profileLanding = new ProfileLanding {@model, @router, group}
     @$shareSheet = new ShareSheet {
       @router, @model, isVisible: @isShareSheetVisible
     }
@@ -106,7 +103,6 @@ module.exports = class ProfilePage
       routePlayerId: routePlayerId
       isShareSheetVisible: @isShareSheetVisible
       me: me
-      gameKey: gameKey
       player: player
       requests: requests
       overlay$: @overlay$
@@ -139,7 +135,7 @@ module.exports = class ProfilePage
 
   render: =>
     {windowSize, player, me, routeUsername, routeId, routePlayerId, user,
-      isShareSheetVisible, overlay$, gameKey} = @state.getValue()
+      isShareSheetVisible, overlay$} = @state.getValue()
 
     isTagSet = player?.id
     isOtherProfile = routeId or routeUsername or routePlayerId
@@ -192,7 +188,7 @@ module.exports = class ProfilePage
               icon: 'settings'
               color: colors.$primary500
               onclick: =>
-                @router.go 'editProfile', {gameKey}
+                @router.go 'editProfile', {groupId: group.key or group.id}
               }
         isFlat: true
       }

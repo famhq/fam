@@ -41,8 +41,8 @@ SCROLL_MESSAGE_LOAD_COUNT = 20
 module.exports = class Conversation extends Base
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
-      selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading, gameKey,
-      group} = options
+      selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading, @onScrollUp,
+      @onScrollDown, hasBottomBar, group} = options
 
     isLoading ?= new RxBehaviorSubject false
     @isPostLoading = new RxBehaviorSubject false
@@ -131,7 +131,6 @@ module.exports = class Conversation extends Base
       toggleIScroll
       @overlay$
       @inputTranslateY
-      gameKey
       @conversation
       onPost: @postMessage
       onResize: @onResize
@@ -174,6 +173,7 @@ module.exports = class Conversation extends Base
       isActive: isActive
       isTextareaFocused: isTextareaFocused
       isPostLoading: @isPostLoading
+      hasBottomBar: hasBottomBar
       error: null
       conversation: @conversation
       inputTranslateY: @inputTranslateY.switch()
@@ -215,8 +215,11 @@ module.exports = class Conversation extends Base
   afterMount: (@$$el) =>
     @$$loadingSpinner = @$$el?.querySelector('.loading')
     @$$messages = @$$el?.querySelector('.messages')
-    # fn is simple enough we don't need to debounce/throttle
-    @$$messages?.addEventListener 'scroll', @scrollListener
+    @debouncedScrollListener = _debounce @scrollListener, 20, {
+      maxWait: 100
+      trailing: true
+    }
+    @$$messages?.addEventListener 'scroll', @debouncedScrollListener
 
     prevConversation = null
     @disposable = @conversation.subscribe (newConversation) =>
@@ -242,7 +245,7 @@ module.exports = class Conversation extends Base
 
     @disposable.unsubscribe()
 
-    @$$messages?.removeEventListener 'scroll', @scrollListener
+    @$$messages?.removeEventListener 'scroll', @debouncedScrollListener
     @$$loadingSpinner?.style.display = 'block'
 
     # to update conversations page, etc...
@@ -289,6 +292,12 @@ module.exports = class Conversation extends Base
     scrollTop = @$$messages.scrollTop
     scrollHeight = @$$messages.scrollHeight
     offsetHeight = @$$messages.offsetHeight
+
+    if @lastScrollTop > 50 and scrollTop < @lastScrollTop
+      @onScrollUp?()
+    else if @lastScrollTop > 50 and scrollTop > @lastScrollTop
+      @onScrollDown?()
+
     if scrollHeight - scrollTop - offsetHeight < 10
       unless isScrolledBottom
         @state.set isScrolledBottom: true
@@ -302,6 +311,8 @@ module.exports = class Conversation extends Base
 
     if scrollTop is 0
       @loadMore()
+
+    @lastScrollTop = scrollTop
 
   loadMore: =>
     @isLoadingMore = true
@@ -325,13 +336,15 @@ module.exports = class Conversation extends Base
 
       if $$firstMessageBatch?.scrollIntoView # doesn't work on ios
         $$firstMessageBatch?.scrollIntoView?() # works on android
-        setTimeout ->  # works on ios, but has flash
+        setTimeout =>  # works on ios, but has flash
           $$firstMessageBatch?.scrollIntoView?()
+          @lastScrollTop = null
         , 0
       else
         setTimeout =>
           @$$messages.scrollTop =
             @$$messages.scrollHeight - previousScrollHeight
+          @lastScrollTop = null
         , 0
 
 
@@ -359,6 +372,7 @@ module.exports = class Conversation extends Base
       offsetHeight = @$$messages.offsetHeight
       scrolled = scrollHeight > offsetHeight
       @$$messages.scrollTop = scrollHeight - offsetHeight
+      @lastScrollTop = null
     return scrolled
 
   onResize: =>
@@ -422,9 +436,11 @@ module.exports = class Conversation extends Base
   render: =>
     {me, isLoading, isLoadingMore, message, isTextareaFocused, isLoaded,
       messageBatches, conversation, group, isScrolledBottom, inputTranslateY,
-      groupUser, isJoinLoading} = @state.getValue()
+      groupUser, isJoinLoading, hasBottomBar} = @state.getValue()
 
-    z '.z-conversation',
+    z '.z-conversation', {
+      className: z.classKebab {hasBottomBar}
+    },
       # hide messages until loaded to prevent showing the scrolling
       z '.messages', {
         key: 'conversation-messages'

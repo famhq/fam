@@ -89,6 +89,13 @@ $zIndexDrawer = 300
           @media (min-width: $breakPointMedium)
             height: 64px
 
+          > .icon
+            width: 36px
+            margin-right: 16px
+
+          > .name
+            font-h1(false)
+
           > .logo
             width: 152px
             height: 20px
@@ -168,6 +175,11 @@ $zIndexDrawer = 300
               height: 1px
               background: getColor('$white12')
               margin: 8px 0
+
+            > .subhead
+              font-subhead()
+              color: getColor('$primary500')
+              padding: 16px
 
             .menu-item
               > .menu-item-link

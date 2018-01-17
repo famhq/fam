@@ -29,12 +29,13 @@ _forEach languages, (language) ->
   )
   newPaths = _mapValues paths, (langPath, langKey) ->
     path = if language is 'en' then '' else "/#{language}"
-    if nonGamePages.indexOf(langKey) is -1
-      path += '/:gameKey'
+    # if nonGamePages.indexOf(langKey) is -1
+    #   path += '/:gameKey'
     path += langPath.replace /\{([a-zA-Z0-9-]+)\}/g, ':$1'
-  newPaths.home = if language is 'en' \
-                  then '/:gameKey'
-                  else "/#{language}/:gameKey"
+  newPaths.home = '/'
+  # newPaths.home = if language is 'en' \
+  #                 then '/:gameKey'
+  #                 else "/#{language}/:gameKey"
   newPaths.siteHome = if language is 'en' then '/' else "/#{language}"
   console.log 'write new paths'
   fs.writeFileSync(

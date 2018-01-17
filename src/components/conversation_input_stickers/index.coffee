@@ -18,12 +18,11 @@ DEFAULT_TEXTAREA_HEIGHT = 54
 module.exports = class ConversationInputStickers
   constructor: (options) ->
     {@model, @router, @onPost, @message, @currentPanel,
-      @selectionStart, @selectionEnd, gameKey, conversation} = options
+      @selectionStart, @selectionEnd, conversation} = options
 
     @$getStickersButton = new PrimaryButton()
 
     @state = z.state
-      gameKey: gameKey
       conversation: conversation
       $stickers: @model.userItem.getAll().map (items) =>
         _map items, (itemInfo) =>
@@ -42,7 +41,7 @@ module.exports = class ConversationInputStickers
     RxObservable.of 69
 
   render: =>
-    {$stickers, gameKey, conversation} = @state.getValue()
+    {$stickers, conversation} = @state.getValue()
 
     z '.z-conversation-input-stickers',
       z '.stickers', [
@@ -57,7 +56,7 @@ module.exports = class ConversationInputStickers
                     isFullWidth: false
                     onclick: =>
                       @router.go 'groupShop', {
-                        gameKey, id: conversation.groupId
+                        id: conversation.groupId
                       }
         else
           _map $stickers, ({itemInfo, $sticker}) =>

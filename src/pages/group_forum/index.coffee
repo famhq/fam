@@ -1,12 +1,13 @@
 z = require 'zorium'
-isUuid = require 'isuuid'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Head = require '../../components/head'
-GroupForum = require '../../components/threads'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
-BottomBar = require '../../components/bottom_bar'
+Threads = require '../../components/threads'
+FilterThreadsDialog = require '../../components/filter_threads_dialog'
+Icon = require '../../components/icon'
+Fab = require '../../components/fab'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -15,13 +16,9 @@ if window?
 
 module.exports = class GroupForumPage
   isGroup: true
-
-  constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.groupId or route.params.id
-      else
-        @model.group.getByKey route.params.groupId or route.params.id
+  @hasBottomBar: true
+  constructor: ({@model, requests, @router, serverData, group, @$bottomBar}) ->
+    @isFilterThreadsDialogVisible = new RxBehaviorSubject false
     filter = new RxBehaviorSubject {
       sort: 'popular'
       filter: 'all'
@@ -32,34 +29,72 @@ module.exports = class GroupForumPage
       requests
       serverData
       meta: {
-        title: @model.l.get 'groupForumPage.title'
-        description: @model.l.get 'groupForumPage.title'
+        title: @model.l.get 'general.forum'
+        description: @model.l.get 'general.forum'
       }
     })
     @$appBar = new AppBar {@model}
-    @$buttonMenu = new ButtonMenu {@model, @router}
-    @$bottomBar = new BottomBar {@model, @router, requests}
-    @$groupForum = new GroupForum {
-      @model, @router, serverData, group, filter
+    @$buttonMenu = new ButtonMenu {@model}
+    @$fab = new Fab()
+    @$addIcon = new Icon()
+    @$filterIcon = new Icon()
+    @$filterThreadsDialog = new FilterThreadsDialog {
+      @model, filter, isVisible: @isFilterThreadsDialogVisible
     }
+
+    @$threads = new Threads {@model, @router, filter, group}
 
     @state = z.state
       windowSize: @model.window.getSize()
+      isFilterThreadsDialogVisible: @isFilterThreadsDialogVisible
+      group: group
 
   renderHead: => @$head
 
-  render: =>
-    {windowSize} = @state.getValue()
+  afterMount: =>
+    @model.user.getMe().switchMap ({id}) =>
+      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      .map (mePlayer) =>
+        if mePlayer?.isVerified
+          @model.player.setAutoRefreshByPlayerIdAndGameId(
+            mePlayer.id, config.CLASH_ROYALE_ID
+          )
+    .take(1)
+    .subscribe()
 
-    z '.p-group-home', {
+  render: =>
+    {windowSize, isFilterThreadsDialogVisible, group} = @state.getValue()
+
+    z '.p-group-forum', {
       style:
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: @model.l.get 'groupForumPage.title'
-        style: 'primary'
+        title: @model.l.get 'general.forum'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topRightButton:
+          z @$filterIcon,
+            color: colors.$primary500
+            icon: 'filter'
+            hasRipple: true
+            onclick: =>
+              @isFilterThreadsDialogVisible.next true
       }
-      @$groupForum
+      @$threads
       @$bottomBar
+
+      if isFilterThreadsDialogVisible
+        z @$filterThreadsDialog
+
+      z '.fab',
+        z @$fab,
+          colors:
+            c500: colors.$primary500
+          $icon: z @$addIcon, {
+            icon: 'add'
+            isTouchTarget: false
+            color: colors.$white
+          }
+          onclick: =>
+            @router.go 'newThread', {group}

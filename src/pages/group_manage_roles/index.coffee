@@ -13,18 +13,9 @@ if window?
 module.exports = class GroupManageRolesPage
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.id
-      else
-        @model.group.getByKey route.params.id
-
+  constructor: ({@model, requests, @router, serverData, group}) ->
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId
-
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
 
     @$head = new Head({
       @model
@@ -38,7 +29,7 @@ module.exports = class GroupManageRolesPage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupManageRoles = new GroupManageRoles {
-      @model, @router, serverData, group, user, gameKey
+      @model, @router, serverData, group, user
     }
 
     @state = z.state

@@ -73,9 +73,6 @@ module.exports = class Portal
 
     @portal.on 'twitter.share', @twitterShare
 
-    @portal.on 'facebook.login', @facebookLogin
-    @portal.on 'facebook.share', @facebookShare
-
     @portal.on 'networkInformation.onOffline', @networkInformationOnOffline
     @portal.on 'networkInformation.onOnline', @networkInformationOnOnline
 
@@ -190,31 +187,6 @@ module.exports = class Portal
       url: "https://twitter.com/intent/tweet?text=#{encodeURIComponent text}"
       target: '_system'
     }
-
-  facebookLogin: ->
-    new Promise (resolve) ->
-      FB.getLoginStatus (response) ->
-        if response.status is 'connected'
-          resolve {
-            status: response.status
-            facebookAccessToken: response.authResponse.accessToken
-            id: response.authResponse.userID
-          }
-        else if Environment.isGameChromeApp(config.GAME_KEY)
-          redirectUri = encodeURIComponent(
-            "https://#{config.HOST}/facebook-login/chrome"
-          )
-          window.location.href = 'https://www.facebook.com/dialog/oauth?' +
-               "client_id=#{config.FB_ID}&" +
-               "redirect_uri=#{redirectUri}&" +
-               'response_type=token'
-        else
-          FB.login (response) ->
-            resolve {
-              status: response.status
-              facebookAccessToken: response.authResponse.accessToken
-              id: response.authResponse.userID
-            }
 
   facebookShare: ({url}) ->
     FB.ui {

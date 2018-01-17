@@ -36,7 +36,7 @@ module.exports = class PlayersTop
             height: '36px'
             bgColor: colors.$tertiary500
             onclick: =>
-              @router.go 'playersSearch', {gameKey}
+              @router.go 'playersSearch'
             placeholder: @model.l.get 'playersSearchPage.title'
           }
 

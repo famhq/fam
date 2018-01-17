@@ -22,16 +22,10 @@ if window?
 # TODO: make it clear that they earn xp for sticker packs
 
 module.exports = class GroupEarnXp
-  constructor: ({@model, @router, group, sort, filter, gameKey}) ->
+  constructor: ({@model, @router, group}) ->
     @$spinner = new Spinner()
 
-    groupAndGameKey = RxObservable.combineLatest(
-      group
-      gameKey
-      (vals...) -> vals
-    )
-
-    xpActions = groupAndGameKey.switchMap ([group, gameKey]) =>
+    xpActions = group.switchMap (group) =>
       @model.groupUserXpTransaction.getAllByGroupId group.id
       .map (xpTransactions) =>
         videoTransaction = _find xpTransactions, {actionKey: 'rewardedVideos'}
@@ -96,7 +90,7 @@ module.exports = class GroupEarnXp
             actionKey: 'dailyChatMessage'
             route:
               key: 'groupChat'
-              replacements: {id: group.key or group.id, gameKey}
+              replacements: {groupId: group.key or group.id}
             xp: 5
             $claimButton: new PrimaryButton()
             $claimButtonText: @model.l.get 'earnXp.dailyChatMessageButton'
@@ -107,7 +101,7 @@ module.exports = class GroupEarnXp
             actionKey: 'openStickerPacks'
             route:
               key: 'groupShop'
-              replacements: {id: group.key or group.id, gameKey}
+              replacements: {groupId: group.key or group.id}
             xp: '∞'
             $claimButton: new PrimaryButton()
             $claimButtonText: @model.l.get 'earnXp.openStickerPacksButton'
@@ -119,7 +113,7 @@ module.exports = class GroupEarnXp
               actionKey: 'dailyVideoView'
               route:
                 key: 'groupVideos'
-                replacements: {id: group.key or group.id, gameKey}
+                replacements: {groupId: group.key or group.id}
               xp: 5
               $claimButton: new PrimaryButton()
               $claimButtonText: @model.l.get 'earnXp.dailyVideoViewButton'

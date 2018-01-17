@@ -6,9 +6,6 @@ config = require '../../config'
 
 module.exports = class EditProfilePage
   constructor: ({model, requests, router, serverData}) ->
-    gameKey = requests.map ({route}) ->
-      route.params.gameKey or config.DEFAULT_GAME_KEY
-
     @$head = new Head({
       model
       requests
@@ -18,7 +15,7 @@ module.exports = class EditProfilePage
         description: model.l.get 'editProfilePage.title'
       }
     })
-    @$editProfile = new EditProfile {model, router, gameKey}
+    @$editProfile = new EditProfile {model, router}
 
   renderHead: => @$head
 

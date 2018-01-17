@@ -14,13 +14,7 @@ module.exports = class GroupManageMemberPage
   hideDrawer: true
   isGroup: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
-    group = requests.switchMap ({route}) =>
-      if isUuid route.params.id
-        @model.group.getById route.params.id
-      else
-        @model.group.getByKey route.params.id
-
+  constructor: ({@model, requests, @router, serverData, group}) ->
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId
 
