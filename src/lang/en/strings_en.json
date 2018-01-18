@@ -225,6 +225,8 @@
   "groupHome.topForumThreads": "Trending forum threads",
   "groupHome.peopleInChat": "{count} people active in chat",
   "groupHome.popularAddons": "Popular tools",
+  "groupHome.newestVideo": "Newest video",
+  "groupHome.viewAllVideos": "View all videos",
   "groupInfo.joinButtonText": "Join group",
   "groupInfo.title": "About",
   "groupInvite.headsUpNotificationTitle": "User invited!",

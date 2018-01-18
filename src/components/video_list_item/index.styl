@@ -1,0 +1,56 @@
+@require '../../vars'
+
+.z-video-list-item
+  display: flex
+  cursor: pointer
+
+  &.has-padding
+    padding: 8px 16px
+
+  > .thumbnail
+    width: 152px
+    height: 86px
+    background-size: 100%
+    background-repeat: no-repeat
+    position: relative
+
+    > .bottom-right
+      position: absolute
+      bottom: 4px
+      right: 4px
+      display: flex
+      align-items: center
+
+      > .duration
+        font-caption1()
+        background: getColor('$black87')
+        color: getColor('$white')
+        height: 24px
+        padding: 4px
+        box-sizing: border-box
+
+      > .source-icon
+        background: getColor('$black87')
+        margin-left: 8px
+        height: 24px
+        padding: 4px
+        box-sizing: border-box
+
+  > .info
+    min-width: 0
+    flex: 1
+    margin-left: 12px
+    display: flex
+    flex-direction: column
+
+    > .title
+      font-title()
+      overflow: hidden
+
+    > .author
+      font-caption1()
+      color: getColor('$tertiary300')
+      margin-top: auto
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis

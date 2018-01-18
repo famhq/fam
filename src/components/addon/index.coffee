@@ -55,8 +55,6 @@ module.exports = class Addon
     else
       language = 'en'
 
-    console.log addon, 'addon'
-
     z '.z-addon', {
       style:
         # because safari tries to auto-expand iframes...

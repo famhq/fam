@@ -70,7 +70,9 @@ module.exports = class AddonPage
         isFlat: true
         $topLeftButton: z @$buttonBack, {
           color: colors.$primary500
-          fallbackPath: @router.get 'groupTools', {group}
+          fallbackPath: @router.get 'groupTools', {
+            groupId: group?.key or group?.id
+          }
         }
         $topRightButton:
           z '.p-addon_vote',

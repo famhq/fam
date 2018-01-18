@@ -30,8 +30,8 @@ module.exports = class GroupHomePage
       requests
       serverData
       meta: {
-        title: @model.l.get 'groupHomePage.title'
-        description: @model.l.get 'groupHomePage.title'
+        title: @model.l.get @model.l.get 'general.home'
+        description: @model.l.get @model.l.get 'general.home'
       }
     })
     @$appBar = new AppBar {@model}

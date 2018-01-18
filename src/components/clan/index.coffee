@@ -1,5 +1,6 @@
 z = require 'zorium'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
 
 Tabs = require '../tabs'
 Icon = require '../icon'

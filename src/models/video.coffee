@@ -3,8 +3,8 @@ module.exports = class Videos
 
   constructor: ({@auth}) -> null
 
-  getAllByGroupId: (groupId, {sort, filter} = {}) =>
-    @auth.stream "#{@namespace}.getAllByGroupId", {groupId, sort, filter}
+  getAllByGroupId: (groupId, {sort, filter, limit} = {}) =>
+    @auth.stream "#{@namespace}.getAllByGroupId", {groupId, sort, filter, limit}
 
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}

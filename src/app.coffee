@@ -108,7 +108,7 @@ module.exports = class App
       if isUuid groupId
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getById groupId
-      else if groupId
+      else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getByKey groupId
       else
@@ -218,12 +218,11 @@ module.exports = class App
     route 'conversations', 'ConversationsPage'
     route 'newConversation', 'NewConversationPage'
     route 'groups', 'GroupsPage'
-    route 'group', 'GroupChatPage'
-    route 'groupChat', 'GroupChatPage'
+    route 'group', 'GroupHomePage'
+    route ['groupChat', 'groupChatConversation'], 'GroupChatPage'
     route 'groupCollection', 'GroupCollectionPage'
     route 'groupForum', 'GroupForumPage'
     route 'groupHome', 'GroupHomePage'
-    route 'groupChatConversation', 'GroupChatPage'
     route 'groupInvite', 'GroupInvitePage'
     route 'groupInvites', 'GroupInvitesPage'
     route 'groupShop', 'GroupShopPage'

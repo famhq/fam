@@ -87,6 +87,7 @@ app.use '/setCookie', (req, res) ->
 # legacy 301s. can remove in jan 2018
 redirects =
   '/clash-royale/mod/:key': '/tool/:key'
+  '/:lang/clash-royale/mod/:key': '/tool/:key'
   '/pt/clash-royale/jogador/:playerId/embutir': '/tool/clash-royale-player/:playerId'
   '/clash-royale/player/:playerId/embed': '/tool/clash-royale-player/:playerId'
   '/clash-royale/user/id/:userId': '/user/id/:userId'
@@ -126,8 +127,10 @@ _map redirects, (newPath, oldPath) ->
     if oldPath.indexOf('*') isnt -1
       oldPathRegex = new RegExp oldPath.replace('*', '(.*?)$')
       matches = oldPathRegex.exec req.originalUrl
-      goPath = goPath.replace '*', matches[1]
-    console.log goPath
+      if matches
+        goPath = goPath.replace '*', matches[1]
+      else
+        goPath = '/'
     # FIXME: 301
     res.redirect 302, goPath
 
@@ -238,7 +241,6 @@ app.use (req, res, next) ->
       res.send '<!DOCTYPE html>' + html
   .catch (err) ->
     io.disconnect()
-    # console.log 'err', err
     log.error err
     if err.html
       hasSent = true
