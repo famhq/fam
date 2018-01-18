@@ -68,7 +68,7 @@ module.exports = _defaults {
   '$primary300': 'var(--primary-300)'
   '$primary400': 'var(--primary-400)'
   '$primary500': 'var(--primary-500)'
-  '$primary50096': 'var(--primary50-096)'
+  '$primary50096': 'var(--primary-50096)'
   '$primary600': 'var(--primary-600)'
   '$primary700': 'var(--primary-700)'
   '$primary800': 'var(--primary-800)'
