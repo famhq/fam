@@ -1,5 +1,6 @@
 use('./stylus_get_color.js')
 use('./stylus_get_cdn_url.js')
+use('./stylus_get_value.js')
 
 $zIndexAppBar = 99
 $zIndexTabs = 100
@@ -137,6 +138,9 @@ font-micro(scale = yes)
   if scale is yes
     @media (min-width: $breakPointLarge)
       font-size: 10px
+
+background-color(color)
+  background: getValue(color) // fallback chrome < 49
 
 @keyframes z-ripple-animation-css-only
   from
