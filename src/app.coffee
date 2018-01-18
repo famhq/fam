@@ -28,6 +28,7 @@ ConversationImageView = require './components/conversation_image_view'
 OfflineOverlay = require './components/offline_overlay'
 Nps = require './components/nps'
 config = require './config'
+colors = require './colors'
 
 Pages =
   HomePage: require './pages/home'
@@ -105,7 +106,7 @@ module.exports = class App
 
     @group = requestsAndLanguage.switchMap ([{route}, language]) =>
       groupId = route.params.groupId or @model.cookie.get 'lastGroupId'
-      if isUuid groupId
+      (if isUuid groupId
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getById groupId
       else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
@@ -115,6 +116,7 @@ module.exports = class App
         @model.group.getByGameKeyAndLanguage(
           config.DEFAULT_GAME_KEY, language
         )
+      )
 
     # used if state / requests fails to work
     $backupPage = if @serverData?
@@ -162,6 +164,11 @@ module.exports = class App
     @state = z.state {
       $backupPage: $backupPage
       me: me
+      cssVariables: @group.map (group) ->
+        cssColors = _defaults colors[group?.key], colors.default
+        _map(cssColors, (value, key) ->
+          "#{key}:#{value}"
+        ).join ';'
       $overlay: @overlay$
       isOffline: isOffline
       addToHomeSheetIsVisible: addToHomeSheetIsVisible
@@ -267,7 +274,7 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
       installOverlayIsOpen, signInDialogIsOpen, signInDialogMode,
-      pushNotificationSheetIsOpen, getAppDialogIsOpen,
+      pushNotificationSheetIsOpen, getAppDialogIsOpen, cssVariables
       addToHomeSheetIsVisible, $overlay, isOffline} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
@@ -283,6 +290,8 @@ module.exports = class App
         z '#zorium-root', {
           className: z.classKebab {isIos}
         },
+          z 'style',
+            innerHTML: ":root {#{cssVariables}}"
           # z '.warning', {
           #   style:
           #     textAlign: 'center'
