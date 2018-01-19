@@ -159,7 +159,7 @@ module.exports = class ThreadComment
               z '.icon',
                 z @$starIcon,
                   icon: 'star-tag'
-                  color: colors.$white
+                  color: colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'
             if creator?.gameData
@@ -170,7 +170,7 @@ module.exports = class ThreadComment
                   z '.icon',
                     z @$trophyIcon,
                       icon: 'trophy'
-                      color: colors.$white54
+                      color: colors.$tertiary900Text54
                       isTouchTarget: false
                       size: '16px'
               ]
@@ -221,7 +221,7 @@ module.exports = class ThreadComment
                   # z @$threadReplyIcon,
                   #   icon: 'reply'
                   #   isTouchTarget: false
-                  #   color: colors.$white
+                  #   color: colors.$tertiary900Text
               z '.points',
                 z '.icon',
                   z @$upvoteButton, {

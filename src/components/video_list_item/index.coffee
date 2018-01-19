@@ -50,7 +50,7 @@ module.exports = class VideoListItem
             z @$sourceIcon,
               icon: video.source
               isTouchTarget: false
-              color: colors.$white
+              color: colors.$tertiary900Text
               size: '14px'
       z '.info',
         z '.title', _truncate video.title, {length: MAX_TITLE_LENGTH}

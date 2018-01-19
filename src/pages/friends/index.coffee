@@ -4,7 +4,6 @@ RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 
-Head = require '../../components/head'
 Tabs = require '../../components/tabs'
 Friends = require '../../components/friends'
 FindFriends = require '../../components/find_friends'
@@ -19,7 +18,7 @@ if window?
   require './index.styl'
 
 module.exports = class FriendsPage
-  constructor: ({@model, @router, requests, serverData}) ->
+  constructor: ({@model, @router, requests, serverData, group}) ->
     @isFindFriendsVisible = new RxReplaySubject 1
     @isFindFriendsVisible.next(
       requests.map ({route}) ->
@@ -35,15 +34,6 @@ module.exports = class FriendsPage
     followers = userData.map ({followers}) -> followers
     blockedUsers = userData.map ({blockedUsers}) -> blockedUsers
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: 'Friends'
-        description: 'Your friends on Clay'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@router, @model}
     @$tabs = new Tabs {@model}
@@ -70,8 +60,11 @@ module.exports = class FriendsPage
       selectedProfileDialogUser: @selectedProfileDialogUser
       windowSize: @model.window.getSize()
 
-  renderHead: (params) =>
-    z @$head, params
+  getMeta: =>
+    {
+      title: 'Friends'
+      description: 'Your friends on Clay'
+    }
 
   render: =>
     {isFindFriendsVisible, selectedProfileDialogUser,
@@ -134,7 +127,7 @@ module.exports = class FriendsPage
           $icon: z @$searchIcon, {
             icon: 'search'
             isTouchTarget: false
-            color: colors.$white
+            color: colors.$primary500Text
           }
           onclick: =>
             @isFindFriendsVisible.next RxObservable.of true

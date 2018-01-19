@@ -34,12 +34,12 @@ module.exports = class ActionBar
         $topLeftButton:
           z @$cancelIcon,
             icon: cancel.icon
-            color: colors.$primary500
+            color: colors.$header500Icon
             onclick: cancel.onclick
         $topRightButton:
           z @$saveIcon,
             icon: if isSaving then 'ellipsis' else save.icon
-            color: colors.$primary500
+            color: colors.$header500Icon
             onclick: save.onclick
         isFlat: true
       }

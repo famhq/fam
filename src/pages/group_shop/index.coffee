@@ -5,7 +5,6 @@ RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/switchMap'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
@@ -31,15 +30,6 @@ module.exports = class GroupShopPage
 
     selectedIndex = new RxBehaviorSubject 0
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupShopPage.title'
-        description: @model.l.get 'groupShopPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$tabs = new Tabs {@model, selectedIndex}
@@ -64,7 +54,11 @@ module.exports = class GroupShopPage
       windowSize: @model.window.getSize()
       language: @model.l.getLanguage()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupShopPage.title'
+      description: @model.l.get 'groupShopPage.title'
+    }
 
   render: =>
     {me, windowSize, language} = @state.getValue()
@@ -77,7 +71,7 @@ module.exports = class GroupShopPage
         title: @model.l.get 'groupShopPage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {
-          color: colors.$primary500
+          color: colors.$header500Icon
         }
         $topRightButton: @$menuFireAmount
       }

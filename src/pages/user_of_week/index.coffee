@@ -1,6 +1,5 @@
 z = require 'zorium'
 
-Head = require '../../components/head'
 UserOfWeek = require '../../components/user_of_week'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
@@ -12,16 +11,7 @@ if window?
 module.exports = class UserOfWeekPage
   hideDrawer: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'userOfWeekPage.title'
-        description: @model.l.get 'userOfWeekPage.title'
-      }
-    })
+  constructor: ({@model, requests, @router, serverData, group}) ->
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$userOfWeek = new UserOfWeek {@model, @router, serverData}
@@ -29,7 +19,11 @@ module.exports = class UserOfWeekPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'userOfWeekPage.title'
+      description: @model.l.get 'userOfWeekPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -42,6 +36,6 @@ module.exports = class UserOfWeekPage
         title: @model.l.get 'userOfWeekPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
       }
       @$userOfWeek

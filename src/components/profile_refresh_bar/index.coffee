@@ -70,7 +70,7 @@ module.exports = class ProfileRefreshBar
                 icon: 'help'
                 isTouchTarget: false
                 size: '14px'
-                color: colors.$white
+                color: colors.$tertiary900Text
           ]
       z '.refresh',
         z @$refreshIcon,

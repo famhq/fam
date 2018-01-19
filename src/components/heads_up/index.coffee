@@ -64,7 +64,7 @@ module.exports = class HeadsUp
           z '.icon',
             z @$icon,
               icon: icon
-              color: colors.$white
+              color: colors.$tertiary900Text
               isTouchTarget: 'false'
           z '.content',
             z '.title', title

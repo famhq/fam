@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 GroupAuditLog = require '../../components/group_audit_log'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -15,15 +14,6 @@ module.exports = class GroupAuditLogPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupAuditLogPage.title'
-        description: @model.l.get 'groupAuditLogPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupAuditLog = new GroupAuditLog {
@@ -33,7 +23,11 @@ module.exports = class GroupAuditLogPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupAuditLogPage.title'
+      description: @model.l.get 'groupAuditLogPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -46,6 +40,6 @@ module.exports = class GroupAuditLogPage
         title: @model.l.get 'groupAuditLogPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$groupAuditLog

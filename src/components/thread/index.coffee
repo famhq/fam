@@ -272,10 +272,9 @@ module.exports = class Thread extends Base
     z '.z-thread',
       z @$appBar, {
         title: ''
-        bgColor: colors.$tertiary700
         $topLeftButton: if not @isInline \
                         then z @$buttonBack, {
-                          color: colors.$primary500
+                          color: colors.$header500Icon
                           onclick: =>
                             @router.go 'groupForum', {
                               groupId: group.key or group.id
@@ -287,7 +286,7 @@ module.exports = class Thread extends Base
               if hasAdminPermission
                 z @$editIcon,
                   icon: 'edit'
-                  color: colors.$primary500
+                  color: colors.$header500Icon
                   onclick: =>
                     @router.go 'groupThreadEdit', {
                       groupId: group.key or group.id
@@ -296,7 +295,7 @@ module.exports = class Thread extends Base
               if me?.flags?.isModerator
                 z @$deleteIcon,
                   icon: 'delete'
-                  color: colors.$primary500
+                  color: colors.$header500Icon
                   onclick: =>
                     @model.thread.deleteById thread.id
                     .then =>
@@ -338,7 +337,7 @@ module.exports = class Thread extends Base
                   z '.icon',
                     z @$starIcon,
                       icon: 'star-tag'
-                      color: colors.$white
+                      color: colors.$tertiary900Text
                       isTouchTarget: false
                       size: '22px'
               z 'span', innerHTML: '&nbsp;&middot;&nbsp;'

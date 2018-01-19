@@ -16,6 +16,7 @@ require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/publishReplay'
 
+Head = require './components/head'
 Drawer = require './components/drawer'
 BottomBar = require './components/bottom_bar'
 XpGain = require './components/xp_gain'
@@ -46,7 +47,6 @@ Pages =
   GroupShopPage: require './pages/group_shop'
   GroupInvitesPage: require './pages/group_invites'
   GroupInvitePage: require './pages/group_invite'
-  GroupAddRecordsPage: require './pages/group_add_records'
   GroupBannedUsersPage: require './pages/group_banned_users'
   GroupManageRolesPage: require './pages/group_manage_roles'
   GroupAuditLogPage: require './pages/group_audit_log'
@@ -148,6 +148,12 @@ module.exports = class App
     }
     @$pushNotificationsSheet = new PushNotificationsSheet {@model, @router}
     @$bottomBar = new BottomBar {@model, @router, @requests, @group}
+    @$head = new Head({
+      @model
+      @requests
+      @serverData
+      @group
+    })
 
     @$nps = new Nps {@model}
 
@@ -164,11 +170,6 @@ module.exports = class App
     @state = z.state {
       $backupPage: $backupPage
       me: me
-      cssVariables: @group.map (group) ->
-        cssColors = _defaults colors[group?.key], colors.default
-        _map(cssColors, (value, key) ->
-          "#{key}:#{value}"
-        ).join ';'
       $overlay: @overlay$
       isOffline: isOffline
       addToHomeSheetIsVisible: addToHomeSheetIsVisible
@@ -241,7 +242,6 @@ module.exports = class App
     route 'groupSettings', 'GroupSettingsPage'
     route 'groupVideos', 'GroupVideosPage'
     route 'groupLeaderboard', 'GroupLeaderboardPage'
-    route 'groupAddRecords', 'GroupAddRecordsPage'
     route 'groupBannedUsers', 'GroupBannedUsersPage'
     route 'groupManageRoles', 'GroupManageRolesPage'
     route 'groupAuditLog', 'GroupAuditLogPage'
@@ -274,7 +274,7 @@ module.exports = class App
   render: =>
     {request, $backupPage, $modal, me, imageViewOverlayImageData, hideDrawer
       installOverlayIsOpen, signInDialogIsOpen, signInDialogMode,
-      pushNotificationSheetIsOpen, getAppDialogIsOpen, cssVariables
+      pushNotificationSheetIsOpen, getAppDialogIsOpen
       addToHomeSheetIsVisible, $overlay, isOffline} = @state.getValue()
 
     userAgent = request?.req?.headers?['user-agent'] or
@@ -284,14 +284,14 @@ module.exports = class App
     isPageAvailable = (me?.isMember or not request?.$page?.isPrivate)
     defaultInstallMessage = @model.l.get 'app.defaultInstallMessage'
 
+    $page = request?.$page or $backupPage
+
     z 'html',
-      request?.$page?.renderHead() or $backupPage?.renderHead()
+      z @$head, {meta: $page?.getMeta?()}
       z 'body',
         z '#zorium-root', {
           className: z.classKebab {isIos}
         },
-          z 'style',
-            innerHTML: ":root {#{cssVariables}}"
           # z '.warning', {
           #   style:
           #     textAlign: 'center'
@@ -343,3 +343,8 @@ module.exports = class App
               },
                 @model.l.get 'app.stillLoading'
             z @$xpGain
+            # used in color.coffee to detect support
+            z '#css-variable-test',
+              style:
+                display: 'none'
+                backgroundColor: 'var(--test-color)'

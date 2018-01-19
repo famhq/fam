@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 GroupManageMember = require '../../components/group_manage_member'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
@@ -18,15 +17,6 @@ module.exports = class GroupManageMemberPage
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupManageMemberPage.title'
-        description: @model.l.get 'groupManageMemberPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupManageMember = new GroupManageMember {
@@ -36,7 +26,11 @@ module.exports = class GroupManageMemberPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupManageMemberPage.title'
+      description: @model.l.get 'groupManageMemberPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -49,6 +43,6 @@ module.exports = class GroupManageMemberPage
         title: @model.l.get 'groupManageMemberPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
       }
       @$groupManageMember

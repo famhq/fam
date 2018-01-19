@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 GroupEditChannel = require '../../components/group_edit_channel'
@@ -14,15 +13,6 @@ module.exports = class GroupAddChannelPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupAddChannelPage.title'
-        description: @model.l.get 'groupAddChannelPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupEditChannel = new GroupEditChannel {
@@ -33,7 +23,11 @@ module.exports = class GroupAddChannelPage
       group: group
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupAddChannelPage.title'
+      description: @model.l.get 'groupAddChannelPage.title'
+    }
 
   render: =>
     {group, windowSize} = @state.getValue()
@@ -46,6 +40,6 @@ module.exports = class GroupAddChannelPage
         title: @model.l.get 'groupAddChannelPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
       }
       z @$groupEditChannel, {isNewChannel: true}

@@ -2,7 +2,6 @@ z = require 'zorium'
 _find = require 'lodash/find'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Conversation = require '../../components/conversation'
@@ -15,7 +14,7 @@ if window?
 module.exports = class ConversationPage
   hideDrawer: true
 
-  constructor: ({@model, requests, @router, serverData}) ->
+  constructor: ({@model, requests, @router, serverData, group}) ->
     conversation = requests.switchMap ({route}) =>
       @model.conversation.getById route.params.id
     .publishReplay(1).refCount()
@@ -23,15 +22,6 @@ module.exports = class ConversationPage
     selectedProfileDialogUser = new RxBehaviorSubject null
     overlay$ = new RxBehaviorSubject null
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'general.chat'
-        description: @model.l.get 'general.chat'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$profileDialog = new ProfileDialog {
@@ -48,7 +38,11 @@ module.exports = class ConversationPage
       overlay$: overlay$
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'general.chat'
+      description: @model.l.get 'general.chat'
+    }
 
   render: =>
     {conversation, me, selectedProfileDialogUser,
@@ -64,7 +58,7 @@ module.exports = class ConversationPage
       z @$appBar, {
         title: @model.user.getDisplayName toUser
         style: 'primary'
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
         isFullWidth: true
       }
       @$conversation

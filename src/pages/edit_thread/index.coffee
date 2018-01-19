@@ -3,7 +3,6 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/switchMap'
 
-Head = require '../../components/head'
 NewThread = require '../../components/new_thread'
 colors = require '../../colors'
 
@@ -20,15 +19,6 @@ module.exports = class EditThreadPage
       else
         RxObservable.of null
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'editThreadPage.title'
-        description: @model.l.get 'editThreadPage.title'
-      }
-    })
     @$editThread = new NewThread {
       @model
       @router
@@ -40,7 +30,11 @@ module.exports = class EditThreadPage
       windowSize: @model.window.getSize()
       thread: thread
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'editThreadPage.title'
+      description: @model.l.get 'editThreadPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()

@@ -3,11 +3,13 @@ module.exports = {
   '$black12': 'rgba(0, 0, 0, 0.12)',
   '$black26': 'rgba(0, 0, 0, 0.26)',
   '$black54': 'rgba(0, 0, 0, 0.54)',
+  '$black70': 'rgba(0, 0, 0, 0.70)',
   '$black87': 'rgba(0, 0, 0, 0.87)',
 
   '$white': '#FFFFFF',
   '$white12': 'rgba(255, 255, 255, 0.12)',
   '$white30': 'rgba(255, 255, 255, 0.30)',
+  '$white54': 'rgba(255, 255, 255, 0.54)',
   '$white70': 'rgba(255, 255, 255, 0.70)',
 
   '$red50': '#FFEBEE',

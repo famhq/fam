@@ -1,6 +1,5 @@
 z = require 'zorium'
 
-Head = require '../../components/head'
 NewConversation = require '../../components/new_conversation'
 
 if window?
@@ -9,24 +8,19 @@ if window?
 module.exports = class NewConversationPage
   hideDrawer: true
 
-  constructor: ({model, requests, @router, serverData, group}) ->
-    @$head = new Head({
-      model
-      requests
-      serverData
-      meta: {
-        title: model.l.get 'newConversationPage.title'
-        description: model.l.get 'newConversationPage.title'
-      }
-    })
+  constructor: ({@model, requests, @router, serverData, group}) ->
     @$newConversation = new NewConversation {
-      model, @router, serverData, group
+      @model, @router, serverData, group
     }
 
     @state = z.state
-      windowSize: model.window.getSize()
+      windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'newConversationPage.title'
+      description: @model.l.get 'newConversationPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()

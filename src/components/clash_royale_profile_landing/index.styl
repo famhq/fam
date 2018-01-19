@@ -15,6 +15,7 @@
     position: absolute
     top: 0
     left: 0
+    background: getColor('$primary500')
 
   > .content
     position: relative
@@ -28,14 +29,17 @@
       > .header
         > .title
           font-h1()
+          color: getColor('$primary500Text')
           text-align: center
 
         > .description
           font-body1()
+          color: getColor('$primary500Text')
           margin-top: 8px
           text-align: center
 
         > .form
+          background: getColor('$tertiary700')
           border-radius: 2px
           padding: 16px
           max-width: 480px

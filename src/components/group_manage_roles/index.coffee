@@ -69,7 +69,7 @@ module.exports = class GroupManageRoles
           $icon: z @$addIcon, {
             icon: 'add'
             isTouchTarget: false
-            color: colors.$white
+            color: colors.$primary500Text
           }
           onclick: =>
             @state.set isNewRoleDialogVisible: true

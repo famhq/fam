@@ -1,7 +1,6 @@
 z = require 'zorium'
 _camelCase = require 'lodash/camelCase'
 
-Head = require '../../components/head'
 Addon = require '../../components/addon'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
@@ -17,7 +16,7 @@ module.exports = class AddonPage
   constructor: ({@model, requests, @router, serverData, group}) ->
     key = requests.map ({route}) ->
       route.params.key
-    addon = key.switchMap (key) =>
+    @addon = key.switchMap (key) =>
       @model.addon.getByKey _camelCase key
     testUrl = requests.map ({req}) ->
       req.query.testUrl
@@ -27,22 +26,10 @@ module.exports = class AddonPage
       catch
         {}
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: addon.map (addon) =>
-        if addon
-          {
-            title: @model.l.get "#{addon.key}.title", {file: 'addons'}
-            description: addon.metaDescription or
-              @model.l.get "#{addon.key}.description", {file: 'addons'}
-          }
-    })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$addon = new Addon {
-      @model, @router, serverData, addon, testUrl, replacements
+      @model, @router, serverData, @addon, testUrl, replacements, group
     }
     @$thumbsUpIcon = new Icon()
     @$thumbsDownIcon = new Icon()
@@ -50,10 +37,17 @@ module.exports = class AddonPage
     @state = z.state
       windowSize: @model.window.getSize()
       me: @model.user.getMe()
-      addon: addon
+      addon: @addon
       group: group
 
-  renderHead: => @$head
+  getMeta: =>
+    @addon.map (addon) =>
+      if addon
+        {
+          title: @model.l.get "#{addon.key}.title", {file: 'addons'}
+          description: addon.metaDescription or
+            @model.l.get "#{addon.key}.description", {file: 'addons'}
+        }
 
   render: =>
     {windowSize, addon, me, group} = @state.getValue()
@@ -69,7 +63,7 @@ module.exports = class AddonPage
         style: 'primary'
         isFlat: true
         $topLeftButton: z @$buttonBack, {
-          color: colors.$primary500
+          color: colors.$header500Icon
           fallbackPath: @router.get 'groupTools', {
             groupId: group?.key or group?.id
           }
@@ -80,8 +74,8 @@ module.exports = class AddonPage
               icon: 'thumb-up'
               hasRipple: true
               color: if hasVotedUp \
-                     then colors.$primary500
-                     else colors.$white
+                     then colors.$header500Icon
+                     else colors.$header500Text
               size: '18px'
               onclick: =>
                 unless hasVotedUp
@@ -92,8 +86,8 @@ module.exports = class AddonPage
               icon: 'thumb-down'
               hasRipple: true
               color: if hasVotedDown \
-                     then colors.$primary500
-                     else colors.$white
+                     then colors.$header500Icon
+                     else colors.$header500Text
               size: '18px'
               onclick: =>
                 unless hasVotedDown

@@ -15,7 +15,7 @@ module.exports = class ButtonMenu
       z @$menuIcon,
         isAlignedLeft: true
         icon: 'menu'
-        color: color or colors.$tertiary900
+        color: color or colors.$header500Icon
         onclick: (e) =>
           e.preventDefault()
           if onclick

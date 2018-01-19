@@ -4,7 +4,6 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/map'
 
-Head = require '../../components/head'
 Thread = require '../../components/thread'
 Icon = require '../../components/icon'
 colors = require '../../colors'
@@ -22,21 +21,16 @@ module.exports = class ThreadPage
       @model.thread.getById route.params.id
     thread = RxObservable.merge @thread, loadedThread
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: 'Community thread'
-        description: 'Community'
-      }
-    })
     @$thread = new Thread {@model, @router, @overlay$, thread, group}
 
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: ->
+    {
+      title: 'Community thread'
+      description: 'Community'
+    }
 
   beforeUnmount: =>
     @thread.next {}

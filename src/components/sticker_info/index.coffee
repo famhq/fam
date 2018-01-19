@@ -59,7 +59,7 @@ module.exports = class StickerInfo
     z '.z-sticker-info',
       z @$appBar,
         $topLeftButton: z @$backButton, {
-          color: colors.$primary500
+          color: colors.$header500Icon
           onclick: ->
             onClose?()
         }

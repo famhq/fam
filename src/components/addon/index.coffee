@@ -20,7 +20,7 @@ if window?
   require './index.styl'
 
 module.exports = class Addon
-  constructor: ({@model, @router, addon, testUrl, replacements}) ->
+  constructor: ({@model, @router, addon, testUrl, replacements, group}) ->
     player = @model.user.getMe().switchMap ({id}) =>
       (if playerId = replacements?.playerTag
       then @model.player.getByPlayerIdAndGameId playerId, config.CLASH_ROYALE_ID
@@ -37,7 +37,7 @@ module.exports = class Addon
     @$forumSignature = new ForumSignature {@model, @router}
     @$clan = new Clan {@model, @router, player}
     @$players = new Players {@model, @router}
-    @$recruiting = new Recruiting {@model, @router}
+    @$recruiting = new Recruiting {@model, @router, group}
 
     @state = z.state
       addon: addon

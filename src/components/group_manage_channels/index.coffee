@@ -43,7 +43,7 @@ module.exports = class GroupManageChannels
           $icon: z @$addIcon, {
             icon: 'add'
             isTouchTarget: false
-            color: colors.$white
+            color: colors.$primary500Text
           }
           onclick: =>
             @router.go 'groupNewChannel', {groupId: group.key or group.id}

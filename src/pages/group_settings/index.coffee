@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 GroupSettings = require '../../components/group_settings'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -14,15 +13,6 @@ module.exports = class GroupSettingsPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupSettingsPage.title'
-        description: @model.l.get 'groupSettingsPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupSettings = new GroupSettings {
@@ -32,7 +22,11 @@ module.exports = class GroupSettingsPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupSettingsPage.title'
+      description: @model.l.get 'groupSettingsPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -44,7 +38,7 @@ module.exports = class GroupSettingsPage
       z @$appBar, {
         title: @model.l.get 'groupSettingsPage.title'
         $topLeftButton: z @$buttonMenu, {
-          color: colors.$primary500
+          color: colors.$header500Icon
         }
       }
       @$groupSettings

@@ -1,6 +1,5 @@
 z = require 'zorium'
 
-Head = require '../../components/head'
 Spinner = require '../../components/spinner'
 config = require '../../config'
 
@@ -10,21 +9,16 @@ if window?
 module.exports = class HomePage
   hideDrawer: true
 
-  constructor: ({@model, @router, requests, serverData}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta:
-        canonical: "https://#{config.HOST}"
-    })
+  constructor: ({@model, @router, requests, serverData, group}) ->
     @$spinner = new Spinner()
 
     @state = z.state
       me: @model.user.getMe()
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: ->
+    meta:
+      canonical: "https://#{config.HOST}"
 
   render: =>
     {me, windowSize} = @state.getValue()

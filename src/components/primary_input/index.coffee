@@ -42,7 +42,7 @@ module.exports = class PrimaryInput extends Input
         },
           z @$eyeIcon,
             icon: 'eye'
-            color: colors.$white
+            color: colors.$tertiary900Text
       else if opts.onInfo
         z '.make-visible', {
           onclick: ->
@@ -50,4 +50,4 @@ module.exports = class PrimaryInput extends Input
         },
           z @$eyeIcon,
             icon: 'help'
-            color: colors.$white
+            color: colors.$tertiary900Text

@@ -112,21 +112,21 @@ module.exports = class ConversationMessage
               z '.icon',
                 z @$starIcon,
                   icon: 'star-tag'
-                  color: colors.$white
+                  color: colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'
             if user?.flags?.isDev
               z '.icon',
                 z @$statusIcon,
                   icon: 'dev'
-                  color: colors.$white
+                  color: colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'
             else if user?.flags?.isModerator or isModerator
               z '.icon',
                 z @$statusIcon,
                   icon: 'mod'
-                  color: colors.$white
+                  color: colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'
             z '.name', @model.user.getDisplayName user
@@ -148,7 +148,7 @@ module.exports = class ConversationMessage
               z '.icon',
                 z @$trophyIcon,
                   icon: 'trophy'
-                  color: colors.$white54
+                  color: colors.$tertiary900Text54
                   isTouchTarget: false
                   size: '16px'
 

@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 Tabs = require '../../components/tabs'
 GroupLeaderboard = require '../../components/group_leaderboard'
@@ -16,15 +15,6 @@ module.exports = class GroupLeaderboardPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'leaderboardPage.title'
-        description: @model.l.get 'leaderboardPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$tabs = new Tabs {@model}
@@ -38,7 +28,11 @@ module.exports = class GroupLeaderboardPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'leaderboardPage.title'
+      description: @model.l.get 'leaderboardPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -51,7 +45,7 @@ module.exports = class GroupLeaderboardPage
         title: @model.l.get 'groupLeaderboardPage.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {
-          color: colors.$primary500
+          color: colors.$header500Icon
         }
       }
       z @$tabs,

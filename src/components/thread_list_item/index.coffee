@@ -106,7 +106,7 @@ module.exports = class ThreadListItem
                     else 'text'
               size: '30px'
               isTouchTarget: false
-              color: colors.$white
+              color: colors.$primary500Text
         z '.info',
           z '.title', thread.data?.title
           z '.bottom',
@@ -116,7 +116,7 @@ module.exports = class ThreadListItem
                 z '.icon',
                   z @$starIcon,
                     icon: 'star-tag'
-                    color: colors.$white
+                    color: colors.$tertiary900Text
                     isTouchTarget: false
                     size: '22px'
               z '.middot',

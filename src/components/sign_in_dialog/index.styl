@@ -1,5 +1,3 @@
-
-
 @require '../../vars'
 
 .z-sign-in-dialog_dialog
@@ -11,12 +9,14 @@
 
     > .title
       font-button()
+      color: getColor('$primary500Text')
 
     > .button
       font-button()
       margin-left: auto
       padding: 8px
       background: getColor('$primary700')
+      color: getColor('$primary500Text')
       cursor: pointer
 
   > .content

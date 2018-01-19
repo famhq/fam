@@ -181,5 +181,5 @@ module.exports = class ClanInfo
             z '.title', @model.l.get 'addonsPage.title'
             z @$addonListItem, {
               hasPadding: false
-              replacements: {clanTag: clan?.id.replace '#', ''}
+              replacements: {clanTag: clan?.id?.replace '#', ''}
             }

@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
 Tabs = require '../../components/tabs'
@@ -20,15 +19,6 @@ module.exports = class GroupEditChannelPage
     conversation = requests.switchMap ({route}) =>
       @model.conversation.getById route.params.conversationId
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupEditChannelPage.title'
-        description: @model.l.get 'groupEditChannelPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$groupEditChannel = new GroupEditChannel {
@@ -43,7 +33,11 @@ module.exports = class GroupEditChannelPage
       group: group
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupEditChannelPage.title'
+      description: @model.l.get 'groupEditChannelPage.title'
+    }
 
   render: =>
     {group, windowSize} = @state.getValue()
@@ -56,7 +50,7 @@ module.exports = class GroupEditChannelPage
         title: @model.l.get 'groupEditChannelPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonBack, {color: colors.$primary500}
+        $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
       }
       z @$tabs,
         isBarFixed: false

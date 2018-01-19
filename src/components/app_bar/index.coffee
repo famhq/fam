@@ -15,8 +15,8 @@ module.exports = class AppBar
     {$topLeftButton, $topRightButton, title, bgColor, color, isFlat,
       style, isFullWidth} = options
 
-    color ?= colors.$tertiary700Text
-    bgColor ?= colors.$tertiary700
+    color ?= colors.$header500Text
+    bgColor ?= colors.$header500
 
     z 'header.z-app-bar', {
       className: z.classKebab {isFlat}

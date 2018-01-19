@@ -18,5 +18,5 @@ module.exports = class PrimaryButton extends Button
           c500: colors.$primary500
           c600: colors.$primary400
           c700: colors.$primary400
-          ink: colors.$primaryInk
+          ink: colors.$primary500Text
       }

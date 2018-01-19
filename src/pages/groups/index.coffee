@@ -1,6 +1,5 @@
 z = require 'zorium'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Groups = require '../../components/groups'
@@ -10,16 +9,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupsPage
-  constructor: ({@model, requests, @router, serverData}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'drawer.menuItemGroups'
-        description: @model.l.get 'drawer.menuItemGroups'
-      }
-    })
+  constructor: ({@model, requests, @router, serverData, group}) ->
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$conversations = new Groups {@model, @router}
@@ -27,7 +17,11 @@ module.exports = class GroupsPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'drawer.menuItemGroups'
+      description: @model.l.get 'drawer.menuItemGroups'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -38,6 +32,6 @@ module.exports = class GroupsPage
     },
       z @$appBar,
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         title: @model.l.get 'communityPage.menuText'
       @$conversations

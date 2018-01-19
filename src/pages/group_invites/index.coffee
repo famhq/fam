@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 GroupList = require '../../components/group_list'
 AppBar = require '../../components/app_bar'
 ButtonBack = require '../../components/button_back'
@@ -14,15 +13,6 @@ module.exports = class GroupInvitePage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupInvitesPage.title'
-        description: @model.l.get 'groupInvitesPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonBack = new ButtonBack {@router}
     @$groupList = new GroupList {
@@ -33,7 +23,11 @@ module.exports = class GroupInvitePage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupInvitesPage.title'
+      description: @model.l.get 'groupInvitesPage.title'
+    }
 
   afterMount: =>
     @model.userData.updateMe {unreadGroupInvites: 0}

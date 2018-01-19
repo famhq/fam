@@ -69,4 +69,4 @@ module.exports = class PlayerList
                     icon: 'trophy'
                     isTouchTarget: false
                     size: '14px'
-                    color: colors.$white54
+                    color: colors.$tertiary900Text54

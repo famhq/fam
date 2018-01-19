@@ -29,8 +29,8 @@ module.exports = class Textarea
     {value, error, isFocused} = @state.getValue()
 
     colors = _defaults colors, {
-      c500: allColors.$white
-      background: allColors.$white12
+      c500: allColors.$tertiary900Text12
+      background: allColors.$tertiary900Text12
       underline: allColors.$primary500
     }
     hintText ?= ''

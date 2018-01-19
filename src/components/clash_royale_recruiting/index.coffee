@@ -35,7 +35,7 @@ module.exports = class Recruiting
       z @$appBar, {
         title: @model.l.get 'general.recruiting'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$threads
 
@@ -46,7 +46,7 @@ module.exports = class Recruiting
           $icon: z @$addIcon, {
             icon: 'add'
             isTouchTarget: false
-            color: colors.$white
+            color: colors.$primary500Text
           }
           onclick: =>
             @router.go 'groupNewThreadWithCategory', {

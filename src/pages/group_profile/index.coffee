@@ -3,7 +3,6 @@ RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 ButtonBack = require '../../components/button_back'
@@ -49,7 +48,7 @@ module.exports = class GroupProfilePage
     routePlayerId = requests. map ({route}) ->
       if route.params.playerId then route.params.playerId else false
 
-    player = routePlayerId.switchMap (playerId) =>
+    @player = routePlayerId.switchMap (playerId) =>
       if playerId
         @model.player.getByPlayerIdAndGameId(
           playerId, config.CLASH_ROYALE_ID, {refreshIfStale: true}
@@ -66,25 +65,11 @@ module.exports = class GroupProfilePage
     @isShareSheetVisible = new RxBehaviorSubject false
     @overlay$ = new RxBehaviorSubject null
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: player.map (player) ->
-        playerName = player?.data?.name
-        {
-          title: if player?.id \
-                 then "#{playerName}'s Clash Royale stats"
-                 else undefined # use default
-
-          description: undefined # use default
-        }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$buttonBack = new ButtonBack {@model, @router}
     @$profile = new Profile {
-      @model, @router, user, player, @overlay$, group, serverData
+      @model, @router, user, @player, @overlay$, group, serverData
     }
     @$profileInfo = new ProfileInfo {@model, @router, group, user}
     @$profileLanding = new ProfileLanding {@model, @router, group}
@@ -104,14 +89,25 @@ module.exports = class GroupProfilePage
       group: group
       isShareSheetVisible: @isShareSheetVisible
       me: me
-      player: player
+      player: @player
       requests: requests
       overlay$: @overlay$
 
   afterMount: (@$$el) =>
     @$$content = @$$el.querySelector('.content')
 
-  renderHead: => @$head
+  getMeta: =>
+    {player} = @state.getValue()
+    @player.map (player) ->
+      playerName = player?.data?.name
+      console.log 'ppp', playerName
+      {
+        title: if player?.id \
+               then "#{playerName}'s Clash Royale stats"
+               else undefined # use default
+
+        description: undefined # use default
+      }
 
   scrollPastInfo: (e) =>
     clientY = e?.touches?[0]?.clientY
@@ -169,25 +165,20 @@ module.exports = class GroupProfilePage
               #  else if player?.id
               #  then @model.l.get 'profilePage.title'
               #  else ''
-        bgColor: if player and not isTagSet \
-                 then colors.$primary500
-                 else colors.$tertiary700
         $topLeftButton:
           z $button,
-            color: if player and not isTagSet \
-                   then colors.$tertiary900
-                   else colors.$primary500
+            color: colors.$header500Icon
         $topRightButton: z '.p-profile_top-right',
           if isTagSet
             z @$shareIcon,
               icon: 'share'
-              color: colors.$primary500
+              color: colors.$header500Icon
               onclick: =>
                 @isShareSheetVisible.next true
           if isMe and isTagSet
             z @$settingsIcon, {
               icon: 'settings'
-              color: colors.$primary500
+              color: colors.$header500Icon
               onclick: =>
                 @router.go 'editProfile', {groupId: group.key or group.id}
               }

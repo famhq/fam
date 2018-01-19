@@ -2,7 +2,6 @@ z = require 'zorium'
 isUuid = require 'isuuid'
 RxObservable = require('rxjs/Observable').Observable
 
-Head = require '../../components/head'
 GroupHome = require '../../components/group_home'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -25,15 +24,6 @@ module.exports = class GroupHomePage
     requestsAndLanguage = RxObservable.combineLatest(
       requests, @model.l.getLanguage(), (vals...) -> vals
     )
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get @model.l.get 'general.home'
-        description: @model.l.get @model.l.get 'general.home'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
@@ -44,7 +34,11 @@ module.exports = class GroupHomePage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    meta: {
+      title: @model.l.get 'general.home'
+      description: @model.l.get 'general.home'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -57,10 +51,10 @@ module.exports = class GroupHomePage
         title: @model.l.get 'general.home'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton: z @$settingsIcon,
           icon: 'settings'
-          color: colors.$primary500
+          color: colors.$header500Icon
           onclick: =>
             @overlay$.next new SetLanguageDialog {
               @model, @router, @overlay$

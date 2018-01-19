@@ -7,13 +7,12 @@ Icon = require '../icon'
 PlayersTop = require '../players_top'
 PlayersFollowing = require '../players_following'
 ProfileDialog = require '../profile_dialog'
-Head = require '../head'
 colors = require '../../colors'
 
 if window?
   require './index.styl'
 
-module.exports = class PlayersPage
+module.exports = class ClashRoyalePlayers
   constructor: ({@model, router, group}) ->
     me = @model.user.getMe()
     selectedProfileDialogUser = new RxBehaviorSubject null
@@ -42,8 +41,6 @@ module.exports = class PlayersPage
       windowSize: @model.window.getSize()
       overlay$: overlay$
 
-  renderHead: => @$head
-
   render: =>
     {me, selectedProfileDialogUser, windowSize, overlay$} = @state.getValue()
 
@@ -53,7 +50,7 @@ module.exports = class PlayersPage
     },
       z @$appBar,
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         title: @model.l.get 'playersPage.title'
       z @$tabs,
         isBarFixed: false

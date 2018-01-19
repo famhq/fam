@@ -42,4 +42,4 @@ module.exports = class SecondaryInput extends Input
         },
           z @$eyeIcon,
             icon: 'eye'
-            color: colors.$white
+            color: colors.$tertiary900Text

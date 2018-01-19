@@ -16,7 +16,7 @@ module.exports = class ThreadVoteButton
 
     {me} = @state.getValue()
 
-    color ?= colors.$white
+    color ?= colors.$tertiary900Text
     hasRipple ?= true
     size ?= '18px'
 

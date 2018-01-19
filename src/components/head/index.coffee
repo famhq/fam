@@ -1,16 +1,24 @@
 z = require 'zorium'
 Environment = require 'clay-environment'
+RxObservable = require('rxjs/Observable').Observable
 _merge = require 'lodash/merge'
 _map = require 'lodash/map'
 _mapValues = require 'lodash/mapValues'
+_defaults = require 'lodash/defaults'
 
 config = require '../../config'
 colors = require '../../colors'
 rubikCss = require './rubik'
 
 module.exports = class Head
-  constructor: ({@model, meta, requests, serverData}) ->
+  constructor: ({@model, meta, requests, serverData, group}) ->
     route = requests.map ({route}) -> route
+    meta = requests.switchMap ({$page}) ->
+      meta = $page?.getMeta?()
+      if meta?.map
+        meta
+      else
+        RxObservable.of meta
 
     @state = z.state
       meta: meta
@@ -21,9 +29,26 @@ module.exports = class Head
           routeKey = @model.l.getRouteKeyByValue route.src
       modelSerialization: unless window?
         @model.getSerializationStream()
+      cssVariables: group?.map (group) =>
+        groupKey = group?.key
+        if @model.experiment.get('customColors') is 'light'
+          if groupKey and groupKey.indexOf('clashroyale') isnt -1
+            groupKey = 'clashroyalelight'
+          cssColors = _defaults colors[groupKey], colors.default
+        else if @model.experiment.get('customColors') is 'dark'
+          if groupKey and groupKey.indexOf('clashroyale') isnt -1
+            groupKey = 'clashroyaledark'
+          cssColors = _defaults colors[groupKey], colors.default
+        else
+          cssColors = colors.default
+
+        _map(cssColors, (value, key) ->
+          "#{key}:#{value}"
+        ).join ';'
 
   render: =>
-    {meta, serverData, route, routeKey, modelSerialization} = @state.getValue()
+    {meta, serverData, route, routeKey,
+      modelSerialization, cssVariables} = @state.getValue()
 
     paths = _mapValues @model.l.getAllPathsByRouteKey(routeKey), (path) ->
       pathVars = path.match /:([a-zA-Z0-9-]+)/g
@@ -186,6 +211,9 @@ module.exports = class Head
       z 'style.rubik', rubikCss
 
       # styles
+      z 'style',
+        key: 'css-variables'
+        innerHTML: ":root {#{cssVariables}}"
       if isInliningSource
         # we could use separate css file for styles, which would benefit from
         # cache... but we have a weird problem where chrome tries to

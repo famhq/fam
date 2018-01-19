@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 GroupManageChannels = require '../../components/group_manage_channels'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -17,15 +16,6 @@ module.exports = class GroupManageChannelsPage
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupManageChannelsPage.title'
-        description: @model.l.get 'groupManageChannelsPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupManageChannels = new GroupManageChannels {
@@ -35,7 +25,11 @@ module.exports = class GroupManageChannelsPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupManageChannelsPage.title'
+      description: @model.l.get 'groupManageChannelsPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -48,6 +42,6 @@ module.exports = class GroupManageChannelsPage
         title: @model.l.get 'groupManageChannelsPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$groupManageChannels

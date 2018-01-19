@@ -1,7 +1,6 @@
 z = require 'zorium'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 FilterThreadsDialog = require '../../components/filter_threads_dialog'
@@ -29,16 +28,6 @@ module.exports = class SocialPage
       if route.params.tab is 'threads'
         selectedIndex.next 0
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'general.social'
-        description: @model.l.get 'general.social'
-      }
-    })
-
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$social = new Social {
@@ -63,7 +52,11 @@ module.exports = class SocialPage
       language: @model.l.getLanguage()
       selectedIndex: selectedIndex
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'general.social'
+      description: @model.l.get 'general.social'
+    }
 
   render: =>
     {windowSize, pageTitle, isFilterThreadsDialogVisible, language,
@@ -77,7 +70,7 @@ module.exports = class SocialPage
         title: pageTitle
         isFlat: true
         $topLeftButton:
-          z @$buttonMenu, {color: colors.$primary500}
+          z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$social
       if isFilterThreadsDialogVisible

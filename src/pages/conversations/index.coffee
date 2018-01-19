@@ -1,6 +1,5 @@
 z = require 'zorium'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Conversations = require '../../components/conversations'
@@ -10,16 +9,7 @@ if window?
   require './index.styl'
 
 module.exports = class ConversationsPage
-  constructor: ({@model, requests, @router, serverData}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'drawer.menuItemConversations'
-        description: @model.l.get 'drawer.menuItemConversations'
-      }
-    })
+  constructor: ({@model, requests, @router, serverData, group}) ->
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$conversations = new Conversations {@model, @router}
@@ -27,7 +17,11 @@ module.exports = class ConversationsPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'drawer.menuItemConversations'
+      description: @model.l.get 'drawer.menuItemConversations'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -38,6 +32,6 @@ module.exports = class ConversationsPage
     },
       z @$appBar,
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         title: @model.l.get 'drawer.menuItemConversations'
       @$conversations

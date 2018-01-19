@@ -1,7 +1,6 @@
 z = require 'zorium'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Threads = require '../../components/threads'
@@ -24,15 +23,6 @@ module.exports = class GroupForumPage
       filter: 'all'
     }
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'general.forum'
-        description: @model.l.get 'general.forum'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$fab = new Fab()
@@ -49,7 +39,11 @@ module.exports = class GroupForumPage
       isFilterThreadsDialogVisible: @isFilterThreadsDialogVisible
       group: group
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'general.forum'
+      description: @model.l.get 'general.forum'
+    }
 
   afterMount: =>
     @model.user.getMe().switchMap ({id}) =>
@@ -72,7 +66,7 @@ module.exports = class GroupForumPage
       z @$appBar, {
         title: @model.l.get 'general.forum'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton:
           z @$filterIcon,
             color: colors.$primary500
@@ -94,7 +88,7 @@ module.exports = class GroupForumPage
           $icon: z @$addIcon, {
             icon: 'add'
             isTouchTarget: false
-            color: colors.$white
+            color: colors.$primary500Text
           }
           onclick: =>
             @router.go 'groupNewThread', {groupId: group.key or group.id}

@@ -5,7 +5,6 @@ Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/map'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
@@ -21,15 +20,6 @@ module.exports = class GroupBannedUsersPage
   isGroup: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupBannedUsersPage.title'
-        description: @model.l.get 'groupBannedUsersPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
 
@@ -58,7 +48,11 @@ module.exports = class GroupBannedUsersPage
       windowSize: @model.window.getSize()
       selectedProfileDialogUser: @selectedProfileDialogUser
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupBannedUsersPage.title'
+      description: @model.l.get 'groupBannedUsersPage.title'
+    }
 
   render: =>
     {group, windowSize, selectedProfileDialogUser} = @state.getValue()
@@ -71,7 +65,7 @@ module.exports = class GroupBannedUsersPage
         title: @model.l.get 'groupBannedUsersPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       z @$tabs,
         isBarFixed: false

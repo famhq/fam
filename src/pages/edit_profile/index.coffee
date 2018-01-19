@@ -1,23 +1,17 @@
 z = require 'zorium'
 
-Head = require '../../components/head'
 EditProfile = require '../../components/edit_profile'
 config = require '../../config'
 
 module.exports = class EditProfilePage
-  constructor: ({model, requests, router, serverData, group}) ->
-    @$head = new Head({
-      model
-      requests
-      serverData
-      meta: {
-        title: model.l.get 'editProfilePage.title'
-        description: model.l.get 'editProfilePage.title'
-      }
-    })
-    @$editProfile = new EditProfile {model, router, group}
+  constructor: ({@model, requests, router, serverData, group}) ->
+    @$editProfile = new EditProfile {@model, router, group}
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'editProfilePage.title'
+      description: @model.l.get 'editProfilePage.title'
+    }
 
   render: =>
     z '.p-edit-profile',

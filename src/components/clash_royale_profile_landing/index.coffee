@@ -26,9 +26,7 @@ module.exports = class ProfileLanding
     {me} = @state.getValue()
 
     z '.z-profile-landing',
-      z '.header-background',
-        style:
-          background: @model.theme.getColor('$primary500')
+      z '.header-background'
       z '.content',
         z '.g-grid',
           z '.header',
@@ -36,10 +34,7 @@ module.exports = class ProfileLanding
               @model.l.get 'profileLanding.title'
             z '.description',
               @model.l.get 'profileLanding.description'
-            z '.form', {
-              style:
-                background: @model.theme.getColor('$tertiary700')
-            },
+            z '.form',
               z @$getPlayerTagForm
 
       z '.g-grid',

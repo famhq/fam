@@ -59,7 +59,7 @@ module.exports = class ConversationImagePreview
           $icon: z @$uploadIcon, {
             icon: if isUploading then 'ellipsis' else 'send'
             isTouchTarget: false
-            color: colors.$white
+            color: colors.$primary500Text
           }
           onclick: =>
             unless isUploading

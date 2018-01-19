@@ -1,7 +1,6 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 
-Head = require '../../components/head'
 GroupManageRoles = require '../../components/group_manage_roles'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -17,15 +16,6 @@ module.exports = class GroupManageRolesPage
     user = requests.switchMap ({route}) =>
       @model.user.getById route.params.userId
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupManageRolesPage.title'
-        description: @model.l.get 'groupManageRolesPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupManageRoles = new GroupManageRoles {
@@ -35,7 +25,11 @@ module.exports = class GroupManageRolesPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'groupManageRolesPage.title'
+      description: @model.l.get 'groupManageRolesPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -48,6 +42,6 @@ module.exports = class GroupManageRolesPage
         title: @model.l.get 'groupManageRolesPage.title'
         style: 'primary'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$groupManageRoles

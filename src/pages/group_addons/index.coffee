@@ -1,6 +1,5 @@
 z = require 'zorium'
 
-Head = require '../../components/head'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 GroupAddons = require '../../components/group_addons'
@@ -14,15 +13,6 @@ module.exports = class GroupAddonsPage
   @hasBottomBar: true
 
   constructor: ({@model, requests, @router, serverData, group, @$bottomBar}) ->
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'addonsPage.title'
-        description: @model.l.get 'addonsPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
 
@@ -31,7 +21,11 @@ module.exports = class GroupAddonsPage
     @state = z.state
       windowSize: @model.window.getSize()
 
-  renderHead: => @$head
+  getMeta: =>
+    {
+      title: @model.l.get 'addonsPage.title'
+      description: @model.l.get 'addonsPage.title'
+    }
 
   render: =>
     {windowSize} = @state.getValue()
@@ -43,7 +37,7 @@ module.exports = class GroupAddonsPage
       z @$appBar, {
         title: @model.l.get 'addonsPage.title'
         isFlat: true
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$groupAddons
       z @$bottomBar

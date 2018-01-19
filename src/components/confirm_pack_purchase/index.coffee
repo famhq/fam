@@ -43,7 +43,7 @@ module.exports = class ConfirmPackPurchase
     z '.z-confirm-pack-purchase',
       z @$appBar,
         $topLeftButton: z @$backButton, {
-          color: colors.$primary500
+          color: colors.$header500Icon
           onclick: =>
             @onCancel?()
         }

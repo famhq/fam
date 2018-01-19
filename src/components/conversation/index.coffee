@@ -135,7 +135,7 @@ module.exports = class Conversation extends Base
       onPost: @postMessage
       onResize: @onResize
       allowedPanels: groupUserAndConversation.map ([groupUser, conversation]) =>
-        if conversation.groupId
+        if conversation?.groupId
           panels = ['text', 'stickers']
           meGroupUser = groupUser
           permissions = ['sendImage']

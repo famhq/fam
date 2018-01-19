@@ -27,9 +27,6 @@ module.exports = class BottomBar
   show: =>
     @$$el?.classList.remove 'is-hidden'
 
-  beforeUnmount: =>
-    @show()
-
   render: ({isAbsolute} = {}) =>
     {requests, group} = @state.getValue()
     currentPath = requests?.req.path
@@ -118,6 +115,6 @@ module.exports = class BottomBar
           z '.icon',
             z $icon,
               icon: icon
-              color: if isSelected then colors.$primary500 else colors.$white54
+              color: if isSelected then colors.$primary500 else colors.$tertiary900Text54
               isTouchTarget: false
           z '.text', text

@@ -6,7 +6,6 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 require 'rxjs/add/observable/combineLatest'
 
-Head = require '../../components/head'
 GroupChat = require '../../components/group_chat'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
@@ -72,15 +71,6 @@ module.exports = class GroupChatPage
     hasBottomBar = @model.window.getBreakpoint().map (breakpoint) ->
       breakpoint isnt 'desktop'
 
-    @$head = new Head({
-      @model
-      requests
-      serverData
-      meta: {
-        title: @model.l.get 'groupChatPage.title'
-        description: @model.l.get 'groupChatPage.title'
-      }
-    })
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
@@ -156,7 +146,14 @@ module.exports = class GroupChatPage
       @$bottomBar.hide()
       @$$content.style.transform = 'translateY(64px)'
 
-  renderHead: => @$head
+  beforeUnmount: =>
+    @showBottomBar()
+
+  getMeta: =>
+    {
+      title: @model.l.get 'groupChatPage.title'
+      description: @model.l.get 'groupChatPage.title'
+    }
 
   render: =>
     {windowSize, group, me, conversation, isChannelDrawerOpen
@@ -181,20 +178,20 @@ module.exports = class GroupChatPage
             z 'span.hashtag', '#'
             conversation?.name
             z '.arrow'
-        $topLeftButton: z @$buttonMenu, {color: colors.$primary500}
+        $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton:
           z '.p-group-chat_top-right',
             z '.icon',
               z @$settingsIcon,
                 icon: 'settings'
-                color: colors.$primary500
+                color: colors.$header500Icon
                 onclick: =>
                   @overlay$.next @$groupUserSettingsDialog
             if group?.type is 'public'
               z '.icon',
                 z @$linkIcon,
                   icon: 'shop'
-                  color: colors.$primary500
+                  color: colors.$header500Icon
                   onclick: =>
                     @router.go 'groupShop', {
                       groupId: group.key or group.id
