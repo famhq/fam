@@ -1,0 +1,39 @@
+@require '../../vars'
+
+.z-group-home-offers_ui-card
+  > .fire-amount
+    display: flex
+    align-items: center
+    position: absolute
+    top: 16px
+    right: 16px
+
+  > .offers
+    margin: 8px 0
+    position: relative
+
+    &.no-permissions
+      overflow: hidden
+
+      &:after
+        position: absolute
+        content: ''
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        background: getColor('$black87')
+
+    > .info-box
+      font-body1()
+      color: getColor('$white')
+      position: absolute
+      z-index: 1
+      left: 0
+      top: 0
+      width: 100%
+      padding: 16px
+      box-sizing: border-box
+
+      > .text
+        margin-bottom: 8px

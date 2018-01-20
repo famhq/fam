@@ -34,8 +34,36 @@ colors = _defaults {
     '--tertiary-700': '#1B1E24'
     '--tertiary-800': '#16181E'
     '--tertiary-900': '#0D0F13'
-    '--tertiary-900-text-12': 'rgba(0, 0, 0, 0.12)'
-    '--tertiary-90054': 'rgba(0, 0, 0, 0.54)'
+  eclihpse:
+    '--header-100': '#634E93' # t300
+    '--header-500': '#180153' #t700
+    '--header-500-text': materialColors.$white
+    '--header-500-text-54': materialColors.$white54
+    '--header-500-icon': '#FF5D00' #p500
+
+    '--primary-50': '#FFECE0'
+    '--primary-100': '#FFCEB3'
+    '--primary-200': '#FFAE80'
+    '--primary-300': '#FF8E4D'
+    '--primary-400': '#FF7526'
+    '--primary-500': '#FF5D00'
+    '--primary-50096': 'rgba(255, 93, 0, 0.96)'
+    '--primary-600': '#FF5500'
+    '--primary-700': '#FF4B00'
+    '--primary-800': '#FF4100'
+    '--primary-900': '#FF3000'
+
+    '--tertiary-50': '#E3E1E7'
+    '--tertiary-100': '#E3E1E7'
+    '--tertiary-200': '#B8B3C4'
+    '--tertiary-300': '#89809D'
+    '--tertiary-400': '#362758'
+    '--tertiary-500': '#12013A'
+    '--tertiary-600': '#100134'
+    '--tertiary-700': '#0D012C'
+    '--tertiary-800': '#0A0125'
+    '--tertiary-900': '#050018'
+    '--tertiary-90054': 'rgba(11, 1, 55, 0.54)'
   clashroyaledark:
     '--header-100': '#80A4C3' # t300
     '--header-500': '#003973' #t700

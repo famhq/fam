@@ -12,7 +12,6 @@ require 'rxjs/add/observable/fromPromise'
 
 Icon = require '../icon'
 Dialog = require '../dialog'
-UiCard = require '../ui_card'
 Spinner = require '../spinner'
 PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
@@ -62,12 +61,10 @@ module.exports = class EarnFire
     @$completeOfferButton = new PrimaryButton()
     @$refreshButton = new PrimaryButton()
     @$tipsButton = new PrimaryButton()
-    @$infoCard = new UiCard()
     @$spinner = new Spinner()
 
     @state = z.state
       me: @model.user.getMe()
-      isInfoCardVisible: window? and not localStorage?['hideEarnFireInfo']
       loadingOfferIndex: null
       rewards: rewards.map (rewards) ->
         _map rewards, (reward) ->
@@ -112,25 +109,10 @@ module.exports = class EarnFire
     }
 
   render: =>
-    {me, rewards, isInfoCardVisible, loadingOfferIndex} = @state.getValue()
+    {me, rewards, loadingOfferIndex} = @state.getValue()
 
     z '.z-earn-fire',
       z '.g-grid',
-        if isInfoCardVisible
-          z '.info-card',
-            z @$infoCard,
-              $content:
-                z 'div',
-                  z 'p', @model.l.get 'earnFire.description1'
-                  z 'p', @model.l.get 'earnFire.description2'
-              submit:
-                text: @model.l.get 'installOverlay.closeButtonText'
-                onclick: =>
-                  @state.set isInfoCardVisible: false
-                  localStorage?['hideEarnFireInfo'] = '1'
-
-        # z '.subhead', @model.l.get 'earnFire.description3'
-
         if not rewards?
           @$spinner
         else if _isEmpty rewards

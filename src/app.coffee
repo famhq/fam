@@ -117,6 +117,7 @@ module.exports = class App
           config.DEFAULT_GAME_KEY, language
         )
       )
+    .publishReplay(1).refCount()
 
     # used if state / requests fails to work
     $backupPage = if @serverData?

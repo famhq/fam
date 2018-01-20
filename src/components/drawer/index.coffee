@@ -110,8 +110,7 @@ module.exports = class Drawer
             $ripple: new Ripple()
             iconName: 'chat-bubble'
           }
-          if language in config.COMMUNITY_LANGUAGES and
-              group.key isnt 'playhard' and group.type is 'public'
+          if group.key in ['clashroyalees', 'clashroyalept'] and group.type is 'public'
             {
               path: @router.get 'groupForum', {groupId}
               title: @model.l.get 'general.forum'

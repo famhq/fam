@@ -50,6 +50,13 @@ module.exports = class Portal
       console.log 'missing portal call', args
       null
 
+  callWithError: (args...) =>
+    unless window?
+      # throw new Error 'Portal called server-side'
+      return console.log 'Portal called server-side'
+
+    @portal.call args...
+
   listen: =>
     unless window?
       throw new Error 'Portal called server-side'

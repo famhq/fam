@@ -1,4 +1,5 @@
 _defaults = require 'lodash/defaults'
+_throttle = require 'lodash/throttle'
 require 'rxjs/add/operator/take'
 require 'rxjs/add/operator/toPromise'
 
@@ -7,7 +8,9 @@ config = require '../config'
 COOKIE_DURATION_MS = 365 * 24 * 3600 * 1000 # 1 year
 
 class Cookie
-  constructor: ({@cookieSubject}) -> null
+  constructor: ({@cookieSubject}) ->
+    # can't be run at same time since cookieSubject.take and onNext are async
+    @set = _throttle @_set, 100
 
   getCookieOpts: (host) ->
     host ?= config.HOST
@@ -18,7 +21,7 @@ class Cookie
     # Set cookie for subdomains
     domain: '.' + hostname
 
-  set: (key, value) =>
+  _set: (key, value) =>
     @cookieSubject.take(1).toPromise()
     .then (currentCookies) =>
       @cookieSubject.next _defaults {

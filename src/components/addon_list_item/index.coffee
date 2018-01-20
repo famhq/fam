@@ -7,6 +7,7 @@ _reduce = require 'lodash/reduce'
 _kebabCase = require 'lodash/kebabCase'
 
 SemverService = require '../../services/semver'
+ThemeService = require '../../services/theme'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -39,14 +40,14 @@ module.exports = class AddonListItem
       target: '_blank'
       options:
         statusbar: {
-          color: colors.$primary700
+          color: ThemeService.getVariableValue colors.$primary700
         }
         toolbar: {
           height: 56
-          color: colors.$tertiary700
+          color: ThemeService.getVariableValue colors.$tertiary700
         }
         title: {
-          color: colors.$tertiary700Text
+          color: ThemeService.getVariableValue colors.$tertiary700Text
           staticText: @model.l.get "#{addon.key}.title", {
             file: 'addons'
           }

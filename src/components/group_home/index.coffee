@@ -6,7 +6,7 @@ GroupHomeVideos = require '../group_home_videos'
 GroupHomeThreads = require '../group_home_threads'
 GroupHomeAddons = require '../group_home_addons'
 GroupHomeChat = require '../group_home_chat'
-# GroupHomeOffers = require '../group_home_offers'
+GroupHomeOffers = require '../group_home_offers'
 GroupHomeClashRoyaleChestCycle = require '../group_home_clash_royale_chest_cycle'
 GroupHomeClashRoyaleDecks = require '../group_home_clash_royale_decks'
 MasonryGrid = require '../masonry_grid'
@@ -39,6 +39,9 @@ module.exports = class GroupHome
     @$groupHomeClashRoyaleDecks = new GroupHomeClashRoyaleDecks {
       @model, @router, group, player, @overlay$
     }
+    @$groupHomeOffers = new GroupHomeOffers {
+      @model, @router, group, player, @overlay$
+    }
     @$groupHomeChat = new GroupHomeChat {
       @model, @router, group, player, @overlay$
     }
@@ -68,10 +71,13 @@ module.exports = class GroupHome
             desktop: 2
           $elements: _filter [
             # TODO: give each of these their own comonent with defined height
-            if language in ['es', 'pt'] and group?.type is 'public' and group?.key isnt 'playhard'
+            if group?.key in ['clashroyalees', 'clashroyalept'] and group?.key isnt 'playhard'
               z @$groupHomeThreads
 
             z @$groupHomeChat
+
+            if group?.key is 'playhard'
+              z @$groupHomeOffers
 
             if group?.key is 'playhard'
               z @$groupHomeVideos

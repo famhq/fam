@@ -23,10 +23,10 @@ module.exports = class FormattedText
     if text?.map
       $el = text.map((text) => @get$ {text, model})
     else
-      hasAddon = text.match /\([^\)]+"addon:([a-zA-Z0-9-]+)\|([a-zA-Z0-9-]+)/
+      hasAddon = text.match /\([^\)]+"addon:([a-zA-Z0-9-]+)/
       if hasAddon
         @minHeight = '60px'
-        $el = model.addon.getByKey hasAddon[2]
+        $el = model.addon.getByKey hasAddon[1]
         .map (addon) =>
           state = {addon}
           @get$ {text, model, state}
