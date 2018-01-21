@@ -39,10 +39,11 @@ module.exports = class GroupHomeOffers
     if @model.portal
       $offers = RxObservable.combineLatest(
         RxObservable.fromPromise @model.portal.call 'app.getDeviceId'
+        group
         @model.l.getLanguage()
         (vals...) -> vals
       )
-      .switchMap ([deviceId, language]) =>
+      .switchMap ([deviceId, group, language]) =>
         @model.specialOffer.getAll {deviceId, language, limit: 3}
         .switchMap (offers) =>
           if offers
@@ -58,7 +59,7 @@ module.exports = class GroupHomeOffers
             usageStats
             .map (usageStats) =>
               offers = SpecialOfferService.embedStatsAndFilter {
-                offers, usageStats, @model, deviceId
+                offers, usageStats, @model, deviceId, groupId: group.id
               }
           else
             RxObservable.of false

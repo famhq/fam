@@ -27,9 +27,7 @@ class RouterService
 
     if path
       # store current page for app re-launch
-      console.log 'gopath', path
       if Environment.isGameApp(config.GAME_KEY) and @model.cookie
-        console.log 'set', path
         @model.cookie.set 'lastPath', path
 
       @router.go path

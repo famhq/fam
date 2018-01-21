@@ -46,8 +46,8 @@ module.exports = class GroupShopPage
         else
           RxObservable.of null
     }
-    @$specialOffers = new SpecialOffers {@model, @router, overlay$}
-    @$earnFire = new EarnFire {@model, @router, overlay$}
+    @$specialOffers = new SpecialOffers {@model, @router, overlay$, group}
+    @$earnFire = new EarnFire {@model, @router, overlay$, group}
 
     @state = z.state
       me: @model.user.getMe()

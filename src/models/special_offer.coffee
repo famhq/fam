@@ -28,14 +28,14 @@ module.exports = class SpecialOffer
     }
     @auth.stream "#{@namespace}.getAll", options, {ignoreCache}
 
-  giveInstallReward: ({offer, deviceId, usageStats}) =>
+  giveInstallReward: ({offer, deviceId, groupId, usageStats}) =>
     @auth.call "#{@namespace}.giveInstallReward", {
-      offer, deviceId, usageStats
+      offer, deviceId, groupId, usageStats
     }, {invalidateAll: true}
 
-  giveDailyReward: ({offer, deviceId, usageStats}) =>
+  giveDailyReward: ({offer, deviceId, groupId, usageStats}) =>
     @auth.call "#{@namespace}.giveDailyReward", {
-      offer, deviceId, usageStats
+      offer, deviceId, groupId, usageStats
     }, {invalidateAll: true}
 
   logClickById: (id, {deviceId}) =>

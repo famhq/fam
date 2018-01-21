@@ -3,15 +3,7 @@ module.exports = class GroupRecord
 
   constructor: ({@auth}) -> null
 
-  save: ({userId, groupRecordTypeId, value}) =>
-    @auth.call "#{@namespace}.save", {userId, groupRecordTypeId, value}, {
-      invalidateAll: true
+  getAllByGroupIdAndRecordTypeKey: (groupId, recordTypeKey) =>
+    @auth.stream "#{@namespace}.getAllByGroupIdAndRecordTypeKey", {
+      groupId, recordTypeKey
     }
-
-  bulkSave: (changes) =>
-    @auth.call "#{@namespace}.bulkSave", {changes}, {
-      invalidateAll: true
-    }
-
-  getAllByUserIdAndGroupId: ({userId, groupId}) =>
-    @auth.stream "#{@namespace}.getAllByUserIdAndGroupId", {userId, groupId}

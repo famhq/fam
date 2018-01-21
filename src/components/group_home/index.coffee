@@ -5,6 +5,7 @@ _filter = require 'lodash/filter'
 GroupHomeVideos = require '../group_home_videos'
 GroupHomeThreads = require '../group_home_threads'
 GroupHomeAddons = require '../group_home_addons'
+GroupHomeAdminStats = require '../group_home_admin_stats'
 GroupHomeChat = require '../group_home_chat'
 GroupHomeOffers = require '../group_home_offers'
 GroupHomeClashRoyaleChestCycle = require '../group_home_clash_royale_chest_cycle'
@@ -31,6 +32,9 @@ module.exports = class GroupHome
       @model, @router, group, player, @overlay$
     }
     @$groupHomeAddons = new GroupHomeAddons {
+      @model, @router, group, player, @overlay$
+    }
+    @$groupHomeAdminStats = new GroupHomeAdminStats {
       @model, @router, group, player, @overlay$
     }
     @$groupHomeClashRoyaleChestCycle = new GroupHomeClashRoyaleChestCycle {
@@ -75,6 +79,9 @@ module.exports = class GroupHome
               z @$groupHomeThreads
 
             z @$groupHomeChat
+
+            if me?.username is 'austin'
+              z @$groupHomeAdminStats
 
             if group?.key is 'playhard'
               z @$groupHomeOffers

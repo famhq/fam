@@ -26,15 +26,16 @@ if window?
   require './index.styl'
 
 module.exports = class SpecialOffers
-  constructor: ({@model, @router, @overlay$}) ->
+  constructor: ({@model, @router, @overlay$, group}) ->
     @usageStatsStreams = new RxReplaySubject 1
     if @model.portal
       $offers = RxObservable.combineLatest(
         RxObservable.fromPromise @model.portal.call 'app.getDeviceId'
+        group
         @model.l.getLanguage()
         (vals...) -> vals
       )
-      .switchMap ([deviceId, language]) =>
+      .switchMap ([deviceId, group, language]) =>
         @model.specialOffer.getAll {deviceId, language}
         .switchMap (offers) =>
           if offers
@@ -50,7 +51,7 @@ module.exports = class SpecialOffers
             usageStats
             .map (usageStats) =>
               offers = SpecialOfferService.embedStatsAndFilter {
-                offers, usageStats, @model, deviceId
+                offers, usageStats, @model, deviceId, groupId: group.id
               }
           else
             RxObservable.of false

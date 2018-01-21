@@ -1,5 +1,4 @@
 _defaults = require 'lodash/defaults'
-_throttle = require 'lodash/throttle'
 require 'rxjs/add/operator/take'
 require 'rxjs/add/operator/toPromise'
 
@@ -10,7 +9,21 @@ COOKIE_DURATION_MS = 365 * 24 * 3600 * 1000 # 1 year
 class Cookie
   constructor: ({@cookieSubject}) ->
     # can't be run at same time since cookieSubject.take and onNext are async
-    @set = _throttle @_set, 100
+    @setQueue = []
+    @setQueueInterval = null
+    @set = =>
+      args = arguments
+      @setQueue.push =>
+        @_set args...
+      unless @setQueueInterval
+        @setQueueInterval = setInterval @processSetQueue, 1
+
+  processSetQueue: =>
+    @setQueue.shift()?()
+    if @setQueue.length is 0
+      clearInterval @setQueueInterval
+      @setQueueInterval = null
+
 
   getCookieOpts: (host) ->
     host ?= config.HOST

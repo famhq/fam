@@ -1,0 +1,16 @@
+@require '../../vars'
+
+.z-group-home-admin-stats_ui-card
+  > .tabs
+    > .tab
+      font-caption1()
+      text-transform: uppercase
+      background: getColor('$tertiary500')
+      display: inline-block
+      padding: 2px 4px
+      margin-right: 8px
+      cursor: pointer
+
+      &.is-selected
+        background: transparent
+        text-decoration: underline

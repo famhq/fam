@@ -23,17 +23,18 @@ if window?
   require './index.styl'
 
 module.exports = class EarnFire
-  constructor: ({@model, @router, @overlay$}) ->
+  constructor: ({@model, @router, @overlay$, group}) ->
     if @model.portal
       @update = new RxBehaviorSubject null
 
       rewards = RxObservable.combineLatest(
         RxObservable.fromPromise @model.portal.call 'app.getDeviceId'
         @model.l.getLanguage()
+        group
         @update
         (vals...) -> vals
       )
-      .switchMap ([deviceId, language, time]) =>
+      .switchMap ([deviceId, language, group, time]) =>
         matches = /(Android|iPhone OS) ([0-9\._]+)/g.exec(navigator.userAgent)
         osVersion = matches?[2].replace /_/g, '.'
         @model.reward.getAll {
@@ -50,6 +51,7 @@ module.exports = class EarnFire
           osVersion: osVersion
           isApp: Environment.isGameApp config.GAME_KEY
           appVersion: Environment.getAppVersion config.GAME_KEY
+          groupId: group.id
         }, {ignoreCache: true}
         .map (rewards) ->
           rewards or false

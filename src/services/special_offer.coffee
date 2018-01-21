@@ -10,10 +10,12 @@ config = require '../config'
 class SpecialOfferService
   constructor: ->
     @cachedUsageStats = {}
+    # so we don't get an endless loop of invalidate -> fetch/embed -> invalidate
+    @cachedAttempts = {}
 
   getUsageStats: ({model, packageNames}) =>
     key = if packageNames then packageNames.join('|') else ''
-    if @cachedUsageStats[key]
+    if @cachedUsageStats[key]?
       Promise.resolve @cachedUsageStats[key]
     else
       model.portal.callWithError 'usageStats.getStats', {packageNames}
@@ -30,12 +32,15 @@ class SpecialOfferService
       .then (stats) =>
         @cachedUsageStats[key] = stats
         stats
+      .catch (err) =>
+        @cachedUsageStats[key] = false
+        throw err
 
   clearUsageStatsCache: =>
     @cachedUsageStats = {}
 
-  embedStatsAndFilter: ({offers, usageStats, model, deviceId}) ->
-    offers = _filter _map offers, (offer) ->
+  embedStatsAndFilter: ({offers, usageStats, model, deviceId, groupId}) =>
+    offers = _filter _map offers, (offer) =>
       stats = _find usageStats, {PackageName: offer.androidPackage}
 
       isInstalled = Boolean stats
@@ -55,19 +60,23 @@ class SpecialOfferService
         return
       else if isInstalled and offer.transaction?.status is 'clicked'
         # give fire for installing
-        model.specialOffer.giveInstallReward {
-          offer, deviceId, usageStats: stats
-        }
-      else if isInstalled and offer.transaction?.status is 'installed'
-        minutesPlayed = Math.floor(
-          offer.androidPackageStats?.TotalTimeInForeground / (60 * 1000)
-        )
-        data = _defaults offer.meCountryData, offer.defaultData
-        hasCompletedDailyMinutes = minutesPlayed > data.minutesPerDay
-        if hasCompletedDailyMinutes
-          model.specialOffer.giveDailyReward {
-            offer, deviceId, usageStats: stats
+        unless @cachedAttempts[offer.id + 'install']
+          @cachedAttempts[offer.id + 'install'] = true
+          model.specialOffer.giveInstallReward {
+            offer, deviceId, groupId, usageStats: stats
           }
+      else if isInstalled and offer.transaction?.status is 'installed'
+        unless @cachedAttempts[offer.id + 'daily']
+          @cachedAttempts[offer.id + 'daily'] = true
+          minutesPlayed = Math.floor(
+            offer.androidPackageStats?.TotalTimeInForeground / (60 * 1000)
+          )
+          data = _defaults offer.meCountryData, offer.defaultData
+          hasCompletedDailyMinutes = minutesPlayed > data.minutesPerDay
+          if hasCompletedDailyMinutes
+            model.specialOffer.giveDailyReward {
+              offer, deviceId, groupId, usageStats: stats
+            }
       else
         console.log 'none', isInstalled, offer.transaction
 
