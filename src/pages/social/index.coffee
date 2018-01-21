@@ -68,7 +68,6 @@ module.exports = class SocialPage
     },
       z @$appBar, {
         title: pageTitle
-        isFlat: true
         $topLeftButton:
           z @$buttonMenu, {color: colors.$header500Icon}
       }

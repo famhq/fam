@@ -35,7 +35,6 @@ module.exports = class UserOfWeekPage
       z @$appBar, {
         title: @model.l.get 'userOfWeekPage.title'
         style: 'primary'
-        isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
       }
       @$userOfWeek

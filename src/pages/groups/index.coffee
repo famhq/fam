@@ -12,7 +12,7 @@ module.exports = class GroupsPage
   constructor: ({@model, requests, @router, serverData, group}) ->
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
-    @$conversations = new Groups {@model, @router}
+    @$groups = new Groups {@model, @router}
 
     @state = z.state
       windowSize: @model.window.getSize()
@@ -31,7 +31,6 @@ module.exports = class GroupsPage
         height: "#{windowSize.height}px"
     },
       z @$appBar,
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         title: @model.l.get 'communityPage.menuText'
-      @$conversations
+      @$groups

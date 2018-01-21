@@ -3,6 +3,7 @@
 .p-group-chat
   display: flex
   flex-direction: column
+  overflow: hidden
 
   &.should-show-bottom-bar
     // for some reason this is necessary... without it, hiding the bottom bar
@@ -19,7 +20,7 @@
   > .content
     flex: 1
     display: flex
-    flex-direction: column
+    // flex-direction: column
 
   > .overlay
     position: fixed
@@ -32,25 +33,16 @@
 .p-group-chat_top-right
   display: flex
 
+  > .channels-icon
+    @media (min-width: $contentMaxWidth)
+      display: none
+
 .p-group-chat_title
   padding: 12px
   margin-left: -12px
-  cursor: pointer
   position: relative
 
   > .group
     font-micro()
     color: getColor('$header500Text54')
     margin-bottom: 2px
-
-  > .channel
-    > .arrow
-      display: inline-block
-      vertical-align: top
-      margin-left: 10px
-      margin-top: 8px
-      width: 0
-      height: 0
-      border-left: 5px solid transparent
-      border-right: 5px solid transparent
-      border-top: 5px solid getColor('$white')

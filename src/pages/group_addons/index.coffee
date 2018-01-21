@@ -36,7 +36,6 @@ module.exports = class GroupAddonsPage
     },
       z @$appBar, {
         title: @model.l.get 'addonsPage.title'
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$groupAddons

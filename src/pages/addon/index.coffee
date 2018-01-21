@@ -61,7 +61,6 @@ module.exports = class AddonPage
     },
       z @$appBar, {
         style: 'primary'
-        isFlat: true
         $topLeftButton: z @$buttonBack, {
           color: colors.$header500Icon
           fallbackPath: @router.get 'groupTools', {

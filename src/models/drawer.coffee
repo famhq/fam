@@ -12,8 +12,8 @@ module.exports = class Drawer
     # (would need to get rid of all isOpens in state so it wouldn't re-render)
     @_isOpen.next true
     # prevent body scrolling while viewing menu
-    document.body.style.overflow = 'hidden'
+    document?.body.style.overflow = 'hidden'
 
   close: =>
     @_isOpen.next false
-    document.body.style.overflow = 'auto'
+    document?.body.style.overflow = 'auto'

@@ -41,7 +41,6 @@ module.exports = class GroupInvitePage
     },
       z @$appBar, {
         title: @model.l.get 'groupInvitesPage.title'
-        isFlat: true
         $topLeftButton: z @$buttonBack
       }
       z '.list',

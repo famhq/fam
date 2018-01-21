@@ -26,11 +26,13 @@ module.exports = class GroupHomeAdminStats
       fireSpentGraphSeries: group.switchMap (group) =>
         @model.groupRecord.getAllByGroupIdAndRecordTypeKey(
           group.id, 'fireSpent'
-        )
+        ).map (records) ->
+          records?.reverse()
       fireEarnedGraphSeries: group.switchMap (group) =>
         @model.groupRecord.getAllByGroupIdAndRecordTypeKey(
           group.id, 'fireEarned'
-        )
+        ).map (records) ->
+          records?.reverse()
     }
 
   render: =>

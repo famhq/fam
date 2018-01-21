@@ -39,7 +39,6 @@ module.exports = class GroupAuditLogPage
       z @$appBar, {
         title: @model.l.get 'groupAuditLogPage.title'
         style: 'primary'
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$groupAuditLog

@@ -1,0 +1,143 @@
+@require '../../vars'
+
+$zIndexDrawer = 300
+
+.z-nav-drawer
+  position: relative
+  z-index: 999
+
+.z-nav-drawer_drawer
+  flex: 1
+  display: flex
+  flex-direction: column
+
+  > .header
+    shadow-1()
+    // prevents flicker glitch http://stackoverflow.com/a/3921870
+    backface-visibility: hidden
+    padding: 20px 16px
+    height: 56px
+    box-sizing: border-box
+    border-bottom: 1px solid getColor('$tertiary900Text12')
+    border-right: 1px solid getColor('$tertiary90012')
+    background: getColor('$primary500')
+    display: flex
+    align-items: center
+
+    @media (min-width: $breakPointMedium)
+      height: 64px
+
+    > .icon
+      width: 36px
+      margin-right: 16px
+
+    > .name
+      font-h1(false)
+      color: getColor('$primary500Text')
+
+  > .ad
+    // position: absolute
+    // bottom: 0
+    width: 336px
+    height: 280px
+
+  > .content
+    flex: 1
+    width: 100%
+    box-sizing: border-box
+    background: getColor('$tertiary700')
+    padding: 8px 0
+    overflow-y: auto
+    -webkit-overflow-scrolling: touch
+
+    > .menu
+      list-style-type: none
+      margin: 0
+      padding: 0
+
+      > .sign-in-buttons
+        padding: 6px 16px
+        display: flex
+
+        > .button
+          font-button()
+          flex: 1
+          padding: 10px
+          background: getColor('$primary500')
+          color: getColor('$primary500Text')
+          text-align: center
+          border-radius: 2px
+          cursor: pointer
+
+          &:first-child
+            margin-right: 16px
+
+      > .divider
+        width: 100%
+        height: 1px
+        background: getColor('$tertiary900Text12')
+        margin: 8px 0
+
+      > .subhead
+        font-subhead()
+        color: getColor('$primary500')
+        padding: 16px
+
+      .menu-item
+        > .menu-item-link
+          font-title()
+          cursor: pointer
+          display: flex
+          align-items: center
+          padding: 10px 16px
+
+          &:active
+            background: getColor('$tertiary500')
+
+          &.is-child
+            color: getColor('$tertiary500Text70')
+
+          &.is-selected
+            color: getColor('$tertiary500Text')
+
+          > .icon
+            margin-right: 36px
+            width: 24px
+            height: 28px
+
+          > .new
+            font-button()
+            color: getColor('$primary500')
+            font-size: 10px
+            font-weight: 700
+            display: inline-block
+            vertical-align: middle
+            margin-left: 16px
+
+          > .chevron
+            margin-left: auto
+
+        ul
+          list-style-type: none
+          margin: 0
+          padding: 0
+
+          &.children-0
+            padding-left: 16px
+
+        &.is-selected
+          > .menu-item-link
+            background: getColor('$tertiary500')
+
+@media (min-width: $contentMaxWidth)
+  .z-nav-drawer_drawer > .content > .menu .menu-item > .menu-item-link
+    position: relative // for ripple
+    &:active
+      background: none !important
+
+@media (pointer: fine) and (min-width: $contentMaxWidth)
+  .z-nav-drawer_drawer > .content > .menu .menu-item > .menu-item-link
+    padding: 4px 16px
+
+    &:hover
+      background: getColor('$tertiary600')

@@ -42,7 +42,6 @@ module.exports = class GroupManageMemberPage
       z @$appBar, {
         title: @model.l.get 'groupManageMemberPage.title'
         style: 'primary'
-        isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
       }
       @$groupManageMember

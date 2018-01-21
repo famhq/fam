@@ -68,13 +68,14 @@ module.exports = class GroupChatPage
     # breaks switching groups (leaves getMessagesStream as prev val)
     # .publishReplay(1).refCount()
 
-    hasBottomBar = @model.window.getBreakpoint().map (breakpoint) ->
+    @hasBottomBarObs = @model.window.getBreakpoint().map (breakpoint) ->
       breakpoint isnt 'desktop'
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
     @$linkIcon = new Icon()
+    @$channelsIcon = new Icon()
 
     @$groupChat = new GroupChat {
       @model
@@ -87,7 +88,7 @@ module.exports = class GroupChatPage
       conversation: conversation
       onScrollUp: @showBottomBar
       onScrollDown: @hideBottomBar
-      hasBottomBar: hasBottomBar
+      hasBottomBar: @hasBottomBarObs
     }
     @$profileDialog = new ProfileDialog {
       @model
@@ -117,17 +118,23 @@ module.exports = class GroupChatPage
 
     @state = z.state
       windowSize: @model.window.getSize()
+      breakpoint: @model.window.getBreakpoint()
       group: @group
       me: me
       selectedProfileDialogUser: selectedProfileDialogUser
       isChannelDrawerOpen: @isChannelDrawerOpen
       conversation: conversation
-      shouldShowBottomBar: hasBottomBar
+      shouldShowBottomBar: @hasBottomBarObs
 
   afterMount: (@$$el) =>
     @$$content = @$$el?.querySelector '.content'
     @isBottomBarVisible = true
     setTimeout @hideBottomBar, BOTTOM_BAR_HIDE_DELAY_MS
+    @mountDisposable = @hasBottomBarObs.subscribe (hasBottomBar) =>
+      if not hasBottomBar and @isBottomBarVisible
+        @hideBottomBar()
+      else if hasBottomBar and not @isBottomBarVisible
+        @showBottomBar()
 
     @group.take(1).subscribe (group) =>
       @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
@@ -148,6 +155,7 @@ module.exports = class GroupChatPage
 
   beforeUnmount: =>
     @showBottomBar()
+    @mountDisposable?.unsubscribe()
 
   getMeta: =>
     {
@@ -156,7 +164,7 @@ module.exports = class GroupChatPage
     }
 
   render: =>
-    {windowSize, group, me, conversation, isChannelDrawerOpen
+    {windowSize, group, me, conversation, isChannelDrawerOpen, breakpoint
       selectedProfileDialogUser, shouldShowBottomBar} = @state.getValue()
 
     hasMemberPermission = @model.group.hasPermission group, me
@@ -177,7 +185,6 @@ module.exports = class GroupChatPage
           z '.channel',
             z 'span.hashtag', '#'
             conversation?.name
-            z '.arrow'
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton:
           z '.p-group-chat_top-right',
@@ -187,25 +194,23 @@ module.exports = class GroupChatPage
                 color: colors.$header500Icon
                 onclick: =>
                   @overlay$.next @$groupUserSettingsDialog
-            if group?.type is 'public'
-              z '.icon',
-                z @$linkIcon,
-                  icon: 'shop'
-                  color: colors.$header500Icon
-                  onclick: =>
-                    @router.go 'groupShop', {
-                      groupId: group.key or group.id
-                    }
-
+            z '.channels-icon',
+              z @$channelsIcon,
+                icon: 'channels'
+                color: colors.$header500Icon
+                onclick: =>
+                  @isChannelDrawerOpen.next true
       }
       z '.content', {
         key: 'group-chat-content' # since we change css (transform) manually
       },
         z @$groupChat
+        if breakpoint is 'desktop'
+          z @$channelDrawer
       @$bottomBar
 
       if selectedProfileDialogUser
         z @$profileDialog
 
-      if isChannelDrawerOpen
+      if breakpoint isnt 'desktop'
         z @$channelDrawer

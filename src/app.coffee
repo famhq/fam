@@ -17,7 +17,7 @@ require 'rxjs/add/observable/of'
 require 'rxjs/add/operator/publishReplay'
 
 Head = require './components/head'
-Drawer = require './components/drawer'
+NavDrawer = require './components/nav_drawer'
 BottomBar = require './components/bottom_bar'
 XpGain = require './components/xp_gain'
 SignInDialog = require './components/sign_in_dialog'
@@ -136,7 +136,7 @@ module.exports = class App
     @overlay$ = new RxBehaviorSubject null
 
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
-    @$drawer = new Drawer {@model, @router, @group, @overlay$}
+    @$navDrawer = new NavDrawer {@model, @router, @group, @overlay$}
     @$xpGain = new XpGain {@model}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router}
@@ -300,7 +300,7 @@ module.exports = class App
           #   'We\'re working on bring back up all features'
           z '.z-root',
             unless hideDrawer
-              z @$drawer, {currentPath: request?.req.path}
+              z @$navDrawer, {currentPath: request?.req.path}
             z '.page',
               # show page before me has loaded
               if (not me or isPageAvailable) and request?.$page

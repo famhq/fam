@@ -21,7 +21,6 @@ module.exports = class FourOhFourPage
     z '.p-404',
       z @$appBar, {
         title: @model.l.get '404Page.text'
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       z '.content', {

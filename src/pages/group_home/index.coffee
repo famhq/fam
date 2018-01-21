@@ -50,7 +50,6 @@ module.exports = class GroupHomePage
       z @$appBar, {
         title: @model.l.get 'general.home'
         style: 'primary'
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton: z @$settingsIcon,
           icon: 'settings'

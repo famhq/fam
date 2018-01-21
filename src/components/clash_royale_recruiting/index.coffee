@@ -34,7 +34,6 @@ module.exports = class Recruiting
     },
       z @$appBar, {
         title: @model.l.get 'general.recruiting'
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
       @$threads

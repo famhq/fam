@@ -39,7 +39,6 @@ module.exports = class GroupAddChannelPage
       z @$appBar, {
         title: @model.l.get 'groupAddChannelPage.title'
         style: 'primary'
-        isFlat: true
         $topLeftButton: z @$buttonBack, {color: colors.$header500Icon}
       }
       z @$groupEditChannel, {isNewChannel: true}

@@ -31,7 +31,6 @@ module.exports = class ConversationsPage
         height: "#{windowSize.height}px"
     },
       z @$appBar,
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         title: @model.l.get 'drawer.menuItemConversations'
       @$conversations

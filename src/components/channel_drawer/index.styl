@@ -3,45 +3,28 @@
 $zIndexChannelDrawer = 998
 $zIndexChannelDrawerDrawer = 999
 
-.z-channel-drawer
-  position: fixed
-  z-index: $zIndexChannelDrawer
-  top: 0
-  left: 0
-  width: 100%
-  height: 100%
+.z-channel-drawer_drawer
+  flex: 1
+  display: flex
+  flex-direction: column
 
-  > .drawer
-    position: absolute
-    z-index: $zIndexChannelDrawerDrawer
-    top: 8px
-    left: 64px
+  > .title
+    font-subhead()
+    color: getColor('$primary500')
+    padding: 16px
+
+  > .divider
+    width: 100%
+    height: 1px
+    background: getColor('$tertiary900Text12')
+    margin: 8px 0
+
+  > .manage-channels
+    padding: 16px
     display: flex
-    flex-direction: column
-    background: getColor('$tertiary500')
-    min-width: 178px
-    shadow-1()
+    align-items: center
+    cursor: pointer
 
-    @media (min-width: $breakPointMedium)
-      left: 336px + 32px
-
-    > .title
-      font-caption2()
-      padding: 8px 16px
-      border-bottom: 1px solid getColor('$tertiary900Text12')
-
-    > .divider
-      width: 100%
-      height: 1px
-      background: getColor('$tertiary900Text12')
-      // margin: 8px 0
-
-    > .manage-channels
-      padding: 16px
-      display: flex
-      align-items: center
-      cursor: pointer
-
-      > .text
-        font-body1()
-        margin-left: 16px
+    > .text
+      font-body1()
+      margin-left: 16px

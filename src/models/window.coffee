@@ -63,6 +63,7 @@ module.exports = class Window
 
   getAppBarHeightVal: =>
     {width} = @getSizeVal()
+    console.log 'got', width
     if width > 768 then 64 else 56
 
   getSize: =>

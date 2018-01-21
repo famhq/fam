@@ -3,6 +3,7 @@ _map = require 'lodash/map'
 
 Icon = require '../icon'
 ChannelList = require '../channel_list'
+Drawer = require '../drawer'
 colors = require '../../colors'
 
 if window?
@@ -20,6 +21,16 @@ module.exports = class ChannelDrawer
       @router
       conversations: group.map (group) -> group.conversations
     }
+    @$drawer = new Drawer {
+      @model
+      side: 'right'
+      key: 'channel'
+      @isOpen
+      onOpen: =>
+        @isOpen.next true
+      onClose: =>
+        @isOpen.next false
+    }
     @$manageChannelsSettingsIcon = new Icon()
 
     @state = z.state
@@ -33,38 +44,35 @@ module.exports = class ChannelDrawer
 
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
-    z '.z-channel-drawer', {
-      onclick: =>
-        @isOpen.next false
-    },
-      z '.drawer', {
-        onclick: (e) ->
-          e?.stopPropagation()
-      },
-        z '.title', @model.l.get 'channelDrawer.title'
+    z '.z-channel-drawer',
+      z @$drawer,
+        hasAppBar: true
+        $content:
+          z '.z-channel-drawer_drawer',
+            z '.title', @model.l.get 'channelDrawer.title'
 
-        z @$channelList, {
-          selectedConversationId: conversation?.id
-          onclick: (e, {id}) =>
-            @router.go 'groupChatConversation', {
-              groupId: group?.key or group?.id, conversationId: id
-            }, {ignoreHistory: true}
-            @isOpen.next false
-        }
+            z @$channelList, {
+              selectedConversationId: conversation?.id
+              onclick: (e, {id}) =>
+                @router.go 'groupChatConversation', {
+                  groupId: group?.key or group?.id, conversationId: id
+                }, {ignoreHistory: true}
+                @isOpen.next false
+            }
 
-        if hasAdminPermission
-          [
-            z '.divider'
-            z '.manage-channels', {
-              onclick: =>
-                @router.go 'groupManageChannels', {
-                  id: group?.key or group?.id
-                }
-            },
-              z '.icon',
-                z @$manageChannelsSettingsIcon,
-                  icon: 'settings'
-                  isTouchTarget: false
-                  color: colors.$primary500
-              z '.text', 'Manage channels'
-          ]
+            if hasAdminPermission
+              [
+                z '.divider'
+                z '.manage-channels', {
+                  onclick: =>
+                    @router.go 'groupManageChannels', {
+                      id: group?.key or group?.id
+                    }
+                },
+                  z '.icon',
+                    z @$manageChannelsSettingsIcon,
+                      icon: 'settings'
+                      isTouchTarget: false
+                      color: colors.$primary500
+                  z '.text', 'Manage channels'
+              ]

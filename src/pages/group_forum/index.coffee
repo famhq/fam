@@ -65,7 +65,6 @@ module.exports = class GroupForumPage
     },
       z @$appBar, {
         title: @model.l.get 'general.forum'
-        isFlat: true
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton:
           z @$filterIcon,
