@@ -12,7 +12,7 @@ module.exports = class ThreadVoteButton
 
   render: (options) =>
     {parent, parentType, vote, hasVoted, hasRipple
-      isTouchTarget, color, size} = options
+      isTouchTarget, color, size, onclick} = options
 
     {me} = @state.getValue()
 
@@ -33,6 +33,7 @@ module.exports = class ThreadVoteButton
           e?.stopPropagation()
           e?.preventDefault()
           unless hasVoted
+            onclick?()
             @model.signInDialog.openIfGuest me
             .then =>
               @model.threadVote.upsertByParent(

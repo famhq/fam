@@ -25,10 +25,14 @@ module.exports = class GroupManageRoles
       'permaBanUser'
       'tempBanUser'
       'unbanUser'
+      'deleteMessage'
       'sendMessage'
       'sendLink'
       'sendImage'
       'sendAddon'
+      'deleteForumThread'
+      'pinForumThread'
+      'deleteForumComment'
     ]
 
     @$groupRolePermissions = new GroupRolePermissions {

@@ -1,99 +1,6 @@
 @require '../../vars'
 
-.z-threads.is-control
-  flex: 1
-  width: 100%
-  overflow: auto
-  -webkit-overflow-scrolling: touch
-  padding: 16px
-  box-sizing: border-box
-
-  > .no-threads
-    text-align: center
-
-  > .g-grid
-    margin-top: 4px
-
-    > .user-of-week
-      background: getColor('$primary900')
-      padding: 8px
-      margin-bottom: 16px
-      border-radius: 2px
-
-      > .title
-        font-button()
-
-    > .columns
-      display: flex
-
-      > .column
-        flex: 1
-        margin: 0 8px
-
-        &:first-child
-          margin-left: 0
-
-        &:last-child
-          margin-right: 0
-
-        > .thread
-          background: getColor('$tertiary700')
-          display: inline-block
-          width: 100%
-          border-radius: 2px
-          margin-bottom: 16px
-
-          > .content
-
-            > .image
-              background-size: cover
-              background-position: center
-              width: 100%
-              height: 0
-              padding-bottom: 33%
-
-            > .icon
-              width: 34px
-              margin-right: 16px
-              display: none // FIXME
-
-            > .info
-              flex: 1
-              padding: 16px
-
-              > .title
-                font-title()
-
-              > .bottom
-                margin-top: 8px
-
-                > .author
-                  font-caption2()
-                  display: flex
-                  align-items: center
-
-                  > .name
-                    max-width: 120px
-                    white-space: nowrap
-                    text-overflow: ellipsis
-                    overflow: hidden
-
-                  > .middot
-                    margin: 0 4px
-
-                  > .comments
-                    margin-left: auto
-                    margin-right: 16px
-
-                  > .comments, > .points
-                    display: flex
-                    align-items: center
-
-                    > .icon
-                      margin: 0 8px
-
-
-.z-threads&.is-lite
+.z-threads
   flex: 1
   width: 100%
   overflow: auto
@@ -107,6 +14,8 @@
     margin-top: 4px
     padding-bottom: 48px // for loading spinner
     position: relative
+    // this + padding/appbar forces page to be taller than window so scroll works (for infinite scroll)
+    min-height: 100%
 
     > .loading
       position: absolute

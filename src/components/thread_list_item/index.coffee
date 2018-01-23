@@ -34,6 +34,8 @@ module.exports = class ThreadListItem
       group: group
       isExpanded: false
       thread: thread
+      hasVotedUp: thread.myVote?.vote is 1
+      hasVotedDown: thread.myVote?.vote is -1
 
   afterMount: (@$$el) =>
     {thread} = @state.getValue()
@@ -51,19 +53,19 @@ module.exports = class ThreadListItem
   render: ({hasPadding} = {}) =>
     hasPadding ?= true
 
-    {me, language, isExpanded, thread, group} = @state.getValue()
+    {me, language, isExpanded, thread, group,
+      hasVotedUp, hasVotedDown} = @state.getValue()
 
     # thread ?= {data: {}, playerDeck: {}}
 
     mediaAttachment = thread.data?.attachments?[0]
     mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
-    hasVotedUp = thread.myVote?.vote is 1
-    hasVotedDown = thread.myVote?.vote is -1
+    isPinned = thread.data?.isPinned
 
     z 'a.z-thread-list-item', {
       key: "thread-list-item-#{thread.id}"
       href: @model.thread.getPath thread, group, @router
-      className: z.classKebab {isExpanded, @isImageLoaded, hasPadding}
+      className: z.classKebab {isExpanded, @isImageLoaded, hasPadding, isPinned}
       onclick: (e) =>
         e.preventDefault()
         # set cache manually so we don't have to re-fetch
@@ -149,6 +151,8 @@ module.exports = class ThreadListItem
                     hasRipple: window?
                     color: colors.$tertiary300
                     size: '14px'
+                    onclick: =>
+                      @state.set hasVotedUp: true, hasVotedDown: false
                   }
 
                 thread.upvotes or 0
@@ -167,6 +171,8 @@ module.exports = class ThreadListItem
                     hasRipple: window?
                     color: colors.$tertiary300
                     size: '14px'
+                    onclick: =>
+                      @state.set hasVotedUp: false, hasVotedDown: true
                   }
       if isExpanded
         z '.preview',

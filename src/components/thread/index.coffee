@@ -53,6 +53,7 @@ module.exports = class Thread extends Base
     @$spinner = new Spinner()
     @$replyIcon = new Icon()
     @$editIcon = new Icon()
+    @$pinIcon = new Icon()
     @$deleteIcon = new Icon()
     @$filterIcon = new Icon()
     @$starIcon = new Icon()
@@ -266,6 +267,14 @@ module.exports = class Thread extends Base
     hasAdminPermission = @model.thread.hasPermission thread, me, {
       level: 'admin'
     }
+    hasPinThreadPermission = @model.groupUser.hasPermission {
+      group, meGroupUser: group?.meGroupUser, me
+      permissions: ['pinForumThread']
+    }
+    hasDeleteThreadPermission = @model.groupUser.hasPermission {
+      group, meGroupUser: group?.meGroupUser, me
+      permissions: ['deleteForumThread']
+    }
 
     points = if thread then thread.upvotes else 0
 
@@ -292,7 +301,16 @@ module.exports = class Thread extends Base
                       groupId: group.key or group.id
                       id: thread.id
                     }
-              if me?.flags?.isModerator
+              if hasPinThreadPermission
+                z @$pinIcon,
+                  icon: if thread?.data?.isPinned then 'pin-off' else 'pin'
+                  color: colors.$header500Icon
+                  onclick: =>
+                    if thread?.data?.isPinned
+                      @model.thread.unpinById thread.id
+                    else
+                      @model.thread.pinById thread.id
+              if hasDeleteThreadPermission
                 z @$deleteIcon,
                   icon: 'delete'
                   color: colors.$header500Icon
@@ -337,6 +355,13 @@ module.exports = class Thread extends Base
                   z '.icon',
                     z @$starIcon,
                       icon: 'star-tag'
+                      color: colors.$tertiary900Text
+                      isTouchTarget: false
+                      size: '22px'
+                else if thread?.creator?.flags?.isModerator
+                  z '.icon',
+                    z @$starIcon,
+                      icon: 'mod'
                       color: colors.$tertiary900Text
                       isTouchTarget: false
                       size: '22px'
@@ -410,24 +435,23 @@ module.exports = class Thread extends Base
                 onclick: =>
                   @overlay$.next @$filterCommentsDialog
 
-        z '.reply',
-          @$conversationInput
-
-        z '.comments',
-          if not threadComments
-            @$spinner
-          else if threadComments and _isEmpty threadComments
-            z '.no-comments', @model.l.get 'thread.noComments'
-          else if threadComments
-            [
-              _map threadComments, ($threadComment) ->
-                [
-                  z $threadComment
-                  z '.divider'
-                ]
-              if isLoading
-                z '.loading', @$spinner
-            ]
+        z '.comments-wrapper',
+          z '.g-grid',
+            z '.reply',
+              @$conversationInput
+            if not threadComments
+              @$spinner
+            else if threadComments and _isEmpty threadComments
+              z '.no-comments', @model.l.get 'thread.noComments'
+            else if threadComments
+              z '.comments',
+                _map threadComments, ($threadComment) ->
+                  [
+                    z $threadComment
+                    z '.divider'
+                  ]
+                if isLoading
+                  z '.loading', @$spinner
 
       if selectedProfileDialogUser
         z @$profileDialog

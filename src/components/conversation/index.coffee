@@ -223,7 +223,6 @@ module.exports = class Conversation extends Base
 
     prevConversation = null
     @disposable = @conversation.subscribe (newConversation) =>
-
       @model.portal.call 'push.setContextId', {
         contextId: newConversation?.id
       }

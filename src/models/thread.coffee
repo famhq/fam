@@ -34,6 +34,16 @@ module.exports = class Thread
       invalidateAll: true
     }
 
+  pinById: (id) =>
+    @auth.call "#{@namespace}.pinById", {id}, {
+      invalidateAll: true
+    }
+
+  unpinById: (id) =>
+    @auth.call "#{@namespace}.unpinById", {id}, {
+      invalidateAll: true
+    }
+
   getPath: (thread, group, router) ->
     formattedTitle = _kebabCase thread?.data?.title
     router.get 'groupThreadWithTitle', {

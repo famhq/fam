@@ -68,7 +68,7 @@ module.exports = class GroupForumPage
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton:
           z @$filterIcon,
-            color: colors.$primary500
+            color: colors.$header500Icon
             icon: 'filter'
             hasRipple: true
             onclick: =>

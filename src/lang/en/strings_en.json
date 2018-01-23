@@ -531,6 +531,8 @@
   "permissions.sendLink": "Send links",
   "permissions.sendImage": "Send images",
   "permissions.sendAddon": "Send tools",
+  "permissions.deleteForumThread": "Delete thread",
+  "permissions.pinForumThread": "Pin thread",
 
 
   "crChest.wooden": "Wooden",

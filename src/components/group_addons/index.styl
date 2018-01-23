@@ -6,13 +6,15 @@
   overflow: auto
   -webkit-overflow-scrolling: touch
 
-  > .title
-    font-subhead()
-    color: getColor('$primary500')
-    padding: 16px 16px 0 16px
-    margin: 0
+  > .g-grid
+    > .title
+      font-subhead()
+      color: getColor('$primary500')
+      padding: 16px 16px 0 16px
+      margin: 0
 
-  > .addons
-    > .addon
-      border-bottom: 1px solid getColor('$white12')
-      min-height: 80px
+    > .addons
+      > .addon
+        padding: 0
+        border-bottom: 1px solid getColor('$white12')
+        min-height: 80px
