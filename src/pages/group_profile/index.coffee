@@ -100,7 +100,6 @@ module.exports = class GroupProfilePage
     {player} = @state.getValue()
     @player.map (player) ->
       playerName = player?.data?.name
-      console.log 'ppp', playerName
       {
         title: if player?.id \
                then "#{playerName}'s Clash Royale stats"

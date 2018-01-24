@@ -69,31 +69,28 @@ module.exports = class GroupHome
         z '.card',
           z @$groupHomeClashRoyaleChestCycle
 
-        z @$masonryGrid,
-          columnCounts:
-            mobile: 1
-            desktop: 2
-          $elements: _filter [
-            # TODO: give each of these their own comonent with defined height
-            if group?.key in ['clashroyalees', 'clashroyalept'] and group?.key isnt 'playhard'
-              z @$groupHomeThreads
+        if group?.id
+          z @$masonryGrid,
+            columnCounts:
+              mobile: 1
+              desktop: 2
+            $elements: _filter [
+              if group.key in ['clashroyalees', 'clashroyalept']
+                z @$groupHomeThreads
 
-            z @$groupHomeChat
+              z @$groupHomeChat
 
-            if me?.username is 'austin'
-              z @$groupHomeAdminStats
+              if me?.username is 'austin'
+                z @$groupHomeAdminStats
 
-            if group?.key is 'playhard'
-              z @$groupHomeOffers
+              if group.key in ['playhard', 'eclihpse']
+                z @$groupHomeOffers
 
-            if group?.key is 'playhard'
-              z @$groupHomeVideos
+              if group.key in ['playhard', 'eclihpse']
+                z @$groupHomeVideos
 
-            if player?.id
-              z @$groupHomeClashRoyaleDecks
+              if player?.id
+                z @$groupHomeClashRoyaleDecks
 
-            z @$groupHomeAddons
-          ]
-
-          # z '.title', @model.l.get 'groupHome.notifications'
-          # z '.notifications',
+              z @$groupHomeAddons
+            ]

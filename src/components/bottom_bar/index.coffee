@@ -46,7 +46,6 @@ module.exports = class BottomBar
       {
         $icon: new Icon()
         icon: 'chat'
-        # route: @router.get 'groupChat', {groupId: 'playhard'}
         route: @router.get 'groupChat', {groupId}
         text: @model.l.get 'general.chat'
       }
@@ -59,11 +58,10 @@ module.exports = class BottomBar
         text: @model.l.get 'general.home'
         isDefault: true
       }
-      if group?.key is 'playhard'
+      if group?.key in ['playhard', 'eclihpse']
         {
           $icon: new Icon()
           icon: 'shop'
-          # route: @router.get 'groupForum', {groupId: 'playhard'}
           route: @router.get 'groupShop', {groupId}
           text: @model.l.get 'general.shop'
         }
@@ -71,7 +69,6 @@ module.exports = class BottomBar
         {
           $icon: new Icon()
           icon: 'rss'
-          # route: @router.get 'groupForum', {groupId: 'playhard'}
           route: @router.get 'groupForum', {groupId}
           text: @model.l.get 'general.forum'
         }

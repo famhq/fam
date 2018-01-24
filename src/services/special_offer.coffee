@@ -65,15 +65,18 @@ class SpecialOfferService
           model.specialOffer.giveInstallReward {
             offer, deviceId, groupId, usageStats: stats
           }
+      # TODO: handle multiple days
       else if isInstalled and offer.transaction?.status is 'installed'
-        unless @cachedAttempts[offer.id + 'daily']
-          @cachedAttempts[offer.id + 'daily'] = true
-          minutesPlayed = Math.floor(
-            offer.androidPackageStats?.TotalTimeInForeground / (60 * 1000)
-          )
-          data = _defaults offer.meCountryData, offer.defaultData
-          hasCompletedDailyMinutes = minutesPlayed > data.minutesPerDay
-          if hasCompletedDailyMinutes
+        minutesPlayed = Math.floor(
+          stats?.TotalTimeInForeground / (60 * 1000)
+        )
+        countryData = offer.meCountryData or {}
+        data = _defaults countryData, offer.defaultData
+        hasCompletedDailyMinutes = minutesPlayed > data.minutesPerDay
+        if hasCompletedDailyMinutes
+          unless @cachedAttempts[offer.id + 'daily']
+            @cachedAttempts[offer.id + 'daily'] = true
+
             model.specialOffer.giveDailyReward {
               offer, deviceId, groupId, usageStats: stats
             }

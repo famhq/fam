@@ -18,7 +18,7 @@ if window?
 module.exports = class FormattedText
   constructor: (options) ->
     {text, @imageWidth, model, @router, @skipImages, @mentionedUsers,
-      @selectedProfileDialogUser} = options
+      @selectedProfileDialogUser, @isFullWidth} = options
 
     if text?.map
       $el = text.map((text) => @get$ {text, model})
@@ -157,12 +157,13 @@ module.exports = class FormattedText
     {$el} = @state.getValue()
 
     if @minHeight
-      props = {
+      props =
+        className: z.classKebab {@isFullWidth}
         style:
           minHeight: @minHeight
-      }
     else
-      props = null
+      props =
+        className: z.classKebab {@isFullWidth}
 
     z '.z-formatted-text', props,
       @$el or $el

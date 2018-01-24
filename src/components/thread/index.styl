@@ -14,6 +14,8 @@
     flex-direction: column
     overflow: auto
     -webkit-overflow-scrolling: touch
+    // https://stackoverflow.com/questions/39261456/reducing-scroll-jank-when-using-overflow-y-scroll/39368219
+    will-change: transform
 
     > .header
       > .header-image

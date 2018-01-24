@@ -66,7 +66,7 @@ module.exports = class ChannelDrawer
                 z '.manage-channels', {
                   onclick: =>
                     @router.go 'groupManageChannels', {
-                      id: group?.key or group?.id
+                      groupId: group?.key or group?.id
                     }
                 },
                   z '.icon',

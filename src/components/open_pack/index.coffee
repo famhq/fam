@@ -7,7 +7,7 @@ require 'rxjs/add/operator/map'
 Icon = require '../icon'
 StickerOpen = require '../sticker_open'
 Confetti = require '../confetti'
-PrimaryButton = require '../primary_button'
+SecondaryButton = require '../secondary_button'
 FormatService = require '../../services/format'
 Ripple = require '../ripple'
 colors = require '../../colors'
@@ -26,7 +26,7 @@ module.exports = class OpenPack
   constructor: ({@model, @items, @onClose, pack}) ->
     @$globeIcon = new Icon()
     @$cpIcon = new Icon()
-    @$doneButton = new PrimaryButton()
+    @$doneButton = new SecondaryButton()
     @$ripple = new Ripple()
     @$confetti = new Confetti()
 
@@ -172,11 +172,6 @@ module.exports = class OpenPack
           z '.action',
             z @$doneButton,
               text: @model.l.get 'general.done'
-              colors:
-                c200: colors.$tertiary200
-                c500: colors.$tertiary500
-                c600: colors.$tertiary600
-                c700: colors.$tertiary700
               onclick: =>
                 @onClose()
           z '.tap-to-reveal',

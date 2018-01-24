@@ -27,6 +27,7 @@ module.exports = class MasonryGrid
     z '.z-masonry-grid', {
       style:
         columnCount: columnCount
+        webkitColumnCount: columnCount
     },
       _map $sortedElements, ($el) ->
         z '.column', $el

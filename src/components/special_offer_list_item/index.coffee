@@ -142,7 +142,7 @@ module.exports = class SpecialOfferListItem
             style:
               color: offer.textColor
           },
-            if offer.transaction and offer.transaction?.status isnt 'clicked'
+            if offer.transaction and offer.transaction.status isnt 'clicked'
               "#{minutesPlayed} / #{minutesPerDay} minutes"
             else
               [

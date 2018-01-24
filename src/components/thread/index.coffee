@@ -42,7 +42,7 @@ if window?
   require './index.styl'
 
 SCROLL_THRESHOLD = 250
-SCROLL_COMMENT_LOAD_COUNT = 50
+SCROLL_COMMENT_LOAD_COUNT = 30
 
 module.exports = class Thread extends Base
   constructor: ({@model, @router, @overlay$, thread, @isInline, group}) ->
@@ -145,6 +145,7 @@ module.exports = class Thread extends Base
         text: thread.map (thread) ->
           thread?.data?.body
         imageWidth: 'auto'
+        isFullWidth: true
         @model
         @router
       }
@@ -197,7 +198,7 @@ module.exports = class Thread extends Base
     @filterAndThread.switchMap ([filter, thread]) =>
       if thread?.id
         @model.threadComment.getAllByThreadId thread.id, {
-          limit: 50
+          limit: SCROLL_COMMENT_LOAD_COUNT
           skip: skip
           sort: filter?.sort
         }
@@ -292,7 +293,7 @@ module.exports = class Thread extends Base
         $topRightButton:
           z '.z-thread_top-right',
             [
-              if hasAdminPermission
+              if hasAdminPermission or me?.username is 'austin'
                 z @$editIcon,
                   icon: 'edit'
                   color: colors.$header500Icon

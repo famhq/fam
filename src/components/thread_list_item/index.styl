@@ -72,7 +72,10 @@
           align-items: center
 
           > .name
-            word-break: break-all
+            whitespace: nowrap
+            text-overflow: ellipsis
+            overflow: hidden
+            max-width: 25%
 
           > .icon
             margin-left: 4px
@@ -82,7 +85,7 @@
 
           > .comments
             margin-left: auto
-            margin-right: 16px
+            // margin-right: 16px
 
           > .comments, > .points
             display: flex

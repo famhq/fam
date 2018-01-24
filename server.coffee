@@ -89,6 +89,7 @@ redirects =
   '/clash-royale/mod/:key': '/tool/:key'
   '/:lang/clash-royale/mod/:key': '/tool/:key'
   '/pt/clash-royale/jogador/:playerId/embutir': '/tool/clash-royale-player/:playerId'
+  '/es/clash-royale/jugador/:playerId/emportar': '/tool/clash-royale-player/:playerId'
   '/clash-royale/player/:playerId/embed': '/tool/clash-royale-player/:playerId'
   '/clash-royale/user/id/:userId': '/user/id/:userId'
   '/clash-royale/user/:username': '/user/:username'

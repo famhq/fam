@@ -115,7 +115,7 @@ module.exports = class NavDrawer
             $ripple: new Ripple()
             iconName: 'chat-bubble'
           }
-          if group.key in ['clashroyalees', 'clashroyalept'] and group.type is 'public'
+          if group.key in ['clashroyalees', 'clashroyalept']
             {
               path: @router.get 'groupForum', {groupId}
               title: @model.l.get 'general.forum'
@@ -138,7 +138,7 @@ module.exports = class NavDrawer
               $icon: new Icon()
               iconName: 'cards'
             }
-          if group.key is 'playhard'
+          if group.key in ['playhard', 'eclihpse']
             {
               path: @router.get 'groupVideos', {groupId}
               title: @model.l.get 'videosPage.title'
@@ -174,7 +174,7 @@ module.exports = class NavDrawer
               $icon: new Icon()
               iconName: 'settings'
               $chevronIcon: new Icon()
-              children: [
+              children: _filter [
                 {
                   path: @router.get 'groupManageChannels', {groupId}
                   title: @model.l.get 'groupManageChannelsPage.title'

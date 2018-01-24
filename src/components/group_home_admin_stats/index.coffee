@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_clone = require 'lodash/clone'
 
 Base = require '../base'
 Spinner = require '../spinner'
@@ -27,12 +28,12 @@ module.exports = class GroupHomeAdminStats
         @model.groupRecord.getAllByGroupIdAndRecordTypeKey(
           group.id, 'fireSpent'
         ).map (records) ->
-          records?.reverse()
+          _clone(records)?.reverse()
       fireEarnedGraphSeries: group.switchMap (group) =>
         @model.groupRecord.getAllByGroupIdAndRecordTypeKey(
           group.id, 'fireEarned'
         ).map (records) ->
-          records?.reverse()
+          _clone(records)?.reverse()
     }
 
   render: =>
@@ -42,7 +43,7 @@ module.exports = class GroupHomeAdminStats
     fireEarnedGraphSeries ?= []
     fireSpentGraphSeries ?= []
 
-    z '.z-group-home-admin-stats',
+    z '.z-group-home-admin-stats', {key: 'home-admin-stats'},
       z @$uiCard,
         $title: @model.l.get 'groupHome.fireStats'
         $content:

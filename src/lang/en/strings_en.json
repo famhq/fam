@@ -531,6 +531,7 @@
   "permissions.sendLink": "Send links",
   "permissions.sendImage": "Send images",
   "permissions.sendAddon": "Send tools",
+  "permissions.deleteMessage": "Delete message",
   "permissions.deleteForumThread": "Delete thread",
   "permissions.pinForumThread": "Pin thread",
 
