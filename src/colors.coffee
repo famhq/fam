@@ -64,7 +64,7 @@ colors = _defaults {
     '--tertiary-800': '#0A0125'
     '--tertiary-900': '#050018'
     '--tertiary-90054': 'rgba(11, 1, 55, 0.54)'
-  clashroyaledark:
+  clashroyale:
     '--header-100': '#80A4C3' # t300
     '--header-500': '#003973' #t700
     '--header-500-text': materialColors.$white
@@ -95,48 +95,48 @@ colors = _defaults {
     '--tertiary-800': '#003169'
     '--tertiary-900': '#002156'
 
-  clashroyalelight:
-    '--header-100': '#C8DCFC' # p100
-    '--header-500': '#488BF4' # p500
-    '--header-500-text': materialColors.$white
-    '--header-500-text-54': materialColors.$white54
-    '--header-500-icon': materialColors.$white
-
-    '--primary-50': '#E9F1FE'
-    '--primary-100': '#C8DCFC'
-    '--primary-200': '#A4C5FA'
-    '--primary-300': '#7FAEF7'
-    '--primary-400': '#639CF6'
-    '--primary-500': '#488BF4'
-    '--primary-600': '#4183F3'
-    '--primary-700': '#3878F1'
-    '--primary-800': '#306EEF'
-    '--primary-900': '#215BEC'
-
-    '--tertiary-50': '#444444'
-    '--tertiary-100': '#555555'
-    '--tertiary-200': '#777777'
-    '--tertiary-300': '#888888'
-    '--tertiary-400': '#CCCCCC'
-    '--tertiary-500': '#eaeaea'
-    '--tertiary-600': '#efefef'
-    '--tertiary-700': '#ffffff'
-    '--tertiary-800': '#f0f0f0'
-    '--tertiary-900': '#f4f4f4'
-    '--tertiary-90012': 'rgba(255, 255, 255, 0.12)'
-    '--tertiary-90054': 'rgba(255, 255, 255, 0.54)'
-    '--tertiary-100-text': materialColors.$black
-    '--tertiary-200-text': materialColors.$black
-    '--tertiary-300-text': materialColors.$black
-    '--tertiary-400-text': materialColors.$black
-    '--tertiary-500-text': materialColors.$black
-    '--tertiary-500-text-70': materialColors.$black70
-    '--tertiary-600-text': materialColors.$black
-    '--tertiary-700-text': materialColors.$black
-    '--tertiary-800-text': materialColors.$black
-    '--tertiary-900-text': materialColors.$black
-    '--tertiary-900-text-12': materialColors.$black12
-    '--tertiary-900-text-54': materialColors.$black54
+  # clashroyalelight:
+  #   '--header-100': '#C8DCFC' # p100
+  #   '--header-500': '#488BF4' # p500
+  #   '--header-500-text': materialColors.$white
+  #   '--header-500-text-54': materialColors.$white54
+  #   '--header-500-icon': materialColors.$white
+  #
+  #   '--primary-50': '#E9F1FE'
+  #   '--primary-100': '#C8DCFC'
+  #   '--primary-200': '#A4C5FA'
+  #   '--primary-300': '#7FAEF7'
+  #   '--primary-400': '#639CF6'
+  #   '--primary-500': '#488BF4'
+  #   '--primary-600': '#4183F3'
+  #   '--primary-700': '#3878F1'
+  #   '--primary-800': '#306EEF'
+  #   '--primary-900': '#215BEC'
+  #
+  #   '--tertiary-50': '#444444'
+  #   '--tertiary-100': '#555555'
+  #   '--tertiary-200': '#777777'
+  #   '--tertiary-300': '#888888'
+  #   '--tertiary-400': '#CCCCCC'
+  #   '--tertiary-500': '#eaeaea'
+  #   '--tertiary-600': '#efefef'
+  #   '--tertiary-700': '#ffffff'
+  #   '--tertiary-800': '#f0f0f0'
+  #   '--tertiary-900': '#f4f4f4'
+  #   '--tertiary-90012': 'rgba(255, 255, 255, 0.12)'
+  #   '--tertiary-90054': 'rgba(255, 255, 255, 0.54)'
+  #   '--tertiary-100-text': materialColors.$black
+  #   '--tertiary-200-text': materialColors.$black
+  #   '--tertiary-300-text': materialColors.$black
+  #   '--tertiary-400-text': materialColors.$black
+  #   '--tertiary-500-text': materialColors.$black
+  #   '--tertiary-500-text-70': materialColors.$black70
+  #   '--tertiary-600-text': materialColors.$black
+  #   '--tertiary-700-text': materialColors.$black
+  #   '--tertiary-800-text': materialColors.$black
+  #   '--tertiary-900-text': materialColors.$black
+  #   '--tertiary-900-text-12': materialColors.$black12
+  #   '--tertiary-900-text-54': materialColors.$black54
   default:
     '--header-500': '#171a1c' # t700
     '--header-500-text': materialColors.$white

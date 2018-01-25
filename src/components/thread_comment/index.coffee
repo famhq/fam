@@ -35,6 +35,7 @@ module.exports = class ThreadComment
     @$upvoteButton = new ThreadVoteButton {@model}
     @$downvoteButton = new ThreadVoteButton {@model}
     @$threadReplyIcon = new Icon()
+    @$statusIcon = new Icon()
     @$trophyIcon = new Icon()
     @$starIcon = new Icon()
 
@@ -159,6 +160,20 @@ module.exports = class ThreadComment
               z '.icon',
                 z @$starIcon,
                   icon: 'star-tag'
+                  color: colors.$tertiary900Text
+                  isTouchTarget: false
+                  size: '22px'
+            if creator?.flags?.isDev
+              z '.icon',
+                z @$statusIcon,
+                  icon: 'dev'
+                  color: colors.$tertiary900Text
+                  isTouchTarget: false
+                  size: '22px'
+            else if creator?.flags?.isModerator# or isModerator
+              z '.icon',
+                z @$statusIcon,
+                  icon: 'mod'
                   color: colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'

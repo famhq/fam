@@ -29,18 +29,11 @@ module.exports = class Head
           routeKey = @model.l.getRouteKeyByValue route.src
       modelSerialization: unless window?
         @model.getSerializationStream()
-      cssVariables: group?.map (group) =>
+      cssVariables: group?.map (group) ->
         groupKey = group?.key
-        if @model.experiment.get('customColors') is 'light'
-          if groupKey and groupKey.indexOf('clashroyale') isnt -1
-            groupKey = 'clashroyalelight'
-          cssColors = _defaults colors[groupKey], colors.default
-        else if @model.experiment.get('customColors') is 'dark'
-          if groupKey and groupKey.indexOf('clashroyale') isnt -1
-            groupKey = 'clashroyaledark'
-          cssColors = _defaults colors[groupKey], colors.default
-        else
-          cssColors = colors.default
+        if groupKey and groupKey.indexOf('clashroyale') isnt -1
+          groupKey = 'clashroyale'
+        cssColors = _defaults colors[groupKey], colors.default
 
         _map(cssColors, (value, key) ->
           "#{key}:#{value}"
