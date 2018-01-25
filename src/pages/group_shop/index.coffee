@@ -25,21 +25,21 @@ module.exports = class GroupShopPage
   @hasBottomBar: true
 
   constructor: (options) ->
-    {@model, requests, @router, serverData, overlay$,
+    {@model, @requests, @router, serverData, overlay$,
       group, @$bottomBar} = options
 
-    selectedIndex = new RxBehaviorSubject 0
+    @selectedIndex = new RxBehaviorSubject 0
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
-    @$tabs = new Tabs {@model, selectedIndex}
+    @$tabs = new Tabs {@model, @selectedIndex}
     @$menuFireAmount = new MenuFireAmount {@model, @router}
     @$shop = new Shop {
       @model
       @router
       overlay$
-      goToEarnFn: ->
-        selectedIndex.next 1
+      goToEarnFn: =>
+        @selectedIndex.next 1
       products: group.switchMap (group) =>
         if group
           @model.product.getAllByGroupId group.id
@@ -53,6 +53,11 @@ module.exports = class GroupShopPage
       me: @model.user.getMe()
       windowSize: @model.window.getSize()
       language: @model.l.getLanguage()
+
+  afterMount: =>
+    @requests.take(1).subscribe ({route}) =>
+      if route.params.tab is 'special-offers'
+        @selectedIndex.next 1
 
   getMeta: =>
     {

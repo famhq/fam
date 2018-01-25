@@ -56,6 +56,8 @@ class Language
       'it'
     else if country is 'BR'
       'pt'
+    else if country is 'PL'
+      'pl'
     else if country is 'FR'
       'fr'
     else

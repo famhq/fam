@@ -100,11 +100,11 @@ module.exports = class ProfileDialog
     }
     hasTempBanPermission = @model.groupUser.hasPermission {
       group, meGroupUser, me
-      permissions: ['tempBan']
+      permissions: ['tempBanUser']
     }
     hasPermaBanPermission = @model.groupUser.hasPermission {
       group, meGroupUser, me
-      permissions: ['permaBan']
+      permissions: ['permaBanUser']
     }
     hasManagePermission = @model.groupUser.hasPermission {
       group, meGroupUser, me

@@ -137,7 +137,7 @@ module.exports = class MarkdownEditor
         placeholder: hintText or ''
         onkeyup: @setValueFromEvent
         # bug where cursor goes to end w/ just value
-        defaultValue: value
+        defaultValue: value or ''
       }
 
       z '.panel',

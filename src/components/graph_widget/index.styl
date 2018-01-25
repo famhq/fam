@@ -2,6 +2,9 @@
 
 .z-graph-widget
   margin-bottom: -16px
+  // without this, labels don't show when graph is in 2nd column of
+  // column-count: 2
+  will-change: transform
 
   .ct-line
     stroke: getColor('$primary500')

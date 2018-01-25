@@ -1,7 +1,7 @@
 {
   "message.userJoinedChatMessage": "{name} 님이 들어오셨습니다.",
   "card.addFriendCardTitle": "친구 추가 해주세요.",
-  "card.addFriendCardDescription": "클래시 로얄에서 저를 친구로 추가 하려면 여기를 탭하세요.",
+  "card.addFriendCardDescription": "클래시 로얄에서 저를 친구로 추가하려면 여기를 탭하세요.",
   "card.joinClanCardTitle": "저의 클랜에 가입하세요",
   "card.joinClanCardDescription": "클래시 로얄에서 저의 클랜에 가입하려면 탭하세요",
   "audit.ban": "{name} 님을 강퇴하였습니다.",

@@ -81,15 +81,23 @@ module.exports = class App
     routes = @model.window.getBreakpoint().map @getRoutes
             .publishReplay(1).refCount()
 
+    userAgent = navigator?.userAgent or
+                  requests.getValue().headers?['user-agent']
+    isNativeApp = Environment.isGameApp config.GAME_KEY, {userAgent}
+    if isNativeApp and not @model.cookie.get('lastPath')
+      appActionPath = @model.appInstallAction.get().map (appAction) ->
+        appAction?.path
+    else
+      appActionPath = RxObservable.of null
+
     requestsAndRoutes = RxObservable.combineLatest(
-      requests, routes, (vals...) -> vals
+      requests, routes, appActionPath, (vals...) -> vals
     )
 
     isFirstRequest = true
-    @requests = requestsAndRoutes.map ([req, routes]) =>
-      userAgent = navigator?.userAgent or req.headers?['user-agent']
-      if isFirstRequest and Environment.isGameApp(config.GAME_KEY, {userAgent})
-        path = @model.cookie.get('lastPath') or req.path
+    @requests = requestsAndRoutes.map ([req, routes, appActionPath]) =>
+      if isFirstRequest and isNativeApp
+        path = @model.cookie.get('lastPath') or appActionPath or req.path
         if window?
           req.path = path # doesn't work server-side
         else
@@ -234,7 +242,7 @@ module.exports = class App
     route 'groupHome', 'GroupHomePage'
     route 'groupInvite', 'GroupInvitePage'
     route 'groupInvites', 'GroupInvitesPage'
-    route 'groupShop', 'GroupShopPage'
+    route ['groupShop', 'groupShopWithTab'], 'GroupShopPage'
     route 'groupTools', 'GroupToolsPage'
     route 'groupManage', 'GroupManageMemberPage'
     route 'groupManageChannels', 'GroupManageChannelsPage'

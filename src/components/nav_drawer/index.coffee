@@ -115,7 +115,9 @@ module.exports = class NavDrawer
             $ripple: new Ripple()
             iconName: 'chat-bubble'
           }
-          if group.key in ['clashroyalees', 'clashroyalept']
+          if group.key in [
+            'clashroyalees', 'clashroyalept', 'clashroyalepl'
+          ]
             {
               path: @router.get 'groupForum', {groupId}
               title: @model.l.get 'general.forum'

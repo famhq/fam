@@ -20,20 +20,14 @@ if window?
   require './index.styl'
 
 module.exports = class NewThread
-  constructor: ({@model, @router, category, thread, id, group}) ->
-    @titleValueStreams ?= new RxBehaviorSubject ''
+  constructor: ({@model, @router, category, @thread, id, group}) ->
+    @titleValueStreams ?= new RxReplaySubject 1
     @bodyValueStreams ?= new RxReplaySubject 1
     @attachmentsValueStreams ?= new RxReplaySubject 1
     @attachmentsValueStreams.next new RxBehaviorSubject []
     category ?= RxObservable.of null
 
-    if thread
-      @titleValueStreams.next thread.map (thread) -> thread?.data?.title
-      @bodyValueStreams.next thread.map (thread) -> thread?.data?.body
-    else
-      @titleValueStreams.next new RxBehaviorSubject ''
-      @bodyValueStreams.next new RxBehaviorSubject ''
-
+    @resetValueStreams()
 
     @$clanBadge = new ClanBadge()
     @$spinner = new Spinner()
@@ -64,7 +58,7 @@ module.exports = class NewThread
       attachmentsValue: @attachmentsValueStreams.switch()
       language: @model.l.getLanguage()
       category: category
-      thread: thread
+      thread: @thread
       group: group
       attachedContent: categoryAndId.switchMap ([category, id]) =>
         if category is 'deckGuide'
@@ -94,6 +88,17 @@ module.exports = class NewThread
           RxObservable.of null
       .map (clan) ->
         if clan then clan else false
+
+  beforeUnmount: =>
+    @resetValueStreams()
+
+  resetValueStreams: =>
+    if @thread
+      @titleValueStreams.next @thread.map (thread) -> thread?.data?.title or ''
+      @bodyValueStreams.next @thread.map (thread) -> thread?.data?.body or ''
+    else
+      @titleValueStreams.next new RxBehaviorSubject ''
+      @bodyValueStreams.next new RxBehaviorSubject ''
 
   render: =>
     {me, titleValue, bodyValue, attachmentsValue, attachedContent, clan,
@@ -140,12 +145,12 @@ module.exports = class NewThread
           .then =>
             newThread = {
               thread:
+                id: thread?.id
                 data:
                   title: titleValue
                   body: bodyValue
                   attachments: attachmentsValue
                   extras: data
-                category: category
               language: language
               groupId: group.id
             }
@@ -154,8 +159,7 @@ module.exports = class NewThread
             else
               @model.thread.upsert newThread)
             .then (newThread) =>
-              @bodyValueStreams.next RxObservable.of null
-              @attachmentsValueStreams.next RxObservable.of null
+              @resetValueStreams()
               @router.goPath(
                 @model.thread.getPath(
                   _defaults(newThread, thread), group, @router

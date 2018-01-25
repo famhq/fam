@@ -74,7 +74,7 @@ module.exports = class Compose
                 onkeyup: @setTitle
                 onchange: @setTitle
                 # bug where cursor goes to end w/ just value
-                defaultValue: titleValue
+                defaultValue: titleValue or ''
                 placeholder: @model.l.get 'compose.titleHintText'
 
               z '.divider'

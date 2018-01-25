@@ -75,12 +75,16 @@ module.exports = class GroupHome
               mobile: 1
               desktop: 2
             $elements: _filter [
-              if group.key in ['clashroyalees', 'clashroyalept']
+              if group.key in [
+                'clashroyalees', 'clashroyalept', 'clashroyalepl'
+              ]
                 z @$groupHomeThreads
 
               z @$groupHomeChat
 
-              if me?.username is 'austin'
+              if me?.username is 'austin' or (
+                me?.username is 'brunoph' and group?.key is 'playhard'
+              )
                 z @$groupHomeAdminStats
 
               if group.key in ['playhard', 'eclihpse']

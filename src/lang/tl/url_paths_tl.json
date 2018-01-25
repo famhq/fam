@@ -14,7 +14,6 @@
   "eventEdit": "/event/{id}/edit",
   "friends": "/friends",
   "friendsWithAction": "/friends/{action}",
-
   "groups": "/groups",
   "group": "/g/{groupId}",
   "groupChat": "/g/{groupId}/chat",
@@ -32,7 +31,6 @@
   "groupManageChannels": "/g/{groupId}/manage-channels",
   "groupSettings": "/g/{groupId}/settings",
   "groupShop": "/g/{groupId}/shop",
-  "groupShopTab": "/g/{groupId}/shop/{tab}",
   "groupVideos": "/g/{groupId}/videos",
   "groupLeaderboard": "/g/{groupId}/leaderboard",
   "groupAddRecords": "/g/{groupId}/add-records",
@@ -46,7 +44,6 @@
   "groupNewThreadWithCategory": "/g/{groupId}/new-thread/{category}",
   "groupNewThreadWithCategoryAndId": "/g/{groupId}/new-thread/{category}/{id}",
   "groupThreadEdit": "/g/{groupId}/thread/{id}/edit",
-
   "tool": "/tool",
   "toolByKey": "/tool/{key}",
   "newConversation": "/new-conversation",

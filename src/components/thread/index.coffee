@@ -65,7 +65,7 @@ module.exports = class Thread extends Base
 
     @selectedProfileDialogUser = new RxBehaviorSubject false
     @$profileDialog = new ProfileDialog {
-      @model, @router, @selectedProfileDialogUser
+      @model, @router, @selectedProfileDialogUser, group
     }
 
     filter = new RxBehaviorSubject {

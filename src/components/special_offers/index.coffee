@@ -26,12 +26,12 @@ if window?
   require './index.styl'
 
 module.exports = class SpecialOffers
-  constructor: ({@model, @router, @overlay$, group}) ->
+  constructor: ({@model, @router, @overlay$, @group}) ->
     @usageStatsStreams = new RxReplaySubject 1
     if @model.portal
       $offers = RxObservable.combineLatest(
         RxObservable.fromPromise @model.portal.call 'app.getDeviceId'
-        group
+        @group
         @model.l.getLanguage()
         (vals...) -> vals
       )
@@ -72,17 +72,29 @@ module.exports = class SpecialOffers
       me: me
       usageStats: @usageStatsStreams.switch()
       $offers: $offers
+      group: @group
 
   afterMount: =>
+    unless Environment.isGameApp config.GAME_KEY
+      @group.take(1).subscribe (group) =>
+        @model.appInstallAction.upsert {
+          path: @router.get 'groupShopWithTab', {
+            groupId: group.key or group.id
+            tab: 'special-offers'
+          }
+        }
     @mountDisposable = @model.window.onResume(
       SpecialOfferService.clearUsageStatsCache
     )
 
   beforeUnmount: =>
+    @model.appInstallAction.upsert {
+      path: @router.get 'home'
+    }
     @mountDisposable?.unsubscribe()
 
   render: =>
-    {me, $offers, usageStats} = @state.getValue()
+    {me, $offers, usageStats, group} = @state.getValue()
 
     isDev = config.ENV is config.ENVS.DEV
     noPermissions = usageStats is false

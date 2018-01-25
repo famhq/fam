@@ -1,6 +1,11 @@
 @require '../../vars'
 
 .z-group-home-offers_ui-card
+  min-height: 200px
+
+  @media (min-width: $breakPointMedium)
+    min-height: 248px
+
   > .fire-amount
     display: flex
     align-items: center

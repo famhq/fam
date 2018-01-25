@@ -26,7 +26,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupHomeOffers
-  constructor: ({@model, @router, group, player, @overlay$}) ->
+  constructor: ({@model, @router, @group, player, @overlay$}) ->
     me = @model.user.getMe()
 
     @$spinner = new Spinner()
@@ -39,7 +39,7 @@ module.exports = class GroupHomeOffers
     if @model.portal
       $offers = RxObservable.combineLatest(
         RxObservable.fromPromise @model.portal.call 'app.getDeviceId'
-        group
+        @group
         @model.l.getLanguage()
         (vals...) -> vals
       )
@@ -73,12 +73,19 @@ module.exports = class GroupHomeOffers
 
     @state = z.state {
       me
-      group
+      @group
       usageStats: @usageStatsStreams.switch()
       $offers: $offers
     }
 
   afterMount: =>
+    unless Environment.isGameApp config.GAME_KEY
+      @group.take(1).subscribe (group) =>
+        @model.appInstallAction.upsert {
+          path: @router.get 'groupHome', {
+            groupId: group.key or group.id
+          }
+        }
     @mountDisposable = @model.window.onResume(
       SpecialOfferService.clearUsageStatsCache
     )
