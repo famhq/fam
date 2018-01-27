@@ -97,6 +97,17 @@ module.exports = class GroupEarnXp
             isClaimed: _find xpTransactions, {actionKey: 'dailyChatMessage'}
           }
           {
+            action: @model.l.get 'earnXp.dailyForumComment'
+            actionKey: 'dailyForumComment'
+            route:
+              key: 'groupForum'
+              replacements: {groupId: group.key or group.id}
+            xp: 5
+            $claimButton: new PrimaryButton()
+            $claimButtonText: @model.l.get 'earnXp.dailyForumCommentButton'
+            isClaimed: _find xpTransactions, {actionKey: 'dailyForumComment'}
+          }
+          {
             action: @model.l.get 'earnXp.openStickerPacks'
             actionKey: 'openStickerPacks'
             route:

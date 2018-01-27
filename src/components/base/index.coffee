@@ -9,5 +9,13 @@ module.exports = class Base
       @cachedComponents[id] = $component
       return $component
 
-  beforeUnmount: =>
-    @cachedComponents = []
+  afterMount: =>
+    clearTimeout @clearCacheTimeout
+
+  beforeUnmount: (cachedElStoreTimeMs) =>
+    if cachedElStoreTimeMs
+      @clearCacheTimeout = setTimeout =>
+        @cachedComponents = []
+      , cachedElStoreTimeMs
+    else
+      @cachedComponents = []

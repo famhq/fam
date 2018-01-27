@@ -117,6 +117,7 @@ module.exports = class ConversationInput
         }
       }
 
+    @defaultPanelHeight = @panels.text.$el.getHeightPx()
 
     panelHeight = @currentPanel.switchMap (currentPanel) =>
       @panels[currentPanel].$el?.getHeightPx?()
@@ -165,6 +166,7 @@ module.exports = class ConversationInput
     isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV
 
     baseHeight = 54
+    panelHeight or= @defaultPanelHeight
     scale = (panelHeight / baseHeight) or 1
 
     z '.z-conversation-input', {

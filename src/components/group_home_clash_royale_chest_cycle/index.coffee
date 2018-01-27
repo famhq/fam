@@ -38,7 +38,7 @@ module.exports = class GroupHomeClashRoyaleChestCycle
     z '.z-group-home-clash-royale-chest-cycle',
       z @$uiCard,
         $title: @model.l.get 'profileChestsPage.title'
-        minHeightPx: 200
+        minHeightPx: 192
         $content:
           z '.z-group-home_ui-card',
             if player?.id

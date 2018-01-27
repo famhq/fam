@@ -10,6 +10,8 @@ config = require '../../config'
 if window?
   require './index.styl'
 
+CACHED_EL_STORE_TIME_MS = 60000 # 1m
+
 module.exports = class GroupHomeThreads extends Base
   constructor: ({@model, @router, group, player, @overlay$}) ->
     me = @model.user.getMe()
@@ -35,7 +37,7 @@ module.exports = class GroupHomeThreads extends Base
     }
 
   beforeUnmount: ->
-    super()
+    super CACHED_EL_STORE_TIME_MS
 
   render: =>
     {group, $threads} = @state.getValue()

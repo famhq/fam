@@ -81,7 +81,8 @@ class SpecialOfferService
               offer, deviceId, groupId, usageStats: stats
             }
       else
-        console.log 'none', isInstalled, offer.transaction
+        null
+        # console.log 'none', isInstalled, offer.transaction
 
       _defaults {
         androidPackageStats: stats

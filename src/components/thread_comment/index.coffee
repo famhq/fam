@@ -104,9 +104,10 @@ module.exports = class ThreadComment
         parentId: threadComment.id
         parentType: 'threadComment'
       }
-      .then =>
+      .then (response) =>
         @isPostLoading.next false
         @state.set isReplyVisible: false
+        response
       .catch =>
         @isPostLoading.next false
 

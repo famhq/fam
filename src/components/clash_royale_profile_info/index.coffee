@@ -42,7 +42,7 @@ module.exports = class ProfileInfo
     @$clanBadge = new ClanBadge()
     @$verifyAccountDialog = new VerifyAccountDialog {@model, @router, @overlay$}
     @$clashRoyaleChestCycle = new ClashRoyaleChestCycle {
-      @model, @router, player
+      @model, @router, player, showAll: true
     }
     @$profileRefreshBar = new ProfileRefreshBar {
       @model, @router, player, @overlay$, group
@@ -301,9 +301,7 @@ module.exports = class ProfileInfo
         z '.block',
           z '.g-grid',
             z '.title', @model.l.get 'profileChests.chestsTitle'
-            z @$clashRoyaleChestCycle, {
-              showAll: true
-            }
+            z @$clashRoyaleChestCycle
 
         z '.block',
           _map metrics, (stats, key) =>

@@ -18,9 +18,10 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class ConfirmPackPurchase
+module.exports = class ConfirmProductPurchase
   constructor: (options) ->
-    {@model, @router, pack, @onCancel, @onConfirm, isPurchaseLoading} = options
+    {@model, @router, product, @onCancel,
+      @onConfirm, purchaseLoadingKey} = options
     @$appBar = new AppBar {@model, @router}
     @$backButton = new ButtonBack {@router, @model}
     @$menuFireAmount = new MenuFireAmount {@router, @model}
@@ -32,15 +33,21 @@ module.exports = class ConfirmPackPurchase
 
     @state = z.state
       me: @me
-      pack: pack
-      isPurchaseLoading: isPurchaseLoading
+      product: product
+      purchaseLoadingKey: purchaseLoadingKey
 
   render: =>
-    {me, pack, isPurchaseLoading} = @state.getValue()
+    {me, product, purchaseLoadingKey} = @state.getValue()
 
-    packImage = _snakeCase(pack?.key).replace '_pack', ''
+    packImage = _snakeCase(product?.key).replace '_pack', ''
+    imageUrl = if product.type is 'pack' \
+               then "#{config.CDN_URL}/packs/#{packImage}.png"
+               else product.data?.backgroundImage
+    buyPackForKey = if product.type is 'pack' \
+                    then 'confirmPackPurchase.buyPackFor'
+                    else 'confirmProductPurchase.buyProductFor'
 
-    z '.z-confirm-pack-purchase',
+    z '.z-confirm-product-purchase',
       z @$appBar,
         $topLeftButton: z @$backButton, {
           color: colors.$header500Icon
@@ -48,28 +55,37 @@ module.exports = class ConfirmPackPurchase
             @onCancel?()
         }
         $topRightButton: @$menuFireAmount
-        title: pack?.name
+        title: product?.name
       z '.content',
         z '.g-grid',
-          z '.pack',
+          z '.product',
             style:
-              backgroundImage: "url(#{config.CDN_URL}/packs/#{packImage}.png)"
+              backgroundImage:
+                "url(#{imageUrl})"
+          if product?.data?.info
+            z '.info',
+              product.data.info
+
           z '.button',
             z @$cancelButton,
               $content: @model.l.get 'general.cancel'
               onclick: => @onCancel?()
             z @$buyButton,
-              $content: if isPurchaseLoading \
+              $content: if purchaseLoadingKey \
                         then @model.l.get 'general.loading'
-                        else @model.l.get 'confirmPackPurchase.buyPack'
+                        else if product.type is 'pack'
+                        then @model.l.get 'confirmPackPurchase.buyPack'
+                        else @model.l.get 'confirmProductPurchase.buyProduct'
               onclick: =>
-                unless isPurchaseLoading
-                  @onConfirm?()
+                unless purchaseLoadingKey
+                  @model.signInDialog.openIfGuest me
+                  .then =>
+                    @onConfirm?()
           z '.description',
             z '.flex',
-              @model.l.get 'confirmPackPurchase.buyPackFor', {
+              @model.l.get buyPackForKey, {
                 replacements:
-                  cost: FormatService.number(pack?.cost)
+                  cost: FormatService.number(product?.cost)
               }
               z '.icon',
                 z @$fireIcon,
@@ -78,17 +94,17 @@ module.exports = class ConfirmPackPurchase
                   isTouchTarget: false
                   color: colors.$white
               '?'
-      # if not _isEmpty pack?.isAvailableRequirements
-      #   claimed = _sum pack?.isAvailableRequirements, ({counts}) ->
+      # if not _isEmpty product?.isAvailableRequirements
+      #   claimed = _sum product?.isAvailableRequirements, ({counts}) ->
       #     counts.circulating or 0
-      #   total = _sum pack?.isAvailableRequirements, ({counts}) ->
+      #   total = _sum product?.isAvailableRequirements, ({counts}) ->
       #     counts.circulationLimit or 0
       #   percent = Math.floor(100 * (claimed / total))
-      #   z '.pack-status',
+      #   z '.product-status',
       #     z '.g-grid',
       #       z '.claimed', "#{percent}% claimed"
       #       z '.divider'
-      #       _map pack?.isAvailableRequirements, (requirement) ->
+      #       _map product?.isAvailableRequirements, (requirement) ->
       #         {counts, itemType, itemSubTypes} = requirement
       #         type = if itemSubTypes?[1] \
       #                then _startCase itemSubTypes?[1]

@@ -14,6 +14,7 @@ if window?
 
 module.exports = class ThreadListItem
   constructor: ({@model, @router, thread, group}) ->
+    console.log 'new thread list item'
     @$threadPreview = new ThreadPreview {@model, thread}
     @$pointsIcon = new Icon()
     @$threadUpvoteButton = new ThreadVoteButton {@model}

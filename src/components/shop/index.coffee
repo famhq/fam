@@ -13,7 +13,7 @@ Icon = require '../icon'
 PrimaryButton = require '../primary_button'
 BuyGiftCardDialog = require '../buy_gift_card_dialog'
 OpenPack = require '../open_pack'
-ConfirmPackPurchase = require '../confirm_pack_purchase'
+ConfirmProductPurchase = require '../confirm_product_purchase'
 UiCard = require '../ui_card'
 DateService = require '../../services/date'
 FormatService = require '../../services/format'
@@ -31,13 +31,13 @@ module.exports = class Shop
 
     me = @model.user.getMe()
     products ?= @model.product.getAll()
-    @isPurchaseLoading = new RxBehaviorSubject false
+    @purchaseLoadingKey = new RxBehaviorSubject null
 
     @$infoCard = new UiCard()
 
     @state = z.state
       me: @model.user.getMe()
-      isPurchaseLoading: @isPurchaseLoading
+      purchaseLoadingKey: @purchaseLoadingKey
       isInfoCardVisible: window? and not localStorage?['hideShopInfo']
       products: products.map (products) =>
         products = _orderBy products, 'cost', 'asc'
@@ -63,17 +63,7 @@ module.exports = class Shop
                 Promise.resolve()
 
             onBeforePurchase: =>
-              if product.type is 'pack'
-                new Promise (resolve, reject) =>
-                 # TODO: groupid
-                  @overlay$.next new ConfirmPackPurchase {
-                    @model, @router, @overlay$,
-                    @isPurchaseLoading, pack: product
-                    onConfirm: resolve, onCancel: =>
-                      @overlay$.next null
-                      reject()
-                  }
-              else if product.key.match(/google_play_10|visa_10/)
+              if product.key.match(/google_play|visa_10/)
                 new Promise (resolve, reject) =>
                   $buyGiftCardDialog = new BuyGiftCardDialog {
                     @model, @router, @overlay$
@@ -82,11 +72,19 @@ module.exports = class Shop
                     onSubmit: resolve, onLeave: reject
                   }
               else
-                Promise.resolve()
+                new Promise (resolve, reject) =>
+                 # TODO: groupid
+                  @overlay$.next new ConfirmProductPurchase {
+                    @model, @router, @overlay$,
+                    @purchaseLoadingKey, product
+                    onConfirm: resolve, onCancel: =>
+                      @overlay$.next null
+                      reject()
+                  }
           }
 
   render: =>
-    {me, products, isPurchaseLoading, isInfoCardVisible} = @state.getValue()
+    {me, products, purchaseLoadingKey, isInfoCardVisible} = @state.getValue()
 
     z '.z-shop',
       z '.g-grid',
@@ -122,17 +120,17 @@ module.exports = class Shop
                   else
                     (onBeforePurchase?() or Promise.resolve())
                     .then (data) =>
-                      @isPurchaseLoading.next true
+                      @purchaseLoadingKey.next product.key
                       @model.product.buy _defaults data, {key: product.key}
                     .then onPurchase
                     .then =>
-                      @isPurchaseLoading.next false
+                      @purchaseLoadingKey.next null
               },
                 z '.info',
                   z '.name', product.name
                   # if product.isLimited
                   #   z '.limited', @model.l.get 'spendFire.limited'
-                  if isPurchaseLoading
+                  if purchaseLoadingKey is product.key
                     @model.l.get 'general.loading'
                   else
                     z '.cost',

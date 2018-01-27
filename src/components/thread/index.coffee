@@ -246,8 +246,9 @@ module.exports = class Thread extends Base
         parentId: thread.id
         parentType: 'thread'
       }
-      .then =>
+      .then (response) =>
         @isPostLoading.next false
+        response
       .catch =>
         @isPostLoading.next false
 
