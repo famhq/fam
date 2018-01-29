@@ -29,7 +29,8 @@ module.exports = class ConversationInputAddons
     @$searchInput = new SearchInput {@model, @searchValue}
     @$spinner = new Spinner()
 
-    allAddons = @model.addon.getAll()
+    allAddons = @model.l.getLanguage().switchMap (language) =>
+      @model.addon.getAll {language}
 
     currentPanelAndSearchValueAndAllAddons = RxObservable.combineLatest(
       currentPanel

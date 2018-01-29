@@ -129,6 +129,7 @@ module.exports = class Conversation extends Base
       @message
       isTextareaFocused
       toggleIScroll
+      @isPostLoading
       @overlay$
       @inputTranslateY
       @conversation

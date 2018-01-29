@@ -97,7 +97,7 @@ module.exports = class SpecialOffers
     {me, $offers, usageStats, group} = @state.getValue()
 
     isDev = config.ENV is config.ENVS.DEV
-    noPermissions = usageStats is false
+    noPermissions = usageStats is false and not isDev
 
     isAndroidApp = Environment.isGameApp(config.GAME_KEY) and
                     Environment.isAndroid()
@@ -111,7 +111,7 @@ module.exports = class SpecialOffers
         z '.info-box',
           z '.text',
             @model.l.get 'specialOffers.notAvailableiOS'
-      else if not isAndroidApp# and not isDev
+      else if not isAndroidApp and not isDev
         z '.info-box',
           z '.text',
             @model.l.get 'specialOffers.requiresAndroidApp'

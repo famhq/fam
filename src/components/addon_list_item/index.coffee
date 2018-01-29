@@ -20,8 +20,8 @@ module.exports = class AddonListItem
       addon: addon
 
   openInAppBrowser: (addon, {replacements} = {}) =>
-    if _isEmpty(addon.supportedLanguages) or
-          addon.supportedLanguages.indexOf(
+    if _isEmpty(addon.translatedLanguages) or
+          addon.translatedLanguages.indexOf(
             @model.l.getLanguageStr()
           ) isnt -1
       language = @model.l.getLanguageStr()

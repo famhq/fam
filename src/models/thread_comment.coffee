@@ -11,8 +11,10 @@ module.exports = class ThreadComment
   flag: (id) =>
     @auth.call "#{@namespace}.flag", {id}
 
-  getAllByThreadId: (threadId, {sort, skip, limit} = {}) =>
-    @auth.stream "#{@namespace}.getAllByThreadId", {threadId, sort, skip, limit}
+  getAllByThreadId: (threadId, {sort, skip, limit, groupId} = {}) =>
+    @auth.stream "#{@namespace}.getAllByThreadId", {
+      threadId, sort, skip, limit, groupId
+    }
 
   deleteByThreadComment: (threadComment, {groupId}) =>
     @auth.call "#{@namespace}.deleteByThreadComment", {

@@ -49,8 +49,8 @@ module.exports = class Addon
   render: =>
     {addon, testUrl, windowSize, appBarHeight, replacements} = @state.getValue()
 
-    if _isEmpty(addon?.supportedLanguages) or
-          addon?.supportedLanguages.indexOf(@model.l.getLanguageStr()) isnt -1
+    if _isEmpty(addon?.translatedLanguages) or
+          addon?.translatedLanguages.indexOf(@model.l.getLanguageStr()) isnt -1
       language = @model.l.getLanguageStr()
     else
       language = 'en'

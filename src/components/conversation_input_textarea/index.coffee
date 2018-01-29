@@ -85,7 +85,8 @@ module.exports = class ConversationInputTextarea
       Math.min height, 150 # max height in css
 
   render: =>
-    {isTextareaFocused, hasText, textareaHeight} = @state.getValue()
+    {isTextareaFocused, hasText, textareaHeight,
+      isPostLoading} = @state.getValue()
 
     z '.z-conversation-input-textarea',
         z 'textarea.textarea',
@@ -151,6 +152,6 @@ module.exports = class ConversationInputTextarea
             z @$sendIcon,
               icon: 'send'
               hasRipple: true
-              color: if hasText \
+              color: if hasText and not isPostLoading \
                      then colors.$tertiary900Text
                      else colors.$tertiary900Text54

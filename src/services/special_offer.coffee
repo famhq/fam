@@ -72,7 +72,7 @@ class SpecialOfferService
         )
         countryData = offer.meCountryData or {}
         data = _defaults countryData, offer.defaultData
-        hasCompletedDailyMinutes = minutesPlayed > data.minutesPerDay
+        hasCompletedDailyMinutes = minutesPlayed >= data.minutesPerDay
         if hasCompletedDailyMinutes
           unless @cachedAttempts[offer.id + 'daily']
             @cachedAttempts[offer.id + 'daily'] = true

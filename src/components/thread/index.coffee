@@ -201,6 +201,7 @@ module.exports = class Thread extends Base
           limit: SCROLL_COMMENT_LOAD_COUNT
           skip: skip
           sort: filter?.sort
+          groupId: thread.groupId
         }
         .map (comments) ->
           comments or false
@@ -317,11 +318,12 @@ module.exports = class Thread extends Base
                   icon: 'delete'
                   color: colors.$header500Icon
                   onclick: =>
-                    @model.thread.deleteById thread.id
-                    .then =>
-                      @router.go 'groupForum', {
-                        groupId: group.key or group.id
-                      }
+                    if confirm 'Confirm?'
+                      @model.thread.deleteById thread.id
+                      .then =>
+                        @router.go 'groupForum', {
+                          groupId: group.key or group.id
+                        }
             ]
       }
       z '.content',

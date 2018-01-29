@@ -18,9 +18,12 @@ module.exports = class GroupHomeAddons extends Base
     @$spinner = new Spinner()
     @$uiCard = new UiCard()
 
+    addons = @model.l.getLanguage().switchMap (language) =>
+      @model.addon.getAll {language}
+
     @state = z.state {
       group
-      $addons: @model.addon.getAll({}).map (addons) =>
+      $addons: addons.map (addons) =>
         addons = _filter addons, (addon) ->
           addon.key in ['chestSimulator', 'clanManager', 'deckBandit']
         _map addons, (addon) =>

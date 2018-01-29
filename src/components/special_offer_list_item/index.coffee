@@ -5,6 +5,7 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/fromPromise'
 
 Icon = require '../icon'
+PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
 SemverService = require '../../services/semver'
 ThemeService = require '../../services/theme'
@@ -16,8 +17,11 @@ if window?
 
 module.exports = class SpecialOfferListItem
   constructor: ({@model, @router, offer, deviceId}) ->
-    @$fireIcon1 = new Icon()
-    @$fireIcon2 = new Icon()
+    @$infoIcon = new Icon()
+    @$installFireIcon = new Icon()
+    @$dailyFireIcon = new Icon()
+    @$installButton = new PrimaryButton()
+    @$dailyButton = new PrimaryButton()
 
     @state = z.state
       me: @model.user.getMe()
@@ -107,18 +111,26 @@ module.exports = class SpecialOfferListItem
   render: =>
     {me, offer, isLoading} = @state.getValue()
 
-    minutesPlayed = Math.floor(
-      (offer.androidPackageStats?.TotalTimeInForeground or 0) / (60 * 1000)
-    )
+    timeInForeground = offer.androidPackageStats?.TotalTimeInForeground or 0
+    minutesPlayed = Math.round(
+      100 * (timeInForeground / (60 * 1000))
+    ) / 100
 
     countryData = offer.meCountryData or {}
     data = _defaults countryData, offer.defaultData
+    isInstalled = offer.androidPackageStats
 
     {days, dailyPayout, installPayout,
       minutesPerDay} = data
     totalPayout = installPayout + days * dailyPayout
     unless totalPayout
       return z ''
+
+    minutesPlayedPercent = Math.min(
+      100 * minutesPlayed / minutesPerDay
+      100
+    )
+
     z '.z-special-offer-list-item', {
       onclick: =>
         unless isLoading
@@ -132,12 +144,13 @@ module.exports = class SpecialOfferListItem
           backgroundColor: offer.backgroundColor
           color: offer.textColor
         # z '.icon'
-        z '.left',
-          z '.name', {
-            style:
-              color: offer.textColor
-          },
-            offer.name
+        z '.top',
+          z '.left',
+            z '.name', {
+              style:
+                color: offer.textColor
+            },
+              offer.name
           z '.amount', {
             style:
               color: offer.textColor
@@ -151,7 +164,7 @@ module.exports = class SpecialOfferListItem
                     amount: totalPayout
                 }
                 z '.icon',
-                  z @$fireIcon1,
+                  z @$infoIcon,
                     icon: 'fire'
                     isTouchTarget: false
                     color: colors.$quaternary500
@@ -161,28 +174,69 @@ module.exports = class SpecialOfferListItem
                     days: days
                 }
               ]
-        z '.action', {
-          style:
-            color: offer.textColor
-        },
-          z '.title',
-            if isLoading
-              @model.l.get 'general.loading'
-            else if offer?.androidPackageStats
-              @model.l.get 'specialOffers.playAndEarn', {
-                replacements:
-                  amount: dailyPayout
-              }
+        z '.actions',
+          z '.action', {
+            className: z.classKebab {isInstalled}
+          },
+            z '.description', {
+              style:
+                color: offer.textColor
+            },
+              if isLoading
+                @model.l.get 'general.loading'
+              else
+                @model.l.get 'specialOffers.install'
+            if isInstalled
+              z '.icon',
+                z @$installFireIcon,
+                  icon: 'check'
+                  isTouchTarget: false
+                  color: offer.textColor
+                  size: '16px'
+
             else
-              @model.l.get 'specialOffers.installAndEarn', {
-                replacements:
-                  amount: installPayout
-              }
-          z '.icon',
-            z @$fireIcon2,
-              icon: 'fire'
-              isTouchTarget: false
-              color: colors.$quaternary500
-              size: '16px'
-          # z '.title', 'Play 10 min today'
-          # z '.description', '3 / 5 days'
+              z '.button',
+                z @$installButton,
+                  isShort: true
+                  text:
+                    z '.z-special-offer-list-item_install-button',
+                      "+#{installPayout}"
+                      z '.icon',
+                        z @$installFireIcon,
+                          icon: 'fire'
+                          isTouchTarget: false
+                          color: colors.$quaternary500
+                          size: '16px'
+
+          z '.action',
+            z '.description', {
+              style:
+                color: offer.textColor
+            },
+              if isLoading
+                @model.l.get 'general.loading'
+              else
+                @model.l.get 'specialOffers.play', {
+                  replacements:
+                    minutes: minutesPerDay
+                }
+              if minutesPlayed
+                z '.progress',
+                  z '.fill',
+                    style:
+                      width: "#{minutesPlayedPercent}%"
+                      backgroundColor: offer.textColor
+                      borderColor: offer.textColor
+            z '.button',
+              z @$dailyButton,
+                isShort: true
+                isDisabled: not isInstalled
+                text:
+                  z '.z-special-offer-list-item_install-button',
+                    "+#{dailyPayout}"
+                    z '.icon',
+                      z @$dailyFireIcon,
+                        icon: 'fire'
+                        isTouchTarget: false
+                        color: colors.$quaternary500
+                        size: '16px'

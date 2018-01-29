@@ -11,11 +11,12 @@ if window?
   require './index.styl'
 
 module.exports = class GroupAddons
-  constructor: ({@model, @router, group, sort, filter}) ->
+  constructor: ({@model, @router, group}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
-    addons = @model.addon.getAll({sort, filter})
+    addons = @model.l.getLanguage().switchMap (language) =>
+      @model.addon.getAll {language}
     # streams = @model.stream.getAll({sort, filter})
 
     @state = z.state

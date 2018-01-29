@@ -40,5 +40,7 @@
   "clanManager.title": "Gestor de clan",
   "clanManager.description": "Seguimiento de donaciones, actividad y otras estadisticas de tu clan y sus miembros en un único sitio",
   "cardCollection.title": "Colección de cartas",
-  "cardCollection.description": "Ver y analizar tu coleccion de cartas o de otros jugadores"
+  "cardCollection.description": "Ver y analizar tu coleccion de cartas o de otros jugadores",
+  "arenacr.title": "Wiki",
+  "arenacr.description": "Diversa información acerca de Clash Royale"
 }
