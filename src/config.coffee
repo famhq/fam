@@ -52,7 +52,8 @@ isomorphic =
   DEFAULT_GAME_KEY: 'clash-royale'
   COMMUNITY_LANGUAGES: ['es', 'pt', 'pl']
   LANGUAGES: [
-    'en', 'es', 'it', 'fr', 'zh', 'ja', 'ko', 'de', 'pt', 'pl', 'ru', 'id'
+    'en', 'es', 'it', 'fr', 'zh', 'ja', 'ko', 'de', 'pt', 'pl'
+    'ru', 'id', 'tl', 'tr'
   ]
   # also in radioactive
   ITEM_LEVEL_REQUIREMENTS: [

@@ -33,7 +33,7 @@ module.exports = class GroupHome
     @isTranslateCardVisibleStreams = new RxReplaySubject 1
     @isTranslateCardVisibleStreams.next @model.l.getLanguage().map (lang) ->
       needTranslations = ['es', 'it', 'fr', 'ja', 'ko', 'zh',
-                          'pt', 'de', 'pl', 'tr', 'ru', 'id']
+                          'pt', 'de', 'pl', 'tr', 'ru', 'id', 'tl']
       isNeededLanguage = lang in needTranslations
       localStorage? and isNeededLanguage and
                               not localStorage['hideTranslateCard']
