@@ -31,6 +31,7 @@
   "groupEditChannel": "/g/{groupId}/chat/{conversationId}/edit",
   "groupManageChannels": "/g/{groupId}/manage-channels",
   "groupSettings": "/g/{groupId}/settings",
+  "groupSendNotification": "/g/{groupId}/send-notification",
   "groupShop": "/g/{groupId}/shop",
   "groupShopTab": "/g/{groupId}/shop/{tab}",
   "groupVideos": "/g/{groupId}/videos",

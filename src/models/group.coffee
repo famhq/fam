@@ -47,6 +47,11 @@ module.exports = class Group
   inviteById: (id, {userIds}) =>
     @auth.call "#{@namespace}.inviteById", {id, userIds}, {invalidateAll: true}
 
+  sendNotificationById: (id, {title, description, pathKey}) =>
+    @auth.call "#{@namespace}.sendNotificationById", {
+      id, title, description, pathKey
+      }, {invalidateAll: true}
+
   updateById: (id, {name, description, badgeId, background, mode}) =>
     @auth.call "#{@namespace}.updateById", {
       id, name, description, badgeId, background, mode

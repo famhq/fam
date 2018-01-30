@@ -42,6 +42,7 @@ module.exports = class GroupEarnXp
               }
               isClaimed: not videosLeft
               onclick: =>
+                {loadingActionKey} = @state.getValue()
                 unless loadingActionKey is 'rewardedVideos'
                   @state.set loadingActionKey: 'rewardedVideos'
                   @model.portal.call 'admob.prepareRewardedVideo', {

@@ -196,6 +196,11 @@ module.exports = class NavDrawer
                   path: @router.get 'groupBannedUsers', {groupId}
                   title: @model.l.get 'groupBannedUsersPage.title'
                 }
+                if me?.username in ['austin', 'brunoph']
+                  {
+                    path: @router.get 'groupSendNotification', {groupId}
+                    title: @model.l.get 'groupSendNotificationPage.title'
+                  }
               ]
             }
           if needsApp
