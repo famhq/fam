@@ -112,6 +112,7 @@ isomorphic =
     sendLink: true
     sendImage: true
     sendAddon: true
+    bypassSlowMode: false
   DEFAULT_NOTIFICATIONS:
     chatMessage: true
     chatMention: true

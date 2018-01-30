@@ -28,6 +28,7 @@ module.exports = class GroupManageRoles
       'deleteMessage'
       'sendMessage'
       'sendLink'
+      'bypassSlowMode'
       'sendImage'
       'sendAddon'
       'deleteForumThread'

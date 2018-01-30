@@ -32,6 +32,11 @@ module.exports = class GroupEditChannel
       conversation.description) or RxObservable.of null
     @descriptionError = new RxBehaviorSubject null
 
+    @slowModeCooldownValueStreams = new RxReplaySubject 1
+    @slowModeCooldownValueStreams.next (conversation?.map (conversation) ->
+      conversation.data?.slowModeCooldown or '600') or RxObservable.of '600'
+    @slowModeCooldownError = new RxBehaviorSubject null
+
     @$nameInput = new PrimaryInput
       valueStreams: @nameValueStreams
       error: @nameError
@@ -39,6 +44,15 @@ module.exports = class GroupEditChannel
     @$descriptionTextarea = new PrimaryTextarea
       valueStreams: @descriptionValueStreams
       error: @descriptionError
+
+    @$slowModeCooldownInput = new PrimaryInput
+      valueStreams: @slowModeCooldownValueStreams
+      error: @slowModeCooldownError
+
+    @isSlowModeStreams = new RxReplaySubject 1
+    @isSlowModeStreams.next (conversation?.map (conversation) ->
+      conversation.data?.isSlowMode) or RxObservable.of null
+    @$isSlowModeToggle = new Toggle {isSelectedStreams: @isSlowModeStreams}
 
     @$cancelButton = new FlatButton()
     @$saveButton = new PrimaryButton()
@@ -50,9 +64,12 @@ module.exports = class GroupEditChannel
       conversation: conversation
       name: @nameValueStreams.switch()
       description: @descriptionValueStreams.switch()
+      isSlowMode: @isSlowModeStreams.switch()
+      slowModeCooldown: @slowModeCooldownValueStreams.switch()
 
   save: (isNewChannel) =>
-    {me, isSaving, group, conversation, name, description} = @state.getValue()
+    {me, isSaving, group, conversation, name, description,
+      isSlowMode, slowModeCooldown} = @state.getValue()
 
     if isSaving
       return
@@ -69,6 +86,8 @@ module.exports = class GroupEditChannel
     fn {
       name
       description
+      isSlowMode
+      slowModeCooldown
       groupId: group.id
     }
     .catch -> null
@@ -78,7 +97,7 @@ module.exports = class GroupEditChannel
       @router.go 'groupManageChannels', {groupId: group.key or group.id}
 
   render: ({isNewChannel} = {}) =>
-    {me, isSaving, group, name, description} = @state.getValue()
+    {me, isSaving, group, name, description, isSlowMode} = @state.getValue()
 
     z '.z-group-edit-channel',
       z '.g-grid',
@@ -89,6 +108,15 @@ module.exports = class GroupEditChannel
         z '.input',
           z @$descriptionTextarea,
             hintText: @model.l.get 'general.description'
+
+        z '.input',
+          z 'label.label',
+            z '.text', 'Slow mode'
+            @$isSlowModeToggle
+        if isSlowMode
+          z '.input',
+            z @$slowModeCooldownInput,
+              hintText: @model.l.get 'groupEditChannel.slowModeCooldownHintText'
 
         z '.actions',
           z '.cancel-button',

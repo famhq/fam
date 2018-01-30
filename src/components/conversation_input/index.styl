@@ -11,6 +11,20 @@ $requireVerifiedZIndex = 900
   position: relative
   overflow: hidden
 
+  > .locked
+    position: absolute
+    z-index: $requireVerifiedZIndex
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background: getColor('$black87')
+    display: flex
+    align-items: center
+    justify-content: center
+    text-align: center
+    flex-direction: column
+
   > .panel
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
     background: getColor('$tertiary500')

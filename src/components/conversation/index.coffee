@@ -133,6 +133,7 @@ module.exports = class Conversation extends Base
       @overlay$
       @inputTranslateY
       @conversation
+      meGroupUser: @groupUser
       onPost: @postMessage
       onResize: @onResize
       allowedPanels: groupUserAndConversation.map ([groupUser, conversation]) =>

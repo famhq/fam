@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _pick = require 'lodash/pick'
+_maxBy = require 'lodash/maxBy'
 _upperFirst = require 'lodash/upperFirst'
 supportsWebP = window? and require 'supports-webp'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
@@ -24,7 +25,7 @@ if window?
 
 module.exports = class ConversationInput
   constructor: (options) ->
-    {@model, @router, @message, @onPost, @onResize, toggleIScroll,
+    {@model, @router, @message, @onPost, @onResize, toggleIScroll, meGroupUser,
       @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$,
       isPostLoading, conversation} = options
 
@@ -127,6 +128,39 @@ module.exports = class ConversationInput
 
     me = @model.user.getMe()
 
+    @lastClientTime = new RxBehaviorSubject null
+    update = new RxBehaviorSubject null
+    cooldownSecondsLeft = conversation?.switchMap (conversation) =>
+      isSlowMode = conversation?.data?.isSlowMode
+      if isSlowMode
+        lastServerTime = @model.chatMessage.getLastTimeByMeAndConversationId(
+          conversation.id
+        )
+        lastServerTimeAndLastClientTimeAndUpdate = RxObservable.combineLatest(
+          lastServerTime, @lastClientTime, update, (vals...) -> vals
+        )
+        lastServerTimeAndLastClientTimeAndUpdate
+        .map ([lastServerTime, lastClientTime]) ->
+          if lastServerTime
+            lastServerTime = new Date(lastServerTime)
+          _maxBy [lastServerTime, lastClientTime], (time) ->
+            time?.getTime?() or 0
+        .map (lastMeMessageTime) ->
+          isSlowMode = conversation?.data?.isSlowMode
+          slowModeCooldownSeconds = conversation?.data?.slowModeCooldown
+          msSinceLastMessage = Date.now() -
+                                (new Date(lastMeMessageTime)).getTime()
+          cooldownSecondsLeft = slowModeCooldownSeconds -
+                                  Math.floor(msSinceLastMessage / 1000)
+          if cooldownSecondsLeft > 0 # re-render every second til 0
+            setTimeout (-> update.next Date.now()), 1000
+          cooldownSecondsLeft
+
+      else
+        RxObservable.of 0
+    unless cooldownSecondsLeft # for forum
+      cooldownSecondsLeft = 0
+
     @state = z.state
       currentPanel: @currentPanel
       me: me
@@ -134,6 +168,9 @@ module.exports = class ConversationInput
       panelHeight: panelHeight
       panels: allowedPanels.map (allowedPanels) =>
         _pick @panels, allowedPanels
+      meGroupUser: meGroupUser
+      conversation: conversation
+      cooldownSecondsLeft: cooldownSecondsLeft
       mePlayer: me.switchMap ({id}) =>
         @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
 
@@ -147,10 +184,12 @@ module.exports = class ConversationInput
       promise
 
     if me?.isMember
+      @lastClientTime.next new Date()
       post()
     else
       @model.signInDialog.openIfGuest me
-      .then ->
+      .then =>
+        @lastClientTime.next new Date()
         # SUPER HACK:
         # stream doesn't update while cache is being invalidated, for whatever
         # reason, so this waits until invalidation for login is ~done
@@ -160,14 +199,22 @@ module.exports = class ConversationInput
           , 500
 
   render: =>
-    {currentPanel, mePlayer, me, inputTranslateY,
-      panels, panelHeight} = @state.getValue()
+    {currentPanel, mePlayer, me, inputTranslateY, meGroupUser, conversation,
+      panels, panelHeight, cooldownSecondsLeft} = @state.getValue()
 
     isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV
 
     baseHeight = 54
     panelHeight or= @defaultPanelHeight
     scale = (panelHeight / baseHeight) or 1
+
+    bypassSlowMode = @model.groupUser.hasPermission {
+      meGroupUser, permissions: ['bypassSlowMode'], channelId: conversation?.id
+    }
+    if cooldownSecondsLeft > 0 and not bypassSlowMode
+      lockedBySlow = true
+    else
+      lockedBySlow = false
 
     z '.z-conversation-input', {
       className: z.classKebab {
@@ -176,6 +223,12 @@ module.exports = class ConversationInput
       style:
         height: "#{panelHeight + 32}px"
     },
+      if lockedBySlow
+        z '.locked',
+          @model.l.get 'conversation.slowMode', {
+            replacements:
+              seconds: cooldownSecondsLeft
+          }
       z '.panel', {
         'ev-transitionend': =>
           @onResize?()

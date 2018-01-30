@@ -63,6 +63,11 @@ module.exports = class ChatMessage
       isStreamed
     }, options
 
+  getLastTimeByMeAndConversationId: (conversationId) =>
+    @auth.stream "#{@namespace}.getLastTimeByMeAndConversationId", {
+      conversationId
+    }
+
   unsubscribeByConversationId: (conversationId) =>
     @auth.call "#{@namespace}.unsubscribeByConversationId", {conversationId}
     @exoid.invalidate "#{@namespace}.getAllByConversationId", {

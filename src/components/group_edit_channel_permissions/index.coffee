@@ -16,6 +16,7 @@ module.exports = class GroupEditChannelPermissions
       'sendLink'
       'sendImage'
       'sendAddon'
+      'bypassSlowMode'
     ]
 
     @$groupRolePermissions = new GroupRolePermissions {
