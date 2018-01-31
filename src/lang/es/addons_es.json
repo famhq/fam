@@ -31,8 +31,8 @@
   "topDraftCards.description": "¡Mira las mejores y peores cartas del desafío de elección en curso!",
   "newCards.title": "Nuevas cartas",
   "newCards.description": "Mira las gráficas de las cartas de la última actualización!",
-  "topChallengeDecks.title": "Los Mejores mazos para el Desafío Royale Moderno",
-  "topChallengeDecks.description": "¡Mira que barajas del desafio Royale Moderno\ntienen los mejores porcentajes de victoria!",
+  "topChallengeDecks.title": "Los Mejores mazos para el Desafío",
+  "topChallengeDecks.description": "¡Mira que barajas del desafio tienen los mejores porcentajes de victoria!",
   "top2V2Decks.title": "Mejores mazos 2c2",
   "top2V2Decks.description": "¡Mira las barajas 2c2 con el mayor porcentaje de victorias!",
   "openTournaments.title": "Torneos abiertos",
@@ -40,5 +40,7 @@
   "clanManager.title": "Gestor de clan",
   "clanManager.description": "Seguimiento de donaciones, actividad y otras estadisticas de tu clan y sus miembros en un único sitio",
   "cardCollection.title": "Colección de cartas",
-  "cardCollection.description": "Ver y analizar tu coleccion de cartas o de otros jugadores"
+  "cardCollection.description": "Ver y analizar tu coleccion de cartas o de otros jugadores",
+  "crarena.title": "Guía",
+  "crarena.description": "Datos de Clash Royale"
 }

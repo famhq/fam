@@ -18,11 +18,12 @@ module.exports = class TopChallengeDecks
   constructor: ({@model, @router}) ->
     @$spinner = new Spinner()
     @$adsenseAd = new AdsenseAd {@model}
+    console.log '12'
 
     @state = z.state {
       language: @model.l.getLanguage()
       popularDecks: @model.clashRoyaleDeck.getPopular {
-        gameType: 'rampUp'
+        gameType: 'youtubeDecks'
       }
       .map (decks) ->
         _filter _map decks, (deck) ->
@@ -41,7 +42,7 @@ module.exports = class TopChallengeDecks
           z '.deck', @model.l.get 'general.deck'
           z '.win-rate', @model.l.get 'profileInfo.statWinRate'
         _map popularDecks, ({$deck, deck}, i) =>
-          challengeStats = _find deck.stats, {gameType: 'rampUp'}
+          challengeStats = _find deck.stats, {gameType: 'youtubeDecks'}
           winRate = (challengeStats?.winRate or 0) * 100
           roundedWinRate = Math.round(winRate * 100) / 100
           showAd = i is 4 and

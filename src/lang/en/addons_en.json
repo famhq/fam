@@ -39,8 +39,8 @@
   "topDraftCards.description": "See the best and worst cards in current draft challenge!",
   "newCards.title": "New cards",
   "newCards.description": "View stats for the cards in the latest update!",
-  "topChallengeDecks.title": "Best Ramp Up decks",
-  "topChallengeDecks.description": "See which challenge decks have the higest win rates!",
+  "topChallengeDecks.title": "Best current challenge decks",
+  "topChallengeDecks.description": "See which current challenge decks have the higest win rates!",
   "top2V2Decks.title": "Best 2v2 decks",
   "top2V2Decks.description": "See which 2v2 decks have the higest win rates!",
   "openTournaments.title": "Open tournaments",
@@ -48,5 +48,7 @@
   "clanManager.title": "Clan manager",
   "clanManager.description": "Track donations, activity, and other statistics for your clan and its members all in one place",
   "cardCollection.title": "Card collection lookup",
-  "cardCollection.description": "View and analyze your or another player's Card Collection"
+  "cardCollection.description": "View and analyze your or another player's Card Collection",
+  "crarena.title": "Wiki",
+  "crarena.description": "Knowledgebase of Clash Royale facts",
 }
