@@ -30,6 +30,7 @@ module.exports = class Message
     @$statusIcon = new Icon()
     @$starIcon = new Icon()
     @$verifiedIcon = new Icon()
+    @$fireIcon = new Icon()
 
     @imageData = new RxBehaviorSubject null
     @$conversationImageView = new ConversationImageView {
@@ -57,6 +58,8 @@ module.exports = class Message
 
     {user, groupUser, time, card, id, clientId} = message
 
+    groupUpgrades = _filter user?.upgrades, {groupId: groupUser?.groupId}
+    hasBadge = _find groupUpgrades, {upgradeType: 'fireBadge'}
 
     avatarSize = if windowSize.width > 840 \
                  then '40px'
@@ -120,13 +123,21 @@ module.exports = class Message
                   isTouchTarget: false
                   size: '22px'
             z '.name', @model.user.getDisplayName user
-            if isVerified
-              z '.verified',
-                z @$verifiedIcon,
-                  icon: 'verified'
-                  color: colors.$secondary500
-                  isTouchTarget: false
-                  size: '14px'
+            z '.icons',
+              if isVerified
+                z '.icon',
+                  z @$verifiedIcon,
+                    icon: 'verified'
+                    color: colors.$tertiary900Text
+                    isTouchTarget: false
+                    size: '14px'
+              if hasBadge
+                z '.icon',
+                  z @$fireIcon,
+                    icon: 'fire'
+                    color: colors.$quaternary500
+                    isTouchTarget: false
+                    size: '14px'
             z '.time', {
               className: z.classKebab {isAlignedLeft: isTimeAlignedLeft}
             },

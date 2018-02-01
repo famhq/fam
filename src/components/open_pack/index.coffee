@@ -5,8 +5,9 @@ _isEqual = require 'lodash/isEqual'
 require 'rxjs/add/operator/map'
 
 Icon = require '../icon'
-StickerOpen = require '../sticker_open'
+ItemOpen = require '../item_open'
 Confetti = require '../confetti'
+FlatButton = require '../flat_button'
 SecondaryButton = require '../secondary_button'
 FormatService = require '../../services/format'
 Ripple = require '../ripple'
@@ -23,10 +24,11 @@ SPREAD_DELAY_MS = 1000
 FLIP_DELAY_MS = 250
 
 module.exports = class OpenPack
-  constructor: ({@model, @items, @onClose, pack}) ->
+  constructor: ({@model, @router, @items, @onClose, pack, group}) ->
     @$globeIcon = new Icon()
     @$cpIcon = new Icon()
     @$doneButton = new SecondaryButton()
+    @$goToCollectionButton = new FlatButton()
     @$ripple = new Ripple()
     @$confetti = new Confetti()
 
@@ -36,10 +38,11 @@ module.exports = class OpenPack
       me: me
       isVisible: false
       isDeckSpread: false
+      group: group
       items: @items.map (items) =>
         _map items, (item) =>
           item: item
-          $item: new StickerOpen {
+          $item: new ItemOpen {
             @model
             isBack: true
             backKey: pack?.data.backKey
@@ -78,7 +81,7 @@ module.exports = class OpenPack
   buyAnotherPack: -> null # TODO
 
   render: =>
-    {me, items, isVisible, isDeckSpread, itemsSwiped,
+    {me, items, isVisible, isDeckSpread, itemsSwiped, group,
       isWaitingToFlip} = @state.getValue()
 
     itemCount = items?.length
@@ -170,6 +173,13 @@ module.exports = class OpenPack
 
         z '.bottom',
           z '.action',
+            z @$goToCollectionButton,
+              text: @model.l.get 'openPack.goToCollection'
+              onclick: =>
+                @onClose()
+                @router.go 'groupCollection', {
+                  groupId: group.id
+                }
             z @$doneButton,
               text: @model.l.get 'general.done'
               onclick: =>

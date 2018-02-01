@@ -18,6 +18,7 @@ require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/map'
 
 StickerBlock = require '../sticker_block'
+ConsumableBlock = require '../consumable_block'
 Icon = require '../icon'
 Spinner = require '../spinner'
 colors = require '../../colors'
@@ -56,7 +57,7 @@ getItemSizeInfo = ($$el) ->
 module.exports = class ItemList
   constructor: (options) ->
     {@model, @router, items, userItems, searchValue, groupKeyFilter, sortFn,
-        isGrouped} = options
+        isGrouped, group} = options
 
     me = @model.user.getMe()
     isGrouped ?= true
@@ -77,21 +78,25 @@ module.exports = class ItemList
       @itemSizeInfo
       (vals...) -> vals
     )
-    rowsOfItems = listData.map (vals) =>
+    itemGroups = listData.map (vals) =>
       [items, userItems, searchValue, groupKeyFilter, itemSizeInfo] = vals
       filteredItems = @filter items, {searchValue, groupKeyFilter}
-      groupedItems = filteredItems
-      sortedItems = @sort groupedItems, sortFn
-      bundledItems = @bundle sortedItems, {userItems}
-      {itemsPerRow} = itemSizeInfo
-      rowsOfItems = @groupByRow bundledItems, {itemsPerRow}
-      return rowsOfItems
+      itemGroups = @group filteredItems
+      itemGroups = _map itemGroups, (items, type) ->
+        {items, type}
+      itemGroups = _sortBy itemGroups, 'type'
+      return _map itemGroups, ({items, type}) =>
+        sortedItems = @sort items, sortFn
+        bundledItems = @bundle sortedItems, {userItems, group}
+        {itemsPerRow} = itemSizeInfo
+        groupedItems = @groupByRow bundledItems, {itemsPerRow}
+        {type, items: groupedItems}
 
     @$spinner = new Spinner()
 
     @state = z.state
       itemSizeInfo: @itemSizeInfo
-      rowsOfItems: rowsOfItems
+      itemGroups: itemGroups
       isDrawerOpen: @model.drawer.isOpen()
       drawerWidth: @model.window.getDrawerWidth()
       me: me
@@ -133,15 +138,23 @@ module.exports = class ItemList
         item.groupKey is groupKeyFilter
     items
 
+  group: (items) ->
+    _groupBy items, ({item}) ->
+      item.type
+
   sort: (items, sortFn) ->
     _sortBy items, sortFn
 
-  bundle: (items, {userItems}) =>
+  bundle: (items, {userItems, group}) =>
     _map items, (itemInfo) =>
       item = itemInfo.item
-      $el = new StickerBlock {
+      ItemClass = if item.type is 'sticker' \
+                  then StickerBlock
+                  else ConsumableBlock
+      $el = new ItemClass {
         @model
         @router
+         group
         isLocked: not @model.userItem.isOwnedByUserItemsAndItemKey(
           userItems, item.key
         )
@@ -157,8 +170,8 @@ module.exports = class ItemList
     rows = _chunk items, itemsPerRow
     _toArray rows
 
-  render: ({onclick, isInactive, scrollTop, showCounts, maxRows}) =>
-    {me, rowsOfItems, itemSizeInfo, isDrawerOpen, drawerWidth,
+  render: ({onclick, isInactive, scrollTop, showCounts}) =>
+    {me, itemGroups, itemSizeInfo, isDrawerOpen, drawerWidth,
       windowSize} = @state.getValue()
 
     {itemsPerRow, itemMargin, itemSize} = itemSizeInfo
@@ -168,46 +181,46 @@ module.exports = class ItemList
 
     groupScrollTop = SEARCH_BAR_HEIGHT
 
-    if maxRows
-      rowsOfItems = _take rowsOfItems, maxRows
-
     z '.z-item-list', {
       className: z.classKebab {isInactive}
     },
-      if rowsOfItems?.length is 0 or rowsOfItems?[0]?.length is 0
+      if itemGroups?.length is 0 or
+          itemGroups?[0]?.length is 0
         z '.no-items', @model.l.get 'itemList.empty'
-      else if not rowsOfItems or not rowsOfItems.length
+      else if not itemGroups or not itemGroups?.length
         @$spinner
       else
-        rows = rowsOfItems.length
-        _map rowsOfItems, (items, rowIndex) ->
-          # 2 * is for extra buffer room. also the
-          # calculation seems to get
-          # less accurate the futher page is scrolled
-          isRowVisible = not scrollTop? or
-             (groupScrollTop >= scrollTop - 2 * containerHeight and
-             groupScrollTop < scrollTop + window?.innerHeight)
-          groupScrollTop += containerHeight
+        _map itemGroups, (itemGroup) ->
+          z '.group',
+            z '.title', itemGroup.type
+            _map itemGroup.items, (items, rowIndex) ->
+              # 2 * is for extra buffer room. also the
+              # calculation seems to get
+              # less accurate the futher page is scrolled
+              isRowVisible = not scrollTop? or
+                 (groupScrollTop >= scrollTop - 2 * containerHeight and
+                 groupScrollTop < scrollTop + window?.innerHeight)
+              groupScrollTop += containerHeight
 
-          z '.row', {
-            className: z.classKebab {isVisible: isRowVisible}
-            style:
-              height: "#{containerHeight}px"
-          },
-            _map items, ({info, $el}, itemIndex) ->
-              z '.item', {
-                className: z.classKebab {hasOnClick: Boolean onclick}
+              z '.row', {
+                className: z.classKebab {isVisible: isRowVisible}
                 style:
-                  maxWidth: "#{Math.floor(100 / itemsPerRow)}%"
-                  marginRight: if itemIndex isnt items.length - 1 \
-                               then "#{itemMargin * 2}px"
-                               else 0
-                  marginBottom: "#{itemMargin * 2}px"
+                  height: "#{containerHeight}px"
               },
-                z $el, {
-                  sizePx: if info?.item then itemSize else null
-                  defaultLocked: showCounts is false
-                  onclick: ->
-                    onclick info
-                  isHidden: isInactive
-                }
+                _map items, ({info, $el}, itemIndex) ->
+                  z '.item', {
+                    className: z.classKebab {hasOnClick: Boolean onclick}
+                    style:
+                      maxWidth: "#{Math.floor(100 / itemsPerRow)}%"
+                      marginRight: if itemIndex isnt items.length - 1 \
+                                   then "#{itemMargin * 2}px"
+                                   else 0
+                      marginBottom: "#{itemMargin * 2}px"
+                  },
+                    z $el, {
+                      sizePx: if info?.item then itemSize else null
+                      defaultLocked: showCounts is false
+                      onclick: ->
+                        onclick info
+                      isHidden: isInactive
+                    }

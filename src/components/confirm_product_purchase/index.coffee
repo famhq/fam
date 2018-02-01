@@ -40,9 +40,9 @@ module.exports = class ConfirmProductPurchase
     {me, product, purchaseLoadingKey} = @state.getValue()
 
     packImage = _snakeCase(product?.key).replace '_pack', ''
-    imageUrl = if product.type is 'pack' \
-               then "#{config.CDN_URL}/packs/#{packImage}.png"
-               else product.data?.backgroundImage
+    imageUrl = if product.data?.backgroundImage \
+               then product.data?.backgroundImage
+               else "#{config.CDN_URL}/packs/#{packImage}.png"
     buyPackForKey = if product.type is 'pack' \
                     then 'confirmPackPurchase.buyPackFor'
                     else 'confirmProductPurchase.buyProductFor'

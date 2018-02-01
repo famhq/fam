@@ -14,5 +14,10 @@ module.exports = class UserItem
       invalidateAll: true
     }
 
+  consumeByItemKey: (itemKey, {groupId}) =>
+    @auth.call "#{@namespace}.consumeByItemKey", {itemKey, groupId}, {
+      invalidateAll: true
+    }
+
   isOwnedByUserItemsAndItemKey: (userItems, itemKey) ->
     _find userItems, {itemKey}

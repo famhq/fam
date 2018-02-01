@@ -4,6 +4,7 @@ _startCase = require 'lodash/startCase'
 _find = require 'lodash/find'
 
 Sticker = require '../sticker'
+Item = require '../item'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -12,11 +13,14 @@ if window?
 
 FLIP_TIME_MS = 300 # 0.3s
 
-module.exports = class StickerOpen
+module.exports = class ItemOpen
   constructor: ({@model, isLocked, itemInfo, sizePx, isBack, backKey}) ->
     isLocked ?= null
 
     @$sticker = new Sticker {
+      @model, isLocked, itemInfo, sizePx
+    }
+    @$item = new Item {
       @model, isLocked, itemInfo, sizePx
     }
 
@@ -50,7 +54,9 @@ module.exports = class StickerOpen
     backImageUrl = "url(#{config.CDN_URL}/stickers/backs/" +
                    "#{backKey}_back_#{item?.rarity}.png)"
 
-    z '.z-sticker-open', {
+    $item = if item.type is 'sticker' then @$sticker else @$item
+
+    z '.z-item-open', {
       className: z.classKebab {
         isBack
       }
@@ -65,8 +71,8 @@ module.exports = class StickerOpen
         z '.sold-out'
 
       z '.front',
-        z '.sticker',
-          z @$sticker, {
+        z '.item',
+          z $item, {
             sizePx
             onclick
           }

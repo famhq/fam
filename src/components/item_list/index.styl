@@ -7,18 +7,6 @@
   &.is-inactive
     overflow: hidden
 
-  > .share
-    font-body2()
-    margin-left: auto
-    margin-top: 16px
-    color: getColor('$primary500')
-    display: flex
-    align-items: center
-    justify-content: center
-
-    > .icon
-      margin-right: 16px
-
   > .no-items
     font-body1()
     color: getColor('$tertiary900Text')
@@ -29,14 +17,21 @@
   > .spinner
     margin: 40px 0 16px 0
 
-  > .row
-    &.is-visible
+  > .group
+    width: 100%
+
+    > .title
+      font-subhead()
+      color: getColor('$primary500')
+
+    > .row
+      &.is-visible
+        > .item
+          display: inline-block
+          vertical-align: top
+
       > .item
-        display: inline-block
-        vertical-align: top
+        display: none
 
-    > .item
-      display: none
-
-      &.has-on-click
-        cursor: pointer
+        &.has-on-click
+          cursor: pointer

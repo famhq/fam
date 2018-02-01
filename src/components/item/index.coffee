@@ -35,11 +35,7 @@ module.exports = class Item
       meItemIds, item.key
     )
 
-    filenameParts = [itemLevel]
-    # if sizePx < MIN_ITEM_SIZE_FOR_LARGE
-    #   filenameParts.push 'small'
-    # else
-    filenameParts.push 'large'
+    filenameParts = ['large']
 
     itemSrc = config.CDN_URL + '/items/' +
                 "#{item.key}_#{filenameParts.join('_')}.png?1"

@@ -1,5 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
 _isEmpty = require 'lodash/isEmpty'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/operator/map'
@@ -25,17 +26,18 @@ module.exports = class ConversationInputStickers
     @state = z.state
       conversation: conversation
       $stickers: @model.userItem.getAll().map (items) =>
-        _map items, (itemInfo) =>
-          {
-            itemInfo
-            $sticker: new Sticker {
-              @model
-              itemInfo: itemInfo
-              isLocked: RxObservable.of false
-              hasCount: false
-              sizePx: 40
+        _filter _map items, (itemInfo) =>
+          if itemInfo.item.type is 'sticker'
+            {
+              itemInfo
+              $sticker: new Sticker {
+                @model
+                itemInfo: itemInfo
+                isLocked: RxObservable.of false
+                hasCount: false
+                sizePx: 40
+              }
             }
-          }
 
   getHeightPx: ->
     RxObservable.of 69
@@ -56,7 +58,7 @@ module.exports = class ConversationInputStickers
                     isFullWidth: false
                     onclick: =>
                       @router.go 'groupShop', {
-                        id: conversation.groupId
+                        groupId: conversation.groupId
                       }
         else
           _map $stickers, ({itemInfo, $sticker}) =>

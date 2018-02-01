@@ -33,7 +33,7 @@ module.exports = class Collection
       userItems ?= []
       _uniqBy userItems.concat(allItems), 'itemKey'
 
-    @$itemList = new ItemList {@model, @router, items, userItems}
+    @$itemList = new ItemList {@model, @router, items, userItems, group}
 
     @clickedInfo = new RxReplaySubject 1
     @$stickerInfo = new StickerInfo {

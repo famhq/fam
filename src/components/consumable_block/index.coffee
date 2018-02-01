@@ -13,7 +13,7 @@ if window?
 PADDING_PX = 4
 
 module.exports = class ConsumableBlock
-  constructor: ({@model, isLocked, itemInfo, hasCount, sizePx}) ->
+  constructor: ({@model, isLocked, itemInfo, hasCount, sizePx, group}) ->
     isLocked ?= null
 
     @$item = new Item {
@@ -25,11 +25,12 @@ module.exports = class ConsumableBlock
       me: @model.user.getMe()
       itemInfo: itemInfo
       hasCount: hasCount
+      group: group
       sizePx: sizePx
 
   render: ({sizePx, onclick}) =>
     sizePxProp = sizePx
-    {me, itemInfo, hasCount, sizePx} = @state.getValue()
+    {me, itemInfo, hasCount, sizePx, group} = @state.getValue()
 
     sizePx ?= sizePxProp
 
@@ -39,21 +40,15 @@ module.exports = class ConsumableBlock
     itemLevel ?= 1
     item ?= {}
 
-    upgradeReqCount = _find(
-      config.ITEM_LEVEL_REQUIREMENTS, {level: itemLevel + 1}
-    )?.countRequired
-    percent = Math.min(100, Math.round(100 * (count / upgradeReqCount)))
-    canUpgrade = count >= upgradeReqCount
-
+    canConsume = count >= 0
     height = if hasCount then sizePx + 22 else sizePx
 
     z '.z-consumable-block', {
       className: z.classKebab {
-        canUpgrade
         "is#{_startCase(item.rarity)}": true
       }
-      onclick: (e) ->
-        onclick? e, item
+      # onclick: (e) ->
+      #   onclick? e, item
       style:
         width: "#{sizePx}px"
         height: "#{height}px"
@@ -61,21 +56,18 @@ module.exports = class ConsumableBlock
       z '.item',
         z @$item, {
           sizePx: if sizePx then sizePx - PADDING_PX * 2 else sizePx
-          onclick
+          # onclick
         }
 
       if hasCount
         z '.count', {
-          className: z.classKebab {canUpgrade}
+          className: z.classKebab {canConsume}
           onclick: (e) =>
             e?.stopPropagation()
-            if canUpgrade
-              @model.userItem.upgradeByItemKey item.key
+            if canConsume
+              @model.userItem.consumeByItemKey item.key, {groupId: group.id}
         },
-          z '.bar', {
-            style:
-              width: "#{percent}%"
-          }
           z '.text',
-            'consume'
+            if canConsume
+              @model.l.get 'collection.use'
             " (#{count})"

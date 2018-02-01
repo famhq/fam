@@ -38,6 +38,7 @@ module.exports = class GroupShopPage
       @model
       @router
       overlay$
+      group: group
       goToEarnFn: =>
         @selectedIndex.next 1
       products: group.switchMap (group) =>

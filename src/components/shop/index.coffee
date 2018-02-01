@@ -26,7 +26,7 @@ if window?
   require './index.styl'
 
 module.exports = class Shop
-  constructor: ({@model, @router, products, @overlay$, @goToEarnFn}) ->
+  constructor: ({@model, @router, products, @overlay$, @goToEarnFn, group}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -54,7 +54,9 @@ module.exports = class Shop
                 overlay$ = @overlay$.getValue()
                 @overlay$.next [overlay$].concat [new OpenPack {
                   @model
+                  @router
                   pack: product
+                  group: group
                   items: RxObservable.of items
                   onClose: =>
                     @overlay$.next null
