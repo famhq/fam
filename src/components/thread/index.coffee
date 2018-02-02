@@ -391,12 +391,13 @@ module.exports = class Thread extends Base
           [
             z '.divider'
             z '.clan',
-              z '.clan-info',
-                z '.badge',
-                  z @$clanBadge, {clan}
-                z '.info',
-                  z '.name', clan?.data.name
-                  z '.tag', "##{clan?.id}"
+              z '.g-grid',
+                z '.clan-info',
+                  z '.badge',
+                    z @$clanBadge, {clan}
+                  z '.info',
+                    z '.name', clan?.data.name
+                    z '.tag', "##{clan?.id}"
               $clanMetrics
           ]
         else if thread?.data?.extras?.clan?.id

@@ -146,6 +146,7 @@ module.exports = class NewThread
             newThread = {
               thread:
                 id: thread?.id
+                category: thread?.category or category
                 data:
                   title: titleValue
                   body: bodyValue
