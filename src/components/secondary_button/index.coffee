@@ -14,4 +14,9 @@ module.exports = class SecondaryButton extends Button
         isFullWidth: true
         colors:
           cText: colors.$tertiary500Text
+          c200: colors.$tertiary500
+          c500: colors.$tertiary500
+          c600: colors.$tertiary400
+          c700: colors.$tertiary400
+          ink: colors.$tertiary500Text
       }

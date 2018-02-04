@@ -112,8 +112,8 @@ module.exports = class GroupEarnXp
             action: @model.l.get 'earnXp.openStickerPacks'
             actionKey: 'openStickerPacks'
             route:
-              key: 'groupShop'
-              replacements: {groupId: group.key or group.id}
+              key: 'groupCollectionWithTab'
+              replacements: {groupId: group.key or group.id, tab: 'shop'}
             xp: '∞'
             $claimButton: new PrimaryButton()
             $claimButtonText: @model.l.get 'earnXp.openStickerPacksButton'

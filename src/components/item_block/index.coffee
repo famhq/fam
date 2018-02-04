@@ -10,9 +10,9 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-PADDING_PX = 4
+PADDING_PX = 0#4
 
-module.exports = class ConsumableBlock
+module.exports = class ItemBlock
   constructor: ({@model, isLocked, itemInfo, hasCount, sizePx, group}) ->
     isLocked ?= null
 
@@ -40,15 +40,18 @@ module.exports = class ConsumableBlock
     itemLevel ?= 1
     item ?= {}
 
-    canConsume = count >= 0
+    isConsumable = item.type in ['consumable', 'scratch']
+    canConsume = isConsumable and count > 0
+    isOwned = count > 0
     height = if hasCount then sizePx + 22 else sizePx
 
-    z '.z-consumable-block', {
+    z '.z-item-block', {
       className: z.classKebab {
         "is#{_startCase(item.rarity)}": true
+        isOwned: isOwned
       }
-      # onclick: (e) ->
-      #   onclick? e, item
+      onclick: (e) ->
+        onclick? e, item
       style:
         width: "#{sizePx}px"
         height: "#{height}px"
@@ -56,18 +59,15 @@ module.exports = class ConsumableBlock
       z '.item',
         z @$item, {
           sizePx: if sizePx then sizePx - PADDING_PX * 2 else sizePx
-          # onclick
+          onclick
         }
+
+        if canConsume
+          z '.use',
+            @model.l.get 'collection.use'
 
       if hasCount
         z '.count', {
           className: z.classKebab {canConsume}
-          onclick: (e) =>
-            e?.stopPropagation()
-            if canConsume
-              @model.userItem.consumeByItemKey item.key, {groupId: group.id}
         },
-          z '.text',
-            if canConsume
-              @model.l.get 'collection.use'
-            " (#{count})"
+          count

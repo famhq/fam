@@ -1,0 +1,66 @@
+@require '../../vars'
+
+$zIndexSoldOut = 3
+
+.z-item-block
+  position: relative
+  box-sizing: border-box
+  border-radius: 2px
+  opacity: 0.4
+
+  &.is-owned
+    opacity: 1
+
+  > .item
+    shadow-1()
+    width: 100%
+    position: relative
+    z-index: 1
+    display: block
+    // padding: 4px
+    box-sizing: border-box
+    background: getColor('$tertiary700')
+
+    > .use
+      font-button()
+      shadow-1()
+      position: absolute
+      bottom: 8px
+      left: 8px
+      right: 8px
+      text-align: center
+      background: getColor('$primary500')
+      border-radius: 2px
+      padding: 4px 0
+
+  // > .sold-out
+  //   position: absolute
+  //   top: 0.5%
+  //   right: 1%
+  //   background-image: url($cdnUrl + '/sold_out.svg')
+  //   width: 100%
+  //   height: 100%
+  //   z-index: $zIndexSoldOut
+  //   background-repeat: no-repeat
+  //   background-position: top right
+  //   background-size: 55%
+
+  > .count
+    font-caption1(false)
+    background: getColor('$tertiary700')
+    text-align: center
+    position: relative
+    z-index: 1
+    border-radius: 4px
+    margin-top: 2px
+    border-radius: 4px
+    margin-top: 2px
+    line-height: 12px
+
+    &.can-consume
+      cursor: pointer
+      background: getColor('$primary500')
+      color: getColor('$primary500Text')
+
+    > .text
+      position: relative

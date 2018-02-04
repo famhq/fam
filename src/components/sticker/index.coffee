@@ -21,7 +21,7 @@ module.exports = class Sticker
       itemInfo: itemInfo
       sizePx: sizePx
 
-  render: ({sizePx, onclick}) =>
+  render: ({sizePx, onclick, hasRarityBar}) =>
     sizePxProp = sizePx
     {me, isLocked, itemInfo, meItemIds, sizePx} = @state.getValue()
 
@@ -53,7 +53,10 @@ module.exports = class Sticker
       imageProps.height = sizePx
 
     z '.z-sticker', {
-      className: z.classKebab {isLocked}
+      className: z.classKebab {
+        isLocked
+        "is#{_startCase(item.rarity)}": true
+      }
       onclick: (e) ->
         onclick? e, item
       style:
@@ -61,3 +64,5 @@ module.exports = class Sticker
         height: "#{sizePx}px"
     },
       z 'img.sticker', imageProps
+      if hasRarityBar
+        z '.rarity-bar'

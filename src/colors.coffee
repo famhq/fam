@@ -284,11 +284,11 @@ colors = _defaults {
   '$tabUnselectedAlt': materialColors.$white54
 
   '$transparent': 'rgba(0, 0, 0, 0)'
-  '$common': '#00E676'
-  '$rare': '#3D5AFE'
-  '$epic': '#D500F9'
-  '$legendary': '#FF9100'
-  '$commonText': materialColors.$blueGrey900
+  '$common': '#3e4447'
+  '$rare': materialColors.$blue500
+  '$epic': materialColors.$purple500
+  '$legendary': materialColors.$orange500
+  '$commonText': materialColors.$white
   '$rareText': materialColors.$white
   '$epicText': materialColors.$white
   '$legendaryText': materialColors.$white

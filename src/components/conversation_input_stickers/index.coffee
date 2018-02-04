@@ -57,8 +57,9 @@ module.exports = class ConversationInputStickers
                     text: @model.l.get 'conversationInputStickers.getStickers'
                     isFullWidth: false
                     onclick: =>
-                      @router.go 'groupShop', {
+                      @router.go 'groupCollectionWithTab', {
                         groupId: conversation.groupId
+                        tab: 'shop'
                       }
         else
           _map $stickers, ({itemInfo, $sticker}) =>

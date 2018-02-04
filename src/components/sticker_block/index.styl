@@ -6,18 +6,23 @@ $zIndexSoldOut = 3
   position: relative
   box-sizing: border-box
   border-radius: 2px
+  opacity: 0.4
 
-  &.is-locked
-    > .sticker
-      opacity: 0.16
+  &.is-owned
+    opacity: 1
 
   > .sticker
+    shadow-1()
     width: 100%
     position: relative
     z-index: 1
     display: block
-    padding: 4px
     box-sizing: border-box
+    background: getColor('$tertiary700')
+
+    > .rarity-bar
+      width: 100%
+      height: 4px
 
   // > .sold-out
   //   position: absolute
@@ -31,13 +36,16 @@ $zIndexSoldOut = 3
   //   background-position: top right
   //   background-size: 55%
 
+
   > .count
     font-caption1(false)
     background: getColor('$tertiary700')
     text-align: center
     position: relative
     z-index: 1
-    border-radius: 2px
+    border-radius: 4px
+    margin-top: 2px
+    line-height: 12px
 
     &.can-upgrade
       cursor: pointer
@@ -47,68 +55,81 @@ $zIndexSoldOut = 3
       left: 0
       top: 0
       height: 100%
+      border-radius: 4px
 
     > .text
       position: relative
 
-  &:after
-    content: ''
-    position: absolute
-    top: 0
-    left: 0
-    width: 100%
-    height: 100%
-    background: getColor('$tertiary300')
-    opacity: 0.3
-    border-radius: 2px
+  // &:after
+  //   content: ''
+  //   position: absolute
+  //   top: 0
+  //   left: 0
+  //   width: 100%
+  //   height: 100%
+  //   background: getColor('$tertiary300')
+  //   opacity: 0.3
+  //   border-radius: 2px
 
   &.is-common
-    border: 1px solid getColor('$tertiary400')
+    // border: 1px solid getColor('$common')
 
-    &:after
-      background: getColor('$tertiary400')
+    // &:after
+    //   background: getColor('$common')
+
+    > .sticker > .rarity-bar
+      background: getColor('$common')
 
     > .count
       > .bar
-        background: getColor('$tertiary400')
-        color: getColor('$tertiary400Text')
+        background: getColor('$common')
+        color: getColor('$commonText')
 
   &.is-rare
-    border: 1px solid getColor('$blue500')
+    // border: 1px solid getColor('$rare')
 
-    &:after
-      background: getColor('$blue500')
+    // &:after
+    //   background: getColor('$rare')
+
+    > .sticker > .rarity-bar
+      background: getColor('$rare')
 
     > .count
       > .bar
-        background: getColor('$blue500')
-        color: getColor('$blue500Text')
+        background: getColor('$rare')
+        color: getColor('$rareText')
 
   &.is-epic
-    border: 1px solid getColor('$purple500')
+    // border: 1px solid getColor('$epic')
 
-    &:after
-      background: getColor('$purple500')
+    // &:after
+    //   background: getColor('$epic')
+
+    > .sticker > .rarity-bar
+      background: getColor('$epic')
 
     > .count
       > .bar
-        background: getColor('$purple500')
-        color: getColor('$purple500Text')
+        background: getColor('$epic')
+        color: getColor('$epicText')
 
   &.is-legendary
-    border: 1px solid getColor('$orange500')
+    // border: 1px solid getColor('$legendary')
 
-    &:after
-      background: getColor('$orange500')
+    // &:after
+    //   background: getColor('$legendary')
+
+    > .sticker > .rarity-bar
+      background: getColor('$legendary')
 
     > .count
       > .bar
-        background: getColor('$orange500')
-        color: getColor('$orange500Text')
+        background: getColor('$legendary')
+        color: getColor('$legendaryText')
 
 
   &.can-upgrade
-    border: 1px solid getColor('$red500')
+    // border: 1px solid getColor('$red500')
 
     > .count
       font-weight: 600

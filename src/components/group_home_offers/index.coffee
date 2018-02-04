@@ -145,4 +145,4 @@ module.exports = class GroupHomeOffers
         submit:
           text: @model.l.get 'groupHome.goToShop'
           onclick: =>
-            @router.go 'groupShop', {groupId: group.key or group.id}
+            @router.go 'groupFire', {groupId: group.key or group.id}

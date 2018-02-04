@@ -19,5 +19,10 @@ module.exports = class UserItem
       invalidateAll: true
     }
 
+  scratchByItemKey: (itemKey, {groupId}) =>
+    @auth.call "#{@namespace}.scratchByItemKey", {itemKey, groupId}, {
+      invalidateAll: true
+    }
+
   isOwnedByUserItemsAndItemKey: (userItems, itemKey) ->
     _find userItems, {itemKey}

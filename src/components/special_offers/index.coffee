@@ -78,9 +78,8 @@ module.exports = class SpecialOffers
     unless Environment.isGameApp config.GAME_KEY
       @group.take(1).subscribe (group) =>
         @model.appInstallAction.upsert {
-          path: @router.get 'groupShopWithTab', {
+          path: @router.get 'groupFire', {
             groupId: group.key or group.id
-            tab: 'special-offers'
           }
         }
     @mountDisposable = @model.window.onResume(

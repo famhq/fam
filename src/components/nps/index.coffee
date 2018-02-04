@@ -7,6 +7,7 @@ RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 Dialog = require '../dialog'
 Textarea = require '../textarea'
 Button = require '../flat_button'
+config = require '../../config'
 colors = require '../../colors'
 
 if window?

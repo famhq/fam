@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
+_find = require 'lodash/find'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 
@@ -13,11 +14,21 @@ if window?
 
 GROUPS_IN_DRAWER = 2
 
+collectionGroupKeys = ['playhard', 'eclihpse']
+
 module.exports = class BottomBar
   constructor: ({@model, @router, requests, group}) ->
     @state = z.state
       requests: requests
       group: group
+      hasShopNotification: group.switchMap (group) =>
+        if group and group.key in collectionGroupKeys
+          @model.product.getAllByGroupId group.id
+        else
+          RxObservable.of null
+      .map (products) ->
+        Boolean _find products, ({cost, isLocked}) ->
+          cost is 0 and not isLocked
 
   afterMount: (@$$el) => null
 
@@ -28,7 +39,8 @@ module.exports = class BottomBar
     @$$el?.classList.remove 'is-hidden'
 
   render: ({isAbsolute} = {}) =>
-    {requests, group} = @state.getValue()
+    {requests, group, hasShopNotification} = @state.getValue()
+
     currentPath = requests?.req.path
 
     groupId = group?.key or config.CLASH_ROYALE_ID
@@ -58,12 +70,15 @@ module.exports = class BottomBar
         text: @model.l.get 'general.home'
         isDefault: true
       }
-      if group?.key in ['playhard', 'eclihpse']
+      if group?.key in collectionGroupKeys
         {
           $icon: new Icon()
-          icon: 'shop'
-          route: @router.get 'groupShop', {groupId}
-          text: @model.l.get 'general.shop'
+          icon: 'cards'
+          route: if hasShopNotification \
+              then @router.get 'groupCollectionWithTab', {groupId, tab: 'shop'}
+              else @router.get 'groupCollection', {groupId}
+          text: @model.l.get 'general.collection'
+          hasNotification: hasShopNotification
         }
       else if group?.type is 'public'
         {
@@ -84,7 +99,9 @@ module.exports = class BottomBar
       key: 'bottom-bar'
       className: z.classKebab {isLoaded, isAbsolute}
     },
-      _map @menuItems, ({$icon, icon, route, text, $ripple, isDefault}, i) =>
+      _map @menuItems, (menuItem, i) =>
+        {$icon, icon, route, text, isDefault, hasNotification} = menuItem
+
         if isDefault
           isSelected =  currentPath in [
             @router.get 'siteHome'
@@ -97,7 +114,7 @@ module.exports = class BottomBar
         z 'a.menu-item', {
           attributes:
             tabindex: i
-          className: z.classKebab {isSelected}
+          className: z.classKebab {isSelected, hasNotification}
           href: route
           onclick: (e) =>
             e?.preventDefault()

@@ -18,7 +18,7 @@ require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/map'
 
 StickerBlock = require '../sticker_block'
-ConsumableBlock = require '../consumable_block'
+ItemBlock = require '../item_block'
 Icon = require '../icon'
 Spinner = require '../spinner'
 colors = require '../../colors'
@@ -140,7 +140,10 @@ module.exports = class ItemList
 
   group: (items) ->
     _groupBy items, ({item}) ->
-      item.type
+      itemType = item.type
+      if itemType in ['coin', 'scratch']
+        itemType = 'consumable'
+      itemType
 
   sort: (items, sortFn) ->
     _sortBy items, sortFn
@@ -150,11 +153,11 @@ module.exports = class ItemList
       item = itemInfo.item
       ItemClass = if item.type is 'sticker' \
                   then StickerBlock
-                  else ConsumableBlock
+                  else ItemBlock
       $el = new ItemClass {
         @model
         @router
-         group
+        group
         isLocked: not @model.userItem.isOwnedByUserItemsAndItemKey(
           userItems, item.key
         )

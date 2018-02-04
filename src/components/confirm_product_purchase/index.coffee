@@ -43,9 +43,10 @@ module.exports = class ConfirmProductPurchase
     imageUrl = if product.data?.backgroundImage \
                then product.data?.backgroundImage
                else "#{config.CDN_URL}/packs/#{packImage}.png"
-    buyPackForKey = if product.type is 'pack' \
-                    then 'confirmPackPurchase.buyPackFor'
-                    else 'confirmProductPurchase.buyProductFor'
+    # buyPackForKey = if product.type is 'pack' \
+    #                 then 'confirmPackPurchase.buyPackFor'
+    #                 else 'confirmProductPurchase.buyProductFor'
+    buyPackForKey = 'confirmProductPurchase.buyProductFor'
 
     z '.z-confirm-product-purchase',
       z @$appBar,
@@ -73,8 +74,10 @@ module.exports = class ConfirmProductPurchase
             z @$buyButton,
               $content: if purchaseLoadingKey \
                         then @model.l.get 'general.loading'
-                        else if product.type is 'pack'
-                        then @model.l.get 'confirmPackPurchase.buyPack'
+                        # else if product.type is 'pack'
+                        # then @model.l.get 'confirmPackPurchase.buyPack'
+                        else if product.cost is 0
+                        then @model.l.get 'confirmProductPurchase.open'
                         else @model.l.get 'confirmProductPurchase.buyProduct'
               onclick: =>
                 unless purchaseLoadingKey

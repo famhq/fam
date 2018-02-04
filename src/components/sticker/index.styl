@@ -3,8 +3,31 @@
 .z-sticker
   box-sizing: border-box
   border-radius: 2px
+  position: relative
 
   > .sticker
     width: 100%
     z-index: 1
     display: block
+
+  > .rarity-bar
+    width: 100%
+    height: 8px
+    position: absolute
+    bottom: 0
+
+  &.is-common
+    > .rarity-bar
+      background: getColor('$common')
+
+  &.is-rare
+    > .rarity-bar
+      background: getColor('$rare')
+
+  &.is-epic
+    > .rarity-bar
+      background: getColor('$epic')
+
+  &.is-legendary
+    > .rarity-bar
+      background: getColor('$legendary')

@@ -10,7 +10,7 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-PADDING_PX = 4
+PADDING_PX = 0#4
 
 module.exports = class StickerBlock
   constructor: ({@model, isLocked, itemInfo, hasCount, sizePx}) ->
@@ -44,6 +44,7 @@ module.exports = class StickerBlock
     )?.countRequired
     percent = Math.min(100, Math.round(100 * (count / upgradeReqCount)))
     canUpgrade = count >= upgradeReqCount
+    isOwned = count > 0
 
     height = if hasCount then sizePx + 22 else sizePx
 
@@ -51,6 +52,7 @@ module.exports = class StickerBlock
       className: z.classKebab {
         canUpgrade
         "is#{_startCase(item.rarity)}": true
+        isOwned: isOwned
       }
       onclick: (e) ->
         onclick? e, item
@@ -67,6 +69,7 @@ module.exports = class StickerBlock
           sizePx: if sizePx then sizePx - PADDING_PX * 2 else sizePx
           onclick
         }
+        z '.rarity-bar'
 
       if hasCount
         z '.count', {

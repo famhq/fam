@@ -8,7 +8,6 @@ require 'rxjs/add/operator/switchMap'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 Tabs = require '../../components/tabs'
-Shop = require '../../components/shop'
 EarnFire = require '../../components/earn_fire'
 SpecialOffers = require '../../components/special_offers'
 Collection = require '../../components/collection'
@@ -20,9 +19,8 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class GroupShopPage
+module.exports = class GroupFirePage
   isGroup: true
-  @hasBottomBar: true
 
   constructor: (options) ->
     {@model, @requests, @router, serverData, overlay$,
@@ -34,19 +32,6 @@ module.exports = class GroupShopPage
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$tabs = new Tabs {@model, @selectedIndex}
     @$menuFireAmount = new MenuFireAmount {@model, @router}
-    @$shop = new Shop {
-      @model
-      @router
-      overlay$
-      group: group
-      goToEarnFn: =>
-        @selectedIndex.next 1
-      products: group.switchMap (group) =>
-        if group
-          @model.product.getAllByGroupId group.id
-        else
-          RxObservable.of null
-    }
     @$specialOffers = new SpecialOffers {@model, @router, overlay$, group}
     @$earnFire = new EarnFire {@model, @router, overlay$, group}
 
@@ -62,8 +47,8 @@ module.exports = class GroupShopPage
 
   getMeta: =>
     {
-      title: @model.l.get 'groupShopPage.title'
-      description: @model.l.get 'groupShopPage.title'
+      title: @model.l.get 'earnFire.title'
+      description: @model.l.get 'earnFire.title'
     }
 
   render: =>
@@ -74,7 +59,7 @@ module.exports = class GroupShopPage
         height: "#{windowSize.height}px"
     },
       z @$appBar, {
-        title: @model.l.get 'groupShopPage.title'
+        title: @model.l.get 'earnFire.title'
         isFlat: true
         $topLeftButton: z @$buttonMenu, {
           color: colors.$header500Icon
@@ -88,10 +73,6 @@ module.exports = class GroupShopPage
         isBarFixed: false
         hasAppBar: true
         tabs: [
-          {
-            $menuText: @model.l.get 'general.shop'
-            $el: @$shop
-          }
           {
             $menuText: @model.l.get 'shop.specialOffers'
             $el: z @$specialOffers

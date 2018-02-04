@@ -163,11 +163,19 @@ isomorphic =
   BADGES: _map _range(1, 95), (i) -> "#{i}"
   RARITIES: ['common', 'rare', 'epic', 'Legendary']
   RARITY_COLORS:
+    starter: 'white'
     common: 'white'
     rare: 'blue'
     epic: 'purple'
     legendary: 'orange'
   CONFETTI_COLORS:
+    starter: [
+      [255, 255, 255]
+      [230, 230, 230]
+      [200, 200, 200]
+      [170, 170, 170]
+      [140, 140, 140]
+    ]
     common: [
       [255, 255, 255]
       [230, 230, 230]

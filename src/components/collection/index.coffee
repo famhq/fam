@@ -7,6 +7,8 @@ require 'rxjs/add/observable/combineLatest'
 
 ItemList = require '../item_list'
 StickerInfo = require '../sticker_info'
+ScratchSticker = require '../scratch_sticker'
+UiCard = require '../ui_card'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -14,7 +16,7 @@ if window?
   require './index.styl'
 
 module.exports = class Collection
-  constructor: ({@model, @router, group, @overlay$}) ->
+  constructor: ({@model, @router, group, @overlay$, @selectedIndex}) ->
     userItems = @model.userItem.getAll()
     allItems = group.switchMap ({id}) =>
       @model.item.getAllByGroupId id
@@ -43,17 +45,48 @@ module.exports = class Collection
       onClose: =>
         @overlay$.next null
     }
+    @$scratchSticker = new ScratchSticker {
+      @model
+      @router
+      infoStreams: @clickedInfo
+      group: group
+      @overlay$
+    }
+    @$infoCard = new UiCard()
 
     @state = z.state
       me: @model.user.getMe()
+      group: group
+      isInfoCardVisible: not @model.cookie.get 'isCollectionInfoCardVisible'
 
   render: =>
-    {me} = @state.getValue()
+    {me, group, isInfoCardVisible} = @state.getValue()
 
     z '.z-collection',
       z '.g-grid',
+        if isInfoCardVisible
+          z '.info-card',
+            z @$infoCard,
+              $content: @model.l.get 'collection.infoCard'
+              cancel:
+                text: @model.l.get 'installOverlay.closeButtonText'
+                onclick: =>
+                  @state.set isInfoCardVisible: false
+                  @model.cookie.set 'isCollectionInfoCardVisible', '1'
+              submit:
+                text: @model.l.get 'groupHome.goToShop'
+                onclick: =>
+                  @selectedIndex.next 1
+
         z @$itemList, {
           onclick: (itemInfo) =>
             @clickedInfo.next RxObservable.of itemInfo
-            @overlay$.next @$stickerInfo
+            if itemInfo.item.type is 'scratch'
+              @overlay$.next @$scratchSticker
+            else if itemInfo.item.type is 'sticker'
+              @overlay$.next @$stickerInfo
+            else if itemInfo.item.type is 'consumable' and itemInfo.count > 0
+              @model.userItem.consumeByItemKey itemInfo.item.key, {
+                groupId: group.id
+              }
         }

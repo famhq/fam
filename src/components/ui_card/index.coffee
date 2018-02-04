@@ -30,12 +30,14 @@ module.exports = class UiCard
       z '.text', $content
       z '.buttons',
         if cancel
-          z @$cancelButton,
-            text: cancel.text
-            isFullWidth: false
-            onclick: cancel.onclick
+          z 'div',
+            z @$cancelButton,
+              text: cancel.text
+              isFullWidth: false
+              onclick: cancel.onclick
         if submit
-          z @$submitButton,
-            text: submit.text
-            isFullWidth: false
-            onclick: submit.onclick
+          z 'div',
+            z @$submitButton,
+              text: submit.text
+              isFullWidth: false
+              onclick: submit.onclick

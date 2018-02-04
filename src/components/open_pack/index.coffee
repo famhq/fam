@@ -173,13 +173,13 @@ module.exports = class OpenPack
 
         z '.bottom',
           z '.action',
-            z @$goToCollectionButton,
-              text: @model.l.get 'openPack.goToCollection'
-              onclick: =>
-                @onClose()
-                @router.go 'groupCollection', {
-                  groupId: group.id
-                }
+            # z @$goToCollectionButton,
+            #   text: @model.l.get 'openPack.goToCollection'
+            #   onclick: =>
+            #     @onClose()
+            #     @router.go 'groupCollection', {
+            #       groupId: group.key or group.id
+            #     }
             z @$doneButton,
               text: @model.l.get 'general.done'
               onclick: =>

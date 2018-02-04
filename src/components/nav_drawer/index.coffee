@@ -127,11 +127,11 @@ module.exports = class NavDrawer
             }
           if group.type is 'public'
             {
-              path: @router.get 'groupShop', {groupId}
+              path: @router.get 'groupFire', {groupId}
               # title: @model.l.get 'general.shop'
-              title: @model.l.get 'general.freeStuff'
+              title: @model.l.get 'earnFire.title'
               $icon: new Icon()
-              iconName: 'shop'
+              iconName: 'fire'
             }
           if group.type is 'public'
             {

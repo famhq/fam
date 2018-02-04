@@ -90,7 +90,10 @@ module.exports = class GroupSendNotification
                   isFloating: true
                   options: [
                     {value: 'groupChat', text: @model.l.get 'general.chat'}
-                    {value: 'groupShop', text: @model.l.get 'general.shop'}
+                    {
+                      value: 'groupCollection'
+                      text: @model.l.get 'general.shop'
+                    }
                     {value: 'groupHome', text: @model.l.get 'general.home'}
                   ]
 
