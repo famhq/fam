@@ -14,7 +14,7 @@
   "eventEdit": "/이벤트/{id}/수정",
   "friends": "/친구",
   "friendsWithAction": "/친구/{action}",
-  "groups": "/groups",
+  "groups": "/그룹",
   "group": "/g/{groupId}",
   "groupChat": "/g/{groupId}/chat",
   "groupChatConversation": "/g/{groupId}/chat/{conversationId}",

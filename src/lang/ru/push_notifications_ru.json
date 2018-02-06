@@ -7,5 +7,15 @@
   "newGroupMember.title": "Новый член группы",
   "newGroupMember.text": "{name} присоединился к вашей группе в Starfire",
   "newFollower.title": "Новый подписчик",
-  "newFollower.text": "{name} подписался на вас"
+  "newFollower.text": "{name} подписался на вас",
+  "newVideo.title": "New video",
+  "newVideo.text": "New video posted in {groupName}",
+  "newTrade.title": "New trade",
+  "newTrade.text": "{name} sent you a trade",
+  "rejectedTrade.title": "Rejected trade",
+  "rejectedTrade.text": "{name} rejected your trade",
+  "acceptedTrade.text": "{name} accepted your trade",
+  "acceptedTrade.title": "Accepted trade",
+  "packUnlocked.title": "Pack unlocked",
+  "packUnlocked.text": "{packName} is available"
 }

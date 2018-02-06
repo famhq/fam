@@ -7,5 +7,15 @@
   "newGroupMember.title": "Nowy członek grupy",
   "newGroupMember.text": "{name} dołącza do twojej grupy w Starfire",
   "newFollower.title": "Nowy śledzący",
-  "newFollower.text": "{name} cię śledzi"
+  "newFollower.text": "{name} cię śledzi",
+  "newVideo.title": "Nowe wideo",
+  "newVideo.text": "Nowy filmik wysłany w grupie {groupName}",
+  "newTrade.title": "Nowa oferta wymiany",
+  "newTrade.text": "{name} wysyła ci ofertę wymiany",
+  "rejectedTrade.title": "Odrzucenie oferty",
+  "rejectedTrade.text": "{name} odrzuca twoją ofertę",
+  "acceptedTrade.text": "{name} akceptuje twoją ofertę",
+  "acceptedTrade.title": "Akceptowanie oferty",
+  "packUnlocked.title": "Paczka odblokowana",
+  "packUnlocked.text": "Paczka {packName} jest dostępna"
 }

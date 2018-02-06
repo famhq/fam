@@ -7,5 +7,15 @@
   "newGroupMember.title": "Bagong miyembro ng grupo",
   "newGroupMember.text": "{name} ay sumali sa inyong grupo sa Starfire",
   "newFollower.title": "Bagong follower",
-  "newFollower.text": "{name} ay nag-follow sa iyo"
+  "newFollower.text": "{name} ay nag-follow sa iyo",
+  "newVideo.title": "New video",
+  "newVideo.text": "New video posted in {groupName}",
+  "newTrade.title": "New trade",
+  "newTrade.text": "{name} sent you a trade",
+  "rejectedTrade.title": "Rejected trade",
+  "rejectedTrade.text": "{name} rejected your trade",
+  "acceptedTrade.text": "{name} accepted your trade",
+  "acceptedTrade.title": "Accepted trade",
+  "packUnlocked.title": "Pack unlocked",
+  "packUnlocked.text": "{packName} is available"
 }

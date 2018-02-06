@@ -1,6 +1,6 @@
 {
   "addEvent": "/tianjia-shijian",
-  "chestCycle": "/xiongbu-xunhuan",
+  "chestCycle": "/宝箱循环",
   "chestCycleByPlayerId": "/xiong-zhouqi/{playerId}",
   "clan": "/shizu",
   "chat": "/liao",

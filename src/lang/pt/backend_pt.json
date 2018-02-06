@@ -1,17 +1,17 @@
 {
   "message.userJoinedChatMessage": "{nome} juntou-se",
   "card.addFriendCardTitle": "Adicione-me como amigo",
-  "card.addFriendCardDescription": "Toque para me adicionar como amigo no Clash Royale",
+  "card.addFriendCardDescription": "Toque para me adicionar como amigo em Clash Royale",
   "card.joinClanCardTitle": "Junte-se ao meu clã",
-  "card.joinClanCardDescription": "Toque para se juntar ao meu clã no Clash Royale",
+  "card.joinClanCardDescription": "Toque para se juntar ao meu clã em Clash Royale",
   "audit.ban": "banido {nome}\n \n-> audit. ban",
-  "audit.unban": "desbanido {name}",
-  "audit.deleteMessage": "mensagem apagada por {name}",
-  "audit.deleteMessagesLast7d": "mensagens dos últimos 7 dias apagadas por {name}",
-  "audit.addRole": "adicionada a função: {role}",
-  "audit.deleteRole": "deletada a função: {role}",
-  "audit.updateRole": "Role\n",
-  "audit.updateRoleChannel": "Role chanel",
+  "audit.unban": "desbanido {nome}",
+  "audit.deleteMessage": "mensagem apagada por {nome}",
+  "audit.deleteMessagesLast7d": "apagados últimos 7 dias de mensagens por {nome}",
+  "audit.addRole": "adicionou a função: {Função}",
+  "audit.deleteRole": "deletada a função: {Função}",
+  "audit.updateRole": "permissões de função atualizadas para {função}",
+  "audit.updateRoleChannel": "permissões de função atualizadas para {função} em {canal}",
   "audit.addChannel": "adicionado o canal: {channel}",
-  "audit.updateChannel": "foi atualizado o canal: {channel}"
+  "audit.updateChannel": "atualizou o canal: {channel}"
 }

@@ -7,5 +7,15 @@
   "newGroupMember.title": "新しい、グループのメンバー",
   "newGroupMember.text": "{name} は、あなたのグループに入りました",
   "newFollower.title": "新しいフォロワー",
-  "newFollower.text": "{name} は、あなたをフォローしました"
+  "newFollower.text": "{name} は、あなたをフォローしました",
+  "newVideo.title": "New video",
+  "newVideo.text": "New video posted in {groupName}",
+  "newTrade.title": "New trade",
+  "newTrade.text": "{name} sent you a trade",
+  "rejectedTrade.title": "Rejected trade",
+  "rejectedTrade.text": "{name} rejected your trade",
+  "acceptedTrade.text": "{name} accepted your trade",
+  "acceptedTrade.title": "Accepted trade",
+  "packUnlocked.title": "Pack unlocked",
+  "packUnlocked.text": "{packName} is available"
 }

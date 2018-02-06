@@ -2,10 +2,20 @@
   "dailyRecap.title": "Daily Recap",
   "dailyRecap.textWithWins": "{countUntilNextGoodChest} chests until a {nextGoodChest}. You had {wins} wins and {losses} losses today.",
   "dailyRecap.text": "{countUntilNextGoodChest} chests until a {nextGoodChest}.",
-  "newClanMember.title": "新的部落成員",
+  "newClanMember.title": "新的部落成员",
   "newClanMember.text": "{name} joined your clan in Starfire",
   "newGroupMember.title": "New group member",
   "newGroupMember.text": "{name} joined your group in Starfire",
-  "newFollower.title": "新的追隨者",
-  "newFollower.text": "{name} followed you"
+  "newFollower.title": "新的追随者",
+  "newFollower.text": "{name} followed you",
+  "newVideo.title": "New video",
+  "newVideo.text": "New video posted in {groupName}",
+  "newTrade.title": "New trade",
+  "newTrade.text": "{name} sent you a trade",
+  "rejectedTrade.title": "Rejected trade",
+  "rejectedTrade.text": "{name} rejected your trade",
+  "acceptedTrade.text": "{name} accepted your trade",
+  "acceptedTrade.title": "Accepted trade",
+  "packUnlocked.title": "Pack unlocked",
+  "packUnlocked.text": "{packName} is available"
 }

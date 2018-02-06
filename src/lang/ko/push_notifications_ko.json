@@ -7,5 +7,15 @@
   "newGroupMember.title": "새 그룹 멤버",
   "newGroupMember.text": "{name} 님이 Starfire에서 당신의 그룹에 가입했습니다.",
   "newFollower.title": "새로운 팔로워",
-  "newFollower.text": "{name} 이 당신을 팔로우하였습니다."
+  "newFollower.text": "{name} 이 당신을 팔로우하였습니다.",
+  "newVideo.title": "New video",
+  "newVideo.text": "New video posted in {groupName}",
+  "newTrade.title": "New trade",
+  "newTrade.text": "{name} sent you a trade",
+  "rejectedTrade.title": "Rejected trade",
+  "rejectedTrade.text": "{name} rejected your trade",
+  "acceptedTrade.text": "{name} accepted your trade",
+  "acceptedTrade.title": "Accepted trade",
+  "packUnlocked.title": "Pack unlocked",
+  "packUnlocked.text": "{packName} is available"
 }
