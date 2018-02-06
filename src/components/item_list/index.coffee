@@ -57,7 +57,7 @@ getItemSizeInfo = ($$el) ->
 module.exports = class ItemList
   constructor: (options) ->
     {@model, @router, items, userItems, searchValue, groupKeyFilter, sortFn,
-        isGrouped, group} = options
+        isGrouped, group, @hideActions} = options
 
     me = @model.user.getMe()
     isGrouped ?= true
@@ -158,6 +158,7 @@ module.exports = class ItemList
         @model
         @router
         group
+        @hideActions
         isLocked: not @model.userItem.isOwnedByUserItemsAndItemKey(
           userItems, item.key
         )

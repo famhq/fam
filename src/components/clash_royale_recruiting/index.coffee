@@ -23,7 +23,10 @@ module.exports = class Recruiting
       windowSize: @model.window.getSize()
       group: group
 
-  renderHead: => @$head
+  getMeta: =>
+    meta:
+      title: @model.l.get 'newTradePage.title'
+      description: @model.l.get 'newTradePage.title'
 
   render: =>
     {windowSize, group} = @state.getValue()

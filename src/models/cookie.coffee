@@ -8,7 +8,7 @@ COOKIE_DURATION_MS = 365 * 24 * 3600 * 1000 # 1 year
 
 class Cookie
   constructor: ({@cookieSubject}) ->
-    # can't be run at same time since cookieSubject.take and onNext are async
+    # can't be run at same time since cookieSubject.take and next are async
     @setQueue = []
     @setQueueInterval = null
     @set = =>

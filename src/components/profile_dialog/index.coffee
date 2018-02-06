@@ -28,6 +28,7 @@ module.exports = class ProfileDialog
     @$messageIcon = new Icon()
     @$manageIcon = new Icon()
     @$flagIcon = new Icon()
+    @$tradeIcon = new Icon()
     @$blockIcon = new Icon()
     @$banIcon = new Icon()
     @$tempBanIcon = new Icon()
@@ -293,6 +294,14 @@ module.exports = class ProfileDialog
               @unsetLoadingByText @model.l.get 'profileDialog.message'
               @router.go 'conversation', {id: conversation.id}
               @selectedProfileDialogUser.next null
+      }
+      {
+        icon: 'trade'
+        $icon: @$tradeIcon
+        text: @model.l.get 'tradePage.title'
+        isVisible: not isMe
+        onclick: =>
+          @router.go 'newTradeToId', {toId: user.id}
       }
       unless user?.flags?.isModerator
         {

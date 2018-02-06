@@ -51,6 +51,13 @@
   "groupNewThreadWithCategoryAndId": "/g/:groupId/new-thread/:category/:id",
   "groupThreadEdit": "/g/:groupId/thread/:id/edit",
 
+  "trades": "/trades",
+  "trade": "/trade/:id",
+  "newTrade": "/newTrade",
+  "newTradeSendItem": "/newTrade/send/:sendItemKey",
+  "newTradeReceiveItem": "/newTrade/receive/:receiveItemKey",
+  "newTradeToId": "/newTrade/to/:toId",
+  "newTradeCounter": "/newTrade/counter/:counterTradeId",
   "tool": "/tool",
   "toolByKey": "/tool/:key",
   "newConversation": "/new-conversation",

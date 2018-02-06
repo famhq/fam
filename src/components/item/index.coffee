@@ -16,14 +16,14 @@ module.exports = class Item
 
     @state = z.state
       me: @model.user.getMe()
-      meItemIds: @model.userItem.getAll()
+      meUserItems: @model.userItem.getAll()
       isLocked: isLocked
       itemInfo: itemInfo
       sizePx: sizePx
 
-  render: ({sizePx, onclick}) =>
+  render: ({sizePx, onclick, countOverlay}) =>
     sizePxProp = sizePx
-    {me, isLocked, itemInfo, meItemIds, sizePx} = @state.getValue()
+    {me, isLocked, itemInfo, meUserItems, sizePx} = @state.getValue()
 
     sizePx ?= sizePxProp
 
@@ -32,7 +32,7 @@ module.exports = class Item
     itemLevel ?= 1
     item ?= {}
     isLocked ?= not @model.userItem.isOwnedByUserItemsAndItemKey(
-      meItemIds, item.key
+      meUserItems, item.key
     )
 
     filenameParts = ['large']
@@ -57,3 +57,5 @@ module.exports = class Item
         height: "#{sizePx}px"
     },
       z 'img.item', imageProps
+      if countOverlay
+        z '.count-overlay', countOverlay

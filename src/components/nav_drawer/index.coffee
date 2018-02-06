@@ -140,6 +140,13 @@ module.exports = class NavDrawer
               $icon: new Icon()
               iconName: 'cards'
             }
+          if group.type is 'public'
+            {
+              path: @router.get 'trades', {groupId}
+              title: @model.l.get 'tradesPage.title'
+              $icon: new Icon()
+              iconName: 'trade'
+            }
           if group.key in ['playhard', 'eclihpse']
             {
               path: @router.get 'groupVideos', {groupId}

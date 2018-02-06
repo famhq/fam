@@ -9,6 +9,9 @@ module.exports = class UserItem
   getAll: =>
     @auth.stream "#{@namespace}.getAll"
 
+  getAllByUserId: (userId) =>
+    @auth.stream "#{@namespace}.getAllByUserId", {userId}
+
   upgradeByItemKey: (itemKey) =>
     @auth.call "#{@namespace}.upgradeByItemKey", {itemKey}, {
       invalidateAll: true
@@ -24,5 +27,9 @@ module.exports = class UserItem
       invalidateAll: true
     }
 
-  isOwnedByUserItemsAndItemKey: (userItems, itemKey) ->
-    _find userItems, {itemKey}
+  isOwnedByUserItemsAndItemKey: (userItems, itemKey, count) ->
+    userItem = _find userItems, {itemKey}
+    if count
+      userItem?.count >= count
+    else
+      Boolean userItem

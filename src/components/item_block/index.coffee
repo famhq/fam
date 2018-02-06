@@ -13,7 +13,10 @@ if window?
 PADDING_PX = 0#4
 
 module.exports = class ItemBlock
-  constructor: ({@model, isLocked, itemInfo, hasCount, sizePx, group}) ->
+  constructor: (options) ->
+    {@model, isLocked, itemInfo, hasCount, sizePx,
+      hideActions,  group} = options
+
     isLocked ?= null
 
     @$item = new Item {
@@ -26,11 +29,12 @@ module.exports = class ItemBlock
       itemInfo: itemInfo
       hasCount: hasCount
       group: group
+      hideActions: hideActions
       sizePx: sizePx
 
   render: ({sizePx, onclick}) =>
     sizePxProp = sizePx
-    {me, itemInfo, hasCount, sizePx, group} = @state.getValue()
+    {me, itemInfo, hasCount, sizePx, hideActions, group} = @state.getValue()
 
     sizePx ?= sizePxProp
 
@@ -41,7 +45,7 @@ module.exports = class ItemBlock
     item ?= {}
 
     isConsumable = item.type in ['consumable', 'scratch']
-    canConsume = isConsumable and count > 0
+    canConsume = isConsumable and count > 0 and not hideActions
     isOwned = count > 0
     height = if hasCount then sizePx + 22 else sizePx
 
@@ -62,7 +66,7 @@ module.exports = class ItemBlock
           onclick
         }
 
-        if canConsume
+        if canConsume and not hideActions
           z '.use',
             @model.l.get 'collection.use'
 

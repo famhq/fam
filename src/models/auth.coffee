@@ -68,7 +68,7 @@ module.exports = class Auth
     @setAccessToken accessToken
     .then =>
       @exoid.invalidateAll()
-      # give time to set accessToken, I don't think it's sync (onNext)
+      # give time to set accessToken, I don't think it's sync (next)
       setTimeout =>
         pushToken = @pushToken.getValue()
         if pushToken

@@ -3,8 +3,18 @@
 .z-item
   box-sizing: border-box
   border-radius: 2px
+  position: relative
 
   > .item
     width: 100%
     z-index: 1
     display: block
+
+  > .count-overlay
+    position: absolute
+    right: 0
+    bottom: 0
+    padding: 0 8px
+    background: getColor('$tertiary500')
+    border: 1px solid getColor('$tertiary900')
+    color: getColor('$tertiary500Text')
