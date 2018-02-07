@@ -13,11 +13,14 @@ if window?
 PADDING_PX = 0#4
 
 module.exports = class StickerBlock
-  constructor: ({@model, isLocked, itemInfo, hasCount, sizePx, hideActions}) ->
+  constructor: (options) ->
+    {@model, isLocked, itemInfo, hasCount, sizePx,
+      hideActions, useRawCount} = options
+
     isLocked ?= null
 
     @$sticker = new Sticker {
-      @model, isLocked, itemInfo
+      @model, isLocked, itemInfo, useRawCount
       sizePx: if sizePx then sizePx - PADDING_PX * 2 else sizePx
     }
 
@@ -30,7 +33,7 @@ module.exports = class StickerBlock
 
   render: ({sizePx, onclick}) =>
     sizePxProp = sizePx
-    {me, itemInfo, hasCount, hideActions, izePx} = @state.getValue()
+    {me, itemInfo, hasCount, hideActions, sizePx} = @state.getValue()
 
     sizePx ?= sizePxProp
 
@@ -40,18 +43,18 @@ module.exports = class StickerBlock
     itemLevel ?= 1
     item ?= {}
 
-    upgradeReqCount = _find(
+    nextLevelCount = _find(
       config.ITEM_LEVEL_REQUIREMENTS, {level: itemLevel + 1}
     )?.countRequired
-    percent = Math.min(100, Math.round(100 * (count / upgradeReqCount)))
-    canUpgrade = count >= upgradeReqCount and not hideActions
+    percent = Math.min(100, Math.round(100 * (count / nextLevelCount)))
+    # canUpgrade = count >= nextLevelCount and not hideActions
     isOwned = count > 0
 
     height = if hasCount then sizePx + 22 else sizePx
 
     z '.z-sticker-block', {
       className: z.classKebab {
-        canUpgrade
+        # canUpgrade
         "is#{_startCase(item.rarity)}": true
         isOwned: isOwned
       }
@@ -74,21 +77,21 @@ module.exports = class StickerBlock
 
       if hasCount
         z '.count', {
-          className: z.classKebab {canUpgrade}
-          onclick: (e) =>
-            e?.stopPropagation()
-            if canUpgrade
-              @model.userItem.upgradeByItemKey item.key
+          # className: z.classKebab {canUpgrade}
+          # onclick: (e) =>
+          #   e?.stopPropagation()
+          #   if canUpgrade
+          #     @model.userItem.upgradeByItemKey item.key
         },
           z '.bar', {
             style:
               width: "#{percent}%"
           }
           z '.text',
-            if canUpgrade and not hideActions
-              "#{@model.l.get 'general.upgrade'}
-              (#{count} / #{upgradeReqCount})"
-            else if upgradeReqCount and not hideActions
-              "#{count} / #{upgradeReqCount}"
+            # if canUpgrade and not hideActions
+            #   "#{@model.l.get 'general.upgrade'}
+            #   (#{count} / #{nextLevelCount})"
+            if nextLevelCount and not hideActions
+              "#{count} / #{nextLevelCount}"
             else
               count

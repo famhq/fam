@@ -11,7 +11,7 @@ if window?
 MIN_STICKER_SIZE_FOR_LARGE = 50
 
 module.exports = class Sticker
-  constructor: ({@model, isLocked, itemInfo, sizePx}) ->
+  constructor: ({@model, isLocked, itemInfo, sizePx, useRawCount}) ->
     isLocked ?= null
 
     @state = z.state
@@ -20,10 +20,12 @@ module.exports = class Sticker
       isLocked: isLocked
       itemInfo: itemInfo
       sizePx: sizePx
+      useRawCount: useRawCount
 
   render: ({sizePx, onclick, hasRarityBar, countOverlay}) =>
     sizePxProp = sizePx
-    {me, isLocked, itemInfo, meUserItems, sizePx} = @state.getValue()
+    {me, isLocked, itemInfo, meUserItems,
+      sizePx, useRawCount} = @state.getValue()
 
     sizePx ?= sizePxProp
 
@@ -34,6 +36,9 @@ module.exports = class Sticker
     isLocked ?= not @model.userItem.isOwnedByUserItemsAndItemKey(
       meUserItems, item.key
     )
+
+    if useRawCount
+      itemLevel = 1
 
     filenameParts = [itemLevel]
     if sizePx < MIN_STICKER_SIZE_FOR_LARGE

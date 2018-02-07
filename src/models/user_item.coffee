@@ -12,10 +12,10 @@ module.exports = class UserItem
   getAllByUserId: (userId) =>
     @auth.stream "#{@namespace}.getAllByUserId", {userId}
 
-  upgradeByItemKey: (itemKey) =>
-    @auth.call "#{@namespace}.upgradeByItemKey", {itemKey}, {
-      invalidateAll: true
-    }
+  # upgradeByItemKey: (itemKey) =>
+  #   @auth.call "#{@namespace}.upgradeByItemKey", {itemKey}, {
+  #     invalidateAll: true
+  #   }
 
   consumeByItemKey: (itemKey, {groupId}) =>
     @auth.call "#{@namespace}.consumeByItemKey", {itemKey, groupId}, {

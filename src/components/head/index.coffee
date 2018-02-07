@@ -20,6 +20,8 @@ module.exports = class Head
       else
         RxObservable.of meta
 
+    @lastHeaderColor = null
+
     @state = z.state
       meta: meta
       serverData: serverData
@@ -29,11 +31,18 @@ module.exports = class Head
           routeKey = @model.l.getRouteKeyByValue route.src
       modelSerialization: unless window?
         @model.getSerializationStream()
-      cssVariables: group?.map (group) ->
+      cssVariables: group?.map (group) =>
         groupKey = group?.key
         if groupKey and groupKey.indexOf('clashroyale') isnt -1
           groupKey = 'clashroyale'
         cssColors = _defaults colors[groupKey], colors.default
+
+        newHeaderColor = cssColors['--primary-900']
+        if @lastHeaderColor isnt newHeaderColor
+          @model.portal?.call 'statusBar.setBackgroundColor', {
+            color: newHeaderColor
+          }
+          @lastHeaderColor = newHeaderColor
 
         _map(cssColors, (value, key) ->
           "#{key}:#{value}"

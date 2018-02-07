@@ -4,6 +4,7 @@ _mapValues = require 'lodash/mapValues'
 materialColors = require './material_colors'
 
 colors = _defaults {
+  # http://mcg.mbitson.com
   # TODO: move this to db
   playhard:
     '--header-100': '#66696E' # t300
@@ -64,6 +65,50 @@ colors = _defaults {
     '--tertiary-800': '#0A0125'
     '--tertiary-900': '#050018'
     '--tertiary-90054': 'rgba(11, 1, 55, 0.54)'
+  withzack:
+    '--header-100': '#99A5A6' # t300
+    '--header-500': '#273B3D' #t700
+    '--header-500-text': materialColors.$white
+    '--header-500-text-54': materialColors.$white54
+    # '--header-500-icon': '#F237F2' #p500
+    '--header-500-icon': '#FF5D00' #p500
+
+    # pink
+    # '--primary-50': '#FDE7FD'
+    # '--primary-100': '#FDE7FD'
+    # '--primary-200': '#FBC3FB'
+    # '--primary-300': '#F99BF9'
+    # '--primary-400': '#F455F4'
+    # '--primary-500': '#F237F2'
+    # '--primary-50096': 'rgba(245, 30, 245, 0.96)'
+    # '--primary-600': '#F031F0'
+    # '--primary-700': '#EE2AEE'
+    # '--primary-800': '#EC23EC'
+    # '--primary-900': '#E816E8'
+
+    '--primary-50': '#FFECE0'
+    '--primary-100': '#FFCEB3'
+    '--primary-200': '#FFAE80'
+    '--primary-300': '#FF8E4D'
+    '--primary-400': '#FF7526'
+    '--primary-500': '#FF5D00'
+    '--primary-50096': 'rgba(255, 93, 0, 0.96)'
+    '--primary-600': '#FF5500'
+    '--primary-700': '#FF4B00'
+    '--primary-800': '#FF4100'
+    '--primary-900': '#FF3000'
+
+    '--tertiary-50': '#E7E9EA'
+    '--tertiary-100': '#E7E9EA'
+    '--tertiary-200': '#C2C9CA'
+    '--tertiary-300': '#99A5A6'
+    '--tertiary-400': '#526668'
+    '--tertiary-500': '#334B4D'
+    '--tertiary-600': '#2E4446'
+    '--tertiary-700': '#273B3D'
+    '--tertiary-800': '#203334'
+    '--tertiary-900': '#142325'
+    '--tertiary-90054': 'rgba(11, 30, 32, 0.54)'
   clashroyale:
     '--header-100': '#80A4C3' # t300
     '--header-500': '#003973' #t700

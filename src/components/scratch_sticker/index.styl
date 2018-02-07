@@ -43,10 +43,11 @@
         > .touch-to-scratch
           pointer-events: none
           display: none
+          justify-content: center
+          align-items: center
           color: getColor('$white')
           width: 100%
           height: 100%
-          line-height: 300px
           text-align: center
           position: absolute
           z-index: 10
@@ -59,7 +60,7 @@
           // transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)
 
           > .touch-to-scratch
-            display: block
+            display: flex
 
         &.has-started
           > .touch-to-scratch

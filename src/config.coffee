@@ -57,9 +57,9 @@ isomorphic =
   ]
   # also in radioactive
   ITEM_LEVEL_REQUIREMENTS: [
-    {level: 1, countRequired: 0}
-    {level: 2, countRequired: 10}
     {level: 3, countRequired: 100}
+    {level: 2, countRequired: 10}
+    {level: 1, countRequired: 0}
   ]
   # also in radioactive TODO: shared config file
   # keep reversed for fast lookup

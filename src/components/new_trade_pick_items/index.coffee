@@ -72,6 +72,7 @@ module.exports = class TradePickItems
       @groupIdFilter
       items
       userItems: toUserItems
+      useRawCount: true
       hideActions: true
     }
     @$minusIcon = new Icon()
@@ -118,6 +119,7 @@ module.exports = class TradePickItems
               isLocked: not @model.userItem.isOwnedByUserItemsAndItemKey(
                 toUserItems, itemInfo.item.key
               )
+              useRawCount: true
               itemInfo: itemInfo
             }
           }
