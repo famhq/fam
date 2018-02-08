@@ -35,6 +35,27 @@ styles = if config.ENV is config.ENVS.PROD
 else
   null
 
+console.log '1'
+
+# memwatch = require 'memwatch-next'
+#
+# hd = undefined
+# snapshotTaken = false
+# # memwatch.on 'stats', (stats) ->
+# console.log 'stats:', stats
+# if snapshotTaken is false
+#   hd = new (memwatch.HeapDiff)
+#   snapshotTaken = true
+#   setTimeout ->
+#     diff = hd.end()
+#     console.log(JSON.stringify(diff, null, '\t'))
+#   , 15000
+# else
+#   # diff = hd.end()
+#   snapshotTaken = false
+#   # console.log(JSON.stringify(diff, null, '\t'))
+
+
 app = express()
 app.use compress()
 
@@ -204,7 +225,7 @@ app.use (req, res, next) ->
         if currentCookies[key] isnt value and not hasSent
           res.cookie(key, value, model.cookie.getCookieOpts(host))
       currentCookies = cookies
-  cookieSubject.do(setCookies(req.cookies)).subscribe()
+  disposable = cookieSubject.do(setCookies(req.cookies)).subscribe()
 
   # for client to access
   model.cookie.set(
@@ -233,6 +254,9 @@ app.use (req, res, next) ->
   }
   .then (html) ->
     io.disconnect()
+    model.dispose()
+    disposable.unsubscribe()
+    disposable = null
     hasSent = true
     # TODO: not sure why, but some paths (eg /g/clashroyale/somerandompage)
     # send back before head exists
@@ -242,6 +266,8 @@ app.use (req, res, next) ->
       res.send '<!DOCTYPE html>' + html
   .catch (err) ->
     io.disconnect()
+    model.dispose()
+    disposable?.unsubscribe()
     log.error err
     if err.html
       hasSent = true

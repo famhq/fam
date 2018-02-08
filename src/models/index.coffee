@@ -194,6 +194,10 @@ module.exports = class Model
 
   wasCached: => @isFromCache
 
+  dispose: =>
+    @time.dispose()
+    @exoid.disposeAll()
+
   getSerializationStream: =>
     @exoid.getCacheStream()
     .map (exoidCache) ->

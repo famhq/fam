@@ -3,7 +3,7 @@ config = require '../config'
 module.exports = class Time
   constructor: ({@auth}) ->
     @serverTime = Date.now()
-    setInterval =>
+    @timeInterval = setInterval =>
       @serverTime += 1000
     , 1000
     @updateServerTime()
@@ -15,3 +15,6 @@ module.exports = class Time
 
   getServerTime: =>
     @serverTime
+
+  dispose: =>
+    clearInterval @timeInterval
