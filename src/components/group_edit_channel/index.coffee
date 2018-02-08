@@ -24,12 +24,12 @@ module.exports = class GroupEditChannel
 
     @nameValueStreams = new RxReplaySubject 1
     @nameValueStreams.next (conversation?.map (conversation) ->
-      conversation.name) or RxObservable.of null
+      conversation.data?.name) or RxObservable.of null
     @nameError = new RxBehaviorSubject null
 
     @descriptionValueStreams = new RxReplaySubject 1
     @descriptionValueStreams.next (conversation?.map (conversation) ->
-      conversation.description) or RxObservable.of null
+      conversation.data?.description) or RxObservable.of null
     @descriptionError = new RxBehaviorSubject null
 
     @slowModeCooldownValueStreams = new RxReplaySubject 1

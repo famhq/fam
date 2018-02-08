@@ -38,7 +38,7 @@ module.exports = class Conversations
             otherUser = _find conversation.users, (user) ->
               user.id isnt me?.id
 
-            isUnread = not conversation.userData[me?.id]?.isRead
+            isUnread = not conversation?.isRead
             isLastMessageFromMe = conversation.lastMessage?.userId is me?.id
 
             @router.link z 'a.conversation', {

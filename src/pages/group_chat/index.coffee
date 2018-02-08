@@ -57,8 +57,8 @@ module.exports = class GroupChatPage
       # conversationId ?= @model.cookie.get(
       #   "group_#{group.id}_last_conversation_id"
       # )
-      conversationId ?= _find(group.conversations, ({name, isDefault}) ->
-        isDefault or name is 'general' or name is 'geral'
+      conversationId ?= _find(group.conversations, ({data, isDefault}) ->
+        isDefault or data?.name is 'general' or data?.name is 'geral'
       )?.id
       conversationId ?= group.conversations?[0]?.id
       if hasMemberPermission and conversationId
@@ -184,7 +184,7 @@ module.exports = class GroupChatPage
           z '.group', group?.name
           z '.channel',
             z 'span.hashtag', '#'
-            conversation?.name
+            conversation?.data?.name
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
         $topRightButton:
           z '.p-group-chat_top-right',

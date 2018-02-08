@@ -33,5 +33,5 @@ module.exports = class ChannelList
         },
           z '.hashtag', '#'
           z '.info',
-            z '.name', channel.name
-            z '.description', channel.description
+            z '.name', channel.data?.name
+            z '.description', channel.data?.description

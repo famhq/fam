@@ -28,8 +28,6 @@ module.exports = class ThreadComment
 
     @depth ?= 0
 
-    console.log @threadComment
-
     @$message = new Message {
       message: {
         user: @threadComment.creator
