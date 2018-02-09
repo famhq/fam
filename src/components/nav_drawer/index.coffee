@@ -116,7 +116,7 @@ module.exports = class NavDrawer
             iconName: 'chat-bubble'
           }
           if group.key in [
-            'clashroyalees', 'clashroyalept', 'clashroyalepl'
+            'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
           ]
             {
               path: @router.get 'groupForum', {groupId}

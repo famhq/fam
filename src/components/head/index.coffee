@@ -35,6 +35,8 @@ module.exports = class Head
         groupKey = group?.key
         if groupKey and groupKey.indexOf('clashroyale') isnt -1
           groupKey = 'clashroyale'
+        if groupKey and groupKey.indexOf('fortnite') isnt -1
+          groupKey = 'fortnite'
         cssColors = _defaults colors[groupKey], colors.default
 
         newHeaderColor = cssColors['--primary-900']

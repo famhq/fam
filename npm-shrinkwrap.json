@@ -1150,7 +1150,6 @@
         "isarray": "1.0.0"
       }
     },
-    "buffer-shims": {},
     "cacache": {
       "version": "9.3.0",
       "resolved": "https://registry.npmjs.org/cacache/-/cacache-9.3.0.tgz",
@@ -1761,11 +1760,38 @@
       "dev": true,
       "requires": {
         "inherits": "2.0.3",
+        "readable-stream": "2.3.3",
         "typedarray": "0.0.6"
       },
       "dependencies": {
-        "isarray": {},
-        "readable-stream": {}
+        "isarray": {
+          "version": "2.0.2",
+          "resolved": "https://registry.npmjs.org/isarray/-/isarray-2.0.2.tgz",
+          "integrity": "sha512-DKCXsIpN+352zm3Sd75dY9HyaIcxU6grh118GhTPXc85jJ5nEGKOsPQOwSuE7aRd+XVRcC/Em6W44onQEQ9RBg=="
+        },
+        "readable-stream": {
+          "version": "2.3.3",
+          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.3.tgz",
+          "integrity": "sha512-m+qzzcn7KUxEmd1gMbchF+Y2eIUbieUaxkWtptyHywrX0rE8QEYqPC07Vuy4Wm32/xE16NcdBctb8S0Xe/5IeQ==",
+          "dev": true,
+          "requires": {
+            "core-util-is": "1.0.2",
+            "inherits": "2.0.3",
+            "isarray": "1.0.0",
+            "process-nextick-args": "1.0.7",
+            "safe-buffer": "5.1.1",
+            "string_decoder": "1.0.3",
+            "util-deprecate": "1.0.2"
+          },
+          "dependencies": {
+            "isarray": {
+              "version": "1.0.0",
+              "resolved": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz",
+              "integrity": "sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=",
+              "dev": true
+            }
+          }
+        }
       }
     },
     "cookie": {
@@ -4890,7 +4916,6 @@
         "sparkles": "1.0.0"
       }
     },
-    "graceful-readlink": {},
     "gulp": {
       "version": "3.9.1",
       "resolved": "https://registry.npmjs.org/gulp/-/gulp-3.9.1.tgz",
@@ -13140,11 +13165,38 @@
       "integrity": "sha1-AARWmzfHx0ujnEPzzteNGtlBQL4=",
       "dev": true,
       "requires": {
+        "readable-stream": "2.3.3",
         "xtend": "4.0.1"
       },
       "dependencies": {
-        "isarray": {},
-        "readable-stream": {}
+        "isarray": {
+          "version": "2.0.2",
+          "resolved": "https://registry.npmjs.org/isarray/-/isarray-2.0.2.tgz",
+          "integrity": "sha512-DKCXsIpN+352zm3Sd75dY9HyaIcxU6grh118GhTPXc85jJ5nEGKOsPQOwSuE7aRd+XVRcC/Em6W44onQEQ9RBg=="
+        },
+        "readable-stream": {
+          "version": "2.3.3",
+          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.3.tgz",
+          "integrity": "sha512-m+qzzcn7KUxEmd1gMbchF+Y2eIUbieUaxkWtptyHywrX0rE8QEYqPC07Vuy4Wm32/xE16NcdBctb8S0Xe/5IeQ==",
+          "dev": true,
+          "requires": {
+            "core-util-is": "1.0.2",
+            "inherits": "2.0.3",
+            "isarray": "1.0.0",
+            "process-nextick-args": "1.0.7",
+            "safe-buffer": "5.1.1",
+            "string_decoder": "1.0.3",
+            "util-deprecate": "1.0.2"
+          },
+          "dependencies": {
+            "isarray": {
+              "version": "1.0.0",
+              "resolved": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz",
+              "integrity": "sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=",
+              "dev": true
+            }
+          }
+        }
       }
     },
     "thunks": {
@@ -17292,7 +17344,7 @@
       }
     },
     "zorium": {
-      "version": "git://github.com/claydotio/zorium.git#30311844c817a7cfde79baab1072be3c3769d1ae",
+      "version": "git://github.com/claydotio/zorium.git#393b7f455c1808ab3e39ea3b9fcd9dd424fba1b0",
       "requires": {
         "coffee-script": "1.12.7",
         "lodash": "4.17.4",

@@ -82,8 +82,9 @@ module.exports = class GroupHome
 
     z '.z-group-home',
       z '.g-grid',
-        z '.card',
-          z @$groupHomeClashRoyaleChestCycle
+        if group?.key isnt 'fortnitees'
+          z '.card',
+            z @$groupHomeClashRoyaleChestCycle
 
         if group?.id
           z @$masonryGrid,
@@ -92,7 +93,7 @@ module.exports = class GroupHome
               desktop: 2
             $elements: _filter [
               if group.key in [
-                'clashroyalees', 'clashroyalept', 'clashroyalepl'
+                'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
               ]
                 z @$groupHomeThreads
 
@@ -109,7 +110,7 @@ module.exports = class GroupHome
               if group.key in ['playhard', 'eclihpse']
                 z @$groupHomeVideos
 
-              if player?.id
+              if player?.id and group.key isnt 'fortnitees'
                 z @$groupHomeClashRoyaleDecks
 
               z @$groupHomeAddons

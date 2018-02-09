@@ -140,6 +140,25 @@ colors = _defaults {
     '--tertiary-800': '#203334'
     '--tertiary-900': '#142325'
     '--tertiary-90054': 'rgba(11, 30, 32, 0.54)'
+  fortnite:
+    '--header-100': '#F4E5FC' # t300
+    '--header-500': '#A427E3' #t700
+    '--header-500-text': materialColors.$white
+    '--header-500-text-54': materialColors.$white54
+    '--header-500-icon': '#fff' #p500
+
+    '--primary-50': '#F4E5FC'
+    '--primary-100': '#F4E5FC'
+    '--primary-200': '#E4BEF7'
+    '--primary-300': '#D293F1'
+    '--primary-400': '#B247E7'
+    '--primary-500': '#A427E3'
+    '--primary-50096': 'rgba(164, 39, 227, 0.96)'
+    '--primary-600': '#9C23E0'
+    '--primary-700': '#921DDC'
+    '--primary-800': '#8917D8'
+    '--primary-900': '#780ED0'
+
   clashroyale:
     '--header-100': '#80A4C3' # t300
     '--header-500': '#003973' #t700

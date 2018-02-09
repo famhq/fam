@@ -6,11 +6,14 @@ module.exports = class Time
     @timeInterval = setInterval =>
       @serverTime += 1000
     , 1000
-    @updateServerTime()
+
+    setTimeout =>
+      @updateServerTime()
+    , 100
 
   updateServerTime: =>
-    @auth.call 'time.get'
-    .then (timeObj) =>
+    @auth.stream 'time.get'
+    .take(1).subscribe (timeObj) =>
       @serverTime = Date.parse timeObj.now
 
   getServerTime: =>
