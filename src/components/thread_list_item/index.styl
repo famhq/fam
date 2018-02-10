@@ -33,6 +33,7 @@
       margin-right: 16px
       // padding-bottom: 100%
       opacity: 0
+      flex-shrink: 0
 
     > .deck
       width: 70px
@@ -58,6 +59,7 @@
       flex: 1
       display: flex
       flex-direction: column
+      min-width: 0
 
       > .title
         font-title()
@@ -82,6 +84,9 @@
 
           > .middot
             margin: 0 4px
+
+          > .time
+            margin-right: 8px
 
           > .comments
             margin-left: auto

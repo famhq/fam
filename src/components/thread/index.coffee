@@ -54,6 +54,7 @@ module.exports = class Thread extends Base
     @$replyIcon = new Icon()
     @$editIcon = new Icon()
     @$pinIcon = new Icon()
+    @$shareIcon = new Icon()
     @$deleteIcon = new Icon()
     @$filterIcon = new Icon()
     @$starIcon = new Icon()
@@ -295,6 +296,14 @@ module.exports = class Thread extends Base
         $topRightButton:
           z '.z-thread_top-right',
             [
+              z @$shareIcon,
+                icon: 'share'
+                color: colors.$header500Icon
+                onclick: =>
+                  @model.portal.call 'share.any', {
+                    text: thread.data.title
+                    path: @model.thread.getPath thread, group, @router
+                  }
               if hasAdminPermission or me?.username is 'austin'
                 z @$editIcon,
                   icon: 'edit'

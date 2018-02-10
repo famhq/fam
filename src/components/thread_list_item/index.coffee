@@ -48,7 +48,12 @@ module.exports = class ThreadListItem
 
   getImageUrl: (thread) ->
     mediaAttachment = thread.data?.attachments?[0]
+    # FIXME rm after 3/1/2018
+    if mediaAttachment?[0]
+      mediaAttachment = mediaAttachment[0]
+
     mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
+    mediaSrc = mediaSrc?.split(' ')[0]
 
   render: ({hasPadding} = {}) =>
     hasPadding ?= true
@@ -58,8 +63,7 @@ module.exports = class ThreadListItem
 
     # thread ?= {data: {}, playerDeck: {}}
 
-    mediaAttachment = thread.data?.attachments?[0]
-    mediaSrc = mediaAttachment?.previewSrc or mediaAttachment?.src
+    mediaSrc = @getImageUrl thread
     isPinned = thread.data?.isPinned
 
     z 'a.z-thread-list-item', {
