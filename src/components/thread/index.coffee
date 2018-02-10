@@ -352,6 +352,8 @@ module.exports = class Thread extends Base
                 # TODO: don't hardcode this
                 if thread?.creator?.username is 'clashroyalees'
                   'ClashRoyaleES (Oficial)'
+                else if thread?.creator?.username is 'clashroyalebr'
+                  'ClashRoyaleBR (Oficial)'
                 else
                   @model.user.getDisplayName thread?.creator
 

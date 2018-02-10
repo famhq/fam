@@ -83,15 +83,13 @@ module.exports = class Conversation extends Base
         {isScrolledBottom, isLoaded} = @state.getValue()
         if isScrolledBottom and isLoaded
           setTimeout =>
-            @scrollToBottom {
-              isSmooth: isLoaded
-            }
+            @scrollToBottom {isSmooth: true}
           , 0
         else if not isLoaded
           maxTries = 5 # 1s
           scrollBottomIfScroll = (attempt = 0) =>
             scrolled = @scrollToBottom {
-              isSmooth: isLoaded and attempt is 0
+              isSmooth: false
             }
             if not scrolled and attempt < maxTries
               setTimeout ->
@@ -362,7 +360,9 @@ module.exports = class Conversation extends Base
     $messageArr = @$$el?.querySelectorAll('.z-conversation-message')
     $$lastMessage = _last $messageArr
     isMobile = Environment.isMobile()
-    if not @scrollYOnly and $$lastMessage?.scrollIntoView and not isMobile
+    # the 'instant' isn't as instant as old-school method
+    if not @scrollYOnly and $$lastMessage?.scrollIntoView and
+        not isMobile and isSmooth
       try
         $$lastMessage.scrollIntoView {
           behavior: if isSmooth then 'smooth' else 'instant'

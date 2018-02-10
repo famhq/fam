@@ -159,6 +159,10 @@ colors = _defaults {
     '--primary-800': '#8917D8'
     '--primary-900': '#780ED0'
 
+    '--tertiary-500': '#191b1c'
+    '--tertiary-700': '#111416'
+    '--tertiary-900': '#000000'
+
   clashroyale:
     '--header-100': '#80A4C3' # t300
     '--header-500': '#003973' #t700
