@@ -136,9 +136,6 @@ module.exports = class GroupChatPage
       else if hasBottomBar and not @isBottomBarVisible
         @showBottomBar()
 
-    @group.take(1).subscribe (group) =>
-      @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
-
   showBottomBar: =>
     {shouldShowBottomBar} = @state.getValue()
     if shouldShowBottomBar and not @isBottomBarVisible

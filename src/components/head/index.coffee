@@ -45,6 +45,7 @@ module.exports = class Head
             color: newHeaderColor
           }
           @lastHeaderColor = newHeaderColor
+          @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
 
         _map(cssColors, (value, key) ->
           "#{key}:#{value}"

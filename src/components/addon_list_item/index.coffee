@@ -100,11 +100,11 @@ module.exports = class AddonListItem
     },
       z '.icon-wrapper',
         z 'img.icon',
-          src: addon.iconUrl
+          src: addon.data?.iconUrl
       z '.info',
         z '.name',
           @model.l.get "#{addon.key}.title", {file: 'addons'}
           z 'span.creator',
-            " #{@model.l.get 'general.by'} #{addon.creator?.name}"
+            " #{@model.l.get 'general.by'} #{addon.data?.creatorName}"
         z '.description',
           @model.l.get "#{addon.key}.description", {file: 'addons'}

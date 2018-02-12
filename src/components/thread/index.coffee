@@ -130,6 +130,7 @@ module.exports = class Thread extends Base
       @overlay$
       @isPostLoading
       onPost: @postMessage
+      groupId: group.map (group) -> group?.id
       onResize: -> null
     }
 

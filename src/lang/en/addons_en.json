@@ -50,5 +50,7 @@
   "cardCollection.title": "Card collection lookup",
   "cardCollection.description": "View and analyze your or another player's Card Collection",
   "crarena.title": "Wiki",
-  "crarena.description": "Knowledgebase of Clash Royale facts"
+  "crarena.description": "Knowledgebase of Clash Royale facts",
+  "stormShieldOne.title": "Storm Shield One",
+  "stormShieldOne.description": "Player stats, leaderboards, sale information, and a whole lot more"
 }

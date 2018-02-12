@@ -54,7 +54,7 @@ module.exports = class ThreadComment
       new ThreadComment {
         threadComment: childThreadComment
         depth: @depth + 1
-        @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
+        @isMe, @model, @overlay$, @selectedProfileDialogUser, @router, groupId
       }
 
     @state = z.state
@@ -160,6 +160,7 @@ module.exports = class ThreadComment
                     @overlay$
                     @isPostLoading
                     onPost: @postReply
+                    groupId: groupId
                     onResize: -> null
                   }
                   @state.set isReplyVisible: true

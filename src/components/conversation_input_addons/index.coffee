@@ -22,15 +22,15 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class ConversationInputAddons
-  constructor: ({@model, @router, @message, @onPost, currentPanel}) ->
+  constructor: ({@model, @router, @message, @onPost, currentPanel, groupId}) ->
     @searchValue = new RxBehaviorSubject null
     debouncedSearchValue = @searchValue.debounceTime(SEARCH_DEBOUNCE)
 
     @$searchInput = new SearchInput {@model, @searchValue}
     @$spinner = new Spinner()
 
-    allAddons = @model.l.getLanguage().switchMap (language) =>
-      @model.addon.getAll {language}
+    allAddons = groupId.switchMap (groupId) =>
+      @model.addon.getAllByGroupId groupId
 
     currentPanelAndSearchValueAndAllAddons = RxObservable.combineLatest(
       currentPanel

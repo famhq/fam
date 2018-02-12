@@ -14,8 +14,8 @@ module.exports = class Addon
   getByKey: (key) =>
     @auth.stream "#{@namespace}.getByKey", {key}
 
-  getAll: ({language}) =>
-    @auth.stream "#{@namespace}.getAll", {language}
+  getAllByGroupId: (groupId) =>
+    @auth.stream "#{@namespace}.getAllByGroupId", {groupId}
 
   voteById: (id, {vote}) =>
     @auth.call "#{@namespace}.voteById", {id, vote}, {invalidateAll: true}

@@ -19,8 +19,8 @@ module.exports = class GroupsPage
 
   getMeta: =>
     {
-      title: @model.l.get 'drawer.menuItemGroups'
-      description: @model.l.get 'drawer.menuItemGroups'
+      title: @model.l.get 'communityPage.menuText'
+      description: @model.l.get 'communityPage.menuText'
     }
 
   render: =>

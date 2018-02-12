@@ -15,8 +15,8 @@ module.exports = class GroupAddons
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
-    addons = @model.l.getLanguage().switchMap (language) =>
-      @model.addon.getAll {language}
+    addons = group.switchMap (group) =>
+      @model.addon.getAllByGroupId group.id
     # streams = @model.stream.getAll({sort, filter})
 
     @state = z.state

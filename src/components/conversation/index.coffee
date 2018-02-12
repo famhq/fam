@@ -131,6 +131,7 @@ module.exports = class Conversation extends Base
       @overlay$
       @inputTranslateY
       @conversation
+      groupId: group.map (group) -> group?.id
       meGroupUser: @groupUser
       onPost: @postMessage
       onResize: @onResize

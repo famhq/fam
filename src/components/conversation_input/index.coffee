@@ -26,7 +26,7 @@ if window?
 module.exports = class ConversationInput
   constructor: (options) ->
     {@model, @router, @message, @onPost, @onResize, toggleIScroll, meGroupUser,
-      @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$,
+      @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$, groupId,
       isPostLoading, conversation} = options
 
     allowedPanels ?= RxObservable.of [
@@ -110,6 +110,7 @@ module.exports = class ConversationInput
         icon: 'ellipsis'
         name: 'addons'
         $el: new ConversationInputAddons {
+          groupId
           onPost: @post
           @message
           @model

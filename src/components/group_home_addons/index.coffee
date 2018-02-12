@@ -18,8 +18,8 @@ module.exports = class GroupHomeAddons extends Base
     @$spinner = new Spinner()
     @$uiCard = new UiCard()
 
-    addons = @model.l.getLanguage().switchMap (language) =>
-      @model.addon.getAll {language}
+    addons = group.switchMap (group) =>
+      @model.addon.getAllByGroupId group.id
 
     @state = z.state {
       group
