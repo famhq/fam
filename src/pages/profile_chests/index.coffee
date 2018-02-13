@@ -19,7 +19,7 @@ module.exports = class ProfileChestsPage
       if route.params.playerId then route.params.playerId else false
 
     @player = playerId.switchMap (playerId) =>
-      @model.player.getByPlayerIdAndGameId playerId, config.CLASH_ROYALE_ID
+      @model.player.getByPlayerIdAndGameKey playerId, 'clash-royale'
       .map (player) ->
         return player or {}
 

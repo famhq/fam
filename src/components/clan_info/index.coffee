@@ -58,7 +58,7 @@ module.exports = class ClanInfo
       me: me
       hasUpdatedClan: false
       mePlayer: me.switchMap ({id}) =>
-        @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+        @model.player.getByUserIdAndGameKey id, 'clash-royale'
       clan: clan
     }
 

@@ -207,7 +207,7 @@ module.exports = class Portal
 
     @user.getMe()
     .switchMap (me) =>
-      @player.getByUserIdAndGameId me?.id, config.CLASH_ROYALE_ID, {
+      @player.getByUserIdAndGameKey me?.id, 'clash-royale', {
         refreshIfStale
       }
       .map (player) -> player.data
@@ -217,7 +217,7 @@ module.exports = class Portal
     if appId
       ga? 'send', 'event', 'sdk', appId, 'clashRoyalePlayerGetByTag'
 
-    @player.getByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID, {
+    @player.getByPlayerIdAndGameKey tag, 'clash-royale', {
       refreshIfStale
     }
     .map (player) ->
@@ -230,7 +230,7 @@ module.exports = class Portal
     if appId
       ga? 'send', 'event', 'sdk', appId, 'clashRoyaleClanGetByTag'
 
-    @clan.getByClanIdAndGameId tag, config.CLASH_ROYALE_ID, {refreshIfStale}
+    @clan.getByClanIdAndGameKey tag, 'clash-royale', {refreshIfStale}
     .map (clan) ->
       unless clan
         throw {statusCode: 404, info: 'clan not found'}
@@ -241,7 +241,7 @@ module.exports = class Portal
     if appId
       ga? 'send', 'event', 'sdk', appId, 'clashRoyaleUserGetAllByPlayerTag'
 
-    @user.getAllByPlayerIdAndGameId playerTag, config.CLASH_ROYALE_ID
+    @user.getAllByPlayerIdAndGameKey playerTag, 'clash-royale'
     .take(1).toPromise()
 
   clashRoyaleMatchGetAllByTag: ({tag, limit, cursor, appId}) =>
@@ -262,14 +262,14 @@ module.exports = class Portal
     if appId
       ga? 'send', 'event', 'sdk', appId, 'clashRoyaleDeckGetAllByTag'
 
-    @clashRoyalePlayerDeck.getAllByPlayerId tag, config.CLASH_ROYALE_ID
+    @clashRoyalePlayerDeck.getAllByPlayerId tag, 'clash-royale'
     .take(1).toPromise()
 
   clashRoyaleUserRecordGetAllByTag: ({tag, appId}) =>
     if appId
       ga? 'send', 'event', 'sdk', appId, 'clashRoyaleUserRecordGetAllByTag'
 
-    @gameRecordType.getAllByPlayerIdAndGameId tag, config.CLASH_ROYALE_ID, {
+    @gameRecordType.getAllByPlayerIdAndGameKey tag, 'clash-royale', {
       embed: ['meValues']
     }
     .take(1).toPromise()
@@ -278,7 +278,7 @@ module.exports = class Portal
     if appId
       ga? 'send', 'event', 'sdk', appId, 'clashRoyaleClanRecordGetAllByTag'
 
-    @clanRecordType.getAllByClanIdAndGameId tag, config.CLASH_ROYALE_ID, {
+    @clanRecordType.getAllByClanIdAndGameKey tag, 'clash-royale', {
       embed: ['clanValues']
     }
     .take(1).toPromise()

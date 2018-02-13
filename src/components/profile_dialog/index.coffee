@@ -61,7 +61,7 @@ module.exports = class ProfileDialog
       user: @selectedProfileDialogUser
       clashRoyaleData: @selectedProfileDialogUser.switchMap (user) =>
         if user
-          @model.player.getByUserIdAndGameId user.id, config.CLASH_ROYALE_ID
+          @model.player.getByUserIdAndGameKey user.id, 'clash-royale'
         else
           RxObservable.of null
       group: group

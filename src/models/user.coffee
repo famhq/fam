@@ -31,8 +31,8 @@ module.exports = class User
   setLanguage: (language) =>
     @auth.call "#{@namespace}.setLanguage", {language}
 
-  getAllByPlayerIdAndGameId: (playerId, gameId) =>
-    @auth.stream "#{@namespace}.getAllByPlayerIdAndGameId", {playerId, gameId}
+  getAllByPlayerIdAndGameKey: (playerId, gameKey) =>
+    @auth.stream "#{@namespace}.getAllByPlayerIdAndGameKey", {playerId, gameKey}
 
   searchByUsername: (username) =>
     @auth.call "#{@namespace}.searchByUsername", {username}

@@ -9,6 +9,7 @@ GroupHomeAddons = require '../group_home_addons'
 GroupHomeAdminStats = require '../group_home_admin_stats'
 GroupHomeChat = require '../group_home_chat'
 GroupHomeOffers = require '../group_home_offers'
+GroupHomeFortniteStats = require '../group_home_fortnite_stats'
 GroupHomeClashRoyaleChestCycle = require '../group_home_clash_royale_chest_cycle'
 GroupHomeClashRoyaleDecks = require '../group_home_clash_royale_decks'
 GroupHomeTranslate = require '../group_home_translate'
@@ -26,7 +27,7 @@ module.exports = class GroupHome
     me = @model.user.getMe()
 
     player = me.switchMap ({id}) =>
-      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      @model.player.getByUserIdAndGameKey id, 'clash-royale'
       .map (player) ->
         return player or {}
 
@@ -46,6 +47,9 @@ module.exports = class GroupHome
       @model, @router, group, player, @overlay$
     }
     @$groupHomeAdminStats = new GroupHomeAdminStats {
+      @model, @router, group, player, @overlay$
+    }
+    @$groupHomeFortniteStats = new GroupHomeFortniteStats {
       @model, @router, group, player, @overlay$
     }
     @$groupHomeClashRoyaleChestCycle = new GroupHomeClashRoyaleChestCycle {
@@ -82,7 +86,10 @@ module.exports = class GroupHome
 
     z '.z-group-home',
       z '.g-grid',
-        if group?.key isnt 'fortnitees'
+        if group?.key is 'fortnitees'
+          z '.card',
+            z @$groupHomeFortniteStats
+        else
           z '.card',
             z @$groupHomeClashRoyaleChestCycle
 

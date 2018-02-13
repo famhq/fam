@@ -3,7 +3,7 @@ module.exports = class ClanRecordType
 
   constructor: ({@auth}) -> null
 
-  getAllByClanIdAndGameId: (clanId, gameId, {embed} = {}) =>
-    @auth.stream "#{@namespace}.getAllByClanIdAndGameId", {
-      clanId, gameId, embed
+  getAllByClanIdAndGameKey: (clanId, gameKey, {embed} = {}) =>
+    @auth.stream "#{@namespace}.getAllByClanIdAndGameKey", {
+      clanId, gameKey, embed
     }

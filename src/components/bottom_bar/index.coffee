@@ -43,7 +43,7 @@ module.exports = class BottomBar
 
     currentPath = requests?.req.path
 
-    groupId = group?.key or config.CLASH_ROYALE_ID
+    groupId = group?.key or 'clash-royale'
     isLoaded = Boolean group
 
     # per-group menu:

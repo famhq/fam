@@ -28,7 +28,7 @@ module.exports = class ConversationPage
       @model, @router, selectedProfileDialogUser
     }
     @$conversation = new Conversation {
-      @model, @router, conversation, selectedProfileDialogUser, overlay$
+      @model, @router, conversation, selectedProfileDialogUser, overlay$, group
     }
 
     @state = z.state

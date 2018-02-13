@@ -20,9 +20,9 @@ module.exports = class ProfileGraphs
     @$adsenseAd = new AdsenseAd {@model}
 
     recordTypes = player.switchMap ({id}) =>
-      @model.gameRecordType.getAllByPlayerIdAndGameId(
+      @model.gameRecordType.getAllByPlayerIdAndGameKey(
         id
-        config.CLASH_ROYALE_ID
+        'clash-royale'
         {embed: ['meValues']}
       )
 

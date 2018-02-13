@@ -5,26 +5,26 @@ module.exports = class Player
 
   constructor: ({@auth}) -> null
 
-  getByUserIdAndGameId: (userId, gameId, {embed} = {}) =>
-    @auth.stream "#{@namespace}.getByUserIdAndGameId", {userId, gameId, embed}
+  getByUserIdAndGameKey: (userId, gameKey, {embed} = {}) =>
+    @auth.stream "#{@namespace}.getByUserIdAndGameKey", {userId, gameKey, embed}
 
-  getByPlayerIdAndGameId: (playerId, gameId, {embed, refreshIfStale} = {}) =>
-    @auth.stream "#{@namespace}.getByPlayerIdAndGameId", {
-      playerId, gameId, embed, refreshIfStale
+  getByPlayerIdAndGameKey: (playerId, gameKey, {embed, refreshIfStale} = {}) =>
+    @auth.stream "#{@namespace}.getByPlayerIdAndGameKey", {
+      playerId, gameKey, embed, refreshIfStale
     }
 
-  getIsAutoRefreshByPlayerIdAndGameId: (playerId, gameId) =>
-    @auth.stream "#{@namespace}.getIsAutoRefreshByPlayerIdAndGameId", {
-      playerId, gameId
+  getIsAutoRefreshByPlayerIdAndGameKey: (playerId, gameKey) =>
+    @auth.stream "#{@namespace}.getIsAutoRefreshByPlayerIdAndGameKey", {
+      playerId, gameKey
     }
 
-  setAutoRefreshByPlayerIdAndGameId: (playerId, gameId) =>
-    @auth.call "#{@namespace}.setAutoRefreshByGameId", {gameId}, {
+  setAutoRefreshByPlayerIdAndGameKey: (playerId, gameKey) =>
+    @auth.call "#{@namespace}.setAutoRefreshByGameId", {gameKey}, {
       invalidateSingle:
         body:
-          gameId: gameId
+          gameKey: gameKey
           playerId: playerId
-        path: "#{@namespace}.getIsAutoRefreshByPlayerIdAndGameId"
+        path: "#{@namespace}.getIsAutoRefreshByPlayerIdAndGameKey"
     }
 
   getTop: =>

@@ -23,8 +23,8 @@ module.exports = class Addon
   constructor: ({@model, @router, addon, testUrl, replacements, group}) ->
     player = @model.user.getMe().switchMap ({id}) =>
       (if playerId = replacements?.playerTag
-      then @model.player.getByPlayerIdAndGameId playerId, config.CLASH_ROYALE_ID
-      else @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID)
+      then @model.player.getByPlayerIdAndGameKey playerId, 'clash-royale'
+      else @model.player.getByUserIdAndGameKey id, 'clash-royale')
       .map (player) ->
         return player or {}
 

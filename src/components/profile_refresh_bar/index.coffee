@@ -29,8 +29,8 @@ module.exports = class ProfileRefreshBar
       hasUpdatedPlayer: false
       isRefreshing: false
       isAutoRefresh: player.switchMap (player) =>
-        @model.player.getIsAutoRefreshByPlayerIdAndGameId(
-          player.id, config.CLASH_ROYALE_ID
+        @model.player.getIsAutoRefreshByPlayerIdAndGameKey(
+          player.id, 'clash-royale'
         )
     }
 

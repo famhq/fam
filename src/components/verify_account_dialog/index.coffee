@@ -19,11 +19,11 @@ module.exports = class VerifyAccountDialog
   constructor: ({@model, @router, @overlay$}) ->
     me = @model.user.getMe()
     player = me.switchMap ({id}) =>
-      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      @model.player.getByUserIdAndGameKey id, 'clash-royale'
 
     verifyDeckId = @model.player.getVerifyDeckId()
 
-    deck = verifyDeckId.map ({deckId, copyIds}) ->
+    deck = verifyDeckId.map ({deckId, copyIds} = {}) ->
       cards = _map deckId.split('|'), (cardKey) ->
         {key: cardKey}
       {cards}
@@ -34,7 +34,8 @@ module.exports = class VerifyAccountDialog
 
     @state = z.state
       isLoading: false
-      copyIds: verifyDeckId.map ({copyIds}) -> copyIds
+      copyIds: verifyDeckId.map ({copyIds}) ->
+        copyIds
 
   verify: =>
     @state.set isLoading: true

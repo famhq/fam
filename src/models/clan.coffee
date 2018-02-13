@@ -5,13 +5,13 @@ module.exports = class Clan
 
   constructor: ({@auth}) -> null
 
-  # TODO: rm and replace with getByIdAndGameId (same for claim, update, ...)
+  # TODO: rm and replace with getByIdAndGameKey (same for claim, update, ...)
   getById: (id, {embed} = {}) =>
     @auth.stream "#{@namespace}.getById", {id, embed}
 
-  getByClanIdAndGameId: (clanId, gameId, {embed, refreshIfStale} = {}) =>
-    @auth.stream "#{@namespace}.getByClanIdAndGameId", {
-      clanId, gameId, embed, refreshIfStale
+  getByClanIdAndGameKey: (clanId, gameKey, {embed, refreshIfStale} = {}) =>
+    @auth.stream "#{@namespace}.getByClanIdAndGameKey", {
+      clanId, gameKey, embed, refreshIfStale
     }
 
   claimById: (id) =>

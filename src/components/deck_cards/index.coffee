@@ -29,7 +29,6 @@ module.exports = class DeckCards extends Base
     @cardSizeInfo = getCardSizeInfo()
 
     if deck.map
-      deck = RxObservable.of deck
       cardGroups = deck.map @getCardGroupsFromDeck
     else
       # if not obs, skip state since it flashes on invalidation

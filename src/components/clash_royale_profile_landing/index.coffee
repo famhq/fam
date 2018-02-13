@@ -3,7 +3,7 @@ _take = require 'lodash/take'
 Environment = require 'clay-environment'
 
 SecondaryButton = require '../secondary_button'
-GetPlayerTagForm = require '../get_player_tag_form'
+GetPlayerTagForm = require '../clash_royale_get_player_tag_form'
 config = require '../../config'
 
 TOP_PLAYER_COUNT = 20

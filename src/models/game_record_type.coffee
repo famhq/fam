@@ -3,7 +3,7 @@ module.exports = class GameRecordType
 
   constructor: ({@auth}) -> null
 
-  getAllByPlayerIdAndGameId: (playerId, gameId, {embed} = {}) =>
-    @auth.stream "#{@namespace}.getAllByPlayerIdAndGameId", {
-      playerId, gameId, embed
+  getAllByPlayerIdAndGameKey: (playerId, gameKey, {embed} = {}) =>
+    @auth.stream "#{@namespace}.getAllByPlayerIdAndGameKey", {
+      playerId, gameKey, embed
     }

@@ -6,7 +6,7 @@ Spinner = require '../spinner'
 UiCard = require '../ui_card'
 ClashRoyaleChestCycle = require '../clash_royale_chest_cycle'
 ProfileRefreshBar = require '../profile_refresh_bar'
-GetPlayerTagForm = require '../get_player_tag_form'
+GetPlayerTagForm = require '../clash_royale_get_player_tag_form'
 FormatService = require '../../services/format'
 config = require '../../config'
 

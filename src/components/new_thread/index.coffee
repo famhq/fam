@@ -78,7 +78,7 @@ module.exports = class NewThread
           RxObservable.of null
       clan: categoryAndMe.switchMap ([category, me]) =>
         if category is 'clan'
-          @model.player.getByUserIdAndGameId me.id, config.CLASH_ROYALE_ID
+          @model.player.getByUserIdAndGameKey me.id, 'clash-royale'
           .switchMap (player) =>
             if player?.data?.clan?.tag
               @model.clan.getById player?.data?.clan?.tag?.replace('#', '')

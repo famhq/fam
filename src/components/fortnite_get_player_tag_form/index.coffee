@@ -11,15 +11,15 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-module.exports = class ProfileLanding
+module.exports = class FortniteGetPlayerTagForm
   constructor: ({@model, @router}) ->
     me = @model.user.getMe()
 
-    @playerTagValue = new RxBehaviorSubject ''
-    @playerTagError = new RxBehaviorSubject null
-    @$playerTagInput = new PrimaryInput {
-      value: @playerTagValue
-      error: @playerTagError
+    @fortniteUsernameValue = new RxBehaviorSubject ''
+    @fortniteUsernameError = new RxBehaviorSubject null
+    @$fortniteUsernameInput = new PrimaryInput {
+      value: @fortniteUsernameValue
+      error: @fortniteUsernameError
     }
     @$trackButton = new PrimaryButton()
     @$dialog = new Dialog()
@@ -31,21 +31,22 @@ module.exports = class ProfileLanding
 
   onTrack: (e) =>
     e?.preventDefault()
-    playerTag = @playerTagValue.getValue()
+    network = 'pc' # FIXME
+    fortniteUsername = @fortniteUsernameValue.getValue()
 
     {me} = @state.getValue()
 
     @state.set isLoading: true
 
-    @model.clashRoyaleAPI.setByPlayerId playerTag
+    @model.fortnitePlayer.setByPlayerId "#{network}:#{fortniteUsername}"
     .then =>
-      @model.player.getByUserIdAndGameId me?.id, config.CLASH_ROYAL_ID
+      @model.player.getByUserIdAndGameKey me?.id, config.CLASH_ROYAL_ID
       .take(1).toPromise()
     .then =>
       @state.set isLoading: false
     .catch (err) =>
       console.log err?.info
-      @playerTagError.next(
+      @fortniteUsernameError.next(
         err?.info or @model.l.get 'playersSearch.playerTagError'
       )
       @state.set isLoading: false
@@ -53,14 +54,12 @@ module.exports = class ProfileLanding
   render: =>
     {me, isLoading, isInfoDialogVisible} = @state.getValue()
 
-    z 'form.z-get-player-tag-form', {
+    z 'form.z-fortnite-get-player-tag-form', {
       onsubmit: @onTrack
     },
       z '.input',
-        z @$playerTagInput,
-          hintText: @model.l.get 'playersSearch.playerTagInputHintText'
-          onInfo: =>
-            @state.set isInfoDialogVisible: true
+        z @$fortniteUsernameInput,
+          hintText: @model.l.get 'fortniteGetPlayerTagForm.fortniteName'
       z '.button',
         z @$trackButton,
           text: if isLoading \
@@ -74,7 +73,6 @@ module.exports = class ProfileLanding
           $content:
             z '.z-get-player-tag-form_dialog',
               z '.description', @model.l.get 'profileLanding.dialogDescription'
-              z '.elixir-collector'
           cancelButton:
             text: @model.l.get 'general.cancel'
             isFullWidth: true
@@ -95,10 +93,3 @@ module.exports = class ProfileLanding
               @state.set isInfoDialogVisible: false
           onLeave: =>
             @state.set isInfoDialogVisible: false
-          # submitButton:
-          #   text: 'Open game profile'
-          #   onclick: =>
-          #     @model.portal.call 'browser.openWindow', {
-          #       url: 'clashroyale://playerProfile'
-          #       target: '_system'
-          #     }

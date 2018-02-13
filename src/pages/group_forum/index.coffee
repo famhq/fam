@@ -47,11 +47,11 @@ module.exports = class GroupForumPage
 
   afterMount: =>
     @model.user.getMe().switchMap ({id}) =>
-      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      @model.player.getByUserIdAndGameKey id, 'clash-royale'
       .map (mePlayer) =>
         if mePlayer?.isVerified
-          @model.player.setAutoRefreshByPlayerIdAndGameId(
-            mePlayer.id, config.CLASH_ROYALE_ID
+          @model.player.setAutoRefreshByPlayerIdAndGameKey(
+            mePlayer.id, 'clash-royale'
           )
     .take(1)
     .subscribe()

@@ -25,7 +25,9 @@ module.exports = class GroupHomeAddons extends Base
       group
       $addons: addons.map (addons) =>
         addons = _filter addons, (addon) ->
-          addon.key in ['chestSimulator', 'clanManager', 'deckBandit']
+          addon.key in [
+            'chestSimulator', 'clanManager', 'deckBandit', 'stormShieldOne'
+          ]
         _map addons, (addon) =>
           new AddonListItem {@model, @router, addon}
     }

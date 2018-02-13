@@ -30,7 +30,7 @@ module.exports = class EditProfile
 
     @playerTagValueStreams = new RxReplaySubject 1
     currentPlayerTag = me.switchMap ({id}) =>
-      @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+      @model.player.getByUserIdAndGameKey id, 'clash-royale'
       .map (player) ->
         player?.id
     @playerTagValueStreams.next currentPlayerTag

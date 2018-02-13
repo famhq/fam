@@ -8,7 +8,13 @@ ButtonMenu = require '../../components/button_menu'
 ButtonBack = require '../../components/button_back'
 Profile = require '../../components/profile'
 ProfileInfo = require '../../components/profile_info'
-ProfileLanding = require '../../components/clash_royale_profile_landing'
+ProfileInfo = require '../../components/profile_info'
+ClashRoyaleGetPlayerTagForm =
+  require '../../components/clash_royale_get_player_tag_form'
+FortniteGetPlayerTagForm =
+  require '../../components/fortnite_get_player_tag_form'
+GroupHomeFortniteStats = require '../../components/group_home_fortnite_stats'
+# ProfileLanding = require '../../components/clash_royale_profile_landing'
 ShareSheet = require '../../components/share_sheet'
 Spinner = require '../../components/spinner'
 Icon = require '../../components/icon'
@@ -48,14 +54,19 @@ module.exports = class GroupProfilePage
     routePlayerId = requests. map ({route}) ->
       if route.params.playerId then route.params.playerId else false
 
-    @player = routePlayerId.switchMap (playerId) =>
+    routePlayerIdAndGroup = RxObservable.combineLatest(
+      routePlayerId, group, (vals...) -> vals
+    )
+
+    @player = routePlayerIdAndGroup.switchMap ([playerId, group]) =>
+      gameKey = group.gameKeys?[0] or 'clash-royale'
       if playerId
-        @model.player.getByPlayerIdAndGameId(
-          playerId, config.CLASH_ROYALE_ID, {refreshIfStale: true}
+        @model.player.getByPlayerIdAndGameKey(
+          playerId, gameKey, {refreshIfStale: true}
         )
       else
         user.switchMap ({id}) =>
-          @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+          @model.player.getByUserIdAndGameKey id, gameKey
           .map (player) ->
             return player or {}
 
@@ -72,7 +83,14 @@ module.exports = class GroupProfilePage
       @model, @router, user, @player, @overlay$, group, serverData
     }
     @$profileInfo = new ProfileInfo {@model, @router, group, user}
-    @$profileLanding = new ProfileLanding {@model, @router, group}
+    @$groupHomeFortniteStats = new GroupHomeFortniteStats {
+      @model, @router, group
+    }
+    # @$profileLanding = new ProfileLanding {@model, @router, group}
+    @$clashRoyaleGetPlayerTagForm = new ClashRoyaleGetPlayerTagForm {
+      @model, @router
+    }
+    @$fortniteGetPlayerTagForm = new FortniteGetPlayerTagForm {@model, @router}
     @$shareSheet = new ShareSheet {
       @router, @model, isVisible: @isShareSheetVisible
     }
@@ -137,6 +155,7 @@ module.exports = class GroupProfilePage
     isOtherProfile = routeId or routeUsername or routePlayerId
     isMe = me?.id is user?.id or not user
     playerName = player?.data?.name
+    gameKey = group?.gameKeys?[0]
 
     if isMe
       text = 'View my Clash Royale profile on Starfire'
@@ -196,9 +215,17 @@ module.exports = class GroupProfilePage
             ontouchend: =>
               @prevClientY = null
           },
-            z @$profile, {isOtherProfile}
+            if gameKey is 'fortnite'
+              z @$groupHomeFortniteStats
+            else
+              z @$profile, {isOtherProfile}
         else if player
-          z @$profileLanding, {isHome: not routeId}
+          if gameKey is 'fortnite'
+            z '.get-tag',
+              z @$fortniteGetPlayerTagForm
+          else
+            z '.get-tag',
+              z @$clashRoyaleGetPlayerTagForm
         else
           @$spinner
 

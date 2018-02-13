@@ -19,7 +19,7 @@ module.exports = class AutoRefreshDialog
     @state = z.state
       group: group
       mePlayer: @model.user.getMe().switchMap ({id}) =>
-        @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+        @model.player.getByUserIdAndGameKey id, 'clash-royale'
 
   render: =>
     {group, mePlayer} = @state.getValue()

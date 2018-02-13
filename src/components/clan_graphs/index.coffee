@@ -17,9 +17,9 @@ module.exports = class ClanGraphs
     @$communityButton = new PrimaryButton()
 
     recordTypes = clan.switchMap ({id}) =>
-      @model.clanRecordType.getAllByClanIdAndGameId(
+      @model.clanRecordType.getAllByClanIdAndGameKey(
         id
-        config.CLASH_ROYALE_ID
+        'clash-royale'
         {embed: ['clanValues']}
       )
 

@@ -173,7 +173,7 @@ module.exports = class ConversationInput
       conversation: conversation
       cooldownSecondsLeft: cooldownSecondsLeft
       mePlayer: me.switchMap ({id}) =>
-        @model.player.getByUserIdAndGameId id, config.CLASH_ROYALE_ID
+        @model.player.getByUserIdAndGameKey id, 'clash-royale'
 
   post: =>
     {me} = @state.getValue()
