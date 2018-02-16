@@ -1,10 +1,14 @@
-
-
 @require '../../vars'
 
 .z-group-badge
   width: 100%
   position: relative
+
+  &.is-round
+    border-radius: 50%
+
+    > .image
+      border-radius: 50%
 
   > .image
     width: 100%

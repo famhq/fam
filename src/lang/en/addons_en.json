@@ -49,8 +49,8 @@
   "clanManager.description": "Track donations, activity, and other statistics for your clan and its members all in one place",
   "cardCollection.title": "Card collection lookup",
   "cardCollection.description": "View and analyze your or another player's Card Collection",
-  "crarena.title": "Wiki",
-  "crarena.description": "Knowledgebase of Clash Royale facts",
+  "arenacr.title": "Wiki",
+  "arenacr.description": "Knowledgebase of Clash Royale facts",
   "stormShieldOne.title": "Storm Shield One",
   "stormShieldOne.description": "Player stats, leaderboards, sale information, and a whole lot more"
 }

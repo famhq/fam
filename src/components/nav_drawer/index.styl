@@ -90,7 +90,7 @@ $zIndexDrawer = 300
           cursor: pointer
           display: flex
           align-items: center
-          padding: 10px 16px
+          padding: 8px 16px
 
           &:active
             background: getColor('$tertiary500')
@@ -129,6 +129,51 @@ $zIndexDrawer = 300
         &.is-selected
           > .menu-item-link
             background: getColor('$tertiary500')
+
+    > .my-groups
+      position: relative
+      overflow: hidden
+
+      &:after
+        content: ''
+        position: absolute
+        right: 0
+        top: 0
+        height: 100%
+        width: 60px
+        background: linear-gradient(to right, transparent 0%, getColor('$tertiary700') 70%)
+        z-index: 999
+        pointer-events: none
+
+      > .my-groups-scroller
+        padding: 0 16px
+        margin-top: 8px
+        white-space: nowrap
+        overflow-x: auto
+        overflow-y: hidden
+        -webkit-overflow-scrolling: touch
+
+        > .group-bubble
+          display: inline-block
+          vertical-align: top
+          width: 40px
+          height: 44px
+          border-radius: 50%
+          margin-right: 8px
+
+          > .icon
+            background: getColor('$tertiary500')
+            border: 2px solid getColor('$tertiary300')
+            box-sizing: border-box
+            border-radius: 50%
+            width: 40px
+            height: 40px
+            position: relative
+            z-index: 1000
+            cursor: pointer
+
+
+
 
 @media (min-width: $contentMaxWidth)
   .z-nav-drawer_drawer > .content > .menu .menu-item > .menu-item-link

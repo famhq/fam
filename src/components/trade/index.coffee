@@ -132,6 +132,7 @@ module.exports = class Trade
             z $item, {
               countOverlay: count
               sizePx: ITEM_SIZE
+              hasRarityBar: true
               onclick: =>
                 @selectedItemInfo.next RxObservable.of itemInfo
             }
@@ -149,6 +150,7 @@ module.exports = class Trade
             z $item, {
               countOverlay: count
               sizePx: ITEM_SIZE
+              hasRarityBar: true
               onclick: =>
                 @selectedItemInfo.next RxObservable.of itemInfo
             }

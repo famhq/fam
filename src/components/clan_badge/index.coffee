@@ -12,7 +12,7 @@ module.exports = class ClanBadge
       clan: clan
 
   render: (props = {}) =>
-    {size} = props
+    {size, isRound} = props
 
     {clan} = @state.getValue()
     clan ?= props.clan
@@ -22,6 +22,7 @@ module.exports = class ClanBadge
     # height = if size then "#{parseInt(size) * (40 / 34)}px" else undefined
 
     z '.z-clan-badge',
+      className: z.classKebab {isRound}
       style:
         width: size
         # height: height

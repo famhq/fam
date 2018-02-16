@@ -25,8 +25,6 @@ if window?
   IScroll = require 'iscroll/build/iscroll-lite-snap.js'
   require './index.styl'
 
-GROUPS_IN_DRAWER = 2
-
 module.exports = class NavDrawer
   constructor: ({@model, @router, group, @overlay$}) ->
     @$adsenseAd = new AdsenseAd {@model}
@@ -74,7 +72,6 @@ module.exports = class NavDrawer
         , 'desc'
         groups = _filter groups, ({id}) ->
           id isnt group.id
-        groups = _take(groups, GROUPS_IN_DRAWER)
         _map groups, (group, i) =>
           meGroupUser = group.meGroupUser
           {
@@ -82,8 +79,6 @@ module.exports = class NavDrawer
             $badge: if group.clan \
                     then new ClanBadge {@model, clan: group.clan}
                     else new GroupBadge {@model, group}
-            $chevronIcon: new Icon()
-            $ripple: new Ripple()
           }
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
@@ -131,6 +126,7 @@ module.exports = class NavDrawer
               # title: @model.l.get 'general.shop'
               title: @model.l.get 'earnFire.title'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'fire'
             }
           if group.type is 'public'
@@ -138,6 +134,7 @@ module.exports = class NavDrawer
               path: @router.get 'groupCollection', {groupId}
               title: @model.l.get 'collectionPage.title'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'cards'
             }
           if group.type is 'public'
@@ -145,6 +142,7 @@ module.exports = class NavDrawer
               path: @router.get 'trades', {groupId}
               title: @model.l.get 'tradesPage.title'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'trade'
             }
           if group.key in ['playhard', 'eclihpse']
@@ -152,12 +150,14 @@ module.exports = class NavDrawer
               path: @router.get 'groupVideos', {groupId}
               title: @model.l.get 'videosPage.title'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'video'
             }
           {
             path: @router.get 'groupLeaderboard', {groupId}
             title: @model.l.get 'groupLeaderboardPage.title'
             $icon: new Icon()
+            $ripple: new Ripple()
             iconName: 'trophy'
           }
           {
@@ -181,6 +181,7 @@ module.exports = class NavDrawer
               path: @router.get 'groupSettings', {groupId}
               title: @model.l.get 'groupSettingsPage.title'
               $icon: new Icon()
+              $ripple: new Ripple()
               iconName: 'settings'
               $chevronIcon: new Icon()
               children: _filter [
@@ -376,24 +377,22 @@ module.exports = class NavDrawer
                   unless _isEmpty myGroups
                     z 'li.divider'
 
-                  z 'li.subhead', @model.l.get 'drawer.otherGroups'
+                  # z 'li.subhead', @model.l.get 'drawer.otherGroups'
+              ]
 
-                  _map myGroups, (myGroup) =>
-                    {$badge, $ripple, $chevronIcon, children} = myGroup
-                    groupPath = @router.get 'groupHome', {
-                      groupId: myGroup.group.key or myGroup.group.id
-                    }
-                    groupEnPath = @router.get 'groupHome', {
-                      groupId: myGroup.group.key or myGroup.group.id
-                      }, {language: 'en'}
-
-                    isSelected = currentPath?.indexOf(groupPath) is 0 or
-                      currentPath?.indexOf(groupEnPath) is 0
-
-                    z 'li.menu-item', {
-                      className: z.classKebab {isSelected}
-                    },
-                      z 'a.menu-item-link', {
+              z '.my-groups',
+                z '.my-groups-scroller', {
+                  ontouchstart: (e) ->
+                    # don't close drawer w/ iscroll
+                    e?.stopPropagation()
+                },
+                  [
+                    _map myGroups, (myGroup) =>
+                      {$badge} = myGroup
+                      groupPath = @router.get 'groupHome', {
+                        groupId: myGroup.group.key or myGroup.group.id
+                      }
+                      z 'a.group-bubble', {
                         href: groupPath
                         onclick: (e) =>
                           e.preventDefault()
@@ -402,16 +401,9 @@ module.exports = class NavDrawer
                             groupId: myGroup.group.key or myGroup.group.id
                           }
                       },
-                        z '.icon',
-                          z $badge
-                        @model.group.getDisplayName myGroup.group
-                        if breakpoint is 'desktop'
-                          $ripple
+                        z $badge, {isRound: true}
 
-                  z 'li.menu-item', {
-                    className: z.classKebab {isSelected: false}
-                  },
-                    z 'a.menu-item-link', {
+                    z '.a.group-bubble', {
                       href: @router.get 'groups'
                       onclick: (e) =>
                         e.preventDefault()
@@ -420,11 +412,10 @@ module.exports = class NavDrawer
                     },
                       z '.icon',
                         z @$socialIcon,
-                          icon: 'friends'
+                          icon: 'add'
                           isTouchTarget: false
                           color: colors.$primary500
-                      @model.l.get 'drawer.menuItemMoreGroups'
-                ]
+                  ]
 
             if hasA
               z '.ad',

@@ -72,7 +72,7 @@ module.exports = class Message
     oncontextmenu = ->
       openProfileDialogFn id, user
 
-    isVerified = user and user.gameData?.isVerified
+    isVerified = user and user.gameStat?.isVerified
     isModerator = groupUser?.roleNames and
                   groupUser.roleNames.indexOf('mods') isnt -1
 
@@ -144,16 +144,20 @@ module.exports = class Message
               if time
               then DateService.fromNow time
               else '...'
-            z '.middot',
-              innerHTML: '&middot;'
-            z '.trophies',
-              FormatService.number user?.gameData?.data?.trophies
-              z '.icon',
-                z @$trophyIcon,
-                  icon: 'trophy'
-                  color: colors.$tertiary900Text54
-                  isTouchTarget: false
-                  size: '16px'
+            if user?.gameStat
+              z '.middot',
+                innerHTML: '&middot;'
+            if user?.gameStat
+              z '.trophies',
+                FormatService.number user.gameStat.statValue
+                z '.icon',
+                  z @$trophyIcon,
+                    icon: if user.gameStat.gameKey is 'fortnite' \
+                          then 'win'
+                          else 'trophy'
+                    color: colors.$tertiary900Text54
+                    isTouchTarget: false
+                    size: '16px'
 
         z '.body',
           @$body

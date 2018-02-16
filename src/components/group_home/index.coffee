@@ -86,7 +86,7 @@ module.exports = class GroupHome
 
     z '.z-group-home',
       z '.g-grid',
-        if group?.key is 'fortnitees'
+        if group?.key is 'fortnitees' or group?.key is 'nickatnyte'
           z '.card',
             z @$groupHomeFortniteStats
         else
@@ -106,15 +106,15 @@ module.exports = class GroupHome
 
               z @$groupHomeChat
 
-              if me?.username is 'austin' or (
+              if me?.username is 'test123' or ( # FIXME
                 me?.username is 'brunoph' and group?.key is 'playhard'
               )
                 z @$groupHomeAdminStats
 
-              if group.key in ['playhard', 'eclihpse']
+              if group.key in ['playhard', 'eclihpse', 'nickatnyte']
                 z @$groupHomeOffers
 
-              if group.key in ['playhard', 'eclihpse']
+              if group.key in ['playhard', 'eclihpse', 'nickatnyte']
                 z @$groupHomeVideos
 
               if player?.id and group.key isnt 'fortnitees'

@@ -14,7 +14,7 @@ if window?
 
 GROUPS_IN_DRAWER = 2
 
-collectionGroupKeys = ['playhard', 'eclihpse']
+collectionGroupKeys = ['playhard', 'eclihpse', 'nickatnyte']
 
 module.exports = class BottomBar
   constructor: ({@model, @router, requests, group}) ->
@@ -43,7 +43,7 @@ module.exports = class BottomBar
 
     currentPath = requests?.req.path
 
-    groupId = group?.key or 'clash-royale'
+    groupId = group?.key or group?.id or 'clashroyale'
     isLoaded = Boolean group
 
     # per-group menu:

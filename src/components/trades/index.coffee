@@ -130,6 +130,7 @@ module.exports = class Trades
                         info: info
                         countOverlay: info.count
                         sizePx: cardWidth
+                        hasRarityBar: true
                       }
                   if sendItemCount >= MAX_TRADE_CARDS_VISIBLE
                     z '.fade-out',
@@ -144,6 +145,7 @@ module.exports = class Trades
                         info: info
                         countOverlay: info.count
                         sizePx: cardWidth
+                        hasRarityBar: true
                       }
                   if receiveItemCount >= MAX_TRADE_CARDS_VISIBLE
                     z '.fade-out',

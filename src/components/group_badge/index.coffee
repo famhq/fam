@@ -10,12 +10,15 @@ module.exports = class GroupBadge
   constructor: ({@model, group}) ->
     @state = z.state {group}
 
-  render: ({badgeId, onclick} = {}) =>
+  render: ({badgeId, onclick, isRound} = {}) =>
     {group} = @state.getValue()
 
     badgeId ?= group?.badgeId
 
-    z '.z-group-badge', {onclick},
+    z '.z-group-badge', {
+      onclick
+      className: z.classKebab {isRound}
+    },
       if group?.badge
         z '.image',
           style:

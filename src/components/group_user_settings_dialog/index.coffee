@@ -45,6 +45,7 @@ module.exports = class GroupUserSettingsDialog
       isSaving: false
       isLeaveGroupLoading: false
       notificationTypes: groupAndMe.switchMap ([group, me]) =>
+        console.log 'group', group
         @model.groupUser.getMeSettingsByGroupId group.id
         .map (groupUserSettings) ->
           _map notificationTypes, (type) ->

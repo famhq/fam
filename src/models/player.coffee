@@ -19,7 +19,7 @@ module.exports = class Player
     }
 
   setAutoRefreshByPlayerIdAndGameKey: (playerId, gameKey) =>
-    @auth.call "#{@namespace}.setAutoRefreshByGameId", {gameKey}, {
+    @auth.call "#{@namespace}.setAutoRefreshByGameKey", {gameKey}, {
       invalidateSingle:
         body:
           gameKey: gameKey

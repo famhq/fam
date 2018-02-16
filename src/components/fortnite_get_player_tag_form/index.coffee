@@ -1,12 +1,15 @@
 z = require 'zorium'
 _take = require 'lodash/take'
+_map = require 'lodash/map'
 Environment = require 'clay-environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
+Icon = require '../icon'
 PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
 Dialog = require '../dialog'
 config = require '../../config'
+colors = require '../../colors'
 
 if window?
   require './index.styl'
@@ -14,6 +17,20 @@ if window?
 module.exports = class FortniteGetPlayerTagForm
   constructor: ({@model, @router}) ->
     me = @model.user.getMe()
+
+    @networks =
+      pc:
+        $icon: new Icon()
+        iconName: 'pc'
+        selectedColor: '#ffffff'
+      ps4:
+        $icon: new Icon()
+        iconName: 'playstation'
+        selectedColor: '#0071CF'
+      xb1:
+        $icon: new Icon()
+        iconName: 'xbox'
+        selectedColor: '#5dc21e'
 
     @fortniteUsernameValue = new RxBehaviorSubject ''
     @fortniteUsernameError = new RxBehaviorSubject null
@@ -27,14 +44,14 @@ module.exports = class FortniteGetPlayerTagForm
     @state = z.state
       me: me
       isLoading: false
+      network: 'pc'
       isInfoDialogVisible: false
 
   onTrack: (e) =>
     e?.preventDefault()
-    network = 'pc' # FIXME
     fortniteUsername = @fortniteUsernameValue.getValue()
 
-    {me} = @state.getValue()
+    {me, network} = @state.getValue()
 
     @state.set isLoading: true
 
@@ -52,11 +69,21 @@ module.exports = class FortniteGetPlayerTagForm
       @state.set isLoading: false
 
   render: =>
-    {me, isLoading, isInfoDialogVisible} = @state.getValue()
+    {me, network, isLoading, isInfoDialogVisible} = @state.getValue()
 
     z 'form.z-fortnite-get-player-tag-form', {
       onsubmit: @onTrack
     },
+      z '.networks',
+        _map @networks, ({$icon, iconName, selectedColor}, networkKey) =>
+          z $icon,
+            icon: iconName
+            color: if network is networkKey \
+                   then selectedColor
+                   else colors.$tertiary300
+            onclick: =>
+              @state.set network: networkKey
+
       z '.input',
         z @$fortniteUsernameInput,
           hintText: @model.l.get 'fortniteGetPlayerTagForm.fortniteName'
