@@ -141,7 +141,7 @@ module.exports = class ItemList
   group: (items) ->
     _groupBy items, ({item}) ->
       itemType = item.type
-      if itemType in ['coin', 'scratch']
+      if itemType in ['coin', 'scratch', 'key', 'chest']
         itemType = 'consumable'
       itemType
 

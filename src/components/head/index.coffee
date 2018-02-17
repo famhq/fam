@@ -20,7 +20,7 @@ module.exports = class Head
       else
         RxObservable.of meta
 
-    @lastHeaderColor = null
+    @lastGroupId = null
 
     @state = z.state
       meta: meta
@@ -37,19 +37,23 @@ module.exports = class Head
           groupKey = 'clashroyale'
         if groupKey and groupKey.indexOf('fortnite') isnt -1
           groupKey = 'fortnite'
-        cssColors = _defaults colors[groupKey], colors.default
 
-        newHeaderColor = cssColors['--primary-900']
-        if @lastHeaderColor isnt newHeaderColor
+        cssColors = _defaults colors[groupKey], colors.default
+        cssVariables = _map(cssColors, (value, key) ->
+          "#{key}:#{value}"
+        ).join ';'
+
+        if @lastGroupId isnt group.id
+          newHeaderColor = cssColors['--primary-900']
           @model.portal?.call 'statusBar.setBackgroundColor', {
             color: newHeaderColor
           }
-          @lastHeaderColor = newHeaderColor
+          @lastGroupId = group.id
           @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
+          if cssVariables
+            @model.cookie.set 'cachedCssVariables', cssVariables
 
-        _map(cssColors, (value, key) ->
-          "#{key}:#{value}"
-        ).join ';'
+        cssVariables
 
   render: =>
     {meta, serverData, route, routeKey,
@@ -218,7 +222,8 @@ module.exports = class Head
       # styles
       z 'style',
         key: 'css-variables'
-        innerHTML: ":root {#{cssVariables}}"
+        innerHTML:
+          ":root {#{cssVariables or @model.cookie.get 'cachedCssVariables'}}"
       if isInliningSource
         # we could use separate css file for styles, which would benefit from
         # cache... but we have a weird problem where chrome tries to
