@@ -24,7 +24,7 @@ module.exports = class ThreadComment
   constructor: (options) ->
     {@threadComment, @depth, @isMe, @model, @overlay$,
       @selectedProfileDialogUser, @router, @commentStreams,
-      groupId} = options
+      @groupId} = options
 
     @depth ?= 0
 
@@ -40,7 +40,7 @@ module.exports = class ThreadComment
         text: @threadComment.body, @model, @router, isFullWidth: true
       }
       messageBatchesStreams: @commentStreams
-      groupId, @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
+      @groupId, @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
     }
 
     @$upvoteButton = new ThreadVoteButton {@model}
@@ -54,7 +54,12 @@ module.exports = class ThreadComment
       new ThreadComment {
         threadComment: childThreadComment
         depth: @depth + 1
-        @isMe, @model, @overlay$, @selectedProfileDialogUser, @router, groupId
+        @isMe
+        @model
+        @overlay$
+        @selectedProfileDialogUser
+        @router
+        @groupId
       }
 
     @state = z.state
@@ -65,7 +70,7 @@ module.exports = class ThreadComment
       isMe: @isMe
       isReplyVisible: false
       isPostLoading: @isPostLoading
-      groupId: groupId
+      groupId: @groupId
       windowSize: @model.window.getSize()
 
   # for cached components
@@ -76,7 +81,12 @@ module.exports = class ThreadComment
         @$children[i] ?= new ThreadComment {
           threadComment: child
           depth: @depth + 1
-          @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
+          @isMe
+          @model
+          @overlay$
+          @selectedProfileDialogUser
+          @router
+          @groupId
         }
         @$children[i].setThreadComment child
 
@@ -160,7 +170,7 @@ module.exports = class ThreadComment
                     @overlay$
                     @isPostLoading
                     onPost: @postReply
-                    groupId: groupId
+                    groupId: @groupId
                     onResize: -> null
                   }
                   @state.set isReplyVisible: true

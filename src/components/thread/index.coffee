@@ -166,7 +166,7 @@ module.exports = class Thread extends Base
           cacheId = "threadComment-#{threadComment.id}"
           $el = @getCached$ cacheId, ThreadComment, {
             @model, @router, @selectedProfileDialogUser, threadComment
-            @commentStreams, groupId: thread.groupId
+            @commentStreams, groupId: RxObservable.of thread.groupId
           }
           # update cached version
           $el.setThreadComment threadComment
