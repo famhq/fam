@@ -44,7 +44,7 @@ module.exports = class ItemBlock
     itemLevel ?= 1
     item ?= {}
 
-    isConsumable = item.type in ['consumable', 'scratch']
+    isConsumable = item.type in ['consumable', 'chest']
     canConsume = isConsumable and count > 0 and not hideActions
     isOwned = count > 0
     height = if hasCount then sizePx + 22 else sizePx

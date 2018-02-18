@@ -1,0 +1,53 @@
+@require '../../vars'
+
+$zIndexDeck = 99999999
+$zIndexOpenPack = 9999
+$zIndexConfetti = 1
+
+.z-open-items-deck
+  position: absolute
+  z-index: $zIndexOpenPack
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  display: flex
+  flex: 1
+  flex-direction: column
+  pointer-events: none
+  visibility: hidden
+
+  &.is-aligned-bottom
+    > .items
+      margin-bottom: 0
+
+  &.is-visible
+    visibility: visible
+
+  &.is-deck-spread
+    > .content
+      > .bottom
+        transform: translate(0, 0) scale(1, 1)
+
+  > .confetti
+    position: fixed
+    z-index: $zIndexConfetti
+    width: 100%
+    height: 100%
+
+  > .items
+    margin: auto 0
+    pointer-events: all
+
+    > .deck
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)
+      transform-origin: bottom center
+      -webkit-backface-visibility: hidden
+      position: absolute
+      z-index: $zIndexDeck
+      left: 50%
+
+      > .item
+        position: absolute
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)
+        -webkit-backface-visibility: hidden

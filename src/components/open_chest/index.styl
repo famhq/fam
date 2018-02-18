@@ -1,0 +1,118 @@
+@require '../../vars'
+
+@keyframes z-open-chest_chest
+  0%
+    transform: scale(1)
+  50%
+    transform: scale(0.8)
+  100%
+    transform: scale(1)
+
+.z-open-chest
+  background: getColor('$tertiary900')
+  position: fixed
+  z-index: 9998
+  width: 100%
+  height: 100%
+  box-sizing: border-box
+  top: 0
+  left: 0
+  display: flex
+  flex-direction: column
+
+  &.is-chest-opening
+    > .content > .g-grid > .chest-wrapper > .chest > .chest-image
+      animation: z-open-chest_chest 0.5s
+
+  &.has-opened-items
+    > .app-bar
+      opacity: 0
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+
+    > .content
+      > .g-grid
+
+        > .info
+          opacity: 0
+          transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+
+        > .action
+          opacity: 0
+          transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+
+  &.is-done
+    > .content
+      > .g-grid
+        > .action
+          opacity: 1
+
+  > .content
+    flex: 1
+    display: flex
+    flex-direction: column
+
+    > .g-grid
+      flex: 1
+      display: flex
+      flex-direction: column
+      // max-height: 300px
+      margin: auto
+
+      > .items-deck
+        position: fixed
+        top: 0
+        left: 0
+        z-index: 2
+        width: 100%
+        height: 50%
+
+      > .chest-wrapper
+        width: 300px
+        height: 300px
+        margin: auto
+
+        > .chest
+          position: relative
+          z-index: 1
+          transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1)
+          width: 300px
+          height: 300px
+
+          > .chest-image
+            width: 300px
+            height: 300px
+            background-size: 100%
+
+
+      > .info
+        width: 100%
+        max-width: 600px
+        padding: 16px
+        box-sizing: border-box
+        margin: 0 auto auto auto
+        text-align: center
+
+        > .odds
+          width: 100%
+          max-width: 400px
+          margin: 0 auto
+
+          > .odd
+            display: flex
+
+            > .rarity
+              font-title()
+
+            > .odds
+              margin-left: auto
+
+      > .action
+        padding: 16px
+        // display: flex
+        // margin-top: auto
+        text-align: center
+        position: relative
+        z-index: 999
+
+        > .text
+          margin-bottom: 16px

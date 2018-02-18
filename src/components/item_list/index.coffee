@@ -34,25 +34,20 @@ GROUP_TITLE_HEIGHT = 48
 GROUP_MARGIN_BOTTOM = 8
 COUNT_HEIGHT = 20
 
-getItemSizeInfo = ($$el) ->
-  if window?
-    # TODO: json file with these vars, stylus uses this
-    if window.matchMedia('(min-width: 840px)').matches
-      info = {itemsPerRow: 6, itemMargin: 12}
-    else if window.matchMedia('(min-width: 480px)').matches
-      info = {itemsPerRow: 4, itemMargin: 6}
-    else
-      info = {itemsPerRow: 3, itemMargin: 6}
-    if $$el?.offsetWidth
-      info.itemSize = ($$el.offsetWidth -
-                   X_PADDING_PX * 2 -
-                   (info.itemsPerRow - 1) * info.itemMargin * 2
-                   ) / info.itemsPerRow
-    else
-      info.itemSize = 114
-    info
+getItemSizeInfo = ({$$el, windowSize, breakpoint}) ->
+  if breakpoint is 'desktop'
+    info = {itemsPerRow: 6, itemMargin: 12}
+  else if breakpoint is 'tablet'
+    info = {itemsPerRow: 4, itemMargin: 6}
   else
-    {itemsPerRow: DEFAULT_ITEMS_PER_ROW, itemMargin: 0, itemSize: 114}
+    info = {itemsPerRow: 3, itemMargin: 6}
+  offsetWidth = $$el?.offsetWidth or windowSize.contentWidth
+  info.itemSize = (
+    offsetWidth -
+     X_PADDING_PX * 2 -
+     (info.itemsPerRow - 1) * info.itemMargin * 2
+   ) / info.itemsPerRow
+  info
 
 module.exports = class ItemList
   constructor: (options) ->
@@ -69,7 +64,11 @@ module.exports = class ItemList
       ownedAmount = if info.count then 0 else 10
       ownedAmount + config.RARITIES.indexOf(info.item.rarity)
 
-    @itemSizeInfo = new RxBehaviorSubject getItemSizeInfo()
+    @itemSizeInfo = new RxBehaviorSubject getItemSizeInfo {
+      windowSize: @model.window.getSizeVal()
+      breakpoint: @model.window.getBreakpointVal()
+    }
+
     listData = RxObservable.combineLatest(
       items
       userItems
@@ -113,7 +112,11 @@ module.exports = class ItemList
     setSize = =>
       width = @$$el?.offsetWidth
       if width
-        @itemSizeInfo.next getItemSizeInfo @$$el
+        @itemSizeInfo.next getItemSizeInfo {
+          @$$el
+          windowSize: @model.window.getSizeVal()
+          breakpoint: @model.window.getBreakpointVal()
+        }
       else if tries < maxTries
         tries += 1
         setTimeout setSize, retryTimeMs
@@ -123,7 +126,11 @@ module.exports = class ItemList
     window.removeEventListener 'resize', @onResize
 
   onResize: =>
-    @itemSizeInfo.next getItemSizeInfo @$$el
+    @itemSizeInfo.next getItemSizeInfo {
+      @$$el
+      windowSize: @model.window.getSizeVal()
+      breakpoint: @model.window.getBreakpointVal()
+    }
 
   filter: (items, {searchValue, groupKeyFilter}) ->
     if searchValue

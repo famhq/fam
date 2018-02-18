@@ -2,11 +2,12 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _some = require 'lodash/some'
 _isEqual = require 'lodash/isEqual'
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/map'
 
 Icon = require '../icon'
 ItemOpen = require '../item_open'
-Confetti = require '../confetti'
+OpenItemsDeck = require '../open_items_deck'
 FlatButton = require '../flat_button'
 SecondaryButton = require '../secondary_button'
 FormatService = require '../../services/format'
@@ -25,30 +26,22 @@ FLIP_DELAY_MS = 250
 
 module.exports = class OpenPack
   constructor: ({@model, @router, @items, @onClose, pack, group}) ->
-    @$globeIcon = new Icon()
-    @$cpIcon = new Icon()
     @$doneButton = new SecondaryButton()
     @$goToCollectionButton = new FlatButton()
     @$ripple = new Ripple()
-    @$confetti = new Confetti()
+
+    isDone = new RxBehaviorSubject false
+    isDeckSpread = new RxBehaviorSubject false
+    @$openItemsDeck = new OpenItemsDeck {@model, @items, isDone, isDeckSpread}
 
     me = @model.user.getMe()
 
     @state = z.state
       me: me
       isVisible: false
-      isDeckSpread: false
+      isDone: isDone
+      isDeckSpread: isDeckSpread
       group: group
-      items: @items.map (items) =>
-        _map items, (item) =>
-          item: item
-          $item: new ItemOpen {
-            @model
-            isBack: true
-            backKey: pack?.data.backKey
-            isLocked: false
-            itemInfo: {item: item}
-          }
       itemsSwiped: 0
 
   afterMount: =>
@@ -62,114 +55,28 @@ module.exports = class OpenPack
       }).then =>
         @state.set
           isVisible: true
-        setTimeout =>
-          @state.set {isDeckSpread: true}
-          setTimeout =>
-            items[items.length - 1]?.$item?.flip()
-            .then =>
-              @state.set isWaitingToFlip: false
-          , FLIP_DELAY_MS
-        , SPREAD_DELAY_MS
-    , 0
 
-  beforeUnmount: =>
-    @state.set
-      itemsSwiped: 0
-      isVisible: false
-      isDeckSpread: false
+        @$openItemsDeck.show()
+    , 0
 
   buyAnotherPack: -> null # TODO
 
   render: =>
-    {me, items, isVisible, isDeckSpread, itemsSwiped, group,
-      isWaitingToFlip} = @state.getValue()
-
-    itemCount = items?.length
-
-    isDoneVisible = itemsSwiped is itemCount - 1
-
-    itemSize = 192
-    translateX = -window?.innerWidth / 2 - itemSize / 2
-
-    currentItem = if items \
-                  then items[items.length - itemsSwiped - 1]
-                  else null
-    currentItemCirculating = if currentItem?.item \
-                             then currentItem.item.circulating + 1
-                             else null
+    {me, isDeckSpread, isDeckSpread, group,
+      isVisible, isDone} = @state.getValue()
 
     z '.z-open-pack', {
       className: z.classKebab {
         isVisible
         isDeckSpread
-        isDoneVisible
+        isDone
       }
     },
-      if isVisible and currentItem?.item.rarity isnt 'common'
-        confettiColors = config.CONFETTI_COLORS[currentItem?.item.rarity]
-        if colors
-          @$confetti.setColors confettiColors
-        z '.confetti',
-          @$confetti
       z @$ripple
 
       z '.content',
-        # z '.top-right',
-        #   z '.circulating',
-        #     z '.icon',
-        #       z @$globeIcon,
-        #         icon: 'globe'
-        #         isTouchTarget: false
-        #         color: colors.$tertiary200
-        #     FormatService.number currentItemCirculating
-
-        z '.items', {
-          style:
-            height: "#{itemSize + 130}px" # FIXME: 130 is size of padding, etc.
-        },
-          z '.deck', {
-            style:
-              transform: if isVisible \
-                         then 'translate(0, 0)'
-                         else "translate(0, #{window?.innerHeight}px)"
-              webkitTransform: if isVisible \
-                               then 'translate(0, 0)'
-                               else "translate(0, #{window?.innerHeight}px)"
-          },
-            _map items, ({$item, item}, i) =>
-              isSlidingOut = itemsSwiped >= itemCount - i
-              rotation = STARTING_ROTATION + ROTATION_PER_ITEM * i
-              z '.item', {
-                onclick: =>
-                  if not isWaitingToFlip and itemsSwiped < itemCount - 1
-                    @state.set
-                      itemsSwiped: itemCount - i# + 1
-                      isWaitingToFlip: true
-                    setTimeout =>
-                      items[i - 1].$item.flip()
-                      .then =>
-                        @state.set
-                          isWaitingToFlip: false
-                    , SLIDE_OUT_TIME_MS
-                style:
-                  marginLeft: "-#{40 + itemSize / 2}px" # FIXME: 20px is padding
-                  transform: if isSlidingOut \
-                             then "translate(#{translateX}px, 0) " + \
-                                  'rotate(0deg)' \
-                             else if isDeckSpread \
-                             then  "rotate(#{rotation}deg)"
-                             else 'rotate(0deg)'
-                  webkitTransform: if isSlidingOut \
-                                   then "translate(#{translateX}px, 0) " + \
-                                        'rotate(0deg)' \
-                                   else if isDeckSpread \
-                                   then "rotate(#{rotation}deg)"
-                                   else 'rotate(0deg)'
-                  pointerEvents: if isSlidingOut then 'none' else 'auto'
-              },
-                z $item, {
-                  sizePx: itemSize
-                }
+        z '.items-deck',
+          @$openItemsDeck
 
         z '.bottom',
           z '.action',

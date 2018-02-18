@@ -7,7 +7,7 @@ require 'rxjs/add/observable/combineLatest'
 
 ItemList = require '../item_list'
 StickerInfo = require '../sticker_info'
-ScratchSticker = require '../scratch_sticker'
+OpenChest = require '../open_chest'
 UiCard = require '../ui_card'
 colors = require '../../colors'
 config = require '../../config'
@@ -45,7 +45,7 @@ module.exports = class Collection
       onClose: =>
         @overlay$.next null
     }
-    @$scratchSticker = new ScratchSticker {
+    @$openChest = new OpenChest {
       @model
       @router
       infoStreams: @clickedInfo
@@ -81,8 +81,8 @@ module.exports = class Collection
         z @$itemList, {
           onclick: (itemInfo) =>
             @clickedInfo.next RxObservable.of itemInfo
-            if itemInfo.item.type is 'scratch'
-              @overlay$.next @$scratchSticker
+            if itemInfo.item.type is 'chest'
+              @overlay$.next @$openChest
             else if itemInfo.item.type is 'sticker'
               @overlay$.next @$stickerInfo
             else if itemInfo.item.type is 'consumable' and itemInfo.count > 0
