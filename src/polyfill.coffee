@@ -38,7 +38,6 @@ require 'transition-event'
 
 require 'setimmediate'
 
-
 # iScroll does a translate transform, but it only does it for one transform
 # property (eg transform or webkitTransform). We need to know which one iscroll
 # is using, so this is the same code they have to pick one

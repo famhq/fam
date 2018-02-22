@@ -35,8 +35,10 @@ MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
 RESIZE_THROTTLE_MS = 150
+SCROLL_MAX_WAIT_MS = 100
 FIVE_MINUTES_MS = 60 * 5 * 1000
 SCROLL_MESSAGE_LOAD_COUNT = 20
+DELAY_BETWEEN_LOAD_MORE_MS = 500
 
 module.exports = class Conversation extends Base
   constructor: (options) ->
@@ -63,7 +65,9 @@ module.exports = class Conversation extends Base
     @resetMessageBatches = new RxBehaviorSubject null
 
     lastConversationId = null
-    @isLoadingMore
+    @canLoadMore = true
+    @isScrolling = false
+    @onScrollEnd = null
 
     loadedMessages = conversationAndMe.switchMap (resp) =>
       [conversation, me] = resp
@@ -217,7 +221,7 @@ module.exports = class Conversation extends Base
     @$$loadingSpinner = @$$el?.querySelector('.loading')
     @$$messages = @$$el?.querySelector('.messages')
     @debouncedScrollListener = _debounce @scrollListener, 20, {
-      maxWait: 100
+      maxWait: SCROLL_MAX_WAIT_MS
       trailing: true
     }
     @$$messages?.addEventListener 'scroll', @debouncedScrollListener
@@ -287,35 +291,56 @@ module.exports = class Conversation extends Base
       else
         RxObservable.of null
 
+  touchStartListener: =>
+    @isScrolling = true
+
+  scrollEndListener: =>
+    @isScrolling = false
+    @canLoadMore = true
+    @onScrollEnd?()
+
   scrollListener: =>
     {isScrolledBottom} = @state.getValue()
     scrollTop = @$$messages.scrollTop
     scrollHeight = @$$messages.scrollHeight
     offsetHeight = @$$messages.offsetHeight
+    fromBottom = scrollHeight - offsetHeight - scrollTop
+    isPotentiallyBouncing = Environment.isiOS() and fromBottom < 50
+    notNearTop = scrollTop > 50
+    isiOS = Environment.isiOS()
 
-    if @lastScrollTop > 50 and scrollTop < @lastScrollTop
-      @onScrollUp?()
-    else if @lastScrollTop > 50 and scrollTop > @lastScrollTop
-      @onScrollDown?()
+    @isScrolling = true
+    clearTimeout @scrollEndTimeout
+    @scrollEndTimeout = setTimeout =>
+      @scrollEndListener()
+    , SCROLL_MAX_WAIT_MS + 100
 
-    if scrollHeight - scrollTop - offsetHeight < 10
+    if notNearTop and scrollTop < @lastScrollTop and not isPotentiallyBouncing
+      if @isScrolling and isiOS
+        @onScrollEnd = @onScrollUp
+      else
+        @onScrollUp?()
+    else if notNearTop and scrollTop > @lastScrollTop
+      if @isScrolling and isiOS
+        @onScrollEnd = @onScrollDown
+      else
+        @onScrollDown?()
+
+    if fromBottom < 10
       unless isScrolledBottom
         @state.set isScrolledBottom: true
     else
       if isScrolledBottom
         @state.set isScrolledBottom: false
 
-    # keep simple so we don't have to debounce / throttle
-    if @isLoadingMore
-      return
-
-    if scrollTop is 0
+    # a little slow on iOS with the bounce animation, but if <=, it flickers
+    if @canLoadMore and scrollTop is 0
       @loadMore()
 
     @lastScrollTop = scrollTop
 
   loadMore: =>
-    @isLoadingMore = true
+    @canLoadMore = false
 
     # don't re-render or set state since it's slow with all of the conversation
     # messages
@@ -331,21 +356,22 @@ module.exports = class Conversation extends Base
 
     messagesStream.take(1).toPromise()
     .then =>
-      @isLoadingMore = false
+      setTimeout (=> @canLoadMore = true), DELAY_BETWEEN_LOAD_MORE_MS
+
       @$$loadingSpinner.style.display = 'none'
 
-      if $$firstMessageBatch?.scrollIntoView # doesn't work on ios
+      if $$firstMessageBatch?.scrollIntoView and not Environment.isiOS()
         $$firstMessageBatch?.scrollIntoView?() # works on android
         setTimeout =>  # works on ios, but has flash
           $$firstMessageBatch?.scrollIntoView?()
           @lastScrollTop = null
         , 0
       else
-        setTimeout =>
+        # setTimeout 0 flickers top -> scroll on iOS
+        window.requestAnimationFrame =>
           @$$messages.scrollTop =
             @$$messages.scrollHeight - previousScrollHeight
           @lastScrollTop = null
-        , 0
 
 
   prependMessagesStream: (messagesStream) =>
@@ -436,7 +462,7 @@ module.exports = class Conversation extends Base
       @state.set isJoinLoading: false
 
   render: =>
-    {me, isLoading, isLoadingMore, message, isTextareaFocused, isLoaded,
+    {me, isLoading, message, isTextareaFocused, isLoaded,
       messageBatches, conversation, group, isScrolledBottom, inputTranslateY,
       groupUser, isJoinLoading, hasBottomBar} = @state.getValue()
 

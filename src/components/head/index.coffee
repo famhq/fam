@@ -37,16 +37,21 @@ module.exports = class Head
           groupKey = 'clashroyale'
         if groupKey and groupKey.indexOf('fortnite') isnt -1
           groupKey = 'fortnite'
+        if groupKey and groupKey.indexOf('brawlstars') isnt -1
+          groupKey = 'brawlstars'
 
         cssColors = _defaults colors[groupKey], colors.default
+        cssColors['--drawer-header-500'] ?= cssColors['--primary-500']
+        cssColors['--drawer-header-500-text'] ?= cssColors['--primary-500-text']
         cssVariables = _map(cssColors, (value, key) ->
           "#{key}:#{value}"
         ).join ';'
 
         if @lastGroupId isnt group.id
-          newHeaderColor = cssColors['--primary-900']
+          newStatusBarColor = cssColors['--status-bar-500'] or
+                              cssColors['--primary-900']
           @model.portal?.call 'statusBar.setBackgroundColor', {
-            color: newHeaderColor
+            color: newStatusBarColor
           }
           @lastGroupId = group.id
           @model.cookie.set "group_#{group.id}_lastVisit", Date.now()

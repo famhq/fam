@@ -20,7 +20,7 @@ $zIndexDrawer = 300
     box-sizing: border-box
     border-bottom: 1px solid getColor('$tertiary900Text12')
     border-right: 1px solid getColor('$tertiary90012')
-    background: getColor('$primary500')
+    background: getColor('$drawerHeader500')
     display: flex
     align-items: center
 
@@ -33,7 +33,7 @@ $zIndexDrawer = 300
 
     > .name
       font-h1(false)
-      color: getColor('$primary500Text')
+      color: getColor('$drawerHeader500Text')
 
   > .ad
     // position: absolute
@@ -141,7 +141,9 @@ $zIndexDrawer = 300
         top: 0
         height: 100%
         width: 60px
-        background: linear-gradient(to right, transparent 0%, getColor('$tertiary700') 70%)
+        // looks ugly on ios since it does gradient to black (0 opacity black)
+        // could make a $tertiary700Transparent, but don't want to
+        // background: linear-gradient(to right, getColor('$transparent') 0%, getColor('$tertiary700') 70%)
         z-index: 999
         pointer-events: none
 

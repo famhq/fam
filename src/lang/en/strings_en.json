@@ -450,6 +450,9 @@
   "stickerInfo.levelUpRequirement": "{countRequired} duplicates to level up",
   "stripeDialog.confirmTitle": "Confirm",
   "stripeDialog.title": "Payment",
+
+  "starfireFam.line1": "Starfire has a new name: Fam.",
+
   "time.justNow": "now",
   "time.secondShorthand": "s",
   "time.minuteShorthand": "m",

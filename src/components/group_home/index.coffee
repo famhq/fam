@@ -2,6 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+Environment = require 'clay-environment'
 
 GroupHomeVideos = require '../group_home_videos'
 GroupHomeThreads = require '../group_home_threads'
@@ -23,7 +24,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupHome
-  constructor: ({@model, @router, group, @overlay$}) ->
+  constructor: ({@model, @router, group, @overlay$, @serverData}) ->
     me = @model.user.getMe()
 
     player = me.switchMap ({id}) =>
@@ -84,12 +85,16 @@ module.exports = class GroupHome
     {me, group, player, deck, language,
       isTranslateCardVisible} = @state.getValue()
 
+    userAgent = @serverData?.req?.headers?['user-agent'] or
+                  navigator?.userAgent or ''
+
     z '.z-group-home',
       z '.g-grid',
-        if group?.key is 'fortnitees' or group?.key is 'nickatnyte'
+        if group?.key in ['fortnitees', 'nickatnyte', 'ferg']
           z '.card',
             z @$groupHomeFortniteStats
-        else
+
+        if not (group?.key in ['fortnitees', 'brawlstarses'])
           z '.card',
             z @$groupHomeClashRoyaleChestCycle
 
@@ -101,23 +106,27 @@ module.exports = class GroupHome
             $elements: _filter [
               if group.key in [
                 'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
+                'brawlstarses'
               ]
                 z @$groupHomeThreads
 
               z @$groupHomeChat
 
-              if me?.username is 'test123' or ( # FIXME
+              if me?.username is 'austin' or ( # FIXME
                 me?.username is 'brunoph' and group?.key is 'playhard'
               )
                 z @$groupHomeAdminStats
 
-              if group.key in ['playhard', 'eclihpse', 'nickatnyte']
+              if not Environment.isiOS({userAgent}) and group.key in [
+                'playhard', 'eclihpse', 'nickatnyte', 'ferg'
+              ]
                 z @$groupHomeOffers
 
-              if group.key in ['playhard', 'eclihpse', 'nickatnyte']
+              if group.key in ['playhard', 'eclihpse', 'nickatnyte', 'ferg']
                 z @$groupHomeVideos
 
-              if player?.id and group.key isnt 'fortnitees'
+              if player?.id and
+                  not (group.key in ['fortnitees', 'brawlstarses'])
                 z @$groupHomeClashRoyaleDecks
 
               z @$groupHomeAddons

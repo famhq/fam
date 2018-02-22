@@ -14,7 +14,7 @@ if window?
 
 GROUPS_IN_DRAWER = 2
 
-collectionGroupKeys = ['playhard', 'eclihpse', 'nickatnyte']
+collectionGroupKeys = ['playhard', 'eclihpse', 'nickatnyte', 'ferg']
 
 module.exports = class BottomBar
   constructor: ({@model, @router, requests, group}) ->

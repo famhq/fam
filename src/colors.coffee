@@ -163,12 +163,42 @@ colors = _defaults {
     '--tertiary-700': '#111416'
     '--tertiary-900': '#000000'
 
+  brawlstars:
+    '--header-100': '#FFF7E0' # t300
+    '--header-500': '#FFBB00' #t700
+    '--header-500-text': materialColors.$black
+    '--header-500-text-54': materialColors.$black54
+    '--header-500-icon': materialColors.$black
+
+    '--primary-50': '#FFF7E0'
+    '--primary-100': '#FFF7E0'
+    '--primary-200': '#FFEBB3'
+    '--primary-300': '#FFDD80'
+    '--primary-400': '#FFC526'
+    '--primary-500': '#FFBB00'
+    '--primary-600': '#FFB500'
+    '--primary-700': '#FFAC00'
+    '--primary-800': '#FFA400'
+    '--primary-900': '#FF9600'
+    '--primary-500-text': materialColors.$black
+
+    '--tertiary-50': '#E8E8E8'
+    '--tertiary-100': '#C7C7C7'
+    '--tertiary-200': '#A1A1A1'
+    '--tertiary-300': '#7B7B7B'
+    '--tertiary-400': '#5F5F5F'
+    '--tertiary-500': '#434343'
+    '--tertiary-600': '#3D3D3D'
+    '--tertiary-700': '#343434'
+    '--tertiary-800': '#2C2C2C'
+    '--tertiary-900': '#1E1E1E'
+
   clashroyale:
     '--header-100': '#80A4C3' # t300
     '--header-500': '#003973' #t700
     '--header-500-text': materialColors.$white
     '--header-500-text-54': materialColors.$white54
-    '--header-500-icon': '#FFAA00' #p500
+    '--header-500-icon': materialColors.$white#'#FFAA00' #p500
 
     '--primary-50': '#FFF5E0'
     '--primary-100': '#FFE6B3'
@@ -183,16 +213,51 @@ colors = _defaults {
     '--primary-900': '#FF7F00'
     '--primary-500-text': materialColors.$black
 
-    '--tertiary-50': '#E0E9F0'
-    '--tertiary-100': '#E0E9F0'
-    '--tertiary-200': '#B3C8DB'
-    '--tertiary-300': '#80A4C3'
-    '--tertiary-400': '#266498'
-    '--tertiary-500': '#004986'
-    '--tertiary-600': '#00427E'
-    '--tertiary-700': '#003973'
-    '--tertiary-800': '#003169'
-    '--tertiary-900': '#002156'
+    # '--tertiary-50': '#E0E9F0'
+    # '--tertiary-100': '#E0E9F0'
+    # '--tertiary-200': '#B3C8DB'
+    # '--tertiary-300': '#80A4C3'
+    # '--tertiary-400': '#266498'
+    # '--tertiary-500': '#004986'
+    # '--tertiary-600': '#00427E'
+    # '--tertiary-700': '#003973'
+    # '--tertiary-800': '#003169'
+    # '--tertiary-900': '#002156'
+
+  ferg:
+    '--header-100': '#E7EFF3' # t300
+    '--header-500': '#27648D' #t700
+    '--header-500-text': materialColors.$white
+    '--header-500-text-54': materialColors.$white54
+    '--header-500-icon': '#ff3094' #p500
+
+    '--drawer-header-500': '#ff3094' #t700
+    '--drawer-header-500-text': materialColors.$white
+
+    '--status-bar-500': '#154772'
+
+    '--primary-50': '#fff'#'#FDE4F0'
+    '--primary-100': '#fff'#'#FDE4F0'
+    '--primary-200': '#fff'#'#FBBBDA'
+    '--primary-300': '#fff'#'#F88EC2'
+    '--primary-400': '#fff'#'#F33F96'
+    '--primary-500': '#fff'#'#F11D84'
+    '--primary-600': '#fff'#'#EF1A7C'
+    '--primary-700': '#fff'#'#ED1571'
+    '--primary-800': '#fff'#'#EB1167'
+    '--primary-900': '#fff'#'#E70A54'
+    '--primary-500-text': '#ff3094'
+
+    '--tertiary-50': '#E7EFF3'
+    '--tertiary-100': '#E7EFF3'
+    '--tertiary-200': '#C2D6E2'
+    '--tertiary-300': '#9ABBCF'
+    '--tertiary-400': '#528BAD'
+    '--tertiary-500': '#34779F'
+    '--tertiary-600': '#2F6F97'
+    '--tertiary-700': '#27648D'
+    '--tertiary-800': '#215A83'
+    '--tertiary-900': '#154772'
 
   # clashroyalelight:
   #   '--header-100': '#C8DCFC' # p100
@@ -240,18 +305,18 @@ colors = _defaults {
     '--header-500': '#171a1c' # t700
     '--header-500-text': materialColors.$white
     '--header-500-text-54': materialColors.$white54
-    '--header-500-icon': '#fc373e' # p500
+    '--header-500-icon': '#ff8a00' # p500
 
-    '--primary-100': materialColors.$red100
-    '--primary-200': materialColors.$red200
-    '--primary-300': materialColors.$red300
-    '--primary-400': '#fc5b61'
-    '--primary-500': '#fc373e'
-    '--primary-50096': 'rgba(252, 55, 62, 0.96)'
-    '--primary-600': '#e63239'
-    '--primary-700': '#cf2e33'
-    '--primary-800': materialColors.$red800
-    '--primary-900': materialColors.$red900
+    '--primary-100': materialColors.$orange100
+    '--primary-200': materialColors.$orange200
+    '--primary-300': materialColors.$orange300
+    '--primary-400': materialColors.$orange300
+    '--primary-500': '#ff8a00'
+    '--primary-50096': 'rgba(255, 138, 0, 0.96)'
+    '--primary-600': materialColors.$orange600
+    '--primary-700': '#e86f00'
+    '--primary-800': materialColors.$orange800
+    '--primary-900': materialColors.$orange900
     '--primary-500-text': materialColors.$white
 
     '--tertiary-100': materialColors.$grey100
@@ -296,6 +361,9 @@ colors = _defaults {
   '$header500Text': 'var(--header-500-text)'
   '$header500Text54': 'var(--header-500-text54)'
   '$header500Icon': 'var(--header-500-icon)'
+
+  '$drawerHeader500': 'var(--drawer-header-500)'
+  '$drawerHeader500Text': 'var(--drawer-header-500-text)'
 
   '$primary50': 'var(--primary-50)'
   '$primary100': 'var(--primary-100)'

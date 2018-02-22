@@ -112,6 +112,7 @@ module.exports = class NavDrawer
           }
           if group.key in [
             'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
+            'brawlstarses'
           ]
             {
               path: @router.get 'groupForum', {groupId}
