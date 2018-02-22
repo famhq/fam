@@ -20,6 +20,8 @@ body
   font-body1()
   -webkit-tap-highlight-color: transparent
   background: getColor('$tertiary900')
+  padding-top: constant(safe-area-inset-top)
+  padding-top: env(safe-area-inset-top)
 
 #zorium-root
   // if this page is in a frame on iOS, iOS tries to auto-expand

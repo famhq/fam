@@ -40,6 +40,8 @@ FIVE_MINUTES_MS = 60 * 5 * 1000
 SCROLL_MESSAGE_LOAD_COUNT = 20
 DELAY_BETWEEN_LOAD_MORE_MS = 500
 
+# TODO: move all the scrolling stuff into a separate component
+
 module.exports = class Conversation extends Base
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,

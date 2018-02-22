@@ -144,7 +144,8 @@ module.exports = class Head
       z 'meta',
         name: 'viewport'
         content: 'initial-scale=1.0, width=device-width, minimum-scale=1.0,
-                  maximum-scale=1.0, user-scalable=0, minimal-ui'
+                  maximum-scale=1.0, user-scalable=0, minimal-ui,
+                  viewport-fit=cover'
 
       z 'meta',
         'http-equiv': 'Content-Security-Policy'
