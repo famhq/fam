@@ -1,7 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _range = require 'lodash/range'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'

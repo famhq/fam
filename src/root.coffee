@@ -5,7 +5,7 @@ z = require 'zorium'
 log = require 'loga'
 cookie = require 'cookie'
 LocationRouter = require 'location-router'
-Environment = require 'clay-environment'
+Environment = require './services/environment'
 socketIO = require 'socket.io-client/dist/socket.io.slim.js'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/do'

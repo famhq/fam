@@ -7,8 +7,8 @@ config = require '../src/config'
 if config.DEV_USE_HTTPS
   https = require 'https'
   fs = require 'fs'
-  privateKey  = fs.readFileSync './bin/starfire-dev.key'
-  certificate = fs.readFileSync './bin/starfire-dev.crt'
+  privateKey  = fs.readFileSync './bin/fam-dev.key'
+  certificate = fs.readFileSync './bin/fam-dev.crt'
   credentials = {key: privateKey, cert: certificate}
   httpsServer = https.createServer credentials, app
 

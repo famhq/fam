@@ -1,7 +1,7 @@
 z = require 'zorium'
 _take = require 'lodash/take'
 _map = require 'lodash/map'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Icon = require '../icon'

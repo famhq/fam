@@ -1,6 +1,6 @@
 z = require 'zorium'
 _defaults = require 'lodash/defaults'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/fromPromise'
 

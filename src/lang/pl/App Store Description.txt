@@ -3,9 +3,9 @@ Twoja Stara Frajer
 Definitywna aplikacja pokazująca statystyki, klany, czat itd. dla Clash Royale.                                              
 Ale schizowa apka, ściągaj od razu, bez kitu
 
-Starfire to doskonała aplikacja dla Clash Royale.
+Fam to doskonała aplikacja dla Clash Royale.
 
-Funkcje Starfire:
+Funkcje Fam:
 
 • Automatyczne śledzenie statystyk i skrzyń 
 • Statystki klanów i przyjmowanie ludzi
@@ -13,4 +13,4 @@ Funkcje Starfire:
 • Prywatne wiadomości 
 • Powiadomienia z aplikacji - bądź na bieżąco z wiadomościami, wydarzeniami i ogłoszeniami
 
-...i wiele, wiele więcej! Starfire się nieustannie rozwija dzięki społeczności!
+...i wiele, wiele więcej! Fam się nieustannie rozwija dzięki społeczności!

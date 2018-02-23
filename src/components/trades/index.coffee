@@ -3,7 +3,7 @@ _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
 _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 Icon = require '../icon'
 Item = require '../item'

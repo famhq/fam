@@ -1,4 +1,4 @@
-Environment = require 'clay-environment'
+Environment = require '../services/environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 uuid = require 'uuid'
 _forEach = require 'lodash/forEach'

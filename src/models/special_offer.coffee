@@ -1,4 +1,4 @@
-Environment = require 'clay-environment'
+Environment = require '../services/environment'
 
 config = require '../config'
 

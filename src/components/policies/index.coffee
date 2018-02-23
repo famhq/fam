@@ -1,7 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _defaults = require 'lodash/defaults'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 Icon = require '../icon'
 PrimaryButton = require '../primary_button'

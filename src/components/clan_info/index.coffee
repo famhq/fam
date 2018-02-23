@@ -1,7 +1,7 @@
 z = require 'zorium'
 _startCase = require 'lodash/startCase'
 _find = require 'lodash/find'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/switchMap'
 

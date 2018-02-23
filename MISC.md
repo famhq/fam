@@ -4,13 +4,13 @@
 Note that you need to specify full xip host (multi-level wildcards are not allowed)
 
 ```
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout ~/dev/starfire/bin/starfire-dev.key -out ~/dev/starfire/bin/starfire-dev.crt -reqexts v3_req -extensions v3_ca
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout ~/dev/fam/bin/fam-dev.key -out ~/dev/fam/bin/fam-dev.crt -reqexts v3_req -extensions v3_ca
 ```
 ```
 Generating a 4096 bit RSA private key
 ...............................................................................................................................++
 ......................................++
-writing new private key to '/home/austin/dev/starfire/bin/starfire-dev.key'
+writing new private key to '/home/austin/dev/fam/bin/fam-dev.key'
 -----
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
@@ -32,9 +32,9 @@ http://stackoverflow.com/questions/7580508/getting-chrome-to-accept-self-signed-
 
 For Android:
 ```
-sudo openssl x509 -in ~/dev/starfire/bin/starfire-dev.crt -outform der -out ~/dev/starfire/bin/starfire-dev.der.crt
+sudo openssl x509 -in ~/dev/fam/bin/fam-dev.crt -outform der -out ~/dev/fam/bin/fam-dev.der.crt
 ```
 
-Copy starfire.der.crt to your phone, settings -> security -> install from storage -> select key
+Copy fam.der.crt to your phone, settings -> security -> install from storage -> select key
 
 `USE_HTTPS=1 npm run dev`

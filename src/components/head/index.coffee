@@ -1,5 +1,5 @@
 z = require 'zorium'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxObservable = require('rxjs/Observable').Observable
 _merge = require 'lodash/merge'
 _map = require 'lodash/map'
@@ -77,22 +77,22 @@ module.exports = class Head
       description: 'Talk to other Clash Royale players, track your stats, and
                     set which chests you have next. Support for more mobile
                     games coming soon!'
-      icon256: 'http://cdn.wtf/d/images/starfire/web_icon_256.png'
+      icon256: 'http://cdn.wtf/d/images/fam/web_icon_256.png'
       twitter:
-        siteHandle: '@starfirehq'
-        creatorHandle: '@starfirehq'
+        siteHandle: '@famhq'
+        creatorHandle: '@famhq'
         title: undefined
         description: undefined
         # min 280 x 150 < 1MB
-        image: 'http://cdn.wtf/d/images/starfire/web_icon_1024.png'
+        image: 'http://cdn.wtf/d/images/fam/web_icon_1024.png'
 
       openGraph:
         title: undefined
         url: undefined
         description: undefined
-        siteName: 'Starfire'
+        siteName: 'Fam'
         # min 200 x 200, min reccomended 600 x 315, reccomended 1200 x 630
-        image: 'http://cdn.wtf/d/images/starfire/web_icon_1024.png'
+        image: 'http://cdn.wtf/d/images/fam/web_icon_1024.png'
 
       ios:
         # min 152 x 152
@@ -105,7 +105,7 @@ module.exports = class Head
       manifestUrl: '/manifest.json'
     }, meta
 
-    meta.title = "Clash Royale #{meta.title} | Starfire"
+    meta.title = "Clash Royale #{meta.title} | Fam"
 
     meta = _merge {
       twitter:

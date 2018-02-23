@@ -1,4 +1,4 @@
-Environment = require 'clay-environment'
+Environment = require '../services/environment'
 # TODO separate bundle for app that doesn't require this
 firebase = require 'firebase/app'
 require 'firebase/messaging'

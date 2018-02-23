@@ -7,7 +7,7 @@ _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/switchMap'
 

@@ -1,5 +1,5 @@
 z = require 'zorium'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 _kebabCase = require 'lodash/kebabCase'
 
 config = require '../../config'

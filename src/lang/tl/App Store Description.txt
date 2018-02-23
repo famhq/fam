@@ -2,9 +2,9 @@ Startfire para sa Clash Royale
 
 Ang tunay na kasama na app ng Clash Royale para sa stats, mga clan, chat, at iba pa.
 
-Ang Starfire is ang tunay na kasamang app para sa Clash Royale.
+Ang Fam is ang tunay na kasamang app para sa Clash Royale.
 
-Mga tampok ng Starfire:
+Mga tampok ng Fam:
 
 • Awtomatikong stat at pagsubaybay ng chest cycle
 • Stats ng clan at pagri-recruit
@@ -12,4 +12,4 @@ Mga tampok ng Starfire:
 • Pribadong pagmemensahe
 • Mga push notification - manataling napapanahon sa mga chat, anunsiyo, at mga kaganapan
 
-...and higit pa! Patuloy na nagbabago ang Starfire batay sa feedback ng komunidad!
+...and higit pa! Patuloy na nagbabago ang Fam batay sa feedback ng komunidad!

@@ -2,7 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _clone = require 'lodash/clone'
 _camelCase = require 'lodash/camelCase'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 FormatService = require '../../services/format'
 GraphWidget = require '../graph_widget'

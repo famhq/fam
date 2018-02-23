@@ -1,5 +1,5 @@
 z = require 'zorium'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 PlayerList = require '../player_list'
 SearchInput = require '../search_input'

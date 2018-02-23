@@ -166,24 +166,26 @@ stats = JSON.parse \
   fs.readFileSync gulpPaths.dist + '/stats.json', 'utf-8'
 
 app.use (req, res, next) ->
-  # migrate to starfire.games
+  # migrate to openfam.com
   # check if native app
   userAgent = req.headers['user-agent']
   host = req.headers.host
   accessToken = req.query.accessToken
-  isNativeApp = userAgent?.indexOf('starfire') isnt -1
+  isNativeApp = userAgent?.indexOf('starfire') isnt -1 or
+                  userAgent?.indexOf('openfam') isnt -1
   isBot = /bot|crawler|spider|crawling/i.test(userAgent)
   isLegacyHost = host.indexOf('starfi.re') isnt -1 or
-                  host.indexOf('redtritium.com') isnt -1
+                  host.indexOf('redtritium.com') isnt -1 or
+                  host.indexOf('starfire.games') isnt -1
 
   if isLegacyHost and req.cookies?.accessToken and not isBot# and not isNativeApp
     return res.redirect(
       301
-      'https://starfire.games' + req.path +
+      'https://openfam.com' + req.path +
         '?accessToken=' + req.cookies?.accessToken
     )
   else if isLegacyHost# and not isNativeApp
-    return res.redirect(301, 'https://starfire.games' + req.path)
+    return res.redirect(301, 'https://openfam.com' + req.path)
   else if accessToken and not isLegacyHost# and not isNativeApp
     res.cookie(
       'accessToken'
@@ -194,7 +196,7 @@ app.use (req, res, next) ->
         domain: '.' + host.split(':')[0]
       }
     )
-    return res.redirect(301, 'https://starfire.games' + req.path)
+    return res.redirect(301, 'https://openfam.com' + req.path)
   # end migrate
 
   hasSent = false

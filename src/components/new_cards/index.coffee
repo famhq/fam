@@ -3,7 +3,7 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
 _meanBy = require 'lodash/meanBy'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 Spinner = require '../spinner'
 AdsenseAd = require '../adsense_ad'

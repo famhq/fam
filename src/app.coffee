@@ -5,7 +5,7 @@ _map = require 'lodash/map'
 _values = require 'lodash/values'
 _flatten = require 'lodash/flatten'
 _defaults = require 'lodash/defaults'
-Environment = require 'clay-environment'
+Environment = require './services/environment'
 isUuid = require 'isuuid'
 RxObservable = require('rxjs/Observable').Observable
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
@@ -348,7 +348,7 @@ module.exports = class App
               z @$offlineOverlay
             if @$nps.shouldBeShown()
               z @$nps,
-                gameName: 'Starfire'
+                gameName: 'Fam'
                 onRate: =>
                   @model.portal.call 'app.rate'
             if $overlay

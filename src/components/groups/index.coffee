@@ -1,7 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _unionBy = require 'lodash/unionBy'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'

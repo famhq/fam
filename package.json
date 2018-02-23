@@ -1,5 +1,5 @@
 {
-  "name": "starfire",
+  "name": "fam",
   "private": true,
   "scripts": {
     "dist": "./bin/dist.sh",

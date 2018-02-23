@@ -1,5 +1,5 @@
 _map = require 'lodash/map'
-Environment = require 'clay-environment'
+Environment = require '../services/environment'
 Fingerprint = require 'fingerprintjs'
 getUuidByString = require 'uuid-by-string'
 

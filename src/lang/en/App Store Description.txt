@@ -1,10 +1,10 @@
-Starfire for Clash Royale
+Fam for Clash Royale
 
 The ultimate Clash Royale companion app for stats, clans, chat, and more
 
-Starfire is the ultimate companion app for Clash Royale.
+Fam is the ultimate companion app for Clash Royale.
 
-Starfire features:
+Fam features:
 
 • Automatic stat and chest cycle tracking
 • Clan stats and recruiting
@@ -12,4 +12,4 @@ Starfire features:
 • Private messaging
 • Push notifications - stay up to date with chats, announcements, and events
 
-...and much, much more! Starfire is constantly evolving based on community feedback!
+...and much, much more! Fam is constantly evolving based on community feedback!

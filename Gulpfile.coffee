@@ -161,8 +161,8 @@ gulp.task 'dev:webpack-server', ->
   if config.DEV_USE_HTTPS
     console.log 'using https'
     webpackOptions.https = true
-    webpackOptions.key = fs.readFileSync './bin/starfire-dev.key'
-    webpackOptions.cert = fs.readFileSync './bin/starfire-dev.crt'
+    webpackOptions.key = fs.readFileSync './bin/fam-dev.key'
+    webpackOptions.cert = fs.readFileSync './bin/fam-dev.crt'
 
   new WebpackDevServer compiler, webpackOptions
   .listen config.WEBPACK_DEV_PORT, (err) ->
@@ -293,7 +293,7 @@ gulp.task 'dist:s3', ->
     Bucket: 'cdn.wtf'
     ACL: 'public-read'
     keyTransform: (relativeFilename) ->
-      "d/scripts/starfire/#{relativeFilename}"
+      "d/scripts/fam/#{relativeFilename}"
   }
 
 gulp.task 'dist:manifest', ['dist:static', 'dist:scripts'], ->

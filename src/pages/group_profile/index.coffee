@@ -158,12 +158,12 @@ module.exports = class GroupProfilePage
     gameKey = group?.gameKeys?[0]
 
     if isMe
-      text = 'View my Clash Royale profile on Starfire'
+      text = 'View my Clash Royale profile on Fam'
       username = me?.username
       id = me?.id
     else
       text = "#{playerName}'s Clash Royale stats Clash Royale
-              profile on Starfire"
+              profile on Fam"
       username = user?.username
       id = user?.id
 

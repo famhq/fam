@@ -5,7 +5,7 @@ _defaults = require 'lodash/defaults'
 _take = require 'lodash/take'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/map'

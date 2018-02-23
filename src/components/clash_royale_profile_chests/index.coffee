@@ -7,7 +7,7 @@ _startCase = require 'lodash/startCase'
 _camelCase = require 'lodash/camelCase'
 _snakeCase = require 'lodash/snakeCase'
 _sortBy = require 'lodash/sortBy'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 AdsenseAd = require '../adsense_ad'
 PrimaryButton = require '../primary_button'

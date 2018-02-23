@@ -1,8 +1,8 @@
-Starfire pour Clash Royale
+Fam pour Clash Royale
 
 L'application ultime pour consulter ses stats Clash Royale, clans, chat et plus encore
 
-Starfire est la meilleur application pour consulter ses stats Clash Royale.
+Fam est la meilleur application pour consulter ses stats Clash Royale.
 
 Fonctionnalités de Stafire:
 
@@ -12,4 +12,4 @@ Fonctionnalités de Stafire:
 • Messages privés
 • Notifications - restez à jour avec les conversations, les annonces et les événements
 
-... Et encore plus ! Starfire est en constante évolution, basée sur les commentaires de la communauté !
+... Et encore plus ! Fam est en constante évolution, basée sur les commentaires de la communauté !

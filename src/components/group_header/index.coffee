@@ -31,7 +31,7 @@ module.exports = class GroupHeader
 
   getBackgroundUrl: (group) ->
     if group? and not group.background \
-    then 'https://cdn.wtf/d/images/starfire/groups/backgrounds/red_bg.jpg'
+    then 'https://cdn.wtf/d/images/fam/groups/backgrounds/red_bg.jpg'
     else group?.background
 
   render: ({badgeId, background} = {}) =>

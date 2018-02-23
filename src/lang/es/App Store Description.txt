@@ -1,10 +1,10 @@
-Starfire para Clash Royale
+Fam para Clash Royale
 
 La aplicación complementaria de Clash Royale para estadísticas, clanes, chat y más
 
-Starfire es la mejor aplicación complementaria para Clash Royale.
+Fam es la mejor aplicación complementaria para Clash Royale.
 
-Características de Starfire:
+Características de Fam:
 
 • Seguimiento automático del estado y del ciclo del cofres
 • Estadísticas del clan y reclutamiento
@@ -12,4 +12,4 @@ Características de Starfire:
 • Mensajería privada
 • Notificaciones: mantenerse al día con chats, anuncios y eventos
 
-...¡y mucho, mucho más! Starfire está evolucionando constantemente basado en la retroalimentación de la comunidad!
+...¡y mucho, mucho más! Fam está evolucionando constantemente basado en la retroalimentación de la comunidad!

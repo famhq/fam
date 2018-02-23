@@ -14,7 +14,7 @@ module.exports = class FourOhFourPage
 
   getMeta: ->
     meta:
-      title: 'Starfire - 404'
+      title: 'Fam - 404'
       description: 'Page not found'
 
   render: =>

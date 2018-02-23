@@ -2,7 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 GroupHomeVideos = require '../group_home_videos'
 GroupHomeThreads = require '../group_home_threads'

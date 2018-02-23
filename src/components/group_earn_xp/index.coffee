@@ -1,5 +1,5 @@
 z = require 'zorium'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'

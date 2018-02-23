@@ -472,7 +472,7 @@ EXHIBIT A. Common Public Attribution License Version 1.0.
 "The contents of this file are subject to the Common Public Attribution License
 Version 1.0. (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
-https://github.com/starfirehq/starfire/blob/master/LICENSE.md. The License is based on the Mozilla Public
+https://github.com/famhq/fam/blob/master/LICENSE.md. The License is based on the Mozilla Public
 License Version 1.1, but Sections 14 and 15 have been added to cover use of software over a computer network and provide for limited attribution for the
 Original Developer. In addition, Exhibit A has been modified to be consistent
 with Exhibit B.
@@ -495,10 +495,10 @@ Attribution Copyright Notice: Copyright (c) 2016-2017 Starfire Games Inc. All Ri
 
 Attribution Phrase (not exceeding 10 words): Powered by Starfire
 
-Attribution URL: https://starfire.games
+Attribution URL: https://openfam.com
 
 Graphic Image as provided in the Covered Code:
-https://cdn.wtf/d/images/starfire/powered_by.png
+https://cdn.wtf/d/images/fam/powered_by.png
 
 Display of Attribution Information is required in Larger Works which are defined
 in the CPAL as a work which combines Covered Code or portions thereof with code

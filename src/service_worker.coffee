@@ -75,7 +75,7 @@ self.addEventListener 'push', (e) ->
         client.focused
 
       if not isFocused or contextId isnt message.data.contextId
-        self.registration.showNotification 'Starfire',
+        self.registration.showNotification 'Fam',
           icon: if message.icon \
                 then message.icon
                 else "#{config.CDN_URL}/android-chrome-192x192.png"

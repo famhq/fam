@@ -1,6 +1,6 @@
 z = require 'zorium'
 _map = require 'lodash/map'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 colors = require '../../colors'
 
 config = require '../../config'

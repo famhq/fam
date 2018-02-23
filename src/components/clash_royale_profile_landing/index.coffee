@@ -1,6 +1,6 @@
 z = require 'zorium'
 _take = require 'lodash/take'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 SecondaryButton = require '../secondary_button'
 GetPlayerTagForm = require '../clash_royale_get_player_tag_form'

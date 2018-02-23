@@ -11,7 +11,7 @@ colors = require './colors'
 # Don't let server environment variables leak into client code
 serverEnv = process.env
 
-HOST = process.env.STARFIRE_HOST or '127.0.0.1'
+HOST = process.env.FAM_HOST or '127.0.0.1'
 HOSTNAME = HOST.split(':')[0]
 
 URL_REGEX_STR = '(\\bhttps?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])'
@@ -115,21 +115,21 @@ isomorphic =
   DEFAULT_NOTIFICATIONS:
     chatMessage: true
     chatMention: true
-  CDN_URL: 'https://cdn.wtf/d/images/starfire'
+  CDN_URL: 'https://cdn.wtf/d/images/fam'
   # d folder has longer cache
-  SCRIPTS_CDN_URL: 'https://cdn.wtf/d/scripts/starfire'
-  USER_CDN_URL: 'https://cdn.wtf/images/starfire'
-  IOS_APP_URL: 'https://itunes.apple.com/us/app/starfire/id1160535565'
+  SCRIPTS_CDN_URL: 'https://cdn.wtf/d/scripts/fam'
+  USER_CDN_URL: 'https://cdn.wtf/images/fam'
+  IOS_APP_URL: 'https://itunes.apple.com/us/app/fam/id1160535565'
   GOOGLE_PLAY_APP_URL:
     'https://play.google.com/store/apps/details?id=com.clay.redtritium'
   HOST: HOST
-  GAME_KEY: 'starfire'
+  GAME_KEY: 'openfam'
   GOOGLE_ANALYTICS_ID: 'UA-27992080-30'
   STRIPE_PUBLISHABLE_KEY:
     serverEnv.STRIPE_PUBLISHABLE_KEY or
     process.env.STRIPE_PUBLISHABLE_KEY
   GIPHY_API_KEY: process.env.GIPHY_API_KEY
-  FB_ID: process.env.STARFIRE_FB_ID
+  FB_ID: process.env.FAM_FB_ID
   API_URL: API_URL
   PUBLIC_API_URL: process.env.PUBLIC_RADIOACTIVE_API_URL
   API_HOST: API_HOST
@@ -251,7 +251,7 @@ isomorphic =
 
 # Server only
 # All keys must have values at run-time (value may be null)
-PORT = serverEnv.STARFIRE_PORT or 3000
+PORT = serverEnv.FAM_PORT or 3000
 WEBPACK_DEV_PORT = serverEnv.WEBPACK_DEV_PORT or parseInt(PORT) + 1
 WEBPACK_DEV_PROTOCOL = if DEV_USE_HTTPS then 'https://' else 'http://'
 

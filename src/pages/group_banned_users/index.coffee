@@ -1,7 +1,7 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 _filter = require 'lodash/filter'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/map'
 

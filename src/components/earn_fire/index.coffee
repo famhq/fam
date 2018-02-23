@@ -1,7 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _isEmpty = require 'lodash/isEmpty'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 Fingerprint = require 'fingerprintjs'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable

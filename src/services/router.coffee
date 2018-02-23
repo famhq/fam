@@ -5,7 +5,7 @@ _defaults = require 'lodash/defaults'
 _forEach = require 'lodash/forEach'
 _reduce = require 'lodash/reduce'
 _kebabCase = require 'lodash/kebabCase'
-Environment = require 'clay-environment'
+Environment = require '../services/environment'
 
 SemverService = require '../services/semver'
 ThemeService = require '../services/theme'
@@ -55,11 +55,11 @@ class RouterService
 
   openLink: (url) =>
     isAbsoluteUrl = url?.match /^(?:[a-z]+:)?\/\//i
-    starfireRegex = new RegExp "https?://(#{config.HOST}|starfi.re)", 'i'
-    isStarfire = url?.match starfireRegex
-    if not isAbsoluteUrl or isStarfire
-      path = if isStarfire \
-             then url.replace starfireRegex, ''
+    famRegex = new RegExp "https?://(#{config.HOST}|starfire.games)", 'i'
+    isFam = url?.match famRegex
+    if not isAbsoluteUrl or isFam
+      path = if isFam \
+             then url.replace famRegex, ''
              else url
       @goPath path
     else

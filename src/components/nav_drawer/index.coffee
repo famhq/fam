@@ -5,7 +5,7 @@ _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
 _orderBy = require 'lodash/orderBy'
 _clone = require 'lodash/clone'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/map'

@@ -2,7 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
-Environment = require 'clay-environment'
+Environment = require '../../services/environment'
 
 Spinner = require '../spinner'
 AdsenseAd = require '../adsense_ad'

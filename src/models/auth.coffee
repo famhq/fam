@@ -30,10 +30,6 @@ module.exports = class Auth
             #   "#{config.AUTH_COOKIE}": null
             # }, currentCookies
             @exoid.call 'auth.login', {language}
-        # FIXME FIXME https://stackoverflow.com/questions/47731745/android-cordova-app-with-iframes-chrome-63-no-request-headers-cookies
-        # rm userAgent part when fixed (keep the else)
-        else if userAgent?.indexOf('starfire') isnt -1 and userAgent?.indexOf('Chrome/63') isnt -1 and not window?
-          Promise.resolve {accessToken: null}
         else
           @exoid.call 'auth.login', {language})
         .then ({accessToken}) =>
