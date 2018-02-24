@@ -27,14 +27,14 @@ module.exports = class Button
     else
       if isActive
         if isDark
-          'rgba(204, 204, 204, 0.25)'
+          'rgba(204, 204, 204, 0.12)'
         else
-          'rgba(153, 153, 153, 0.40)'
+          'rgba(153, 153, 153, 0.12)'
       else if isHovered
         if isDark
-          'rgba(204, 204, 204, 0.15)'
+          'rgba(204, 204, 204, 0.12)'
         else
-          'rgba(153, 153, 153, 0.20)'
+          'rgba(153, 153, 153, 0.12)'
       else
         null
 

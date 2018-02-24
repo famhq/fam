@@ -38,12 +38,16 @@
     background: getColor('$white')
     opacity: 0
     pointer-events: none
+    visibility: hidden
 
-    &.fade-in
-      animation: z-ripple-animation-fade-in 0.5s
+    &.is-visible
+      visibility: visible
 
-    &:not(.fade-in)
-      animation: z-ripple-animation 0.5s
+      &.fade-in
+        animation: z-ripple-animation-fade-in 0.5s
+
+      &:not(.fade-in)
+        animation: z-ripple-animation 0.5s
 
 
   &.is-circle

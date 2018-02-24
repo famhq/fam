@@ -19,7 +19,8 @@ module.exports = class Ripple
 
   constructor: -> null
 
-  afterMount: (@$$el) => null
+  afterMount: (@$$el) =>
+    @$$wave = @$$el.querySelector '.wave'
 
   ripple: ({$$el, color, isCenter, mouseX, mouseY, onComplete, fadeIn} = {}) =>
     $$el ?= @$$el
@@ -33,19 +34,22 @@ module.exports = class Ripple
       x = mouseX - left
       y = mouseY - top
 
-    $$wave = document.createElement 'div'
-    $$wave.className = if fadeIn then 'wave fade-in' else 'wave'
+    # $$wave = document.createElement 'div'
+    $$wave = @$$wave
     $$wave.style.top = y + 'px'
     $$wave.style.left = x + 'px'
     $$wave.style.backgroundColor = color
-    $$el.appendChild $$wave
+    $$wave.className = if fadeIn \
+                       then 'wave fade-in is-visible'
+                       else 'wave is-visible'
+    # $$el.appendChild $$wave
 
     new Promise (resolve, reject) ->
       setTimeout ->
         onComplete?()
         resolve()
         setTimeout ->
-          $$el.removeChild $$wave
+          $$wave.className = 'wave'
         , 100 # give some time for onComplete to render
       , ANIMATION_TIME_MS
 
@@ -62,7 +66,9 @@ module.exports = class Ripple
         mouseY: e.clientY or e.touches?[0]?.clientY
       }
 
-    z '.z-ripple',
+    z '.z-ripple', {
       className: z.classKebab {isCircle}
-      ontouchstart: if Environment.isAndroid() then null else onTouch
-      onmousedown: onTouch
+      ontouchstart: onTouch
+      onmousedown: if Environment.isAndroid() then null else onTouch
+    },
+      z '.wave'
