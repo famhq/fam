@@ -173,20 +173,22 @@ app.use (req, res, next) ->
   accessToken = req.query.accessToken
   isNativeApp = userAgent?.indexOf('starfire') isnt -1 or
                   userAgent?.indexOf('openfam') isnt -1
+  isiOS = /(iPad|iPhone|iPod)/g.test(userAgent)
+  isiOSApp = isNativeApp and isiOS
   isBot = /bot|crawler|spider|crawling/i.test(userAgent)
   isLegacyHost = host.indexOf('starfi.re') isnt -1 or
                   host.indexOf('redtritium.com') isnt -1 or
                   host.indexOf('starfire.games') isnt -1
 
-  if isLegacyHost and req.cookies?.accessToken and not isBot# and not isNativeApp
+  if isLegacyHost and req.cookies?.accessToken and not isBot and not isiOSApp
     return res.redirect(
       301
       'https://openfam.com' + req.path +
         '?accessToken=' + req.cookies?.accessToken
     )
-  else if isLegacyHost# and not isNativeApp
+  else if isLegacyHost and not isiOSApp
     return res.redirect(301, 'https://openfam.com' + req.path)
-  else if accessToken and not isLegacyHost# and not isNativeApp
+  else if accessToken and not isLegacyHost and not isiOSApp
     res.cookie(
       'accessToken'
       accessToken
@@ -225,7 +227,7 @@ app.use (req, res, next) ->
     (cookies) ->
       _map cookies, (value, key) ->
         if currentCookies[key] isnt value and not hasSent
-          res.cookie(key, value, model.cookie.getCookieOpts(host))
+          res.cookie(key, value, model.cookie.getCookieOpts(host, key))
       currentCookies = cookies
   disposable = cookieSubject.do(setCookies(req.cookies)).subscribe()
 

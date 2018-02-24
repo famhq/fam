@@ -72,7 +72,6 @@ module.exports = class Nps
       comment: commentValue
     }
     .then =>
-      console.log 'done'
       @state.set isLoading: false
 
   render: ({gameName, onSubmit, onCancel, onRate}) =>
@@ -98,7 +97,7 @@ module.exports = class Nps
               onCancel?()
 
           submitButton:
-            text: 'sure'
+            text: @model.l.get 'general.ok'
             isShort: true
             onclick: =>
               @state.set step: 'nps'
@@ -140,9 +139,9 @@ module.exports = class Nps
                 z '.range-container',
                   z 'input.range',
                     type: 'range'
-                    min: NPS_MIN
-                    max: NPS_MAX
-                    value: npsValue
+                    min: "#{NPS_MIN}"
+                    max: "#{NPS_MAX}"
+                    value: "#{npsValue}"
                     onchange: (e) =>
                       @npsValue.next e.currentTarget.value
                       @state.set npsSet: true

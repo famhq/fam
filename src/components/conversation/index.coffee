@@ -446,7 +446,7 @@ module.exports = class Conversation extends Base
 
     @model.signInDialog.openIfGuest me
     .then =>
-      unless localStorage?['isPushTokenStored']
+      unless @model.cookie.get 'isPushTokenStored'
         @model.pushNotificationSheet.open()
       Promise.all _filter [
         @model.group.joinById group.id
@@ -497,7 +497,7 @@ module.exports = class Conversation extends Base
                   ]
         ]
 
-      if group and groupUser and not groupUser.userId
+      if conversation?.groupId and groupUser and not groupUser.userId
         z '.bottom.is-gate',
           z '.text',
             @model.l.get 'conversation.joinMessage', {

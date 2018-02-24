@@ -110,7 +110,7 @@ init = ->
       _map cookies, (value, key) ->
         unless currentCookies[key] is value
           document.cookie = cookie.serialize \
-            key, value, model.cookie.getCookieOpts(host)
+            key, value, model.cookie.getCookieOpts(host, key)
       currentCookies = cookies
   cookieSubject.do(setCookies(currentCookies)).subscribe()
 

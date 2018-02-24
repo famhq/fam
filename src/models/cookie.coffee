@@ -5,6 +5,7 @@ require 'rxjs/add/operator/toPromise'
 config = require '../config'
 
 COOKIE_DURATION_MS = 365 * 24 * 3600 * 1000 # 1 year
+ONE_DAY_MS = 3600 * 24 * 1000
 
 class Cookie
   constructor: ({@cookieSubject}) ->
@@ -25,12 +26,14 @@ class Cookie
       @setQueueInterval = null
 
 
-  getCookieOpts: (host) ->
+  getCookieOpts: (host, key) ->
     host ?= config.HOST
     hostname = host.split(':')[0]
 
     path: '/'
-    expires: new Date(Date.now() + COOKIE_DURATION_MS)
+    expires: if key is 'isPushTokenStored' \
+             then new Date(Date.now() + ONE_DAY_MS)
+             else new Date(Date.now() + COOKIE_DURATION_MS)
     # Set cookie for subdomains
     domain: '.' + hostname
 

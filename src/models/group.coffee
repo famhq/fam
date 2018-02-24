@@ -60,6 +60,7 @@ module.exports = class Group
   getDisplayName: (group) ->
     group?.name or 'Nameless'
 
+  # TODO: rm completely. atm only used for 'admin' permission
   hasPermission: (group, user, {level} = {}) ->
     userId = user?.id
     level ?= 'member'
@@ -71,4 +72,4 @@ module.exports = class Group
       when 'admin'
       then group.creatorId is userId
       # member
-      else group.userIds?.indexOf(userId) isnt -1 or group.type is 'public'
+      else false # group.userIds?.indexOf(userId) isnt -1 or group.type is 'public'

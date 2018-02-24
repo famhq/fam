@@ -55,7 +55,7 @@ class RouterService
 
   openLink: (url) =>
     isAbsoluteUrl = url?.match /^(?:[a-z]+:)?\/\//i
-    famRegex = new RegExp "https?://(#{config.HOST}|starfire.games)", 'i'
+    famRegex = new RegExp "https?://(#{config.HOST}|starfire.games|starfi\.re)", 'i'
     isFam = url?.match famRegex
     if not isAbsoluteUrl or isFam
       path = if isFam \

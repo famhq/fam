@@ -36,9 +36,6 @@ module.exports = class GroupList
             z '.g-cols',
               _map groups, ({group, $header}) =>
                 group.type ?= 'general'
-                hasMemberPermission = @model.group.hasPermission group, me, {
-                  level: 'member'
-                }
                 route = @router.get 'groupHome', {
                   groupId: group.key or group.id
                 }

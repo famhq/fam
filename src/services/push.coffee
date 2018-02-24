@@ -39,9 +39,9 @@ class PushService
 
   register: ({model, isAlwaysCalled}) ->
     model.portal.call 'push.register'
-    .then ({token, sourceType} = {}) ->
+    .then ({token, sourceType} = {}) =>
       if token?
-        if not isAlwaysCalled or not localStorage?['isPushTokenStored']
+        if not isAlwaysCalled or not model.cookie.get 'isPushTokenStored'
           appVersion = Environment.getAppVersion config.GAME_KEY
           isIosFCM = appVersion and SemverService.gte(appVersion, '1.3.1')
           sourceType ?= if Environment.isAndroid() \
@@ -51,7 +51,7 @@ class PushService
                         else 'ios'
           language = model.l.getLanguageStr()
           model.pushToken.create {token, sourceType, language}
-          localStorage?['isPushTokenStored'] = 1
+          model.cookie.set 'isPushTokenStored', 1
         model.pushToken.setCurrentPushToken token
     .catch (err) ->
       unless err.message is 'Method not found'

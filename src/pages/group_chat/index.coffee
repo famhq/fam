@@ -52,7 +52,6 @@ module.exports = class GroupChatPage
         isLoading.next true
 
       currentConversationId = conversationId
-      hasMemberPermission = @model.group.hasPermission @group, me
       # TODO
       # conversationId ?= @model.cookie.get(
       #   "group_#{group.id}_last_conversation_id"
@@ -61,7 +60,7 @@ module.exports = class GroupChatPage
         isDefault or data?.name is 'general' or data?.name is 'geral'
       )?.id
       conversationId ?= group.conversations?[0]?.id
-      if hasMemberPermission and conversationId
+      if conversationId
         @model.conversation.getById conversationId
       else
         RxObservable.of null
@@ -164,7 +163,6 @@ module.exports = class GroupChatPage
     {windowSize, group, me, conversation, isChannelDrawerOpen, breakpoint
       selectedProfileDialogUser, shouldShowBottomBar} = @state.getValue()
 
-    hasMemberPermission = @model.group.hasPermission group, me
     hasAdminPermission = @model.group.hasPermission group, me, {level: 'admin'}
 
     z '.p-group-chat', {
