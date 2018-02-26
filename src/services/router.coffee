@@ -90,8 +90,8 @@ class RouterService
   onBack: (@onBackFn) => null
 
   openInAppBrowser: (addon, {replacements} = {}) =>
-    if _isEmpty(addon.translatedLanguages) or
-          addon.translatedLanguages.indexOf(
+    if _isEmpty(addon.data?.translatedLanguages) or
+          addon.data?.translatedLanguages.indexOf(
             @model.l.getLanguageStr()
           ) isnt -1
       language = @model.l.getLanguageStr()
