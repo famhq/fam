@@ -51,7 +51,7 @@ module.exports = class ProfileInfo
     @$adsenseAd = new AdsenseAd {@model}
 
     isRequestNotificationCardVisible = new RxBehaviorSubject(
-      window? and not Environment.isGameApp(config.GAME_KEY) and
+      window? and not Environment.isNativeApp(config.GAME_KEY) and
         not localStorage?['hideNotificationCard']
     )
     @$requestNotificationsCard = new RequestNotificationsCard {
@@ -197,7 +197,7 @@ module.exports = class ProfileInfo
 
     userAgent = serverData?.req?.headers?['user-agent'] or
                   navigator?.userAgent or ''
-    isNativeApp = Environment.isGameApp config.GAME_KEY, {userAgent}
+    isNativeApp = Environment.isNativeApp config.GAME_KEY, {userAgent}
     isMobile = Environment.isMobile {userAgent}
     arena = (player?.data?.arena?.number % 1000) + 1
 

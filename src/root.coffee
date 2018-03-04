@@ -160,13 +160,21 @@ init = ->
 
   # clashroyale://add_friend?tag=C8PJ28CG&token=fx379f9b
   # https://link.clashroyale.com/invite/friend/es?tag=UCCQV29Q&token=9krrx8x6&platform=android
-  if model.ad.isVisible() and Environment.isGameApp config.GAME_KEY
+  if model.ad.isVisible() and Environment.isNativeApp config.GAME_KEY
     appVersion = Environment.getAppVersion config.GAME_KEY
     if appVersion
       admobMediationSupported = SemverService.gte(appVersion, '1.2.4')
       appodealMediationSupported = false
       nativeAdsSupported = SemverService.gte(appVersion, '1.2.3')
+      isFortniteApp = Environment.isGroupApp 'fortnitees'
       setTimeout ->
+        if Environment.isiOS()
+          adId = 'ca-app-pub-9043203456638369/9434224550'
+        else if isFortniteApp and Math.random() > 0.50
+          adId = 'ca-app-pub-8707592103881972/230184581'
+        else
+          adId = 'ca-app-pub-9043203456638369/2454362164'
+
         portalCall = if appodealMediationSupported \
                      then 'appodeal.showBanner'
                      else if admobMediationSupported
@@ -176,9 +184,7 @@ init = ->
         model.portal?.call portalCall, {
           position: 'bottom'
           overlap: false
-          adId: if Environment.isiOS() \
-                then 'ca-app-pub-9043203456638369/9434224550'
-                else 'ca-app-pub-9043203456638369/2454362164'
+          adId: adId
         }
       , 1000
 
@@ -213,7 +219,7 @@ init = ->
 
     if _isPush and _original?.additionalData?.foreground
       model.exoid.invalidateAll()
-      if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
+      if Environment.isiOS() and Environment.isNativeApp config.GAME_KEY
         model.portal.call 'push.setBadgeNumber', {number: 0}
 
       currentNotification.next {
@@ -239,7 +245,7 @@ init = ->
     routeHandler e
 
   start = Date.now()
-  (if Environment.isGameApp config.GAME_KEY
+  (if Environment.isNativeApp config.GAME_KEY
     portal.call 'top.getData'
   else
     Promise.resolve null)
@@ -275,7 +281,7 @@ init = ->
   # model.portal.call 'orientation.onChange', app.onResize
 
   PushService.init {model}
-  (if Environment.isGameApp(config.GAME_KEY)
+  (if Environment.isNativeApp(config.GAME_KEY)
     PushService.register {model, isAlwaysCalled: true}
   else
     Promise.resolve null)
@@ -284,7 +290,7 @@ init = ->
       console.log 'resume invalidate'
       model.exoid.invalidateAll()
       model.window.resume()
-      if Environment.isiOS() and Environment.isGameApp config.GAME_KEY
+      if Environment.isiOS() and Environment.isNativeApp config.GAME_KEY
         model.portal.call 'push.setBadgeNumber', {number: 0}
 
 if document.readyState isnt 'complete' and

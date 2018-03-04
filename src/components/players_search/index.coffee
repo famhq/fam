@@ -72,7 +72,7 @@ module.exports = class PlayersSearch
               type: 'submit'
 
 
-        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+        if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
           z '.ad',
             z @$adsenseAd, {
               slot: 'mobile300x250'

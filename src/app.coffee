@@ -87,7 +87,7 @@ module.exports = class App
 
     userAgent = navigator?.userAgent or
                   requests.getValue().headers?['user-agent']
-    isNativeApp = Environment.isGameApp config.GAME_KEY, {userAgent}
+    isNativeApp = Environment.isNativeApp config.GAME_KEY, {userAgent}
     if isNativeApp and not @model.cookie.get('lastPath')
       appActionPath = @model.appInstallAction.get().map (appAction) ->
         appAction?.path
@@ -117,6 +117,7 @@ module.exports = class App
     )
 
     @group = requestsAndLanguage.switchMap ([{route}, language]) =>
+      host = @serverData?.req?.headers.host or window?.location?.host
       groupId = route.params.groupId or @model.cookie.get 'lastGroupId'
       (if isUuid groupId
         @model.cookie.set 'lastGroupId', groupId
@@ -124,6 +125,10 @@ module.exports = class App
       else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getByKey groupId
+      else if host.indexOf('fortnitefam-es.com') isnt -1
+        if not isNativeApp
+          @cookie.set 'hideAdsUntil', Date.now() + 3600 * 24 * 1000 # TODO: rm
+        @model.group.getByKey 'fortnitees'
       else
         @model.group.getByGameKeyAndLanguage(
           config.DEFAULT_GAME_KEY, language
@@ -134,7 +139,7 @@ module.exports = class App
     # used if state / requests fails to work
     $backupPage = if @serverData?
       userAgent = @serverData.req.headers?['user-agent']
-      if Environment.isGameApp config.GAME_KEY, {userAgent}
+      if Environment.isNativeApp config.GAME_KEY, {userAgent}
         serverPath = @model.cookie.get('lastPath') or @serverData.req.path
       else
         serverPath = @serverData.req.path
@@ -174,7 +179,7 @@ module.exports = class App
 
     if localStorage? and not localStorage['lastAddToHomePromptTime']
       setTimeout ->
-        isNative = Environment.isGameApp(config.GAME_KEY)
+        isNative = Environment.isNativeApp(config.GAME_KEY)
         if not isNative and not localStorage['lastAddToHomePromptTime']
           addToHomeSheetIsVisible.next true
           localStorage['lastAddToHomePromptTime'] = Date.now()
@@ -303,7 +308,7 @@ module.exports = class App
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
     isIos = /iPad|iPhone|iPod/.test userAgent
-    isNative = Environment.isGameApp(config.GAME_KEY)
+    isNative = Environment.isNativeApp(config.GAME_KEY)
     isPageAvailable = (me?.isMember or not request?.$page?.isPrivate)
     defaultInstallMessage = @model.l.get 'app.defaultInstallMessage'
 

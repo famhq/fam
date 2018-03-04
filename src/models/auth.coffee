@@ -9,7 +9,8 @@ require 'rxjs/add/operator/take'
 config = require '../config'
 
 module.exports = class Auth
-  constructor: ({@exoid, @cookieSubject, @pushToken, @l, userAgent}) ->
+  constructor: (options) ->
+    {@exoid, @cookieSubject, @pushToken, @l, @userAgent, @portal} = options
     initPromise = null
     @waitValidAuthCookie = RxObservable.defer =>
       if initPromise?
@@ -33,9 +34,7 @@ module.exports = class Auth
         else
           @exoid.call 'auth.login', {language})
         .then ({accessToken}) =>
-          # FIXME FIXME: can rm the if, when removing above chrome 63 stuff
-          if accessToken
-            @setAccessToken accessToken
+          @setAccessToken accessToken
 
   setAccessToken: (accessToken) =>
     @cookieSubject.take(1).toPromise()
@@ -68,7 +67,10 @@ module.exports = class Auth
       setTimeout =>
         pushToken = @pushToken.getValue()
         if pushToken
-          @call 'pushTokens.updateByToken', {token: pushToken}
+          @portal.call 'app.getDeviceId'
+          .catch -> null
+          .then (deviceId) =>
+            @call 'pushTokens.updateByToken', {token: pushToken, deviceId}
           .catch -> null
 
   login: ({username, password} = {}) =>

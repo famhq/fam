@@ -48,7 +48,7 @@ module.exports = class NewCards
     {magicArcher, royalGhost} = @state.getValue()
 
     cards = _filter [magicArcher, royalGhost]
-    isNativeApp = Environment.isGameApp config.GAME_KEY
+    isNativeApp = Environment.isNativeApp config.GAME_KEY
     isMobile = Environment.isMobile()
 
     z '.z-new-cards',

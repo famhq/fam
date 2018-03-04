@@ -46,7 +46,7 @@ module.exports = class Top2v2Decks
           roundedWinRate = Math.round(winRate * 100) / 100
           showAd = i is 4 and
                     Environment.isMobile() and
-                    not Environment.isGameApp(config.GAME_KEY)
+                    not Environment.isNativeApp(config.GAME_KEY)
           [
             if showAd
               z '.ad',

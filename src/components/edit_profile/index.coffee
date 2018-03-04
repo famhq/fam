@@ -4,6 +4,8 @@ RxReplaySubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
+_map = require 'lodash/map'
+_startCase = require 'lodash/startCase'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
@@ -28,14 +30,6 @@ module.exports = class EditProfile
       me.username or ''
     @usernameError = new RxBehaviorSubject null
 
-    @playerTagValueStreams = new RxReplaySubject 1
-    currentPlayerTag = me.switchMap ({id}) =>
-      @model.player.getByUserIdAndGameKey id, 'clash-royale'
-      .map (player) ->
-        player?.id
-    @playerTagValueStreams.next currentPlayerTag
-    @playerTagError = new RxBehaviorSubject null
-
     @$actionBar = new ActionBar {@model}
 
     @$avatar = new Avatar()
@@ -48,10 +42,6 @@ module.exports = class EditProfile
       valueStreams: @usernameValueStreams
       error: @usernameError
 
-    @$playerTagInput = new PrimaryInput
-      valueStreams: @playerTagValueStreams
-      error: @playerTagError
-
     @$adsenseAd = new AdsenseAd {@model}
 
     @state = z.state
@@ -60,14 +50,14 @@ module.exports = class EditProfile
       avatarDataUrl: null
       avatarUploadError: null
       group: group
+      players: @model.player.getAllByMe().map (players) ->
+        _map players, (player) ->
+          {player, $removeIcon: new Icon()}
       username: @usernameValueStreams.switch()
-      playerTag: @playerTagValueStreams.switch()
-      currentPlayerTag: currentPlayerTag
       isSaving: false
 
   save: =>
-    {avatarImage, username, playerTag,
-      me, isSaving, currentPlayerTag, group} = @state.getValue()
+    {avatarImage, username, me, isSaving, group} = @state.getValue()
     if isSaving
       return
 
@@ -80,9 +70,6 @@ module.exports = class EditProfile
         @usernameError.next JSON.stringify err
     else
       Promise.resolve null)
-    .then =>
-      if playerTag isnt currentPlayerTag
-        @model.clashRoyaleAPI.setByPlayerId playerTag, {isUpdate: true}
     .then =>
       if avatarImage
         @upload avatarImage
@@ -101,7 +88,8 @@ module.exports = class EditProfile
       @state.set avatarUploadError: err?.detail or JSON.stringify err
 
   render: =>
-    {me, avatarUploadError, avatarDataUrl, isSaving} = @state.getValue()
+    {me, avatarUploadError, avatarDataUrl,
+      players, isSaving} = @state.getValue()
 
     z '.z-edit-profile',
       z @$actionBar, {
@@ -118,11 +106,24 @@ module.exports = class EditProfile
           z @$usernameInput,
             hintText: @model.l.get 'general.username'
 
-        z '.input',
-          z @$playerTagInput,
-            hintText: @model.l.get 'editProfile.playerTagInputHintText'
+      z '.section',
+        z '.title', @model.l.get 'editProfile.linkedGames'
+        # TODO: get all user players and have x to unlink
+        _map players, ({player, $removeIcon}) =>
+          z '.player',
+            z '.game', _startCase player?.gameKey
+            z '.id', player?.playerId
+            z '.remove',
+              z $removeIcon,
+                icon: 'close'
+                isTouchTarget: false
+                color: colors.$tertiary900Text
+                onclick: =>
+                  @model.player.unlinkByMeAndGameKey {
+                    gameKey: player?.gameKey
+                  }
 
-      if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+      if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
         z '.ad',
           z @$adsenseAd, {
             slot: 'mobile300x250'

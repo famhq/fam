@@ -26,6 +26,7 @@ module.exports = class Head
       meta: meta
       serverData: serverData
       route: route
+      group: group
       routeKey: route.map (route) =>
         if route?.src
           routeKey = @model.l.getRouteKeyByValue route.src
@@ -61,7 +62,7 @@ module.exports = class Head
         cssVariables
 
   render: =>
-    {meta, serverData, route, routeKey,
+    {meta, serverData, route, routeKey, group,
       modelSerialization, cssVariables} = @state.getValue()
 
     paths = _mapValues @model.l.getAllPathsByRouteKey(routeKey), (path) ->
@@ -123,6 +124,8 @@ module.exports = class Head
 
     isInliningSource = config.ENV is config.ENVS.PROD
     webpackDevUrl = config.WEBPACK_DEV_URL
+    isNative = Environment.isNativeApp(config.GAME_KEY, {userAgent})
+    host = serverData?.req?.headers.host or window?.location?.host
 
     z 'head',
       z 'title', "#{meta.title}"
@@ -216,12 +219,19 @@ module.exports = class Head
         async: true
         src: 'https://www.google-analytics.com/analytics.js'
 
-      unless Environment.isGameApp(config.GAME_KEY, {userAgent})
+      unless isNative
         [
           z 'script',
             async: true
             src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
         ]
+      if host.indexOf('fortnitefam-es.com') isnt -1 or group?.key is 'fortnitees'
+        z 'script',
+          innerHTML:
+            '(adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8707592103881972",
+              enable_page_level_ads: true
+            });'
 
       z 'style.rubik', rubikCss
 

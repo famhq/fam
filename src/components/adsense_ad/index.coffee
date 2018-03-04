@@ -20,10 +20,6 @@ slots =
     slot: '4972756133'
     width: 300
     height: 250
-  mobile320x100:
-    slot: '1003987655'
-    width: 320
-    height: 100
 
 module.exports = class AdsenseAd
   constructor: ({@model}) ->

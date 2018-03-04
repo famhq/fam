@@ -151,6 +151,14 @@ module.exports = class ThreadComment
                 @model.threadComment.deleteByThreadComment voteParent, {groupId}
                 .then =>
                   @commentStreams.take(1).toPromise()
+              onDeleteMessagesLast7d: =>
+                @model.threadComment.deleteAllByGroupIdAndUserId(
+                  groupUser.groupId, user.id, {
+                    duration: '7d', threadId: threadComment.threadId
+                  }
+                )
+                .then =>
+                  @commentStreams.take(1).toPromise()
             }, user
         }
 

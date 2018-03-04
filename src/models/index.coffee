@@ -98,7 +98,7 @@ module.exports = class Model
     ioEmit = (event, opts) ->
       accessToken.take(1).toPromise()
       .then (accessToken) ->
-        io.emit event, _defaults {accessToken}, opts
+        io.emit event, _defaults {accessToken, userAgent}, opts
 
     proxy = (url, opts) ->
       accessToken.take(1).toPromise()
@@ -131,7 +131,7 @@ module.exports = class Model
     @cookie = new Cookie {cookieSubject}
     @l = new Language {language, @cookie}
 
-    @auth = new Auth {@exoid, cookieSubject, pushToken, @l, userAgent}
+    @auth = new Auth {@exoid, cookieSubject, pushToken, @l, userAgent, @portal}
     @user = new User {@auth, proxy, @exoid, @cookie}
     @userData = new UserData {@auth}
     @userFollower = new UserFollower {@auth}

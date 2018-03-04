@@ -27,7 +27,7 @@ module.exports = class GroupHomeAddons extends Base
         addons = _filter addons, (addon) ->
           addon.key in [
             'chestSimulator', 'clanManager', 'deckBandit', 'stormShieldOne'
-            'brawlStats', 'brawlStarsEvents'
+            'brawlStats', 'brawlStarsEvents', 'fortniteChestMap'
           ]
         _map addons, (addon) =>
           new AddonListItem {@model, @router, addon}

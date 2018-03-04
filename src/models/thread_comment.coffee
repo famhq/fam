@@ -20,3 +20,8 @@ module.exports = class ThreadComment
     @auth.call "#{@namespace}.deleteByThreadComment", {
       threadComment, groupId
     }, {invalidateAll: true}
+
+  deleteAllByGroupIdAndUserId: (groupId, userId, {threadId} = {}) =>
+    @auth.call "#{@namespace}.deleteAllByGroupIdAndUserId", {
+      groupId, userId, threadId
+    }, {invalidateAll: true}

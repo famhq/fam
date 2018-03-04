@@ -75,7 +75,7 @@ module.exports = class SpecialOffers
       group: @group
 
   afterMount: =>
-    unless Environment.isGameApp config.GAME_KEY
+    unless Environment.isNativeApp config.GAME_KEY
       @group.take(1).subscribe (group) =>
         @model.appInstallAction.upsert {
           path: @router.get 'groupFire', {
@@ -98,9 +98,9 @@ module.exports = class SpecialOffers
     isDev = config.ENV is config.ENVS.DEV
     noPermissions = usageStats is false and not isDev
 
-    isAndroidApp = Environment.isGameApp(config.GAME_KEY) and
+    isAndroidApp = Environment.isNativeApp(config.GAME_KEY) and
                     Environment.isAndroid()
-    isiOSApp = Environment.isGameApp(config.GAME_KEY) and
+    isiOSApp = Environment.isNativeApp(config.GAME_KEY) and
                     Environment.isiOS()
 
     z '.z-special-offers', {

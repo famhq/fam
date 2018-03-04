@@ -26,7 +26,7 @@ module.exports = class ChestSimulatorPick
     newChestsOpened = parseInt(localStorage?['chestsOpened']) + 1
     localStorage?['chestsOpened'] = newChestsOpened
 
-    showAdAfter = Environment.isGameApp(config.GAME_KEY) and
+    showAdAfter = Environment.isNativeApp(config.GAME_KEY) and
                     not (newChestsOpened % 5)
 
     ga? 'send', 'event', 'simulator', 'open', chest
@@ -78,7 +78,7 @@ module.exports = class ChestSimulatorPick
                           "url(#{config.CDN_URL}/chests/#{_snakeCase(chest)}_chest.png)"
                       onclick: => @openChest chest
                     }
-          if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+          if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
             z '.ad',
               z @$adsenseAd, {
                 slot: 'mobile300x250'

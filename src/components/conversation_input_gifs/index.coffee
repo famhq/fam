@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _shuffle = require 'lodash/shuffle'
+_startCase = require 'lodash/startCase'
 supportsWebP = window? and require 'supports-webp'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
@@ -22,21 +23,26 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class ConversationInputGifs
-  constructor: ({@model, @message, @onPost, currentPanel}) ->
+  constructor: ({@model, @message, @onPost, currentPanel, groupId}) ->
     @searchValue = new RxBehaviorSubject null
     debouncedSearchValue = @searchValue.debounceTime(SEARCH_DEBOUNCE)
 
     @$searchInput = new SearchInput {@model, @searchValue}
     @$spinner = new Spinner()
 
-    currentPanelAndSearchValue = RxObservable.combineLatest(
+    group = groupId.switchMap (groupId) =>
+      @model.group.getById groupId
+
+    currentPanelAndSearchValueAndGroup = RxObservable.combineLatest(
       currentPanel
       debouncedSearchValue
+      group
       (vals...) -> vals
     )
-    gifs = currentPanelAndSearchValue.switchMap ([currentPanel, query]) =>
+    gifs = currentPanelAndSearchValueAndGroup
+    .switchMap ([currentPanel, query, group]) =>
       if currentPanel is 'gifs'
-        query or= 'clash royale'
+        query or= _startCase group?.gameKeys?[0]
         @state.set isLoadingGifs: true
         search = @model.gif.search query, {
           limit: 25

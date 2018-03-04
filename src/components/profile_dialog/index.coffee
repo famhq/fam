@@ -235,9 +235,7 @@ module.exports = class ProfileDialog
                   @setLoadingByText(
                     @model.l.get 'profileDialog.deleteMessagesLast7d'
                   )
-                  @model.chatMessage.deleteAllByGroupIdAndUserId(
-                    group.id, user.id, {duration: '7d'}
-                  )
+                  user.onDeleteMessagesLast7d()
                   .then =>
                     @unsetLoadingByText(
                       @model.l.get 'profileDialog.deleteMessagesLast7d'

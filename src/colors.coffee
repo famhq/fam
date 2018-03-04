@@ -66,36 +66,61 @@ colors = _defaults {
     '--tertiary-900': '#050018'
     '--tertiary-90054': 'rgba(11, 1, 55, 0.54)'
   nickatnyte:
-    '--header-100': '#E0FCF1' # p100
-    '--header-500': '#00E589' #p500
+    '--header-100': '#E7F1BD' # p100
+    '--header-500': '#AED123' #p500
     '--header-500-text': materialColors.$black
     '--header-500-text-54': materialColors.$black54
-    '--header-500-icon': '#652bc5' #t500
+    '--header-500-icon': '#3D0563' #t500
 
-    '--primary-50': '#E0FCF1'
-    '--primary-100': '#E0FCF1'
-    '--primary-200': '#B3F7DC'
-    '--primary-300': '#80F2C4'
-    '--primary-400': '#26E99B'
-    '--primary-500': '#00e581'
-    '--primary-600': '#00E281'
-    '--primary-700': '#00DE76'
-    '--primary-800': '#00DA6C'
-    '--primary-900': '#21ca68'
-    '--primary-90054': 'rgba(0, 211, 89, 0.54)'
+    # '--primary-50': '#E0FCF1'
+    # '--primary-100': '#E0FCF1'
+    # '--primary-200': '#B3F7DC'
+    # '--primary-300': '#80F2C4'
+    # '--primary-400': '#26E99B'
+    # '--primary-500': '#00e581'
+    # '--primary-600': '#00E281'
+    # '--primary-700': '#00DE76'
+    # '--primary-800': '#00DA6C'
+    # '--primary-900': '#21ca68'
+    # '--primary-90054': 'rgba(0, 211, 89, 0.54)'
+    # '--primary-500-text': materialColors.$black
+
+    '--primary-50': '#F5F9E5'
+    '--primary-100': '#E7F1BD'
+    '--primary-200': '#D7E891'
+    '--primary-300': '#C6DF65'
+    '--primary-400': '#BAD844'
+    '--primary-500': '#AED123'
+    '--primary-600': '#A7CC1F'
+    '--primary-700': '#9DC61A'
+    '--primary-800': '#94C015'
+    '--primary-900': '#84B50C'
+    '--primary-90054': 'rgba(132, 181, 12, 0.54)'
     '--primary-500-text': materialColors.$black
 
-    '--tertiary-50': '#EEE7FA'
-    '--tertiary-100': '#D6C4F2'
-    '--tertiary-200': '#BA9DEA'
-    '--tertiary-300': '#9E76E2'
-    '--tertiary-400': '#8A58DB'
-    '--tertiary-500': '#652bc5'
-    '--tertiary-50096': 'rgba(101, 43, 197, 0.96)'
-    '--tertiary-600': '#5927b0'
-    '--tertiary-700': '#481ca0'
-    '--tertiary-800': '#431f91'
-    '--tertiary-900': '#2d0c85'
+    '--tertiary-50': '#E8E1EC'
+    '--tertiary-100': '#E8E1EC'
+    '--tertiary-200': '#C5B4D0'
+    '--tertiary-300': '#9E82B1'
+    '--tertiary-400': '#5A2B7A'
+    '--tertiary-500': '#3D0563'
+    '--tertiary-50096': 'rgba(61, 5, 99, 0.96)'
+    '--tertiary-600': '#37045B'
+    '--tertiary-700': '#2F0451'
+    '--tertiary-800': '#270347'
+    '--tertiary-900': '#1A0135'
+
+    # '--tertiary-50': '#EEE7FA'
+    # '--tertiary-100': '#D6C4F2'
+    # '--tertiary-200': '#BA9DEA'
+    # '--tertiary-300': '#9E76E2'
+    # '--tertiary-400': '#8A58DB'
+    # '--tertiary-500': '#652bc5'
+    # '--tertiary-50096': 'rgba(101, 43, 197, 0.96)'
+    # '--tertiary-600': '#5927b0'
+    # '--tertiary-700': '#481ca0'
+    # '--tertiary-800': '#431f91'
+    # '--tertiary-900': '#2d0c85'
   withzack:
     '--header-100': '#99A5A6' # t300
     '--header-500': '#273B3D' #t700

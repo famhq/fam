@@ -22,7 +22,7 @@ module.exports = class SpecialOffer
               then 'Android'
               else 'Windows' # TODO
       osVersion: osVersion
-      isApp: Environment.isGameApp config.GAME_KEY
+      isApp: Environment.isNativeApp config.GAME_KEY
       appVersion: Environment.getAppVersion config.GAME_KEY
       limit: limit
     }

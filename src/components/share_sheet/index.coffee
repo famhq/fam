@@ -54,7 +54,7 @@ module.exports = class ShareSheet
           isTouchTarget: false
 
       any:
-        isVisible: Environment.isGameApp config.GAME_KEY
+        isVisible: Environment.isNativeApp config.GAME_KEY
         onclick: =>
           @model.portal.call 'share.any', {text, path}
         text: 'Other...'

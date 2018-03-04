@@ -35,7 +35,7 @@ class RouterService
 
     if path
       # store current page for app re-launch
-      if Environment.isGameApp(config.GAME_KEY) and @model.cookie
+      if Environment.isNativeApp(config.GAME_KEY) and @model.cookie
         @model.cookie.set 'lastPath', path
 
       @router.go path
@@ -133,7 +133,7 @@ class RouterService
       @model.portal.portal.onMessageInAppBrowserWindow data
 
   openAddon: (addon, {replacements} = {}) =>
-    isNative = Environment.isGameApp config.GAME_KEY
+    isNative = Environment.isNativeApp config.GAME_KEY
     appVersion = isNative and Environment.getAppVersion(
       config.GAME_KEY
     )

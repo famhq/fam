@@ -264,6 +264,10 @@ module.exports = class Thread extends Base
     headerImageSrc = headerAttachment?.previewSrc
 
     videoWidth = Math.min(windowSize.width, 700)
+    heightAspect = if headerAttachment?.aspectRatio \
+                   then 1 / headerAttachment.aspectRatio
+                   else 9 / 16
+    videoHeight = videoWidth * heightAspect
     videoAttachment = _find thread?.attachments, {type: 'video'}
 
     hasVotedUp = thread?.myVote?.vote is 1
@@ -348,6 +352,8 @@ module.exports = class Thread extends Base
                   @state.set isVideoVisible: true
                 style:
                   backgroundImage: "url(#{headerImageSrc})"
+                  width: "#{videoWidth}px"
+                  height: "#{videoHeight}px"
               },
                 z '.play'
         z '.post',

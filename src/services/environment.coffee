@@ -34,11 +34,16 @@ class Environment
     userAgent ?= navigator?.userAgent
     Boolean userAgent.match /iP(hone|od|ad)/g
 
-  isGameApp: (gameKey, {userAgent} = {}) ->
+  isNativeApp: (gameKey, {userAgent} = {}) ->
     userAgent ?= navigator?.userAgent
     Boolean gameKey and
       _includes(userAgent?.toLowerCase(), " #{gameKey}/") or
         _includes(userAgent?.toLowerCase(), ' starfire/') # legacy
+
+  isGroupApp: (groupAppKey, {userAgent} = {}) ->
+    userAgent ?= navigator?.userAgent
+    Boolean groupAppKey and
+      _includes(userAgent?.toLowerCase(), " openfam/#{groupAppKey}/")
 
   isGameChromeApp: (gameKey, {userAgent}) ->
     userAgent ?= navigator?.userAgent
@@ -64,7 +69,7 @@ class Environment
     if @isFacebook() then 'facebook'
     else if @isKikEnabled() then 'kik'
     else if @isGameChromeApp(gameKey, {userAgent}) then 'game_chrome_app'
-    else if @isGameApp(gameKey, {userAgent}) then 'game_app'
+    else if @isNativeApp(gameKey, {userAgent}) then 'game_app'
     else if @isClayApp({userAgent}) then 'clay_app'
     else 'web'
 

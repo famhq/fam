@@ -12,7 +12,7 @@ module.exports = class Ad
 
   isVisible: ({isWebOnly} = {}) =>
     hideAdsUntil = @cookie.get 'hideAdsUntil'
-    isNativeApp = Environment.isGameApp(config.GAME_KEY, {@userAgent})
+    isNativeApp = Environment.isNativeApp(config.GAME_KEY, {@userAgent})
     isVisible = not hideAdsUntil or Date.now() > parseInt(hideAdsUntil)
 
     (not isWebOnly or not isNativeApp) and isVisible

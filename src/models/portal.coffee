@@ -76,7 +76,6 @@ module.exports = class Portal
     @portal.on 'top.onData', -> null
     @portal.on 'top.getData', -> null
     @portal.on 'push.register', @pushRegister
-    @portal.on 'push.subscribeToTopic', @pushSubscribeToTopic
 
     @portal.on 'twitter.share', @twitterShare
 
@@ -133,7 +132,7 @@ module.exports = class Portal
   getPlatform: ({gameKey} = {}) =>
     userAgent = navigator.userAgent
     switch
-      when Environment.isGameApp(gameKey, {userAgent})
+      when Environment.isNativeApp(gameKey, {userAgent})
         @PLATFORMS.GAME_APP
       when Environment.isClayApp({userAgent})
         @PLATFORMS.CLAY_APP
@@ -167,7 +166,7 @@ module.exports = class Portal
 
   appInstall: =>
     userAgent = navigator.userAgent
-    if Environment.isGameApp(config.GAME_KEY, {userAgent})
+    if Environment.isNativeApp(config.GAME_KEY, {userAgent})
       return null
     else if Environment.isAndroid() and @isChrome()
       if @installOverlay.prompt
@@ -305,9 +304,6 @@ module.exports = class Portal
     #         @pushRegister true
     #     .catch (err) ->
     #       console.log err
-
-  pushSubscribeToTopic: ({topic, token}) =>
-    PushService.subscribeToTopic {model: {@pushToken}, topic, token}
 
   networkInformationOnOnline: (fn) ->
     window.addEventListener 'online', fn

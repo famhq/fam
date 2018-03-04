@@ -56,7 +56,7 @@ module.exports = class NavDrawer
 
     userAgent = navigator?.userAgent
     needsApp = userAgent and
-                not Environment.isGameApp(config.GAME_KEY, {userAgent}) and
+                not Environment.isNativeApp(config.GAME_KEY, {userAgent}) and
                 not window?.matchMedia('(display-mode: standalone)').matches
 
     @state = z.state
@@ -87,6 +87,7 @@ module.exports = class NavDrawer
       menuItems: meAndGroupAndLanguage.map ([me, group, language]) =>
         groupId = group.key or group.id
         meGroupUser = group.meGroupUser
+        isClashRoyaleGroup = group.key?.indexOf('clashroyale') isnt -1
         _filter([
           {
             path: @router.get 'groupHome', {groupId}
@@ -121,7 +122,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'rss'
             }
-          if group.type is 'public'
+          if isClashRoyaleGroup or group.key in ['nickatnyte']
             {
               path: @router.get 'groupFire', {groupId}
               # title: @model.l.get 'general.shop'
@@ -130,7 +131,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'fire'
             }
-          if group.type is 'public'
+          if isClashRoyaleGroup or group.key in ['nickatnyte']
             {
               path: @router.get 'groupCollection', {groupId}
               title: @model.l.get 'collectionPage.title'
@@ -138,7 +139,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'cards'
             }
-          if group.type is 'public'
+          if isClashRoyaleGroup or group.key in ['nickatnyte']
             {
               path: @router.get 'trades', {groupId}
               title: @model.l.get 'tradesPage.title'
@@ -146,7 +147,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'trade'
             }
-          if group.key in ['playhard', 'eclihpse']
+          if group.key in ['playhard', 'eclihpse', 'nickatnyte']
             {
               path: @router.get 'groupVideos', {groupId}
               title: @model.l.get 'videosPage.title'
@@ -154,13 +155,14 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'video'
             }
-          {
-            path: @router.get 'groupLeaderboard', {groupId}
-            title: @model.l.get 'groupLeaderboardPage.title'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'trophy'
-          }
+          if group.key isnt 'fortnitees'
+            {
+              path: @router.get 'groupLeaderboard', {groupId}
+              title: @model.l.get 'groupLeaderboardPage.title'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'trophy'
+            }
           {
             path: @router.get 'groupProfile', {groupId}
             title: @model.l.get 'drawer.menuItemProfile'
@@ -381,42 +383,43 @@ module.exports = class NavDrawer
                   # z 'li.subhead', @model.l.get 'drawer.otherGroups'
               ]
 
-              z '.my-groups',
-                z '.my-groups-scroller', {
-                  ontouchstart: (e) ->
-                    # don't close drawer w/ iscroll
-                    e?.stopPropagation()
-                },
-                  [
-                    _map myGroups, (myGroup) =>
-                      {$badge} = myGroup
-                      groupPath = @router.get 'groupHome', {
-                        groupId: myGroup.group.key or myGroup.group.id
-                      }
-                      z 'a.group-bubble', {
-                        href: groupPath
+              if group.key isnt 'fortnitees' # FIXME FIXME change to check if group app
+                z '.my-groups',
+                  z '.my-groups-scroller', {
+                    ontouchstart: (e) ->
+                      # don't close drawer w/ iscroll
+                      e?.stopPropagation()
+                  },
+                    [
+                      _map myGroups, (myGroup) =>
+                        {$badge} = myGroup
+                        groupPath = @router.get 'groupHome', {
+                          groupId: myGroup.group.key or myGroup.group.id
+                        }
+                        z 'a.group-bubble', {
+                          href: groupPath
+                          onclick: (e) =>
+                            e.preventDefault()
+                            @model.drawer.close()
+                            @router.go 'groupHome', {
+                              groupId: myGroup.group.key or myGroup.group.id
+                            }
+                        },
+                          z $badge, {isRound: true}
+
+                      z '.a.group-bubble', {
+                        href: @router.get 'groups'
                         onclick: (e) =>
                           e.preventDefault()
                           @model.drawer.close()
-                          @router.go 'groupHome', {
-                            groupId: myGroup.group.key or myGroup.group.id
-                          }
+                          @router.go 'groups'
                       },
-                        z $badge, {isRound: true}
-
-                    z '.a.group-bubble', {
-                      href: @router.get 'groups'
-                      onclick: (e) =>
-                        e.preventDefault()
-                        @model.drawer.close()
-                        @router.go 'groups'
-                    },
-                      z '.icon',
-                        z @$socialIcon,
-                          icon: 'add'
-                          isTouchTarget: false
-                          color: colors.$primary500
-                  ]
+                        z '.icon',
+                          z @$socialIcon,
+                            icon: 'add'
+                            isTouchTarget: false
+                            color: colors.$primary500
+                    ]
 
             if hasA
               z '.ad',

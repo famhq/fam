@@ -8,7 +8,7 @@ config = require '../config'
 
 class PushService
   constructor: ->
-    if window? and not Environment.isGameApp config.GAME_KEY
+    if window? and not Environment.isNativeApp config.GAME_KEY
       firebase.initializeApp {
         apiKey: config.FIREBASE.API_KEY
         authDomain: config.FIREBASE.AUTH_DOMAIN
@@ -38,8 +38,12 @@ class PushService
     }, onReply
 
   register: ({model, isAlwaysCalled}) ->
-    model.portal.call 'push.register'
-    .then ({token, sourceType} = {}) =>
+    Promise.all [
+      model.portal.call 'push.register'
+      model.portal.call 'app.getDeviceId'
+      .catch (err) -> ''
+    ]
+    .then ([{token, sourceType} = {}, deviceId]) ->
       if token?
         if not isAlwaysCalled or not model.cookie.get 'isPushTokenStored'
           appVersion = Environment.getAppVersion config.GAME_KEY
@@ -50,14 +54,19 @@ class PushService
                         then 'ios-fcm'
                         else 'ios'
           language = model.l.getLanguageStr()
-          model.pushToken.create {token, sourceType, language}
+          model.pushToken.create {token, sourceType, language, deviceId}
           model.cookie.set 'isPushTokenStored', 1
+
         model.pushToken.setCurrentPushToken token
     .catch (err) ->
       unless err.message is 'Method not found'
         console.log err
 
   registerWeb: =>
+    if config.ENV is config.ENVS.DEV
+      return Promise.resolve {
+        token: navigator?.userAgent, sourceType: 'web-fcm'
+      }
     getToken = (isSecondAttempt) =>
       @firebaseMessaging.requestPermission()
       .then =>
@@ -77,17 +86,17 @@ class PushService
     .then (token) ->
       {token, sourceType: 'web-fcm'}
 
-  subscribeToTopic: ({model, topic, token}) =>
-    if token
-      tokenPromise = Promise.resolve token
-    else
-      tokenPromise = @firebaseMessaging.getToken()
-
-    tokenPromise
-    .then (token) ->
-      model.pushToken.subscribeToTopic {topic, token}
-    .catch (err) ->
-      console.log 'caught', err
+  # subscribeToTopic: ({model, topic, token}) =>
+  #   if token
+  #     tokenPromise = Promise.resolve token
+  #   else
+  #     tokenPromise = @firebaseMessaging.getToken()
+  #
+  #   tokenPromise
+  #   .then (token) ->
+  #     model.pushTopic.subscribe {topic, token}
+  #   .catch (err) ->
+  #     console.log 'caught', err
 
 
 module.exports = new PushService()

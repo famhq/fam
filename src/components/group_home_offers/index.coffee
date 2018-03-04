@@ -79,7 +79,7 @@ module.exports = class GroupHomeOffers
     }
 
   afterMount: =>
-    unless Environment.isGameApp config.GAME_KEY
+    unless Environment.isNativeApp config.GAME_KEY
       @group.take(1).subscribe (group) =>
         @model.appInstallAction.upsert {
           path: @router.get 'groupHome', {
@@ -97,9 +97,9 @@ module.exports = class GroupHomeOffers
     {me, group, usageStats, $offers} = @state.getValue()
 
     noPermissions = usageStats is false
-    isAndroidApp = Environment.isGameApp(config.GAME_KEY) and
+    isAndroidApp = Environment.isNativeApp(config.GAME_KEY) and
                     Environment.isAndroid()
-    isiOSApp = Environment.isGameApp(config.GAME_KEY) and
+    isiOSApp = Environment.isNativeApp(config.GAME_KEY) and
                     Environment.isiOS()
 
     z '.z-group-home-offers',

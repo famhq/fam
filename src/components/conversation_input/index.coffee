@@ -103,6 +103,7 @@ module.exports = class ConversationInput
           @message
           @model
           @currentPanel
+          groupId
         }
       }
       addons: {

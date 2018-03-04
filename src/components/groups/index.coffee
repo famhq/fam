@@ -96,7 +96,7 @@ module.exports = class Groups
           z '.g-cols',
             z '.g-col.g-xs-12.g-md-6',
               if Environment.isMobile() and
-                        not Environment.isGameApp(config.GAME_KEY)
+                        not Environment.isNativeApp(config.GAME_KEY)
                 z '.ad',
                   z @$adsenseAd, {
                     slot: 'mobile300x250'

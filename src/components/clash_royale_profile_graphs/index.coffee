@@ -60,7 +60,7 @@ module.exports = class ProfileGraphs
               }
             if i is 0
               if Environment.isMobile() and
-                  not Environment.isGameApp(config.GAME_KEY)
+                  not Environment.isNativeApp(config.GAME_KEY)
                 z '.ad',
                   z @$adsenseAd, {
                     slot: 'mobile300x250'

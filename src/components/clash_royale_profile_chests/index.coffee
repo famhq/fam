@@ -31,7 +31,7 @@ module.exports = class ProfileChests
   render: =>
     {player, me} = @state.getValue()
 
-    isNative = Environment.isGameApp config.GAME_KEY
+    isNative = Environment.isNativeApp config.GAME_KEY
     isVerified = player?.isVerified
 
     goodChests = ['giant', 'epic', 'magical', 'superMagical', 'legendary']
@@ -65,7 +65,7 @@ module.exports = class ProfileChests
                   then @model.l.get('general.next')
                   else "+#{index}"
 
-        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+        if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
           z '.ad',
             z @$adsenseAd, {
               slot: 'mobile300x250'

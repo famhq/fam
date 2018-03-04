@@ -179,8 +179,8 @@ module.exports = class Nps
             isShort: true
             onclick: =>
               @submitNps()
-              isGameApp = Environment.isGameApp config.GAME_KEY
-              if npsValue >= 8 and onRate and isGameApp
+              isNativeApp = Environment.isNativeApp config.GAME_KEY
+              if npsValue >= 8 and onRate and isNativeApp
                 @state.set step: 'rate'
               else
                 @state.set isVisible: false

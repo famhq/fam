@@ -33,7 +33,7 @@ module.exports = class ClanInfo
     @$adsenseAd = new AdsenseAd {@model}
 
     isRequestNotificationCardVisible = new RxBehaviorSubject(
-      window? and not Environment.isGameApp(config.GAME_KEY) and
+      window? and not Environment.isNativeApp(config.GAME_KEY) and
         not localStorage?['hideNotificationCard']
     )
     @$requestNotificationsCard = new RequestNotificationsCard {
@@ -157,7 +157,7 @@ module.exports = class ClanInfo
                 onclick: =>
                   @router.go 'groupChat', {id: clan.groupId}
       z '.content',
-        if Environment.isMobile() and not Environment.isGameApp(config.GAME_KEY)
+        if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
           z '.ad',
             z @$adsenseAd, {
               slot: 'mobile300x250'

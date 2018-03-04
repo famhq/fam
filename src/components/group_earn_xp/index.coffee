@@ -31,7 +31,7 @@ module.exports = class GroupEarnXp
         videoTransaction = _find xpTransactions, {actionKey: 'rewardedVideos'}
         videosLeft = 3 - (videoTransaction?.count or 0)
         _filter [
-          if Environment.isGameApp(config.GAME_KEY)
+          if Environment.isNativeApp(config.GAME_KEY)
             {
               action: @model.l.get 'earnXp.watchAd'
               actionKey: 'rewardedVideos'

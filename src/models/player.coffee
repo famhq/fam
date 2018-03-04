@@ -33,6 +33,9 @@ module.exports = class Player
   getMeFollowing: =>
     @auth.stream "#{@namespace}.getMeFollowing", {}
 
+  getAllByMe: =>
+    @auth.stream "#{@namespace}.getAllByMe", {}
+
   search: (playerId) =>
     @auth.call "#{@namespace}.search", {playerId}
 
@@ -41,6 +44,11 @@ module.exports = class Player
 
   verifyMe: =>
     @auth.call "#{@namespace}.verifyMe", {}, {invalidateAll: true}
+
+  unlinkByMeAndGameKey: ({gameKey}) =>
+    @auth.call "#{@namespace}.unlinkByMeAndGameKey", {gameKey}, {
+      invalidateAll: true
+    }
 
   canRefresh: (player, hasUpdated, isRefreshing) ->
     lastUpdate = player?.lastUpdateTime

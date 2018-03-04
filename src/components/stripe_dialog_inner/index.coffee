@@ -80,7 +80,7 @@ module.exports = class StripeDialog
   render: =>
     {me, product, error} = @state.getValue()
 
-    isiOSApp = Environment.isGameApp(config.GAME_KEY) and Environment.isiOS()
+    isiOSApp = Environment.isNativeApp(config.GAME_KEY) and Environment.isiOS()
     if isiOSApp
       return # against TOS
 

@@ -115,7 +115,7 @@ module.exports = class ConversationInputTextarea
             # if isFocused
             #   # so text can be selected
             #   @toggleIScroll? 'disable'
-            unless Environment.isGameApp config.GAME_KEY
+            unless Environment.isNativeApp config.GAME_KEY
               @model.window.pauseResizing()
           ontouchend: (e) =>
             isFocused = e.target is document.activeElement
@@ -130,7 +130,7 @@ module.exports = class ConversationInputTextarea
           # onmouseup: =>
           #   @toggleIScroll? 'enable'
           onfocus: =>
-            unless Environment.isGameApp config.GAME_KEY
+            unless Environment.isNativeApp config.GAME_KEY
               @model.window.pauseResizing()
             clearTimeout @blurTimeout
             @isTextareaFocused.next true
@@ -140,7 +140,7 @@ module.exports = class ConversationInputTextarea
             @blurTimeout = setTimeout =>
               isFocused = e.target is document.activeElement
               unless isFocused
-                unless Environment.isGameApp config.GAME_KEY
+                unless Environment.isNativeApp config.GAME_KEY
                   @model.window.resumeResizing()
                 @isTextareaFocused.next false
             , 350

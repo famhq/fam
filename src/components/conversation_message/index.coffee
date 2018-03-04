@@ -22,5 +22,11 @@ module.exports = class ConversationMessage
               @model.chatMessage.deleteById id
               .then =>
                 @messageBatchesStreams.take(1).toPromise()
+            onDeleteMessagesLast7d: =>
+              @model.chatMessage.deleteAllByGroupIdAndUserId(
+                groupUser.groupId, user.id, {duration: '7d'}
+              )
+              .then =>
+                @messageBatchesStreams.take(1).toPromise()
           }, user
       }
