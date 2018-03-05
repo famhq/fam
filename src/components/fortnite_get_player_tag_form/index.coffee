@@ -55,7 +55,9 @@ module.exports = class FortniteGetPlayerTagForm
 
     @state.set isLoading: true
 
-    @model.fortnitePlayer.setByPlayerId "#{network}:#{fortniteUsername}"
+    @model.player.setByPlayerIdAndGameKey(
+      "#{network}:#{fortniteUsername}", 'fortnite'
+    )
     .then =>
       @model.player.getByUserIdAndGameKey me?.id, config.CLASH_ROYAL_ID
       .take(1).toPromise()

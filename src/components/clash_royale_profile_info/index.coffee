@@ -45,7 +45,7 @@ module.exports = class ProfileInfo
       @model, @router, player, showAll: true
     }
     @$profileRefreshBar = new ProfileRefreshBar {
-      @model, @router, player, @overlay$, group
+      @model, @router, player, @overlay$, group, gameKey: 'clash-royale'
     }
     @$autoRefreshInfoIcon = new Icon()
     @$adsenseAd = new AdsenseAd {@model}

@@ -7,7 +7,7 @@
   "audit.ban": "bannato {name}",
   "audit.unban": "sbannato {name}",
   "audit.deleteMessage": "messaggio eliminato da {name}",
-  "audit.deleteMessagesLast7d": "messaggi di 7 giorni eliminati da {name}",
+  "audit.deleteMessagesLast7d": "messaggi degli ultimi 7 giorni eliminati da {name}",
   "audit.addRole": "aggiunto il ruolo: {role}",
   "audit.deleteRole": "rimosso il ruolo: {role}",
   "audit.updateRole": "aggiornati i permessi di ruolo per {role}",

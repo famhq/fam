@@ -27,6 +27,16 @@ module.exports = class Player
         path: "#{@namespace}.getIsAutoRefreshByPlayerIdAndGameKey"
     }
 
+  setByPlayerIdAndGameKey: (playerId, gameKey, {isUpdate} = {}) =>
+    @auth.call "#{@namespace}.setByPlayerIdAndGameKey", {
+      playerId, gameKey, isUpdate
+    }, {invalidateAll: true}
+
+  refreshByPlayerIdAndGameKey: (playerId, gameKey) =>
+    @auth.call "#{@namespace}.refreshByPlayerIdAndGameKey", {
+      playerId, gameKey
+    }, {invalidateAll: true}
+
   getTop: =>
     @auth.stream "#{@namespace}.getTop", {}
 

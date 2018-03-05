@@ -1,10 +1,10 @@
-Fam untuk bentrokan Royale
+Starfire untuk bentrokan Royale
 
 The ultimate bentrokan Royale pendamping app untuk statistik, klan, chatting, dan lebih
 
-Fam adalah app ultimate pendamping untuk bentrokan Royale.
+Starfire adalah app ultimate pendamping untuk bentrokan Royale.
 
-Fam fitur:
+Starfire fitur:
 
 • Otomatis stat dan dada siklus pelacakan
 • Klan Statistik dan merekrut
@@ -12,4 +12,4 @@ Fam fitur:
 • Pesan pribadi
 • Pemberitahuan push - tetap up to date dengan chatting, pengumuman dan peristiwa
 
-...dan banyak lagi! Fam terus berkembang berdasarkan tanggapan masyarakat!
+...dan banyak lagi! Starfire terus berkembang berdasarkan tanggapan masyarakat!

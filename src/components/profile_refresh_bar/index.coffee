@@ -14,7 +14,7 @@ if window?
   require './index.styl'
 
 module.exports = class ProfileRefreshBar
-  constructor: ({@model, @router, player, @overlay$, group}) ->
+  constructor: ({@model, @router, player, @overlay$, group, gameKey}) ->
     me = @model.user.getMe()
 
     @$autoRefreshDialog = new AutoRefreshDialog {
@@ -28,9 +28,10 @@ module.exports = class ProfileRefreshBar
       me: me
       hasUpdatedPlayer: false
       isRefreshing: false
+      gameKey: gameKey
       isAutoRefresh: player.switchMap (player) =>
         @model.player.getIsAutoRefreshByPlayerIdAndGameKey(
-          player.id, 'clash-royale'
+          player.id, gameKey
         )
     }
 
@@ -38,7 +39,7 @@ module.exports = class ProfileRefreshBar
     @state.set isRefreshing: false, hasUpdatedPlayer: false
 
   render: =>
-    {me, player, hasUpdatedPlayer, isRefreshing,
+    {me, player, hasUpdatedPlayer, isRefreshing, gameKey
       isAutoRefresh} = @state.getValue()
 
     lastUpdateTime = player?.lastUpdateTime
@@ -50,28 +51,29 @@ module.exports = class ProfileRefreshBar
         @model.l.get 'profileInfo.lastUpdatedTime'
         ' '
         DateService.fromNow lastUpdateTime
-      z '.auto-refresh', {
-        onclick: =>
-          ga? 'send', 'event', 'verify', 'auto_refresh', 'click'
-          @overlay$.next @$autoRefreshDialog
-      },
-        @model.l.get 'profileInfo.autoRefresh'
-        ': '
-        if isAutoRefresh
-          z '.status',
-            @model.l.get 'general.on'
-        else
-          [
+      if gameKey is 'clash-royale'
+        z '.auto-refresh', {
+          onclick: =>
+            ga? 'send', 'event', 'verify', 'auto_refresh', 'click'
+            @overlay$.next @$autoRefreshDialog
+        },
+          @model.l.get 'profileInfo.autoRefresh'
+          ': '
+          if isAutoRefresh
             z '.status',
-              z 'div',
-                @model.l.get 'general.off'
-            z '.info',
-              z @$autoRefreshInfoIcon,
-                icon: 'help'
-                isTouchTarget: false
-                size: '14px'
-                color: colors.$tertiary900Text
-          ]
+              @model.l.get 'general.on'
+          else
+            [
+              z '.status',
+                z 'div',
+                  @model.l.get 'general.off'
+              z '.info',
+                z @$autoRefreshInfoIcon,
+                  icon: 'help'
+                  isTouchTarget: false
+                  size: '14px'
+                  color: colors.$tertiary900Text
+            ]
       z '.refresh',
         z @$refreshIcon,
           icon: if isRefreshing then 'ellipsis' else 'refresh'
@@ -83,11 +85,11 @@ module.exports = class ProfileRefreshBar
             if isRefreshing
               return
             if canRefresh
-              tag = player?.id
+              playerId = player?.id
               @state.set isRefreshing: true
               # re-rendering with new state isn't instantaneous, this is
               canRefresh = false
-              @model.clashRoyaleAPI.refreshByPlayerId tag
+              @model.player.refreshByPlayerIdAndGameKey playerId, gameKey
               .then =>
                 @state.set hasUpdatedPlayer: true, isRefreshing: false
             else

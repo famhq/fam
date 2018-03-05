@@ -3,9 +3,9 @@
   "dailyRecap.textWithWins": "{countUntilNextGoodChest} Bauli fino a{nextGoodChest}. {wins} Vinte e {losses} perse oggi.",
   "dailyRecap.text": "{countUntilNextGoodChest} bauli fino a{nextGoodChest}.",
   "newClanMember.title": "Nuovo membro del clan",
-  "newClanMember.text": "{name} è entrato nel tuo clan Fam",
+  "newClanMember.text": "{name} è entrato nel tuo clan Starfire",
   "newGroupMember.title": "Nuovo membro del gruppo",
-  "newGroupMember.text": "{name} è entrato nel tuo gruppo su Fam",
+  "newGroupMember.text": "{name} è entrato nel tuo gruppo su Starfire",
   "newFollower.title": "Nuovo seguace",
   "newFollower.text": "{name} ti segue",
   "newVideo.title": "Nuovo video",
@@ -16,6 +16,6 @@
   "rejectedTrade.text": "{name} ha rifiutato la tua offerta",
   "acceptedTrade.text": "{name} ha accettato la tua offerta",
   "acceptedTrade.title": "Scambio accettato",
-  "packUnlocked.title": "Pack unlocked",
+  "packUnlocked.title": "Pacchetto sbloccato",
   "packUnlocked.text": "{packName} è disponibile"
 }

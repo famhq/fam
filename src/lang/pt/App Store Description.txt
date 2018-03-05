@@ -1,10 +1,10 @@
-Fam para Clash Royale
+Starfire para Clash Royale
 
 A melhor app da comunidade para veres estatisticas, clãs, chat, e mais no Clash Royale.
 
-Fam é a melhor aplicação para ver mais além de Clash Royale.
+Starfire é a melhor aplicação para ver mais além de Clash Royale.
 
-Conteúdo da aplicação Fam:
+Conteúdo da aplicação Starfire:
 
 • Estatísticas automáticas e rastreio do ciclo de baús
 • Estatisticas de clãs e recrutamento
@@ -12,4 +12,4 @@ Conteúdo da aplicação Fam:
 • Mensagens privadas
 • Notificações push - chats, atualizações e eventos
 
-...e muito, muito mais! Fam é constantemente evoluido na base do feedback da comunidade.
+...e muito, muito mais! Starfire é constantemente evoluido na base do feedback da comunidade.

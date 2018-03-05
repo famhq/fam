@@ -24,7 +24,7 @@ module.exports = class GroupHomeFortniteStats
 
     @$spinner = new Spinner()
     @$profileRefreshBar = new ProfileRefreshBar {
-      @model, @router, player, @overlay$, group
+      @model, @router, player, @overlay$, group, gameKey: 'fortnite'
     }
     @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}
     @$uiCard = new UiCard()
@@ -48,23 +48,28 @@ module.exports = class GroupHomeFortniteStats
         $content:
           z '.z-group-home_ui-card',
             if player?.id
-              z '.g-grid',
-                z '.g-cols',
-                  z '.g-col.g-sm-4',
-                    z '.stat',
-                      z '.title', @model.l.get 'profileInfo.statWins'
-                      z '.amount',
-                        FormatService.number player.data?.lifetimeStats?.wins
-                  z '.g-col.g-sm-4',
-                    z '.stat',
-                      z '.title', @model.l.get 'profileInfo.statMatches'
-                      z '.amount',
-                        FormatService.number player.data?.lifetimeStats?.matches
-                  z '.g-col.g-sm-4',
-                    z '.stat',
-                      z '.title',  @model.l.get 'profileInfo.statKills'
-                      z '.amount',
-                        FormatService.number player.data?.lifetimeStats?.kills
+              [
+                z '.g-grid',
+                  z '.g-cols',
+                    z '.g-col.g-sm-4',
+                      z '.stat',
+                        z '.title', @model.l.get 'profileInfo.statWins'
+                        z '.amount',
+                          FormatService.number player.data?.lifetimeStats?.wins
+                    z '.g-col.g-sm-4',
+                      z '.stat',
+                        z '.title', @model.l.get 'profileInfo.statMatches'
+                        z '.amount',
+                          FormatService.number
+                            player.data?.lifetimeStats?.matches
+                    z '.g-col.g-sm-4',
+                      z '.stat',
+                        z '.title',  @model.l.get 'profileInfo.statKills'
+                        z '.amount',
+                          FormatService.number
+                            player.data?.lifetimeStats?.kills
+                @$profileRefreshBar
+              ]
             else if player
               z @$getPlayerTagForm
             else

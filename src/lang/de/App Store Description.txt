@@ -1,10 +1,10 @@
-Fam für Clash Royale
+Starfire für Clash Royale
 
 Die ultimative Clash Royale Begleit-App für Statistiken, Clans, Chats und mehr
 
-Fam ist die ultimative Begleit-App für Clash Royale.
+Starfire ist die ultimative Begleit-App für Clash Royale.
 
-Fam enthält die folgenden Funktionen:
+Starfire enthält die folgenden Funktionen:
 
 • Automatische Statistiken und Verfolgen des Truhenkreislaufs
 • Clan-Statistiken und -Mitgliedersuche
@@ -12,4 +12,4 @@ Fam enthält die folgenden Funktionen:
 • Private Nachrichten
 • „Push”-Benachrichtigungen - bleibe auf dem Stand bei Chats, Ankündigungen und Events
 
-...und viel, viel mehr! Fam entwickelt sich ständig weiter, basierend auf Rückmeldungen der Community!
+...und viel, viel mehr! Starfire entwickelt sich ständig weiter, basierend auf Rückmeldungen der Community!

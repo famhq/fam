@@ -22,7 +22,7 @@ module.exports = class GroupHomeClashRoyaleChestCycle
       @model, @router, player
     }
     @$profileRefreshBar = new ProfileRefreshBar {
-      @model, @router, player, @overlay$, group
+      @model, @router, player, @overlay$, group, gameKey: 'clash-royale'
     }
     @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}
     @$uiCard = new UiCard()
