@@ -25,7 +25,6 @@ Avatar = require '../avatar'
 ClanBadge = require '../clan_badge'
 ClanMetrics = require '../clan_metrics'
 ThreadComment = require '../thread_comment'
-ThreadPreview = require '../thread_preview'
 ConversationInput = require '../conversation_input'
 DeckCards = require '../deck_cards'
 PlayerDeckStats = require '../player_deck_stats'
@@ -90,7 +89,6 @@ module.exports = class Thread extends Base
         RxObservable.of null
 
     @$clanBadge = new ClanBadge()
-    @$threadPreview = new ThreadPreview {@model, thread}
 
     clan = thread.switchMap (thread) =>
       if thread?.data?.extras?.clan
@@ -140,7 +138,6 @@ module.exports = class Thread extends Base
       thread: thread
       isDeckDialogVisible: false
       isCardDialogVisible: false
-      isVideoVisible: false
       hasLoadedAll: false
       group: group
       $body: new FormattedText {
@@ -148,6 +145,7 @@ module.exports = class Thread extends Base
           thread?.data?.body
         imageWidth: 'auto'
         isFullWidth: true
+        embedVideos: true
         @model
         @router
       }
@@ -256,19 +254,9 @@ module.exports = class Thread extends Base
         @isPostLoading.next false
 
   render: =>
-    {me, thread, $body, threadComments, isVideoVisible, windowSize, playerDeck,
+    {me, thread, $body, threadComments, windowSize, playerDeck,
       selectedProfileDialogUser, clan, $clanMetrics, isLoading, group,
       isPostLoading} = @state.getValue()
-
-    headerAttachment = _find thread?.data?.attachments, {type: 'video'}
-    headerImageSrc = headerAttachment?.previewSrc
-
-    videoWidth = Math.min(windowSize.width, 700)
-    heightAspect = if headerAttachment?.aspectRatio \
-                   then 1 / headerAttachment.aspectRatio
-                   else 9 / 16
-    videoHeight = videoWidth * heightAspect
-    videoAttachment = _find thread?.attachments, {type: 'video'}
 
     hasVotedUp = thread?.myVote?.vote is 1
     hasVotedDown = thread?.myVote?.vote is -1
@@ -341,21 +329,6 @@ module.exports = class Thread extends Base
             ]
       }
       z '.content',
-        if headerImageSrc
-          z '.header',
-            if isVideoVisible
-              z @$threadPreview, {width: videoWidth}
-            else
-              z '.header-image', {
-                onclick: =>
-                  # if videoAttachment
-                  @state.set isVideoVisible: true
-                style:
-                  backgroundImage: "url(#{headerImageSrc})"
-                  width: "#{videoWidth}px"
-                  height: "#{videoHeight}px"
-              },
-                z '.play'
         z '.post',
           z '.g-grid',
             z '.author',

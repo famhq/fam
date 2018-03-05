@@ -10,6 +10,7 @@ require 'rxjs/add/observable/of'
 
 Sticker = require '../sticker'
 AddonListItem = require '../addon_list_item'
+EmbeddedVideo = require '../embedded_video'
 config = require '../../config'
 
 if window?
@@ -18,7 +19,7 @@ if window?
 module.exports = class FormattedText
   constructor: (options) ->
     {text, @imageWidth, model, @router, @skipImages, @mentionedUsers,
-      @selectedProfileDialogUser, @isFullWidth} = options
+      @selectedProfileDialogUser, @isFullWidth, @embedVideos} = options
 
     if text?.map
       $el = text.map((text) => @get$ {text, model})
@@ -126,6 +127,7 @@ module.exports = class FormattedText
         a: (tagName, props, children) =>
           isMention = props.title and props.title.indexOf('user:') isnt -1
           isAddon = props.title and props.title.indexOf('addon:') isnt -1
+          youtubeId = props.href.match(config.YOUTUBE_ID_REGEX)?[1]
 
           if isAddon
             addonKey = props.title.replace('addon:', '')
@@ -136,6 +138,12 @@ module.exports = class FormattedText
                 addon: state?.addon
               }
               z $addonListItem, {hasPadding: false}
+          else if youtubeId and @embedVideos
+            $embeddedVideo = new EmbeddedVideo {
+              model
+              src: "https://www.youtube.com/embed/#{youtubeId}"
+            }
+            z $embeddedVideo
           else
             z 'a.link', {
               href: props.href

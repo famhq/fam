@@ -139,17 +139,17 @@ class RouterService
     )
     isNewIAB = isNative and SemverService.gte appVersion, '1.4.0'
     isExternalAddon = addon.url.substr(0, 4) is 'http'
-    isInAppBrowser = isNative and isNewIAB and isExternalAddon
+    shouldUseIAB = isNative and isNewIAB and isExternalAddon
 
-    if not isInAppBrowser
+    if shouldUseIAB or addon.data?.isUnframeable
+      @openInAppBrowser addon, {replacements}
+    else
       @go 'toolByKey', {
         key: _kebabCase(addon.key)
       }, {
         qs:
           replacements: JSON.stringify replacements
       }
-    else
-      @openInAppBrowser addon, {replacements}
 
   getStream: =>
     @router.getStream()

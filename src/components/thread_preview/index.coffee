@@ -4,6 +4,7 @@ _find = require 'lodash/find'
 if window?
   require './index.styl'
 
+EmbeddedVideo = require '../embedded_video'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -11,6 +12,13 @@ PADDING = 16
 
 module.exports = class ThreadPreview
   constructor: ({@model, thread}) ->
+    videoAttachment = _find thread.data?.attachments, {type: 'video'}
+    if videoAttachment
+      @$embeddedVideo = new EmbeddedVideo {
+        @model
+        src: videoAttachment.src
+      }
+
     @state = z.state
       thread: thread
       windowSize: @model.window.getSize()
@@ -45,14 +53,7 @@ module.exports = class ThreadPreview
             type: 'video/mp4'
             src: videoAttachment.webmSrc
       else if videoAttachment
-        z 'iframe',
-          width: width
-          height: height
-          src: videoAttachment.src
-          attributes:
-            frameborder: 0
-            allowfullscreen: true
-            webkitallowfullscreen: true
+        @$embeddedVideo
       else if imageAttachment
         z 'img.image', {
           src: imageAttachment.largeSrc or imageAttachment.src
