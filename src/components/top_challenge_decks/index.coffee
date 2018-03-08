@@ -18,7 +18,6 @@ module.exports = class TopChallengeDecks
   constructor: ({@model, @router}) ->
     @$spinner = new Spinner()
     @$adsenseAd = new AdsenseAd {@model}
-    console.log '12'
 
     @state = z.state {
       language: @model.l.getLanguage()

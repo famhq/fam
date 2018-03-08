@@ -10,6 +10,7 @@ files = {
   addons: null
   paths: null
   languages: null
+  fortnite_weapons: null
 }
 
 module.exports = getJsonString: (language) ->
@@ -27,5 +28,3 @@ module.exports = getJsonString: (language) ->
     , {}
   str = JSON.stringify files
   "if(typeof window !== 'undefined'){window.languageStrings=#{str};} "
-
-module.exports.getJsonString 'es'

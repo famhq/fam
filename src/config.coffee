@@ -121,7 +121,9 @@ isomorphic =
   # d folder has longer cache
   SCRIPTS_CDN_URL: 'https://cdn.wtf/d/scripts/fam'
   USER_CDN_URL: 'https://cdn.wtf/images/fam'
+  DEFAULT_IOS_APP_ID: '1160535565'
   IOS_APP_URL: 'https://itunes.apple.com/us/app/fam/id1160535565'
+  DEFAULT_GOOGLE_PLAY_APP_ID: 'com.clay.redtritium'
   GOOGLE_PLAY_APP_URL:
     'https://play.google.com/store/apps/details?id=com.clay.redtritium'
   HOST: HOST

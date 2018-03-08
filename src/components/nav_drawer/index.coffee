@@ -5,6 +5,7 @@ _take = require 'lodash/take'
 _isEmpty = require 'lodash/isEmpty'
 _orderBy = require 'lodash/orderBy'
 _clone = require 'lodash/clone'
+_find = require 'lodash/find'
 Environment = require '../../services/environment'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
@@ -51,13 +52,9 @@ module.exports = class NavDrawer
       group
       myGroups
       me
+      @model.l.getLanguage()
       (vals...) -> vals
     )
-
-    userAgent = navigator?.userAgent
-    needsApp = userAgent and
-                not Environment.isNativeApp(config.GAME_KEY, {userAgent}) and
-                not window?.matchMedia('(display-mode: standalone)').matches
 
     @state = z.state
       isOpen: @model.drawer.isOpen()
@@ -66,20 +63,41 @@ module.exports = class NavDrawer
       expandedItems: []
       group: group
       myGroups: groupAndMyGroups.map (props) =>
-        [group, groups, me] = props
+        [group, groups, me, language] = props
         groups = _orderBy groups, (group) =>
           @model.cookie.get("group_#{group.id}_lastVisit") or 0
         , 'desc'
         groups = _filter groups, ({id}) ->
           id isnt group.id
-        _map groups, (group, i) =>
+        myGroups = _map groups, (group, i) =>
           meGroupUser = group.meGroupUser
           {
             group
+            key: group.key
             $badge: if group.clan \
                     then new ClanBadge {@model, clan: group.clan}
                     else new GroupBadge {@model, group}
           }
+        # TODO: non-hardcoded solution
+        if language is 'es' and group?.key isnt 'fortnitees' and
+            not _find myGroups, {key: 'fortnitees'}
+          group = {
+            key: 'fortnitees'
+            background:
+              'https://cdn.wtf/d/images/starfire/groups/covers/fortnite.jpg'
+            badge:
+              'https://cdn.wtf/d/images/starfire/groups/badges/fortnite.png'
+            name: 'Fortnite'
+          }
+          myGroups = myGroups.concat [
+            {
+              group
+              key: 'fortnitees'
+              $badge: new GroupBadge {@model, group}
+            }
+          ]
+        myGroups
+
       windowSize: @model.window.getSize()
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
@@ -88,6 +106,15 @@ module.exports = class NavDrawer
         groupId = group.key or group.id
         meGroupUser = group.meGroupUser
         isClashRoyaleGroup = group.key?.indexOf('clashroyale') isnt -1
+
+        userAgent = navigator?.userAgent
+        hasGroupApp = group.googlePlayAppId
+        needsGroupApp = hasGroupApp and
+                          not Environment.isGroupApp group.key, {userAgent}
+        needsMainApp = userAgent and
+                  not Environment.isNativeApp(config.GAME_KEY, {userAgent}) and
+                  not window?.matchMedia('(display-mode: standalone)').matches
+
         _filter([
           {
             path: @router.get 'groupHome', {groupId}
@@ -122,7 +149,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'rss'
             }
-          if isClashRoyaleGroup or group.key in ['nickatnyte']
+          if isClashRoyaleGroup or group.key in ['nickatnyte', 'teamqueso']
             {
               path: @router.get 'groupFire', {groupId}
               # title: @model.l.get 'general.shop'
@@ -131,7 +158,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'fire'
             }
-          if isClashRoyaleGroup or group.key in ['nickatnyte']
+          if isClashRoyaleGroup or group.key in ['nickatnyte', 'teamqueso']
             {
               path: @router.get 'groupCollection', {groupId}
               title: @model.l.get 'collectionPage.title'
@@ -139,7 +166,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'cards'
             }
-          if isClashRoyaleGroup or group.key in ['nickatnyte']
+          if isClashRoyaleGroup or group.key in ['nickatnyte', 'teamqueso']
             {
               path: @router.get 'trades', {groupId}
               title: @model.l.get 'tradesPage.title'
@@ -147,7 +174,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'trade'
             }
-          if group.key in ['playhard', 'eclihpse', 'nickatnyte']
+          if group.key in ['playhard', 'eclihpse', 'nickatnyte', 'teamqueso']
             {
               path: @router.get 'groupVideos', {groupId}
               title: @model.l.get 'videosPage.title'
@@ -214,14 +241,14 @@ module.exports = class NavDrawer
                   }
               ]
             }
-          if needsApp
+          if needsMainApp or needsGroupApp
             {
               isDivider: true
             }
-          if needsApp
+          if needsMainApp or needsGroupApp
             {
               onclick: =>
-                @model.portal.call 'app.install'
+                @model.portal.call 'app.install', {group}
               title: @model.l.get 'drawer.menuItemNeedsApp'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -254,6 +281,8 @@ module.exports = class NavDrawer
     translateX = if isOpen then 0 else "-#{drawerWidth}px"
     # adblock plus blocks has-ad
     hasA = not Environment.isMobile() and windowSize?.height > 880
+
+    isGroupApp = group.key and Environment.isGroupApp group.key
 
     renderChild = ({path, title, $chevronIcon, children}, depth = 0) =>
       isSelected = currentPath?.indexOf(path) is 0
@@ -383,7 +412,7 @@ module.exports = class NavDrawer
                   # z 'li.subhead', @model.l.get 'drawer.otherGroups'
               ]
 
-              if group.key isnt 'fortnitees' # FIXME FIXME change to check if group app
+              unless isGroupApp
                 z '.my-groups',
                   z '.my-groups-scroller', {
                     ontouchstart: (e) ->

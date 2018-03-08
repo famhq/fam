@@ -35,8 +35,6 @@ styles = if config.ENV is config.ENVS.PROD
 else
   null
 
-console.log '1'
-
 # memwatch = require 'memwatch-next'
 #
 # hd = undefined

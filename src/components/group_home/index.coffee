@@ -90,7 +90,7 @@ module.exports = class GroupHome
 
     z '.z-group-home',
       z '.g-grid',
-        if group?.key in ['fortnitees', 'nickatnyte', 'ferg']
+        if group?.key in ['fortnitees', 'nickatnyte']
           z '.card',
             z @$groupHomeFortniteStats
 
@@ -118,11 +118,13 @@ module.exports = class GroupHome
                 z @$groupHomeAdminStats
 
               if not Environment.isiOS({userAgent}) and group.key in [
-                'playhard', 'eclihpse', 'nickatnyte', 'ferg'
+                'playhard', 'eclihpse', 'nickatnyte', 'ferg', 'teamqueso'
               ]
                 z @$groupHomeOffers
 
-              if group.key in ['playhard', 'eclihpse', 'nickatnyte', 'ferg']
+              if group.key in [
+                'playhard', 'eclihpse', 'nickatnyte', 'ferg', 'teamqueso'
+              ]
                 z @$groupHomeVideos
 
               if player?.id and

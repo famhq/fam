@@ -8,9 +8,7 @@ module.exports = class XpGain
     @_xp
 
   show: (xp) =>
-    console.log 'showwwww'
     @_xp.next xp
 
   hide: =>
-    console.log 'hideeeee'
     @_xp.next null

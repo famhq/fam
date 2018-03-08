@@ -53,6 +53,7 @@ module.exports = class SpecialOffers
               offers = SpecialOfferService.embedStatsAndFilter {
                 offers, usageStats, @model, deviceId, groupId: group.id
               }
+              offers
           else
             RxObservable.of false
         .map (offers) =>

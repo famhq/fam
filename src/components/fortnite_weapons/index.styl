@@ -1,0 +1,23 @@
+@require '../../vars'
+
+.z-fortnite-weapons
+  padding: 16px
+  width: 100%
+  box-sizing: border-box
+
+  > .g-grid
+    > .weapon
+      margin-bottom: 16px
+
+      > .name
+        font-subhead()
+        color: getColor('$primary500')
+
+      > .stat
+        display: flex
+
+        > .name
+          font-title()
+
+        > .value
+          margin-left: auto

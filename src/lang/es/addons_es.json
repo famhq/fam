@@ -61,8 +61,16 @@
   "clashCrownTopChallengePlayers.description": "Busca los jugadores con más cartas ganadas de todos los tiempos",
   "stormShieldOne.title": "Tormenta de escudo unico",
   "stormShieldOne.description": "Estadísticas del jugador, tabla de posiciones, información de ventas, y un montón de cosas más",
+  "fortniteShopItems.title": "Artículos de la tienda",
+  "fortniteShopItems.description": "Ver los items actuales disponibles en la tienda fornite",
+  "fortniteChestMap.title": "Mapa del cofre",
+  "fortniteChestMap.description": "Ver la ubicación de todos los posibles cofres en el juego",
+  "fortniteWeapons.title": "Armas",
+  "fortniteWeapons.description": "Ver estado de cada arma y rareza en fortnite",
+  "fortniteRandomDrop.title": "Selector de caida aleatorio",
+  "fortniteRandomDrop.description": "Seleccionar un punto en el mapa al azar para caer",
   "brawlStats.title": "Estadísticas de la pelea",
-  "brawlStats.description": "Rastrea todas tus estadísticas de peleas de estrellas",
+  "brawlStats.description": "Sigue todas tus estadísticas de estrellas de peleas",
   "brawlStarsEvents.title": "Eventos",
-  "brawlStarsEvents.description": "Mirar cuáles eventos están ahora"
+  "brawlStarsEvents.description": "Mira los juegos de evento que se encuentran en vivo"
 }

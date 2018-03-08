@@ -164,11 +164,16 @@ module.exports = class Portal
 
     window.addEventListener 'visibilitychange', @appResumeHandler
 
-  appInstall: =>
-    userAgent = navigator.userAgent
-    if Environment.isNativeApp(config.GAME_KEY, {userAgent})
-      return null
-    else if Environment.isAndroid() and @isChrome()
+  appInstall: ({group} = {}) =>
+    iosAppId = group?.iosAppId or config.DEFAULT_IOS_APP_ID
+    googlePlayAppId = group?.googlePlayAppId or
+                        config.DEFAULT_GOOGLE_PLAY_APP_ID
+
+    iosAppUrl = 'https://itunes.apple.com/us/app/fam/id' + iosAppId
+    googlePlayAppUrl = 'https://play.google.com/store/apps/details?id=' +
+      googlePlayAppId
+
+    if Environment.isAndroid() and @isChrome()
       if @installOverlay.prompt
         prompt = @installOverlay.prompt
         @installOverlay.setPrompt null
@@ -177,12 +182,12 @@ module.exports = class Portal
 
     else if Environment.isiOS()
       @call 'browser.openWindow',
-        url: config.IOS_APP_URL
+        url: iosAppUrl
         target: '_system'
 
     else if Environment.isAndroid()
       @call 'browser.openWindow',
-        url: config.GOOGLE_PLAY_APP_URL
+        url: googlePlayAppUrl
         target: '_system'
 
     else

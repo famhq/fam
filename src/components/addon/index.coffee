@@ -7,6 +7,7 @@ TopTouchdownCards = require '../top_touchdown_cards'
 TopDraftCards = require '../top_draft_cards'
 TopChallengeDecks = require '../top_challenge_decks'
 Top2v2Decks = require '../top_2v2_decks'
+FortniteWeapons = require '../fortnite_weapons'
 NewCards = require '../new_cards'
 ChestSimulatorPick = require '../simulator_pick'
 ForumSignature = require '../forum_signature'
@@ -38,6 +39,7 @@ module.exports = class Addon
     @$clan = new Clan {@model, @router, player}
     @$players = new Players {@model, @router}
     @$recruiting = new Recruiting {@model, @router, group}
+    @$fortniteWeapons = new FortniteWeapons {@model, @router}
 
     @state = z.state
       addon: addon
@@ -83,6 +85,8 @@ module.exports = class Addon
         z @$players
       else if addon?.id is '3278305f-1e2e-450f-8611-0fa290216753'
         z @$recruiting
+      else if addon?.id is '842e07ae-407d-493c-a43c-bb5e755a3900'
+        z @$fortniteWeapons
       else if testUrl or addon?.url
         replacements = _defaults replacements, {lang: language}
         vars = addon?.url?.match /\{[a-zA-Z0-9]+\}/g

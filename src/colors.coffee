@@ -72,19 +72,6 @@ colors = _defaults {
     '--header-500-text-54': materialColors.$black54
     '--header-500-icon': '#3D0563' #t500
 
-    # '--primary-50': '#E0FCF1'
-    # '--primary-100': '#E0FCF1'
-    # '--primary-200': '#B3F7DC'
-    # '--primary-300': '#80F2C4'
-    # '--primary-400': '#26E99B'
-    # '--primary-500': '#00e581'
-    # '--primary-600': '#00E281'
-    # '--primary-700': '#00DE76'
-    # '--primary-800': '#00DA6C'
-    # '--primary-900': '#21ca68'
-    # '--primary-90054': 'rgba(0, 211, 89, 0.54)'
-    # '--primary-500-text': materialColors.$black
-
     '--primary-50': '#F5F9E5'
     '--primary-100': '#E7F1BD'
     '--primary-200': '#D7E891'
@@ -110,17 +97,38 @@ colors = _defaults {
     '--tertiary-800': '#270347'
     '--tertiary-900': '#1A0135'
 
-    # '--tertiary-50': '#EEE7FA'
-    # '--tertiary-100': '#D6C4F2'
-    # '--tertiary-200': '#BA9DEA'
-    # '--tertiary-300': '#9E76E2'
-    # '--tertiary-400': '#8A58DB'
-    # '--tertiary-500': '#652bc5'
-    # '--tertiary-50096': 'rgba(101, 43, 197, 0.96)'
-    # '--tertiary-600': '#5927b0'
-    # '--tertiary-700': '#481ca0'
-    # '--tertiary-800': '#431f91'
-    # '--tertiary-900': '#2d0c85'
+  teamqueso:
+    '--header-100': '#FFF6E0' # p100
+    '--header-500': '#FFB100' #p500
+    '--header-500-text': materialColors.$black
+    '--header-500-text-54': materialColors.$black54
+    '--header-500-icon': '#272C51' #t500
+
+    '--primary-50': '#FFF6E0'
+    '--primary-100': '#FFF6E0'
+    '--primary-200': '#FFE8B3'
+    '--primary-300': '#FFD880'
+    '--primary-400': '#FFBD26'
+    '--primary-500': '#FFB100'
+    '--primary-600': '#FFAA00'
+    '--primary-700': '#FFA100'
+    '--primary-800': '#FF9800'
+    '--primary-900': '#FF8800'
+    '--primary-90054': 'rgba(255, 172, 26, 0.54)' # FIXME
+    '--primary-500-text': materialColors.$black
+
+    '--tertiary-50': '#E5E6EA'
+    '--tertiary-100': '#E5E6EA'
+    '--tertiary-200': '#BEC0CB'
+    '--tertiary-300': '#9396A8'
+    '--tertiary-400': '#474C6B'
+    '--tertiary-500': '#272C51'
+    '--tertiary-50096': 'rgba(61, 5, 99, 0.96)' # FIXME
+    '--tertiary-600': '#23274A'
+    '--tertiary-700': '#1D2140'
+    '--tertiary-800': '#171B37'
+    '--tertiary-900': '#0E1027'
+
   withzack:
     '--header-100': '#99A5A6' # t300
     '--header-500': '#273B3D' #t700
