@@ -74,7 +74,8 @@ module.exports = class Head
     userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
     meta = _merge {
-      title: 'global chat, stats and chest cycle tracker'
+      # FIXME: localize
+      title: 'chat, memes, news, stats and more'
       description: 'Talk to other Clash Royale players, track your stats, and
                     set which chests you have next. Support for more mobile
                     games coming soon!'
@@ -106,7 +107,7 @@ module.exports = class Head
       manifestUrl: '/manifest.json'
     }, meta
 
-    meta.title = "Clash Royale #{meta.title} | Fam"
+    meta.title = "#{group?.name} #{meta.title} | Fam"
 
     meta = _merge {
       twitter:

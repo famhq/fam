@@ -40,6 +40,7 @@ module.exports = class FilterThreadsDialog
     filterOptions = [
       {key: 'all'}
       {key: 'deckGuide'}
+      {key: 'news'}
     ]
 
     z '.z-filter-threads-dialog',

@@ -127,7 +127,7 @@ module.exports = class FormattedText
         a: (tagName, props, children) =>
           isMention = props.title and props.title.indexOf('user:') isnt -1
           isAddon = props.title and props.title.indexOf('addon:') isnt -1
-          youtubeId = props.href.match(config.YOUTUBE_ID_REGEX)?[1]
+          youtubeId = props.href?.match(config.YOUTUBE_ID_REGEX)?[1]
 
           if isAddon
             addonKey = props.title.replace('addon:', '')

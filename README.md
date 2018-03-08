@@ -17,7 +17,7 @@ With that said, I want to be clear upfront that 'open and transparent' doesn't m
 Fam is just me, [Austin](https://github.com/austinhallock), right now.
 
 ### Contributing
-The easiest thing you can do to help is build something cool for Clash Royale and put it up on the developer platform. As for other contributions to the frontend and backend code for Fam, send me an email (austin@clay.io) if you need help getting everything setup (the documentation is severely lacking at this point).
+The easiest thing you can do to help is build something cool for one of the games Fam supports and put it up on the developer platform. As for other contributions to the frontend and backend code for Fam, send me an email (austin@clay.io) if you need help getting everything setup (the documentation is severely lacking at this point).
 
 ### Developer platform
 There is a [developer platform](https://openfam.com/tools) where you can build your own tools on top of Fam's game data and userbase (millions of users) and keep 100% of your revenue. There isn't any sort of lock-in, you can develop your own website or app outside of Fam, etc... Adding to Fam just gets you extra users and hopefully an easier experience developing the tool.

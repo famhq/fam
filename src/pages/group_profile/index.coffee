@@ -219,14 +219,14 @@ module.exports = class GroupProfilePage
               z @$groupHomeFortniteStats
             else
               z @$profile, {isOtherProfile}
-        else if player
+        else if player and isMe
           if gameKey is 'fortnite'
             z '.get-tag',
               z @$fortniteGetPlayerTagForm
           else
             z '.get-tag',
               z @$clashRoyaleGetPlayerTagForm
-        else
+        else if not player
           @$spinner
 
       unless isOtherProfile

@@ -103,7 +103,7 @@ app.use '/setCookie', (req, res) ->
 #   catch err
 #     next err
 
-# legacy 301s. can remove in jan 2018
+# legacy 301s. can remove in may 2018
 redirects =
   '/clash-royale/mod/:key': '/tool/:key'
   '/:lang/clash-royale/mod/:key': '/tool/:key'
@@ -151,8 +151,7 @@ _map redirects, (newPath, oldPath) ->
         goPath = goPath.replace '*', matches[1]
       else
         goPath = '/'
-    # FIXME: 301
-    res.redirect 302, goPath
+    res.redirect 301, goPath
 
 # end legacy
 

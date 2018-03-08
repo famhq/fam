@@ -70,7 +70,7 @@ module.exports = class Message
         openProfileDialogFn id, user, groupUser
 
     oncontextmenu = ->
-      openProfileDialogFn id, user
+      openProfileDialogFn id, user, groupUser
 
     isVerified = user and user.gameStat?.isVerified
     isModerator = groupUser?.roleNames and
