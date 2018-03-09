@@ -26,9 +26,7 @@ module.exports = class FriendsPage
     )
     @selectedProfileDialogUser = new RxBehaviorSubject null
 
-    userData = @model.userData.getMe {
-      embed: ['following', 'followers', 'blockedUsers']
-    }
+    userData = RxObservable.of {}
     following = userData.map ({following}) ->
       following
     followers = userData.map ({followers}) -> followers

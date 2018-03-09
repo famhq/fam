@@ -67,6 +67,7 @@ module.exports = class ProfileDialog
       group: group
       loadingItems: []
       expandedItems: []
+      blockedUsers: @model.userBlock.getAll()
       windowSize: @model.window.getSize()
 
   afterMount: =>
@@ -259,9 +260,10 @@ module.exports = class ProfileDialog
     ]
 
   getUserOptions: =>
-    {me, user} = @state.getValue()
+    {me, user, blockedUsers} = @state.getValue()
 
-    isBlocked = @model.user.isBlocked me, user?.id
+    isBlocked = @model.userBlock.isBlocked blockedUsers, user?.id
+
     isMe = user?.id is me?.id
 
     _filter [
@@ -311,11 +313,12 @@ module.exports = class ProfileDialog
             else @model.l.get 'profileDialog.block'
           isVisible: not isMe
           onclick: =>
-            if isBlocked
-              @model.userData.unblockByUserId user?.id
-            else
-              @model.userData.blockByUserId user?.id
-            @selectedProfileDialogUser.next null
+            if confirm @model.l.get 'general.confirm'
+              if isBlocked
+                @model.userBlock.unblockByUserId user?.id
+              else
+                @model.userBlock.blockByUserId user?.id
+              @selectedProfileDialogUser.next null
         }
     ]
 
@@ -363,7 +366,6 @@ module.exports = class ProfileDialog
   render: =>
     {me, user, group, clashRoyaleData, windowSize} = @state.getValue()
 
-    isBlocked = @model.user.isBlocked me, user?.id
     isMe = user?.id is me?.id
 
     userOptions = @getUserOptions()

@@ -68,6 +68,7 @@
   "general.yes": "Yes",
   "general.upgrade": "Upgrade",
   "general.days": "days",
+  "general.confirm": "Are you sure?",
   "addDeck.nameHintText": "Enter a name...",
   "addons.discover": "Discover",
   "addToHomeSheet.submitButton": "Add to home",

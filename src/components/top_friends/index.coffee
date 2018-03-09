@@ -9,9 +9,7 @@ if window?
 module.exports = class TopFriends
   constructor: ({@model, users, selectedProfileDialogUser}) ->
 
-    userData = @model.userData.getMe {
-      embed: ['following']
-    }
+    userData = @model.userFollower.getAllFollowingIds()
     following = userData.map ({following}) ->
       following or []
 

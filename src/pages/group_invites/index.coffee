@@ -29,8 +29,8 @@ module.exports = class GroupInvitePage
       description: @model.l.get 'groupInvitesPage.title'
     }
 
-  afterMount: =>
-    @model.userData.updateMe {unreadGroupInvites: 0}
+  # afterMount: =>
+  #   @model.userData.updateMe {unreadGroupInvites: 0}
 
   render: =>
     {windowSize} = @state.getValue()

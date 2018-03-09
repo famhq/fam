@@ -51,9 +51,6 @@ module.exports = class User
       clanTag, username, email, referrerId
     }
 
-  isBlocked: (me, userId) ->
-    me?.data?.blockedUserIds?.indexOf(userId) isnt -1
-
   setAvatarImage: (file) =>
     formData = new FormData()
     formData.append 'file', file, file.name

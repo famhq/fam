@@ -37,7 +37,3 @@ module.exports = class GroupBannedUsers
                 bgColor: colors.$grey200
             z '.right',
               z '.name', banInfo.user.username
-              # z '.banned',
-              #   "Banned by #{banInfo.user.data?.bannedBy}"
-              # z '.reason',
-              #   "Reason: #{_startCase banInfo.user.data?.banReason}"

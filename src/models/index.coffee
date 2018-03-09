@@ -54,7 +54,7 @@ ThreadVote = require './thread_vote'
 Time = require './time'
 Trade = require './trade'
 User = require './user'
-UserData = require './user_data'
+UserBlock = require './user_block'
 UserFollower = require './user_follower'
 UserItem = require './user_item'
 Video = require './video'
@@ -133,7 +133,7 @@ module.exports = class Model
 
     @auth = new Auth {@exoid, cookieSubject, pushToken, @l, userAgent, @portal}
     @user = new User {@auth, proxy, @exoid, @cookie}
-    @userData = new UserData {@auth}
+    @userBlock = new UserBlock {@auth}
     @userFollower = new UserFollower {@auth}
     @userItem = new UserItem {@auth}
     @player = new Player {@auth}

@@ -67,8 +67,8 @@ module.exports = class Groups
       # }
     ]
 
-    unreadGroupInvites = me?.data.unreadGroupInvites
-    inviteStr = if unreadGroupInvites is 1 then 'invite' else 'invites'
+    # unreadGroupInvites = me?.data.unreadGroupInvites
+    # inviteStr = if unreadGroupInvites is 1 then 'invite' else 'invites'
 
     z '.z-groups',
       # if unreadGroupInvites

@@ -1,7 +1,10 @@
 z = require 'zorium'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
 _isEmpty = require 'lodash/isEmpty'
 _find = require 'lodash/find'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
 
 Icon = require '../icon'
 Avatar = require '../avatar'
@@ -19,11 +22,25 @@ module.exports = class Conversations
     @$spinner = new Spinner()
     @$addIcon = new Icon()
 
+    me = @model.user.getMe()
+
+    conversationsAndBlockedUsersAndMe = RxObservable.combineLatest(
+      @model.conversation.getAll()
+      @model.userBlock.getAll()
+      me
+      (vals...) -> vals
+    )
+
     @state = z.state
-      me: @model.user.getMe()
-      conversations: @model.conversation.getAll().map (conversations) ->
-        _map conversations, (conversation) ->
-          {conversation, $avatar: new Avatar()}
+      me: me
+      conversations: conversationsAndBlockedUsersAndMe
+      .map ([conversations, blockedUsers, me]) =>
+        _filter _map conversations, (conversation) =>
+          otherUser = _find conversation.users, (user) ->
+            user.id isnt me?.id
+          isBlocked = @model.userBlock.isBlocked blockedUsers, otherUser?.id
+          unless isBlocked
+            {conversation, otherUser, $avatar: new Avatar()}
 
   render: =>
     {me, conversations} = @state.getValue()
@@ -34,10 +51,7 @@ module.exports = class Conversations
           z '.no-conversations',
             @model.l.get 'conversations.noneFound'
         else if conversations
-          _map conversations, ({conversation, $avatar}) =>
-            otherUser = _find conversation.users, (user) ->
-              user.id isnt me?.id
-
+          _map conversations, ({conversation, otherUser, $avatar}) =>
             isUnread = not conversation?.isRead
             isLastMessageFromMe = conversation.lastMessage?.userId is me?.id
 
