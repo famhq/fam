@@ -33,7 +33,7 @@ colors = require './colors'
 
 Pages =
   HomePage: require './pages/home'
-  FriendsPage: require './pages/friends'
+  PeoplePage: require './pages/people'
   ToolPage: require './pages/addon'
   ConversationPage: require './pages/conversation'
   ConversationsPage: require './pages/conversations'
@@ -238,7 +238,7 @@ module.exports = class App
             })
           return @$cachedPages[pageKey]
 
-    route ['friendsWithAction', 'friends'], 'FriendsPage'
+    route ['peopleWithAction', 'people'], 'PeoplePage'
     route ['tool', 'toolByKey'], 'ToolPage'
     route 'conversation', 'ConversationPage'
     route 'conversations', 'ConversationsPage'

@@ -9,16 +9,20 @@ if window?
 Icon = require '../icon'
 
 module.exports = class MenuFireAmount
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, group}) ->
     @$fireIcon = new Icon()
 
     @state = z.state
       me: @model.user.getMe()
+      group: group
 
   render: =>
-    {me} = @state.getValue()
+    {me, group} = @state.getValue()
 
-    z '.z-menu-fire-amount',
+    z '.z-menu-fire-amount', {
+      onclick: =>
+        @router.go 'groupFire', {groupId: group?.id}
+    },
       FormatService.number me?.fire
       z '.icon',
         z @$fireIcon,

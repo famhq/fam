@@ -132,7 +132,7 @@ module.exports = class Model
     @l = new Language {language, @cookie}
 
     @auth = new Auth {@exoid, cookieSubject, pushToken, @l, userAgent, @portal}
-    @user = new User {@auth, proxy, @exoid, @cookie}
+    @user = new User {@auth, proxy, @exoid, @cookie, @l}
     @userBlock = new UserBlock {@auth}
     @userFollower = new UserFollower {@auth}
     @userItem = new UserItem {@auth}

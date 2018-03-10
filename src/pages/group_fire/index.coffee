@@ -31,7 +31,7 @@ module.exports = class GroupFirePage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$tabs = new Tabs {@model, @selectedIndex}
-    @$menuFireAmount = new MenuFireAmount {@model, @router}
+    @$menuFireAmount = new MenuFireAmount {@model, @router, group}
     @$specialOffers = new SpecialOffers {@model, @router, overlay$, group}
     @$earnFire = new EarnFire {@model, @router, overlay$, group}
 

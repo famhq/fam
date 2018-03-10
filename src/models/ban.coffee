@@ -8,9 +8,9 @@ module.exports = class Ban
   getAllByGroupId: (groupId, {duration} = {}) =>
     @auth.stream "#{@namespace}.getAllByGroupId", {duration, groupId}
 
-  banByGroupIdAndUserId: (groupId, userId, {duration} = {}) =>
+  banByGroupIdAndUserId: (groupId, userId, {duration, type} = {}) =>
     @auth.call "#{@namespace}.banByGroupIdAndUserId", {
-      userId, groupId, duration
+      userId, groupId, duration, type
     }, {invalidateAll: true}
 
   unbanByGroupIdAndUserId: (groupId, userId) =>

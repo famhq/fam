@@ -6,15 +6,13 @@ require 'rxjs/add/observable/combineLatest'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 ButtonBack = require '../../components/button_back'
-Profile = require '../../components/profile'
 ProfileInfo = require '../../components/profile_info'
-ProfileInfo = require '../../components/profile_info'
+ClashRoyaleProfile = require '../../components/clash_royale_profile'
 ClashRoyaleGetPlayerTagForm =
   require '../../components/clash_royale_get_player_tag_form'
 FortniteGetPlayerTagForm =
   require '../../components/fortnite_get_player_tag_form'
 GroupHomeFortniteStats = require '../../components/group_home_fortnite_stats'
-# ProfileLanding = require '../../components/clash_royale_profile_landing'
 ShareSheet = require '../../components/share_sheet'
 Spinner = require '../../components/spinner'
 Icon = require '../../components/icon'
@@ -24,7 +22,7 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-PROFILE_INFO_HEIGHT_PX = 80
+PROFILE_INFO_HEIGHT_PX = 96
 
 module.exports = class GroupProfilePage
   isGroup: true
@@ -79,14 +77,14 @@ module.exports = class GroupProfilePage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
     @$buttonBack = new ButtonBack {@model, @router}
-    @$profile = new Profile {
+    @$clashRoyaleProfile = new ClashRoyaleProfile {
       @model, @router, user, @player, @overlay$, group, serverData
     }
-    @$profileInfo = new ProfileInfo {@model, @router, group, user}
+    @$clashRoyaleProfileInfo = new ProfileInfo {@model, @router, group, user}
     @$groupHomeFortniteStats = new GroupHomeFortniteStats {
       @model, @router, group
     }
-    # @$profileLanding = new ProfileLanding {@model, @router, group}
+    # @$clashRoyaleProfileLanding = new ProfileLanding {@model, @router, group}
     @$clashRoyaleGetPlayerTagForm = new ClashRoyaleGetPlayerTagForm {
       @model, @router
     }
@@ -208,7 +206,7 @@ module.exports = class GroupProfilePage
             style:
               height: "#{PROFILE_INFO_HEIGHT_PX}px"
           },
-            z @$profileInfo
+            z @$clashRoyaleProfileInfo
         if player and isTagSet
           z '.profile', {
             ontouchmove: @scrollPastInfo
@@ -218,7 +216,7 @@ module.exports = class GroupProfilePage
             if gameKey is 'fortnite'
               z @$groupHomeFortniteStats
             else
-              z @$profile, {isOtherProfile}
+              z @$clashRoyaleProfile, {isOtherProfile}
         else if player and isMe
           if gameKey is 'fortnite'
             z '.get-tag',

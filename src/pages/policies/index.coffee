@@ -9,7 +9,10 @@ module.exports = class PoliciesPage
   hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
-    @$policies = new Policies {@model, @router}
+    isIab = requests.map ({req}) ->
+      req.query.isIab
+
+    @$policies = new Policies {@model, @router, isIab}
 
     @state = z.state
       windowSize: @model.window.getSize()

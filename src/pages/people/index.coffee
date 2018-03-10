@@ -1,12 +1,13 @@
 z = require 'zorium'
+_map = require 'lodash/map'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 
 Tabs = require '../../components/tabs'
-Friends = require '../../components/friends'
-FindFriends = require '../../components/find_friends'
+People = require '../../components/people'
+FindPeople = require '../../components/find_friends'
 ProfileDialog = require '../../components/profile_dialog'
 AppBar = require '../../components/app_bar'
 Icon = require '../../components/icon'
@@ -17,55 +18,56 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class FriendsPage
+module.exports = class PeoplePage
   constructor: ({@model, @router, requests, serverData, group}) ->
-    @isFindFriendsVisible = new RxReplaySubject 1
-    @isFindFriendsVisible.next(
+    @isFindPeopleVisible = new RxReplaySubject 1
+    @isFindPeopleVisible.next(
       requests.map ({route}) ->
         route.params.action is 'find'
     )
     @selectedProfileDialogUser = new RxBehaviorSubject null
 
-    userData = RxObservable.of {}
-    following = userData.map ({following}) ->
-      following
-    followers = userData.map ({followers}) -> followers
-    blockedUsers = userData.map ({blockedUsers}) -> blockedUsers
+    following = @model.userFollower.getAllFollowing()
+    .map (userFollowers) -> _map userFollowers, 'user'
+    followers = @model.userFollower.getAllFollowers()
+    .map (userFollowers) -> _map userFollowers, 'user'
+    blockedUsers = @model.userBlock.getAll()
+    .map (userBlocks) -> _map userBlocks, 'user'
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@router, @model}
     @$tabs = new Tabs {@model}
-    @$following = new Friends {
+    @$following = new People {
       @model, users: following, @selectedProfileDialogUser
     }
-    @$followers = new Friends {
+    @$followers = new People {
       @model, users: followers, @selectedProfileDialogUser
     }
-    @$blockedUsers = new Friends {
+    @$blockedUsers = new People {
       @model, users: blockedUsers, @selectedProfileDialogUser
     }
     @$fab = new Fab()
     @$searchIcon = new Icon()
-    @$findFriends = new FindFriends {
-      @model, @isFindFriendsVisible, @selectedProfileDialogUser
+    @$findPeople = new FindPeople {
+      @model, @isFindPeopleVisible, @selectedProfileDialogUser
     }
     @$profileDialog = new ProfileDialog {
       @model, @router, @selectedProfileDialogUser
     }
 
     @state = z.state
-      isFindFriendsVisible: @isFindFriendsVisible.switch()
+      isFindPeopleVisible: @isFindPeopleVisible.switch()
       selectedProfileDialogUser: @selectedProfileDialogUser
       windowSize: @model.window.getSize()
 
   getMeta: =>
     {
-      title: 'Friends'
-      description: 'Your friends on Clay'
+      title: @model.l.get 'people.title'
+      description: @model.l.get 'people.title'
     }
 
   render: =>
-    {isFindFriendsVisible, selectedProfileDialogUser,
+    {isFindPeopleVisible, selectedProfileDialogUser,
       windowSize} = @state.getValue()
 
     z '.p-friends', {
@@ -75,57 +77,54 @@ module.exports = class FriendsPage
       z @$appBar,
         isFlat: true
         $topLeftButton: @$buttonMenu
-        title: 'Friends'
+        title: @model.l.get 'people.title'
 
       z @$tabs,
         isBarFixed: false
         hasAppBar: true
         tabs: [
           {
-            $menuText: 'Friends'
+            $menuText: @model.l.get 'people.following'
             $el:
               z @$following,
-                noFriendsMessage:
+                noPeopleMessage:
                   z 'div',
-                    z 'div', 'You don\'t have any friends yet.'
-                    z 'div', 'Find some pals, it\'ll be fun!'
+                    z 'div', @model.l.get 'people.followingEmpty'
           }
           {
-            $menuText: 'Added me'
+            $menuText: @model.l.get 'people.followers'
             $el:
               z @$followers,
-                noFriendsMessage:
+                noPeopleMessage:
                   z 'div',
-                    z 'div', 'No one\'s added you yet.'
-                    z 'div', 'Get out there and socialize!'
+                    z 'div', @model.l.get 'people.followersEmpty'
           }
           {
-            $menuText: 'Blocked'
+            $menuText: @model.l.get 'people.blocked'
             $el:
               z @$blockedUsers,
-                noFriendsMessage:
+                noPeopleMessage:
                   z 'div',
-                    z 'div', 'You haven\'t blocked anyone yet.'
-                    z 'div', 'Awesome :)'
+                    z 'div', @model.l.get 'people.blockedEmpty'
           }
         ]
 
-      if isFindFriendsVisible
+      if isFindPeopleVisible
         z '.find-friends',
-          z @$findFriends,
-            isVisible: @isFindFriendsVisible
+          z @$findPeople,
+            isVisible: @isFindPeopleVisible
 
       if selectedProfileDialogUser
         z @$profileDialog, {user: selectedProfileDialogUser}
 
-      z '.fab',
-        z @$fab,
-          colors:
-            c500: colors.$primary500
-          $icon: z @$searchIcon, {
-            icon: 'search'
-            isTouchTarget: false
-            color: colors.$primary500Text
-          }
-          onclick: =>
-            @isFindFriendsVisible.next RxObservable.of true
+      # z '.fab',
+      #   z @$fab,
+      #     colors:
+      #       c500: colors.$primary500
+      #     $icon: z @$searchIcon, {
+      #       icon: 'search'
+      #       isTouchTarget: false
+      #       color: colors.$primary500Text
+      #     }
+      #     onclick: =>
+      #       @isFindPeopleVisible.next RxObservable.of true

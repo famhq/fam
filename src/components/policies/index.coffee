@@ -14,7 +14,7 @@ if window?
   require './index.styl'
 
 module.exports = class Policies
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, isIab}) ->
     me = @model.user.getMe()
 
     @$privacy = new Privacy {@model, @router}
@@ -49,9 +49,10 @@ module.exports = class Policies
 
     @state = z.state
       $dropdowns: $dropdowns
+      isIab: isIab
 
   render: =>
-    {$dropdowns} = @state.getValue()
+    {$dropdowns, isIab} = @state.getValue()
 
     z '.z-policies',
       z '.title', @model.l.get 'policies.title'
@@ -82,8 +83,9 @@ module.exports = class Policies
               $content
         ]
 
-      z '.continue-button',
-        z @$continueButton,
-          text: 'Continue'
-          onclick: =>
-            @router.goPath '/'
+      unless isIab
+        z '.continue-button',
+          z @$continueButton,
+            text: 'Continue'
+            onclick: =>
+              @router.goPath '/'

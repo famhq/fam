@@ -168,10 +168,10 @@ module.exports = class Conversation extends Base
     @debouncedOnResize = _debounce @onResize
     , RESIZE_THROTTLE_MS
 
-    messageBatchesAndMeAndBlockedUsers = RxObservable.combineLatest(
+    messageBatchesAndMeAndBlockedUserIds = RxObservable.combineLatest(
       messageBatches
       me
-      @model.userBlock.getAll()
+      @model.userBlock.getAllIds()
       (vals...) -> vals
     )
 
@@ -191,8 +191,8 @@ module.exports = class Conversation extends Base
       isLoaded: false
       isScrolledBottom: true
 
-      messageBatches: messageBatchesAndMeAndBlockedUsers
-      .map ([messageBatches, me, blockedUsers]) =>
+      messageBatches: messageBatchesAndMeAndBlockedUserIds
+      .map ([messageBatches, me, blockedUserIds]) =>
         if messageBatches
           _map messageBatches, (messages) =>
             prevMessage = null
@@ -200,7 +200,7 @@ module.exports = class Conversation extends Base
               unless message
                 return
               isBlocked = @model.userBlock.isBlocked(
-                blockedUsers, message?.userId
+                blockedUserIds, message?.userId
               )
               if isBlocked
                 return

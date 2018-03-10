@@ -22,12 +22,18 @@
         background-position: center
         background-repeat: no-repeat
         position: relative
-        background-color: getColor('$primary500')
+        background-color: getColor('$tertiary500')
         border: 2px solid getColor('$tertiary900')
         cursor: pointer
 
         @media (min-width: $breakPointMedium)
           padding-top: 11%
+
+        > .more
+          position: absolute
+          top: 0
+          width: 100%
+          height: 100%
 
         > .info
           position: absolute
@@ -37,6 +43,7 @@
           box-sizing: border-box
           background: getColor('$tertiary90054')
           padding: 4px 8px
+          min-height: 48px
 
           > .name
             font-caption1()

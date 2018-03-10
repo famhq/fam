@@ -151,15 +151,6 @@ module.exports = class NavDrawer
             }
           if isClashRoyaleGroup or group.key in ['nickatnyte', 'teamqueso']
             {
-              path: @router.get 'groupFire', {groupId}
-              # title: @model.l.get 'general.shop'
-              title: @model.l.get 'earnFire.title'
-              $icon: new Icon()
-              $ripple: new Ripple()
-              iconName: 'fire'
-            }
-          if isClashRoyaleGroup or group.key in ['nickatnyte', 'teamqueso']
-            {
               path: @router.get 'groupCollection', {groupId}
               title: @model.l.get 'collectionPage.title'
               $icon: new Icon()
@@ -196,6 +187,13 @@ module.exports = class NavDrawer
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'profile'
+          }
+          {
+            path: @router.get 'people', {groupId}
+            title: @model.l.get 'people.title'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'friends'
           }
           {
             path: @router.get 'groupTools', {groupId}

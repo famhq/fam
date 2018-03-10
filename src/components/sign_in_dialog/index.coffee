@@ -5,6 +5,7 @@ Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
 FlatButton = require '../flat_button'
 colors = require '../../colors'
+config = require '../../config'
 
 if window?
   require './index.styl'
@@ -154,6 +155,20 @@ module.exports = class SignInDialog
                   type: 'password'
                   hintText: @model.l.get 'general.password'
                 }
+              if mode is 'join'
+                z '.terms',
+                  @model.l.get 'signIn.terms', {
+                    replacements: {tos: ' '}
+                  }
+                  z 'a', {
+                    href: ''
+                    onclick: (e) =>
+                      e?.preventDefault()
+                      @router.openInAppBrowser {
+                        url: "https://#{config.HOST}/policies?isIab=1"
+                        key: ''
+                      }
+                  }, 'TOS'
               z '.actions',
                 z '.button',
                   z @$submitButton,

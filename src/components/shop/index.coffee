@@ -34,6 +34,7 @@ module.exports = class Shop
     @purchaseLoadingKey = new RxBehaviorSubject null
 
     @$infoCard = new UiCard()
+    @$moreIcon = new Icon()
 
     @state = z.state
       me: @model.user.getMe()
@@ -78,7 +79,7 @@ module.exports = class Shop
                  # TODO: groupid
                   @overlay$.next new ConfirmProductPurchase {
                     @model, @router, @overlay$,
-                    @purchaseLoadingKey, product
+                    @purchaseLoadingKey, product, group
                     onConfirm: resolve, onCancel: =>
                       @overlay$.next null
                       reject()
@@ -104,52 +105,66 @@ module.exports = class Shop
             @model.l.get 'shop.empty'
         else if products
           z '.g-cols.no-padding',
-            _map products, (options) =>
-              {product, $buyButton, $fireIcon,
-                onPurchase, onBeforePurchase} = options
+            [
+              _map products, (options) =>
+                {product, $buyButton, $fireIcon,
+                  onPurchase, onBeforePurchase} = options
 
-              isDisabled = product.isLocked or
-                            not me?.fire? or me?.fire < product.cost
-              isFree = product.cost is 0
-              z '.g-col.g-xs-6.g-md-2', {
-                style:
-                  backgroundImage: "url(#{product.data?.backgroundImage})"
-                  backgroundColor: product.data?.backgroundColor
+                isDisabled = product.isLocked or
+                              not me?.fire? or me?.fire < product.cost
+                isFree = product.cost is 0
+                z '.g-col.g-xs-6.g-md-2', {
+                  style:
+                    backgroundImage: "url(#{product.data?.backgroundImage})"
+                    backgroundColor: product.data?.backgroundColor
+                  onclick: =>
+                    ga? 'send', 'event', 'product', 'buy', product.key
+                    if isDisabled
+                      @goToEarnFn?()
+                    else
+                      (onBeforePurchase?() or Promise.resolve())
+                      .then (data) =>
+                        @purchaseLoadingKey.next product.key
+                        @model.product.buy _defaults data, {key: product.key}
+                      .then onPurchase
+                      .then =>
+                        @purchaseLoadingKey.next null
+                },
+                  z '.info',
+                    z '.name', product.name
+                    # if product.isLimited
+                    #   z '.limited', @model.l.get 'spendFire.limited'
+                    if purchaseLoadingKey is product.key
+                      @model.l.get 'general.loading'
+                    else
+                      z '.cost',
+                        z '.amount',
+                          if product.isLocked
+                          then DateService.formatSeconds \
+                                product.lockExpireSeconds
+                          else if isFree \
+                          then @model.l.get 'general.free'
+                          else FormatService.number product.cost
+                        z '.icon',
+                          z $fireIcon,
+                            icon: if product.isLocked \
+                                  then 'lock-outline'
+                                  else 'fire'
+                            size: '16px'
+                            color: colors.$quaternary500
+                            isTouchTarget: false
+              z '.g-col.g-xs-6.g-md-2.earn-more', {
                 onclick: =>
-                  ga? 'send', 'event', 'product', 'buy', product.key
-                  if isDisabled
-                    @goToEarnFn?()
-                  else
-                    (onBeforePurchase?() or Promise.resolve())
-                    .then (data) =>
-                      @purchaseLoadingKey.next product.key
-                      @model.product.buy _defaults data, {key: product.key}
-                    .then onPurchase
-                    .then =>
-                      @purchaseLoadingKey.next null
+                  @router.go 'groupFire', {groupId: group?.id}
               },
+                z '.more',
+                  z @$moreIcon,
+                    icon: 'add'
+                    isTouchTarget: false
+                    color: colors.$tertiary900Text
+                    size: '96px'
                 z '.info',
-                  z '.name', product.name
-                  # if product.isLimited
-                  #   z '.limited', @model.l.get 'spendFire.limited'
-                  if purchaseLoadingKey is product.key
-                    @model.l.get 'general.loading'
-                  else
-                    z '.cost',
-                      z '.amount',
-                        if product.isLocked
-                        then DateService.formatSeconds \
-                              product.lockExpireSeconds
-                        else if isFree \
-                        then @model.l.get 'general.free'
-                        else FormatService.number product.cost
-                      z '.icon',
-                        z $fireIcon,
-                          icon: if product.isLocked \
-                                then 'lock-outline'
-                                else 'fire'
-                          size: '16px'
-                          color: colors.$quaternary500
-                          isTouchTarget: false
+                  z '.name', @model.l.get 'shop.earnMore'
+            ]
         else
           @$spinner

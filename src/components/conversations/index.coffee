@@ -24,21 +24,21 @@ module.exports = class Conversations
 
     me = @model.user.getMe()
 
-    conversationsAndBlockedUsersAndMe = RxObservable.combineLatest(
+    conversationsAndBlockedUserIdsAndMe = RxObservable.combineLatest(
       @model.conversation.getAll()
-      @model.userBlock.getAll()
+      @model.userBlock.getAllIds()
       me
       (vals...) -> vals
     )
 
     @state = z.state
       me: me
-      conversations: conversationsAndBlockedUsersAndMe
-      .map ([conversations, blockedUsers, me]) =>
+      conversations: conversationsAndBlockedUserIdsAndMe
+      .map ([conversations, blockedUserIds, me]) =>
         _filter _map conversations, (conversation) =>
           otherUser = _find conversation.users, (user) ->
             user.id isnt me?.id
-          isBlocked = @model.userBlock.isBlocked blockedUsers, otherUser?.id
+          isBlocked = @model.userBlock.isBlocked blockedUserIds, otherUser?.id
           unless isBlocked
             {conversation, otherUser, $avatar: new Avatar()}
 

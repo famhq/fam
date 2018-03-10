@@ -1,11 +1,9 @@
 config = require '../config'
 
 module.exports = class User
-  DEFAULT_NAME: 'Nameless'
-
   namespace: 'users'
 
-  constructor: ({@auth, @proxy, @exoid, @cookie}) -> null
+  constructor: ({@auth, @proxy, @exoid, @cookie, @l}) -> null
 
   getMe: =>
     @auth.stream "#{@namespace}.getMe"
@@ -67,4 +65,4 @@ module.exports = class User
     .then @exoid.invalidateAll
 
   getDisplayName: (user) =>
-    user?.username or @DEFAULT_NAME
+    user?.username or @l.get 'general.anonymous'

@@ -5,7 +5,6 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 
 Icon = require '../icon'
-CardPickerDialog = require '../card_picker_dialog'
 UploadOverlay = require '../upload_overlay'
 ConversationImagePreview = require '../conversation_image_preview'
 config = require '../../config'
@@ -22,7 +21,6 @@ module.exports = class MarkdownEditor
     @overlay$ = new RxBehaviorSubject null
     @imageData = new RxBehaviorSubject null
 
-    @$cardPickerDialog = new CardPickerDialog {@model, @overlay$}
     @$conversationImagePreview = new ConversationImagePreview {
       @imageData
       @model
@@ -66,23 +64,10 @@ module.exports = class MarkdownEditor
         pattern: '- $0'
       }
       {
-        icon: 'cards'
-        $icon: new Icon()
-        title: 'Card'
-        pattern: "[$1](https://#{config.HOST}/clashRoyale/card/$0)"
-        onclick: =>
-          @overlay$.next @$cardPickerDialog
-          @$cardPickerDialog.onPick (card) =>
-            @setModifier {
-              pattern: "[#{card.name}]" +
-                        "(https://#{config.HOST}/clashRoyale/card/#{card.key})"
-            }
-      }
-      {
         icon: 'image'
         $icon: new Icon()
         title: 'Image'
-        pattern: "[$1](https://#{config.HOST}/clashRoyale/card/$0)"
+        pattern: '![]($1)'
         $uploadOverlay: new UploadOverlay {@model}
       }
     ]

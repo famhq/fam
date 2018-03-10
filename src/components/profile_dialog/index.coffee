@@ -67,7 +67,7 @@ module.exports = class ProfileDialog
       group: group
       loadingItems: []
       expandedItems: []
-      blockedUsers: @model.userBlock.getAll()
+      blockedUserIds: @model.userBlock.getAllIds()
       windowSize: @model.window.getSize()
 
   afterMount: =>
@@ -175,7 +175,7 @@ module.exports = class ProfileDialog
                     @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
                   else
                     @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
-                      type: 'ip', duration: 'permanent', groupId: group?.id
+                      type: 'ip', duration: 'permanent'
                     }
                   @selectedProfileDialogUser.next null
               }
@@ -260,9 +260,9 @@ module.exports = class ProfileDialog
     ]
 
   getUserOptions: =>
-    {me, user, blockedUsers} = @state.getValue()
+    {me, user, blockedUserIds, isFlagged} = @state.getValue()
 
-    isBlocked = @model.userBlock.isBlocked blockedUsers, user?.id
+    isBlocked = @model.userBlock.isBlocked blockedUserIds, user?.id
 
     isMe = user?.id is me?.id
 
@@ -320,6 +320,18 @@ module.exports = class ProfileDialog
                 @model.userBlock.blockByUserId user?.id
               @selectedProfileDialogUser.next null
         }
+      {
+        icon: 'warning'
+        $icon: @$flagIcon
+        text: if isFlagged \
+              then @model.l.get 'profileDialog.isFlagged'
+              else @model.l.get 'profileDialog.flag'
+        onclick: =>
+          @state.set isFlagged: true
+          setTimeout =>
+            @selectedProfileDialogUser.next null
+          , 1000
+      }
     ]
 
   renderItem: (options) =>

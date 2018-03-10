@@ -43,7 +43,7 @@ module.exports = class GroupCollectionPage
         else
           RxObservable.of null
     }
-    @$menuFireAmount = new MenuFireAmount {@model, @router}
+    @$menuFireAmount = new MenuFireAmount {@model, @router, group}
 
     @state = z.state
       group: group

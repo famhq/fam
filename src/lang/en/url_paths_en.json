@@ -12,8 +12,8 @@
   "event": "/event/{id}",
   "events": "/events",
   "eventEdit": "/event/{id}/edit",
-  "friends": "/friends",
-  "friendsWithAction": "/friends/{action}",
+  "people": "/people",
+  "peopleWithAction": "/people/{action}",
 
   "groups": "/groups",
   "group": "/g/{groupId}",

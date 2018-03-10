@@ -21,10 +21,10 @@ if window?
 module.exports = class ConfirmProductPurchase
   constructor: (options) ->
     {@model, @router, product, @onCancel,
-      @onConfirm, purchaseLoadingKey} = options
+      @onConfirm, purchaseLoadingKey, group} = options
     @$appBar = new AppBar {@model, @router}
     @$backButton = new ButtonBack {@router, @model}
-    @$menuFireAmount = new MenuFireAmount {@router, @model}
+    @$menuFireAmount = new MenuFireAmount {@router, @model, group}
     @$fireIcon = new Icon()
     @$cancelButton = new SecondaryButton()
     @$buyButton = new PrimaryButton()

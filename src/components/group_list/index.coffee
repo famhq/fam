@@ -47,7 +47,7 @@ module.exports = class GroupList
                       z '.inner',
                         $header
                     z '.content',
-                      z '.name', group.name or 'Nameless'
+                      z '.name', group.name or @model.l.get 'general.anonymous'
                       z '.count',
                         @model.l.get "groupList.type#{_startCase(group.type)}"
                         [

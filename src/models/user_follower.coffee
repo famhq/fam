@@ -6,6 +6,15 @@ module.exports = class UserFollower
   getAllFollowingIds: =>
     @auth.stream "#{@namespace}.getAllFollowingIds", {}
 
+  getAllFollowerIds: =>
+    @auth.stream "#{@namespace}.getAllFollowerIds", {}
+
+  getAllFollowing: =>
+    @auth.stream "#{@namespace}.getAllFollowing", {}
+
+  getAllFollowers: =>
+    @auth.stream "#{@namespace}.getAllFollowers", {}
+
   followByUserId: (userId) =>
     @auth.call "#{@namespace}.followByUserId", {userId}, {invalidateAll: true}
 

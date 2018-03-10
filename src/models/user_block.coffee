@@ -6,6 +6,9 @@ module.exports = class UserBlock
   getAll: =>
     @auth.stream "#{@namespace}.getAll", {}
 
+  getAllIds: =>
+    @auth.stream "#{@namespace}.getAllIds", {}
+
   blockByUserId: (userId) =>
     @auth.call "#{@namespace}.blockByUserId", {userId}, {invalidateAll: true}
 
