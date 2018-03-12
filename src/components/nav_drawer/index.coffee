@@ -39,9 +39,12 @@ module.exports = class NavDrawer
     }
 
     me = @model.user.getMe()
-    meAndGroupAndLanguage = RxObservable.combineLatest(
+    groupPages = group.switchMap (group) =>
+      @model.groupPage.getAllByGroupId group.id
+    menuItemsInfo = RxObservable.combineLatest(
       me
       group
+      groupPages
       @model.l.getLanguage()
       (vals...) -> vals
     )
@@ -102,7 +105,7 @@ module.exports = class NavDrawer
       drawerWidth: @model.window.getDrawerWidth()
       breakpoint: @model.window.getBreakpoint()
 
-      menuItems: meAndGroupAndLanguage.map ([me, group, language]) =>
+      menuItems: menuItemsInfo.map ([me, group, groupPages, language]) =>
         groupId = group.key or group.id
         meGroupUser = group.meGroupUser
         isClashRoyaleGroup = group.key?.indexOf('clashroyale') isnt -1
@@ -197,11 +200,24 @@ module.exports = class NavDrawer
           }
           {
             path: @router.get 'groupTools', {groupId}
-            title: @model.l.get 'addonsPage.title'
+            title: @model.l.get 'general.tools'
             $icon: new Icon()
             $ripple: new Ripple()
-            iconName: 'ellipsis'
+            iconName: 'tools'
           }
+          unless _isEmpty groupPages
+            {
+              title: @model.l.get 'general.pages'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'ellipsis'
+              $chevronIcon: new Icon()
+              children: _map groupPages, ({data, key}) =>
+                {
+                  path: @router.get 'groupPage', {groupId, key}
+                  title: data?.title
+                }
+            }
           if @model.groupUser.hasPermission {
             meGroupUser, me, permissions: ['manageRole']
           }
@@ -216,6 +232,10 @@ module.exports = class NavDrawer
                 {
                   path: @router.get 'groupManageChannels', {groupId}
                   title: @model.l.get 'groupManageChannelsPage.title'
+                }
+                {
+                  path: @router.get 'groupManagePages', {groupId}
+                  title: @model.l.get 'groupManagePagesPage.title'
                 }
                 {
                   path: @router.get 'groupManageRoles', {groupId}
@@ -271,7 +291,9 @@ module.exports = class NavDrawer
 
   render: ({currentPath}) =>
     {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, group,
-      language, windowSize} = @state.getValue()
+      language, windowSize, groupPages} = @state.getValue()
+
+    console.log groupPages
 
     group ?= {}
     groupId = group.key or group.id

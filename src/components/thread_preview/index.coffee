@@ -55,6 +55,7 @@ module.exports = class ThreadPreview
       else if videoAttachment
         @$embeddedVideo
       else if imageAttachment
+        mediaSrc = imageAttachment.largeSrc or imageAttachment.src
         z 'img.image', {
-          src: imageAttachment.largeSrc or imageAttachment.src
+          src: mediaSrc?.split(' ')[0]
         }

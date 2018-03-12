@@ -54,6 +54,10 @@ Pages =
   GroupManageChannelsPage: require './pages/group_manage_channels'
   GroupAddChannelPage: require './pages/group_add_channel'
   GroupEditChannelPage: require './pages/group_edit_channel'
+  GroupManagePagesPage: require './pages/group_manage_pages'
+  GroupNewPagePage: require './pages/group_new_page'
+  GroupEditPagePage: require './pages/group_edit_page'
+  GroupPagePage: require './pages/group_page'
   GroupManageMemberPage: require './pages/group_manage_member'
   GroupVideosPage: require './pages/group_videos'
   GroupLeaderboardPage: require './pages/group_leaderboard'
@@ -127,7 +131,7 @@ module.exports = class App
         @model.group.getByKey groupId
       else if host.indexOf('fortnitefam-es.com') isnt -1
         if not isNativeApp
-          @cookie.set 'hideAdsUntil', Date.now() + 3600 * 24 * 1000 # TODO: rm
+          @model.cookie.set 'hideAdsUntil', Date.now() + 3600 * 24 * 1000 # TODO: rm
         @model.group.getByKey 'fortnitees'
       else
         @model.group.getByGameKeyAndLanguage(
@@ -260,6 +264,10 @@ module.exports = class App
     route 'groupManageChannels', 'GroupManageChannelsPage'
     route 'groupNewChannel', 'GroupAddChannelPage'
     route 'groupEditChannel', 'GroupEditChannelPage'
+    route 'groupManagePages', 'GroupManagePagesPage'
+    route 'groupNewPage', 'GroupNewPagePage'
+    route 'groupEditPage', 'GroupEditPagePage'
+    route 'groupPage', 'GroupPagePage'
     route 'groupSettings', 'GroupSettingsPage'
     route 'groupSendNotification', 'GroupSendNotificationPage'
     route 'groupVideos', 'GroupVideosPage'

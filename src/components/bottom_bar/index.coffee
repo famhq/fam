@@ -91,7 +91,7 @@ module.exports = class BottomBar
         }
       {
         $icon: new Icon()
-        icon: 'ellipsis'
+        icon: 'tools'
         route: @router.get 'groupTools', {groupId}
         text: @model.l.get 'general.tools'
       }

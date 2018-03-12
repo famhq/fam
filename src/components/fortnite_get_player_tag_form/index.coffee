@@ -64,7 +64,6 @@ module.exports = class FortniteGetPlayerTagForm
     .then =>
       @state.set isLoading: false
     .catch (err) =>
-      console.log err?.info
       @fortniteUsernameError.next(
         err?.info or @model.l.get 'playersSearch.playerTagError'
       )
@@ -86,6 +85,14 @@ module.exports = class FortniteGetPlayerTagForm
             onclick: =>
               @state.set network: networkKey
 
+      if network in ['ps4', 'xb1']
+        z '.link-account',
+          @model.l.get 'fortniteGetPlayerTagForm.linkAccount'
+          z 'a.instructions', {
+            onclick: =>
+              @state.set isInfoDialogVisible: true
+          },
+            @model.l.get 'fortniteGetPlayerTagForm.instructions'
       z '.input',
         z @$fortniteUsernameInput,
           hintText: @model.l.get 'fortniteGetPlayerTagForm.fortniteName'
@@ -114,7 +121,19 @@ module.exports = class FortniteGetPlayerTagForm
           isVanilla: true
           $content:
             z '.z-get-player-tag-form_dialog',
-              @model.l.get 'profileLanding.terms'
+              z 'p',
+                z 'a', {
+                  href: 'https://www.epicgames.com/fortnite/'
+                  onclick: (e) =>
+                    e?.preventDefault()
+                    @model.portal.call 'browser.openWindow', {
+                      url: 'https://www.epicgames.com/fortnite/'
+                      target: '_system'
+                    }
+                },
+                  @model.l.get 'fortniteGetPlayerTagForm.info1'
+              z 'p', @model.l.get 'fortniteGetPlayerTagForm.info2'
+              z 'p', @model.l.get 'fortniteGetPlayerTagForm.info3'
           cancelButton:
             text: @model.l.get 'general.done'
             isFullWidth: true
