@@ -20,7 +20,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupNewPage
-  constructor: ({@model, @router, category, id, group}) ->
+  constructor: ({@model, @router, @page, group}) ->
     @titleValueStreams ?= new RxReplaySubject 1
     @bodyValueStreams ?= new RxReplaySubject 1
     @keyValueStreams ?= new RxReplaySubject 1
@@ -59,7 +59,7 @@ module.exports = class GroupNewPage
 
   setKey: (e) =>
     @keyValueStreams.next RxObservable.of e.target.value
-    
+
   render: =>
     {me, titleValue, bodyValue, keyValue, page,
       language, group} = @state.getValue()
@@ -71,7 +71,7 @@ module.exports = class GroupNewPage
         $head:
           z '.z-new-page_compose-head',
             z '.url',
-              "https://#{config.HOST}/g/#{group?.key or group?.id}/page/"
+              "#{config.HOST}/g/#{group?.key or group?.id}/page/"
               z 'input.key',
                 type: 'text'
                 onkeyup: @setKey
@@ -91,9 +91,7 @@ module.exports = class GroupNewPage
           @model.groupPage.upsert newPage
           .then (newPage) =>
             @resetValueStreams()
-            @router.goPath(
-              @model.page.getPath(
-                _defaults(newPage, page), group, @router
-              )
-              {reset: true}
-            )
+            @router.go 'groupPage', {
+              groupId: group.key or group.id
+              key: keyValue
+            }

@@ -31,10 +31,10 @@ module.exports = class GroupManagePages
         _map pages, (page) =>
           @router.link z 'a.page', {
             href: @router.get 'groupEditPage', {
-              groupId: group.key or group.id, id: page.id
+              groupId: group.key or group.id, key: page.key
             }
           },
-            page.title
+            page.data.title
 
       z '.fab',
         z @$fab,

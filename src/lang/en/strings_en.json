@@ -604,6 +604,7 @@
   "permissions.readMessage": "Read messages",
   "permissions.readAuditLog": "Read audit log",
   "permissions.manageChannel": "Manage channel",
+  "permissions.managePage": "Manage page",
   "permissions.manageInfo": "Manage info",
   "permissions.manageRole": "Manage roles",
   "permissions.tempBanUser": "Temp ban user",
@@ -618,6 +619,9 @@
   "permissions.deleteForumThread": "Delete forum thread",
   "permissions.deleteForumComment": "Delete forum comment",
   "permissions.pinForumThread": "Pin thread",
+
+  "meta.defaultTitle": "chat, memes, news, stats and more",
+  "meta.defaultDescription": "Chat with other {groupName} players, track your stats, and keep up to date on the latest and greatest news.",
 
 
   "crChest.wooden": "Wooden",

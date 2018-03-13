@@ -10,6 +10,8 @@ config = require '../../config'
 colors = require '../../colors'
 rubikCss = require './rubik'
 
+DEFAULT_IMAGE = 'https://cdn.wtf/d/images/fam/web_icon_256.png'
+
 module.exports = class Head
   constructor: ({@model, meta, requests, serverData, group}) ->
     route = requests.map ({route}) -> route
@@ -74,27 +76,26 @@ module.exports = class Head
     userAgent = navigator?.userAgent or serverData?.req?.headers?['user-agent']
 
     meta = _merge {
-      # FIXME: localize
-      title: 'chat, memes, news, stats and more'
-      description: 'Talk to other Clash Royale players, track your stats, and
-                    set which chests you have next. Support for more mobile
-                    games coming soon!'
+      title: @model.l.get 'meta.defaultTitle'
+      description: @model.l.get 'meta.defaultDescription', {
+        replacements:
+          groupName: group?.name
+      }
       icon256: 'http://cdn.wtf/d/images/fam/web_icon_256.png'
       twitter:
         siteHandle: '@famhq'
         creatorHandle: '@famhq'
-        title: undefined
-        description: undefined
-        # min 280 x 150 < 1MB
-        image: 'http://cdn.wtf/d/images/fam/web_icon_1024.png'
+        # title: undefined
+        # description: undefined
+        # # min 280 x 150 < 1MB
+        # image: 'https://cdn.wtf/d/images/fam/web_icon_1024.png'
 
       openGraph:
         title: undefined
         url: undefined
         description: undefined
         siteName: 'Fam'
-        # min 200 x 200, min reccomended 600 x 315, reccomended 1200 x 630
-        image: 'http://cdn.wtf/d/images/fam/web_icon_1024.png'
+        image: DEFAULT_IMAGE
 
       ios:
         # min 152 x 152
@@ -110,9 +111,9 @@ module.exports = class Head
     meta.title = "#{group?.name} #{meta.title} | Fam"
 
     meta = _merge {
-      twitter:
-        title: meta.title
-        description: meta.description
+      # twitter:
+      #   title: meta.title
+      #   description: meta.description
       openGraph:
         title: meta.title
         url: meta.canonical
@@ -158,18 +159,23 @@ module.exports = class Head
 
 
       # Twitter card
-      z 'meta', {name: 'twitter:card', content: 'summary_large_image'}
+      z 'meta', {
+        name: 'twitter:card'
+        content: if openGraph.image and openGraph.image isnt DEFAULT_IMAGE \
+                 then 'summary_large_image'
+                 else 'summary'
+      }
       z 'meta', {name: 'twitter:site', content: "#{twitter.siteHandle}"}
       z 'meta', {name: 'twitter:creator', content: "#{twitter.creatorHandle}"}
-      z 'meta', {
-        name: 'twitter:title'
-        content: "#{twitter.title or meta.title}"
-      }
-      z 'meta', {
-        name: 'twitter:description'
-        content: "#{twitter.description or meta.description}"
-      }
-      z 'meta', {name: 'twitter:image', content: "#{twitter.image}"}
+      # z 'meta', {
+      #   name: 'twitter:title'
+      #   content: "#{twitter.title or meta.title}"
+      # }
+      # z 'meta', {
+      #   name: 'twitter:description'
+      #   content: "#{twitter.description or meta.description}"
+      # }
+      # z 'meta', {name: 'twitter:image', content: "#{twitter.image}"}
 
       # Open Graph
       z 'meta', {property: 'og:title', content: "#{openGraph.title}"}

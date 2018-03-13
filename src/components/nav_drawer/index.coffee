@@ -208,6 +208,8 @@ module.exports = class NavDrawer
           unless _isEmpty groupPages
             {
               title: @model.l.get 'general.pages'
+              path: @router.get 'groupPage', {groupId, key: ''}
+              expandOnClick: true
               $icon: new Icon()
               $ripple: new Ripple()
               iconName: 'ellipsis'
@@ -293,8 +295,6 @@ module.exports = class NavDrawer
     {isOpen, me, menuItems, myGroups, drawerWidth, breakpoint, group,
       language, windowSize, groupPages} = @state.getValue()
 
-    console.log groupPages
-
     group ?= {}
     groupId = group.key or group.id
 
@@ -304,9 +304,10 @@ module.exports = class NavDrawer
 
     isGroupApp = group.key and Environment.isGroupApp group.key
 
-    renderChild = ({path, title, $chevronIcon, children}, depth = 0) =>
+    renderChild = (child, depth = 0) =>
+      {path, title, $chevronIcon, children, expandOnClick} = child
       isSelected = currentPath?.indexOf(path) is 0
-      isExpanded = isSelected or @isExpandedByPath path
+      isExpanded = isSelected or @isExpandedByPath(path or title)
 
       hasChildren = not _isEmpty children
       z 'li.menu-item',
@@ -315,8 +316,11 @@ module.exports = class NavDrawer
           href: path
           onclick: (e) =>
             e.preventDefault()
-            @model.drawer.close()
-            @router.goPath path
+            if expandOnClick
+              expand()
+            else
+              @model.drawer.close()
+              @router.goPath path
         },
           z '.icon'
           title
@@ -328,10 +332,7 @@ module.exports = class NavDrawer
                       else 'chevron-down'
                 color: colors.$tertiary500Text70
                 isAlignedRight: true
-                onclick: (e) =>
-                  e?.stopPropagation()
-                  e?.preventDefault()
-                  @toggleExpandItemByPath path
+                onclick: expand
         if hasChildren and isExpanded
           z "ul.children-#{depth}",
             _map children, (child) ->
@@ -366,7 +367,7 @@ module.exports = class NavDrawer
                     ]
                   _map menuItems, (menuItem) =>
                     {path, onclick, title, $icon, $chevronIcon, $ripple, isNew,
-                      iconName, isDivider, children} = menuItem
+                      iconName, isDivider, children, expandOnClick} = menuItem
 
                     hasChildren = not _isEmpty children
                     groupId = group.key or group.id
@@ -383,7 +384,12 @@ module.exports = class NavDrawer
                     else
                       isSelected = currentPath?.indexOf(path) is 0
 
-                    isExpanded = isSelected or @isExpandedByPath path
+                    isExpanded = isSelected or @isExpandedByPath(path or title)
+
+                    expand = (e) =>
+                      e?.stopPropagation()
+                      e?.preventDefault()
+                      @toggleExpandItemByPath path or title
 
                     z 'li.menu-item', {
                       className: z.classKebab {isSelected}
@@ -392,11 +398,14 @@ module.exports = class NavDrawer
                         href: path
                         onclick: (e) =>
                           e.preventDefault()
-                          if onclick
+                          if expandOnClick
+                            expand()
+                          else if onclick
                             onclick()
+                            @model.drawer.close()
                           else if path
                             @router.goPath path
-                          @model.drawer.close()
+                            @model.drawer.close()
                       },
                         z '.icon',
                           z $icon,
@@ -415,10 +424,7 @@ module.exports = class NavDrawer
                               color: colors.$tertiary500Text70
                               isAlignedRight: true
                               touchHeight: '28px'
-                              onclick: (e) =>
-                                e?.stopPropagation()
-                                e?.preventDefault()
-                                @toggleExpandItemByPath path
+                              onclick: expand
                         if breakpoint is 'desktop'
                           z $ripple
                       if hasChildren and isExpanded

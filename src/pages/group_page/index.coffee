@@ -6,7 +6,7 @@ require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/map'
 
 AppBar = require '../../components/app_bar'
-ButtonBack = require '../../components/button_back'
+ButtonMenu = require '../../components/button_menu'
 GroupPage = require '../../components/group_page'
 Icon = require '../../components/icon'
 colors = require '../../colors'
@@ -15,8 +15,6 @@ if window?
   require './index.styl'
 
 module.exports = class GroupPagePage
-  hideDrawer: true
-
   constructor: ({@model, requests, @router, @overlay$, serverData, group}) ->
     # allow reset beforeUnmount so stale groupPage doesn't show when loading new
     @groupPage = new RxBehaviorSubject null
@@ -30,7 +28,7 @@ module.exports = class GroupPagePage
     groupPage = RxObservable.merge @groupPage, loadedGroupPage
 
     @$appBar = new AppBar {@model}
-    @$buttonBack = new ButtonBack {@router}
+    @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupPage = new GroupPage {@model, @router, @overlay$, groupPage, group}
 
     @state = z.state
@@ -44,13 +42,11 @@ module.exports = class GroupPagePage
         description: groupPage?.data.title
       }
 
-  beforeUnmount: =>
-    @groupPage.next {}
+  # beforeUnmount: =>
+  #   @groupPage.next {}
 
   render: =>
     {windowSize, groupPage} = @state.getValue()
-
-    console.log 'gpppp'
 
     z '.p-groupPage', {
       style:
@@ -58,7 +54,7 @@ module.exports = class GroupPagePage
     },
       z @$appBar, {
         style: 'primary'
-        $topLeftButton: z @$buttonBack, {
+        $topLeftButton: z @$buttonMenu, {
           color: colors.$header500Icon
         }
         title: groupPage?.data.title

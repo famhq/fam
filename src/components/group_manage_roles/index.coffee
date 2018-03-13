@@ -21,6 +21,7 @@ module.exports = class GroupManageRoles
       'manageInfo'
       'readAuditLog'
       'manageChannel'
+      'managePage'
       'manageRole'
       'permaBanUser'
       'tempBanUser'
