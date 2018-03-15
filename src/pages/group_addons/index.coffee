@@ -13,10 +13,15 @@ module.exports = class GroupAddonsPage
   @hasBottomBar: true
 
   constructor: ({@model, requests, @router, serverData, group, @$bottomBar}) ->
+    highlightedKey = requests.map ({route}) ->
+      route.params.highlightedKey
+
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model}
 
-    @$groupAddons = new GroupAddons {@model, @router, sort: 'popular', group}
+    @$groupAddons = new GroupAddons {
+      @model, @router, sort: 'popular', group, highlightedKey
+    }
 
     @state = z.state
       windowSize: @model.window.getSize()

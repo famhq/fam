@@ -1,6 +1,9 @@
 z = require 'zorium'
 _isEmpty = require 'lodash/isEmpty'
 _map = require 'lodash/map'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/observable/of'
 
 Spinner = require '../spinner'
 AddonListItem = require '../addon_list_item'
@@ -11,19 +14,27 @@ if window?
   require './index.styl'
 
 module.exports = class GroupAddons
-  constructor: ({@model, @router, group}) ->
+  constructor: ({@model, @router, group, highlightedKey}) ->
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
     addons = group.switchMap (group) =>
       @model.addon.getAllByGroupId group.id
-    # streams = @model.stream.getAll({sort, filter})
+
+    addonsAndHighlightedKey = RxObservable.combineLatest(
+      addons
+      highlightedKey or RxObservable.of null
+      (vals...) -> vals
+    )
 
     @state = z.state
       me: @model.user.getMe()
-      $addons: addons.map (addons) =>
+      $addons: addonsAndHighlightedKey.map ([addons, highlightedKey]) =>
         _map addons, (addon) =>
-          new AddonListItem {@model, @router, addon}
+          new AddonListItem {
+            @model, @router, addon
+            isHighlighted: highlightedKey is addon.key
+          }
 
   render: =>
     {me, $addons} = @state.getValue()

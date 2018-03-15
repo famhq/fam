@@ -17,5 +17,8 @@ module.exports = class Conversation
   getAll: =>
     @auth.stream "#{@namespace}.getAll", {}
 
+  getAllByGroupId: (groupId) =>
+    @auth.stream "#{@namespace}.getAllByGroupId", {groupId}
+
   getById: (id) =>
     @auth.stream "#{@namespace}.getById", {id}

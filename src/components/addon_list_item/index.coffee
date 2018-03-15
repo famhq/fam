@@ -8,13 +8,14 @@ if window?
   require './index.styl'
 
 module.exports = class AddonListItem
-  constructor: ({@model, @router, addon}) ->
+  constructor: ({@model, @router, addon, isHighlighted}) ->
     @state = z.state
       addon: addon
+      isHighlighted: isHighlighted
 
   render: ({hasPadding, replacements, onclick} = {}) =>
     hasPadding ?= true
-    {addon} = @state.getValue()
+    {addon, isHighlighted} = @state.getValue()
 
     unless addon?.key
       return null
@@ -23,7 +24,7 @@ module.exports = class AddonListItem
       href: @router.get 'toolByKey', {
         key: _kebabCase(addon.key)
       }
-      className: z.classKebab {hasPadding}
+      className: z.classKebab {hasPadding, isHighlighted}
       onclick: (e) =>
         e?.preventDefault()
 

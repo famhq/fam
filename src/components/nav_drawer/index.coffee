@@ -73,7 +73,6 @@ module.exports = class NavDrawer
         groups = _filter groups, ({id}) ->
           id isnt group.id
         myGroups = _map groups, (group, i) =>
-          meGroupUser = group.meGroupUser
           {
             group
             key: group.key
@@ -143,7 +142,7 @@ module.exports = class NavDrawer
           }
           if group.key in [
             'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
-            'brawlstarses'
+            'brawlstarses', 'ninja'
           ]
             {
               path: @router.get 'groupForum', {groupId}
@@ -152,7 +151,9 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'rss'
             }
-          if isClashRoyaleGroup or group.key in ['nickatnyte', 'teamqueso']
+          if isClashRoyaleGroup or group.key in [
+            'nickatnyte', 'teamqueso', 'ninja'
+          ]
             {
               path: @router.get 'groupCollection', {groupId}
               title: @model.l.get 'collectionPage.title'
@@ -160,7 +161,9 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'cards'
             }
-          if isClashRoyaleGroup or group.key in ['nickatnyte', 'teamqueso']
+          if isClashRoyaleGroup or group.key in [
+            'nickatnyte', 'teamqueso', 'ninja'
+          ]
             {
               path: @router.get 'trades', {groupId}
               title: @model.l.get 'tradesPage.title'
@@ -168,7 +171,9 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'trade'
             }
-          if group.key in ['playhard', 'eclihpse', 'nickatnyte', 'teamqueso']
+          if group.key in [
+            'playhard', 'eclihpse', 'nickatnyte', 'teamqueso', 'ninja'
+          ]
             {
               path: @router.get 'groupVideos', {groupId}
               title: @model.l.get 'videosPage.title'
@@ -224,7 +229,8 @@ module.exports = class NavDrawer
             meGroupUser, me, permissions: ['manageRole']
           }
             {
-              path: @router.get 'groupSettings', {groupId}
+              # path: @router.get 'groupSettings', {groupId}
+              expandOnClick: true
               title: @model.l.get 'groupSettingsPage.title'
               $icon: new Icon()
               $ripple: new Ripple()

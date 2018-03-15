@@ -36,32 +36,29 @@ module.exports = class GroupChatPage
     isLoading = new RxBehaviorSubject false
     me = @model.user.getMe()
 
-    groupAndConversationIdAndMe = RxObservable.combineLatest(
-      @group
+    conversationsAndConversationIdAndMe = RxObservable.combineLatest(
+      @group.switchMap (group) =>
+        @model.conversation.getAllByGroupId group.id
       conversationId
       me
       (vals...) -> vals
     )
 
     currentConversationId = null
-    conversation = groupAndConversationIdAndMe
-    .switchMap ([group, conversationId, me]) =>
+    conversation = conversationsAndConversationIdAndMe
+    .switchMap ([conversations, conversationId, me]) ->
       # side effect
       if conversationId isnt currentConversationId
         # is set to false when messages load in conversation component
         isLoading.next true
 
       currentConversationId = conversationId
-      # TODO
-      # conversationId ?= @model.cookie.get(
-      #   "group_#{group.id}_last_conversation_id"
-      # )
-      conversationId ?= _find(group.conversations, ({data, isDefault}) ->
+      conversationId ?= _find(conversations, ({data, isDefault}) ->
         isDefault or data?.name is 'general' or data?.name is 'geral'
       )?.id
-      conversationId ?= group.conversations?[0]?.id
+      conversationId ?= conversations?[0]?.id
       if conversationId
-        @model.conversation.getById conversationId
+        RxObservable.of _find conversations, {id: conversationId}
       else
         RxObservable.of null
     # breaks switching groups (leaves getMessagesStream as prev val)

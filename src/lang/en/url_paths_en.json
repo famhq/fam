@@ -29,6 +29,7 @@
   "groupInvite": "/g/{groupId}/invite",
   "groupManage": "/g/{groupId}/manage/{userId}",
   "groupTools": "/g/{groupId}/tools",
+  "groupToolsWithHighlight": "/g/{groupId}/tools/highlight/{highlightedKey}",
   "groupNewChannel": "/g/{groupId}/new-channel",
   "groupProfile": "/g/{groupId}/profile",
   "groupEditChannel": "/g/{groupId}/chat/{conversationId}/edit",

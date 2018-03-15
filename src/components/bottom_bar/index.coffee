@@ -15,7 +15,7 @@ if window?
 GROUPS_IN_DRAWER = 2
 
 collectionGroupKeys = [
-  'playhard', 'eclihpse', 'nickatnyte', 'ferg', 'teamqueso'
+  'playhard', 'eclihpse', 'nickatnyte', 'ferg', 'teamqueso', 'ninja'
 ]
 
 module.exports = class BottomBar

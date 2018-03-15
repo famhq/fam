@@ -13,6 +13,8 @@ files = {
   fortnite_weapons: null
 }
 
+console.log '1'
+
 module.exports = getJsonString: (language) ->
   files = _mapValues files, (val, file) ->
     if file is 'paths'

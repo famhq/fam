@@ -90,11 +90,11 @@ module.exports = class GroupHome
 
     z '.z-group-home',
       z '.g-grid',
-        if group?.key in ['fortnitees', 'nickatnyte']
+        if group?.key in ['fortnitees', 'nickatnyte', 'ninja']
           z '.card',
             z @$groupHomeFortniteStats
 
-        if not (group?.key in ['fortnitees', 'brawlstarses'])
+        if not (group?.key in ['fortnitees', 'brawlstarses', 'ninja'])
           z '.card',
             z @$groupHomeClashRoyaleChestCycle
 
@@ -123,12 +123,13 @@ module.exports = class GroupHome
                 z @$groupHomeOffers
 
               if group.key in [
-                'playhard', 'eclihpse', 'nickatnyte', 'ferg', 'teamqueso'
+                'playhard', 'eclihpse', 'nickatnyte', 'ferg',
+                'teamqueso', 'ninja'
               ]
                 z @$groupHomeVideos
 
               if player?.id and
-                  not (group.key in ['fortnitees', 'brawlstarses'])
+                  not (group.key in ['fortnitees', 'brawlstarses', 'ninja'])
                 z @$groupHomeClashRoyaleDecks
 
               z @$groupHomeAddons
