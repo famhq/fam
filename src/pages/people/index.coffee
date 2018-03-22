@@ -7,7 +7,7 @@ require 'rxjs/add/observable/of'
 
 Tabs = require '../../components/tabs'
 People = require '../../components/people'
-FindPeople = require '../../components/find_friends'
+FindPeople = require '../../components/find_people'
 ProfileDialog = require '../../components/profile_dialog'
 AppBar = require '../../components/app_bar'
 Icon = require '../../components/icon'

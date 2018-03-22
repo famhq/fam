@@ -1,5 +1,6 @@
 z = require 'zorium'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 
@@ -43,6 +44,9 @@ module.exports = class Compose
       @bodyValueStreams.next RxObservable.of e.target.value
     else
       @bodyValue.next e.target.value
+
+  beforeUnmount: =>
+    @attachmentsValueStreams.next new RxBehaviorSubject []
 
   render: ({isReply, onDone, $head}) =>
     {me, isLoading, titleValue} = @state.getValue()

@@ -42,7 +42,7 @@ module.exports = class EditProfile
       valueStreams: @usernameValueStreams
       error: @usernameError
 
-    @$adsenseAd = new AdsenseAd {@model}
+    @$adsenseAd = new AdsenseAd {@model, group}
 
     @state = z.state
       me: me

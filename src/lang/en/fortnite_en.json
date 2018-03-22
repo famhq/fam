@@ -34,5 +34,17 @@
   "fortniteWeapon.fireRate": "Fire Rate",
   "fortniteWeapon.magazineSize": "Magazine Size",
   "fortniteWeapon.reloadTime": "Reload Time",
-  "fortniteWeapon.impact": "Impact"
+  "fortniteWeapon.impact": "Impact",
+
+  "fortniteStat.wins": "Wins",
+  "fortniteStat.winPercent": "Win %",
+  "fortniteStat.killDeath": "K/D",
+  "fortniteStat.kills": "Kills",
+  "fortniteStat.matches": "Matches",
+  "fortniteStat.hoursPlayed": "{hours} hours played",
+
+  "fortniteStat.overall": "Overall",
+  "fortniteStat.solo": "Solo",
+  "fortniteStat.duos": "Duos",
+  "fortniteStat.squad": "Squad"
 }

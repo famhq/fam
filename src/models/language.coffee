@@ -34,7 +34,7 @@ class Language
         addons: null
         paths: null
         languages: null
-        fortnite_weapons: null
+        fortnite: null
       }
 
       @files = _mapValues files, (val, file) ->

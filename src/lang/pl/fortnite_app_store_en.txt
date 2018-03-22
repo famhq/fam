@@ -1,0 +1,12 @@
+Definitywna aplikacja pokazująca nowości, czat, statystyki, memy i więcej
+
+Funkcje:
+• Śledź swoje statystyki w grze: zwycięstwa, zabójstwa, stosunek śmierci do zabójstw, itp...
+• Czatuj z innymi graczami Fortnite
+• Znajdź nowych przyjaciół do swojego oddziału
+• Czytaj i komentuj wiadomości i memy na forum
+• Wyświetlaj lokalizacje skrzyń
+• Poznaj statystyki każdej broni
+• Zobacz bieżące elementy w sklepie
+
+...i wiele, wiele więcej! Fam dla Fortnite stale się rozwija w oparciu o opinie graczy!

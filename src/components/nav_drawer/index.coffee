@@ -28,7 +28,7 @@ if window?
 
 module.exports = class NavDrawer
   constructor: ({@model, @router, group, @overlay$}) ->
-    @$adsenseAd = new AdsenseAd {@model}
+    @$adsenseAd = new AdsenseAd {@model, group}
     @$groupBadge = new GroupBadge {@model, group}
     @$socialIcon = new Icon()
     @$drawer = new Drawer {

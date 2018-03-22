@@ -1,4 +1,5 @@
 z = require 'zorium'
+_startCase = require 'lodash/startCase'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
@@ -82,7 +83,7 @@ module.exports = class GroupProfilePage
     }
     @$clashRoyaleProfileInfo = new ProfileInfo {@model, @router, group, user}
     @$groupHomeFortniteStats = new GroupHomeFortniteStats {
-      @model, @router, group
+      @model, @router, group, @player
     }
     # @$clashRoyaleProfileLanding = new ProfileLanding {@model, @router, group}
     @$clashRoyaleGetPlayerTagForm = new ClashRoyaleGetPlayerTagForm {
@@ -156,12 +157,11 @@ module.exports = class GroupProfilePage
     gameKey = group?.gameKeys?[0]
 
     if isMe
-      text = 'View my Clash Royale profile on Fam'
+      text = "View my #{_startCase(gameKey)} profile on Fam"
       username = me?.username
       id = me?.id
     else
-      text = "#{playerName}'s Clash Royale stats Clash Royale
-              profile on Fam"
+      text = "#{playerName}'s #{_startCase(gameKey)} profile on Fam"
       username = user?.username
       id = user?.id
 
@@ -214,7 +214,8 @@ module.exports = class GroupProfilePage
               @prevClientY = null
           },
             if gameKey is 'fortnite'
-              z @$groupHomeFortniteStats
+              z '.g-grid',
+                z @$groupHomeFortniteStats
             else
               z @$clashRoyaleProfile, {isOtherProfile}
         else if player and isMe

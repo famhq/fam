@@ -14,12 +14,12 @@ require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/observable/of'
 require 'rxjs/add/observable/combineLatest'
 
-
 colors = require '../../colors'
 config = require '../../config'
 Base = require '../base'
 AppBar = require '../app_bar'
 ButtonBack = require '../button_back'
+AdsenseAd = require '../adsense_ad'
 Icon = require '../icon'
 Avatar = require '../avatar'
 ClanBadge = require '../clan_badge'
@@ -59,6 +59,7 @@ module.exports = class Thread extends Base
     @$starIcon = new Icon()
     @$threadUpvoteButton = new ThreadVoteButton {@model}
     @$threadDownvoteButton = new ThreadVoteButton {@model}
+    @$adsenseAd = new AdsenseAd {@model, group}
 
     @$fab = new Fab()
     @$avatar = new Avatar()
@@ -275,6 +276,8 @@ module.exports = class Thread extends Base
 
     points = if thread then thread.upvotes else 0
 
+    isNativeApp = Environment.isNativeApp(config.GAME_KEY)
+
     z '.z-thread',
       z @$appBar, {
         title: ''
@@ -431,7 +434,20 @@ module.exports = class Thread extends Base
                 onclick: =>
                   @overlay$.next @$filterCommentsDialog
 
+          if Environment.isMobile() and not isNativeApp
+            z '.ad',
+              z @$adsenseAd, {
+                slot: 'mobile320x50'
+              }
+          else if not Environment.isMobile()
+            z '.ad',
+              z @$adsenseAd, {
+                slot: 'desktop728x90'
+              }
+
+
         z '.comments-wrapper',
+
           z '.g-grid',
             z '.reply',
               @$conversationInput

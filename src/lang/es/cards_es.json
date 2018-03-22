@@ -82,8 +82,8 @@
   "crCard.zap": "Descarga",
   "crCard.zappies": "Electrocutadores",
   "crCard.resource": "Carta de recursos",
-  "crCard.common": "Carta común",
-  "crCard.rare": "Carta especial",
-  "crCard.epic": "Carta épica",
-  "crCard.legendary": "Carta legendaria"
+  "crCard.common": "común",
+  "crCard.rare": "especial",
+  "crCard.epic": "épica",
+  "crCard.legendary": "legendaria"
 }

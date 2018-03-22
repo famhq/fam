@@ -4,26 +4,47 @@ colors = require '../../colors'
 
 CLIENT = 'ca-pub-9043203456638369'
 slots =
-  desktop728x90:
-    slot: '3445650539'
-    width: 728
-    height: 90
-  mobile320x50:
-    slot: '3284200136'
-    width: 320
-    height: 50
-  desktop336x280:
-    slot: '2577692937'
-    width: 336
-    height: 280
-  mobile300x250:
-    slot: '4972756133'
-    width: 300
-    height: 250
+  fortnitees:
+    desktop728x90:
+      slot: '2546397552'
+      width: 728
+      height: 90
+    mobile320x50:
+      slot: '4980989200'
+      width: 320
+      height: 50
+    desktop336x280:
+      slot: '4051050917'
+      width: 336
+      height: 280
+    mobile300x250:
+      slot: '7990295927'
+      width: 300
+      height: 250
+
+  default:
+    desktop728x90:
+      slot: '3445650539'
+      width: 728
+      height: 90
+    mobile320x50:
+      slot: '3284200136'
+      width: 320
+      height: 50
+    desktop336x280:
+      slot: '2577692937'
+      width: 336
+      height: 280
+    mobile300x250:
+      slot: '4972756133'
+      width: 300
+      height: 250
 
 module.exports = class AdsenseAd
-  constructor: ({@model}) ->
+  constructor: ({@model, group}) ->
     @unique = Math.random()
+
+    @state = z.state {group}
 
   afterMount: ->
     if window?
@@ -32,7 +53,9 @@ module.exports = class AdsenseAd
       , 500
 
   render: ({slot} = {}) =>
-    slotInfo = slots[slot]
+    {group} = @state.getValue()
+
+    slotInfo = slots[group?.key or group?.id]?[slot] or slots.default[slot]
 
     if not slotInfo or not @model.ad.isVisible({isWebOnly: true})
       return

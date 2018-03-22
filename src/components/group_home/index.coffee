@@ -2,7 +2,9 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxObservable = require('rxjs/Observable').Observable
 Environment = require '../../services/environment'
+require 'rxjs/add/observable/combineLatest'
 
 GroupHomeVideos = require '../group_home_videos'
 GroupHomeThreads = require '../group_home_threads'
@@ -26,9 +28,11 @@ if window?
 module.exports = class GroupHome
   constructor: ({@model, @router, group, @overlay$, @serverData}) ->
     me = @model.user.getMe()
+    meAndGroup = RxObservable.combineLatest me, group, (vals...) -> vals
 
-    player = me.switchMap ({id}) =>
-      @model.player.getByUserIdAndGameKey id, 'clash-royale'
+    player = meAndGroup.switchMap ([{id}, group]) =>
+      gameKey = group.gameKeys?[0] or 'clash-royale'
+      @model.player.getByUserIdAndGameKey id, gameKey
       .map (player) ->
         return player or {}
 

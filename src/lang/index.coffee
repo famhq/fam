@@ -10,7 +10,7 @@ files = {
   addons: null
   paths: null
   languages: null
-  fortnite_weapons: null
+  fortnite: null
 }
 
 console.log '1'

@@ -248,11 +248,10 @@ module.exports = class App
     route 'conversations', 'ConversationsPage'
     route 'newConversation', 'NewConversationPage'
     route 'groups', 'GroupsPage'
-    route 'group', 'GroupHomePage'
     route ['groupChat', 'groupChatConversation'], 'GroupChatPage'
     route ['groupCollection', 'groupCollectionWithTab'], 'GroupCollectionPage'
     route 'groupForum', 'GroupForumPage'
-    route 'groupHome', 'GroupHomePage'
+    route ['group', 'groupHome'], 'GroupHomePage'
     route 'groupInvite', 'GroupInvitePage'
     route 'groupInvites', 'GroupInvitesPage'
     route [

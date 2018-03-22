@@ -208,7 +208,9 @@ app.use (req, res, next) ->
     transports: ['websocket']
   }
   fullLanguage = req.headers?['accept-language']
-  language = req.cookies?['language'] or fullLanguage?.substr(0, 2)
+  language = req.query?.lang or
+    req.cookies?['language'] or
+    fullLanguage?.substr(0, 2)
   unless language in config.LANGUAGES
     language = 'en'
   model = new Model {

@@ -18,12 +18,9 @@ module.exports = class GroupHomePage
   @hasBottomBar: true
 
   constructor: (options) ->
-    {@model, requests, @router, serverData, @overlay$,
+    {@model, @requests, @router, serverData, @overlay$,
       group, @$bottomBar} = options
 
-    requestsAndLanguage = RxObservable.combineLatest(
-      requests, @model.l.getLanguage(), (vals...) -> vals
-    )
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
@@ -35,10 +32,24 @@ module.exports = class GroupHomePage
       windowSize: @model.window.getSize()
 
   getMeta: =>
-    meta: {
-      title: @model.l.get 'general.home'
-      description: @model.l.get 'general.home'
-    }
+    @requests.map ({req}) =>
+      referrer = req.query.referrer
+      lang = req.query.lang or 'en'
+      apiUrl = config.PUBLIC_API_URL
+
+      if referrer # TODO: fortnite only
+        {
+          # title: @model.l.get 'general.home'
+          # description: @model.l.get 'general.home'
+          openGraph:
+            image:
+              "#{apiUrl}/di/fortnite-stats/#{referrer}/#{lang}.png?3"
+        }
+      else
+        {
+          title: @model.l.get 'general.home'
+          description: @model.l.get 'general.home'
+        }
 
   render: =>
     {windowSize} = @state.getValue()

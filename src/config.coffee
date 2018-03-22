@@ -128,7 +128,6 @@ isomorphic =
     'https://play.google.com/store/apps/details?id=com.clay.redtritium'
   HOST: HOST
   GAME_KEY: 'openfam'
-  GOOGLE_ANALYTICS_ID: 'UA-27992080-30'
   STRIPE_PUBLISHABLE_KEY:
     serverEnv.STRIPE_PUBLISHABLE_KEY or
     process.env.STRIPE_PUBLISHABLE_KEY

@@ -171,7 +171,7 @@ init = ->
         if Environment.isiOS()
           adId = 'ca-app-pub-9043203456638369/9434224550'
         else if isFortniteApp and Math.random() > 0.50
-          adId = 'ca-app-pub-8707592103881972/2301845811'
+          adId = 'ca-app-pub-4313642096020551/3038303833'
         else
           adId = 'ca-app-pub-9043203456638369/2454362164'
 

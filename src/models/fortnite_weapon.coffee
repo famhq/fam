@@ -12,5 +12,5 @@ module.exports = class FortniteWeapon
     unless key
       return ''
     @l.get "fortniteWeapon.#{_camelCase key}", {
-      file: 'fortnite_weapons'
+      file: 'fortnite'
     }
