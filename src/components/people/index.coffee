@@ -34,8 +34,6 @@ module.exports = class People
   render: ({noPeopleMessage} = {}) =>
     {users, onlineUsersCount, usersCount} = @state.getValue()
 
-    console.log 'users', users
-
     z '.z-friends',
       if users and _isEmpty users
         z '.no-friends',

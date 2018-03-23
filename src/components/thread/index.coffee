@@ -296,9 +296,11 @@ module.exports = class Thread extends Base
                 icon: 'share'
                 color: colors.$header500Icon
                 onclick: =>
+                  path = @model.thread.getPath thread, group, @router
                   @model.portal.call 'share.any', {
                     text: thread.data.title
-                    path: @model.thread.getPath thread, group, @router
+                    path: path
+                    url: "https://#{config.HOST}#{path}"
                   }
               if hasAdminPermission or me?.username is 'austin'
                 z @$editIcon,

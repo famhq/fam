@@ -1,13 +1,13 @@
 z = require 'zorium'
 
-FindFriends = require '../find_friends'
+UserSearch = require '../user_search'
 
 if window?
   require './index.styl'
 
 module.exports = class NewConversation
   constructor: ({@model, @router}) ->
-    @$findFriends = new FindFriends {@model}
+    @$findFriends = new UserSearch {@model}
 
     @state = z.state
       isLoading: false

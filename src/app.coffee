@@ -58,6 +58,7 @@ Pages =
   GroupNewPagePage: require './pages/group_new_page'
   GroupEditPagePage: require './pages/group_edit_page'
   GroupPagePage: require './pages/group_page'
+  GroupNewLfgPage: require './pages/group_new_lfg'
   GroupManageMemberPage: require './pages/group_manage_member'
   GroupVideosPage: require './pages/group_videos'
   GroupLeaderboardPage: require './pages/group_leaderboard'
@@ -242,7 +243,7 @@ module.exports = class App
             })
           return @$cachedPages[pageKey]
 
-    route ['peopleWithAction', 'people'], 'PeoplePage'
+    route ['groupPeopleWithAction', 'groupPeople'], 'PeoplePage'
     route ['tool', 'toolByKey'], 'ToolPage'
     route 'conversation', 'ConversationPage'
     route 'conversations', 'ConversationsPage'
@@ -267,6 +268,7 @@ module.exports = class App
     route 'groupNewPage', 'GroupNewPagePage'
     route 'groupEditPage', 'GroupEditPagePage'
     route 'groupPage', 'GroupPagePage'
+    route 'groupNewLfg', 'GroupNewLfgPage'
     route 'groupSettings', 'GroupSettingsPage'
     route 'groupSendNotification', 'GroupSendNotificationPage'
     route 'groupVideos', 'GroupVideosPage'

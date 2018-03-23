@@ -19,13 +19,11 @@ if window?
   require './index.styl'
 
 module.exports = class PeoplePage
-  constructor: ({@model, @router, requests, serverData, group}) ->
-    @isFindPeopleVisible = new RxReplaySubject 1
-    @isFindPeopleVisible.next(
-      requests.map ({route}) ->
-        route.params.action is 'find'
-    )
+  @hasBottomBar: true
+
+  constructor: ({@model, @router, requests, serverData, group, @$bottomBar}) ->
     @selectedProfileDialogUser = new RxBehaviorSubject null
+    selectedIndex = new RxBehaviorSubject 0
 
     following = @model.userFollower.getAllFollowing()
     .map (userFollowers) -> _map userFollowers, 'user'
@@ -36,7 +34,7 @@ module.exports = class PeoplePage
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@router, @model}
-    @$tabs = new Tabs {@model}
+    @$tabs = new Tabs {@model, selectedIndex}
     @$following = new People {
       @model, users: following, @selectedProfileDialogUser
     }
@@ -47,17 +45,18 @@ module.exports = class PeoplePage
       @model, users: blockedUsers, @selectedProfileDialogUser
     }
     @$fab = new Fab()
-    @$searchIcon = new Icon()
+    @$addIcon = new Icon()
     @$findPeople = new FindPeople {
-      @model, @isFindPeopleVisible, @selectedProfileDialogUser
+      @model, @router, group, @selectedProfileDialogUser
     }
     @$profileDialog = new ProfileDialog {
       @model, @router, @selectedProfileDialogUser
     }
 
     @state = z.state
-      isFindPeopleVisible: @isFindPeopleVisible.switch()
       selectedProfileDialogUser: @selectedProfileDialogUser
+      selectedIndex: selectedIndex
+      group: group
       windowSize: @model.window.getSize()
 
   getMeta: =>
@@ -67,10 +66,10 @@ module.exports = class PeoplePage
     }
 
   render: =>
-    {isFindPeopleVisible, selectedProfileDialogUser,
+    {isCreateLfgVisible, selectedProfileDialogUser, selectedIndex, group
       windowSize} = @state.getValue()
 
-    z '.p-friends', {
+    z '.p-people', {
       style:
         height: "#{windowSize.height}px"
     },
@@ -83,6 +82,11 @@ module.exports = class PeoplePage
         isBarFixed: false
         hasAppBar: true
         tabs: [
+          {
+            $menuText: @model.l.get 'general.search'
+            $el:
+              z @$findPeople
+          }
           {
             $menuText: @model.l.get 'people.following'
             $el:
@@ -99,32 +103,30 @@ module.exports = class PeoplePage
                   z 'div',
                     z 'div', @model.l.get 'people.followersEmpty'
           }
-          {
-            $menuText: @model.l.get 'people.blocked'
-            $el:
-              z @$blockedUsers,
-                noPeopleMessage:
-                  z 'div',
-                    z 'div', @model.l.get 'people.blockedEmpty'
-          }
+          # {
+          #   $menuText: @model.l.get 'people.blocked'
+          #   $el:
+          #     z @$blockedUsers,
+          #       noPeopleMessage:
+          #         z 'div',
+          #           z 'div', @model.l.get 'people.blockedEmpty'
+          # }
         ]
 
-      if isFindPeopleVisible
-        z '.find-friends',
-          z @$findPeople,
-            isVisible: @isFindPeopleVisible
+      z @$bottomBar
 
       if selectedProfileDialogUser
         z @$profileDialog, {user: selectedProfileDialogUser}
 
-      # z '.fab',
-      #   z @$fab,
-      #     colors:
-      #       c500: colors.$primary500
-      #     $icon: z @$searchIcon, {
-      #       icon: 'search'
-      #       isTouchTarget: false
-      #       color: colors.$primary500Text
-      #     }
-      #     onclick: =>
-      #       @isFindPeopleVisible.next RxObservable.of true
+      if selectedIndex is 0
+        z '.fab',
+          z @$fab,
+            colors:
+              c500: colors.$primary500
+            $icon: z @$addIcon, {
+              icon: 'add'
+              isTouchTarget: false
+              color: colors.$primary500Text
+            }
+            onclick: =>
+              @router.go 'groupNewLfg', {groupId: group?.key or group?.id}

@@ -7,7 +7,6 @@ require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switch'
 
 Icon = require '../icon'
-ActionBar = require '../action_bar'
 FlatButton = require '../flat_button'
 PrimaryButton = require '../primary_button'
 PrimaryInput = require '../primary_input'

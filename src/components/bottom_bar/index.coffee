@@ -51,12 +51,20 @@ module.exports = class BottomBar
     # per-group menu:
     # profile, tools, home, forum, chat
     @menuItems = _filter [
-      {
-        $icon: new Icon()
-        icon: 'profile'
-        route: @router.get 'groupProfile', {groupId}
-        text: @model.l.get 'general.profile'
-      }
+      if group?.key is 'fortnitees'
+        {
+          $icon: new Icon()
+          icon: 'friends'
+          route: @router.get 'groupPeople', {groupId}
+          text: @model.l.get 'people.title'
+        }
+      else
+        {
+          $icon: new Icon()
+          icon: 'profile'
+          route: @router.get 'groupProfile', {groupId}
+          text: @model.l.get 'general.profile'
+        }
       {
         $icon: new Icon()
         icon: 'chat'

@@ -22,8 +22,43 @@ module.exports = class Textarea
       error: @error
     }
 
+  afterMount: ($$el) =>
+    @$$textarea = $$el.querySelector('.textarea')
+
+  setValueFromEvent: (e) =>
+    e?.preventDefault()
+
+    @setValue e.target.value
+
+  setValue: (value, {updateDom} = {}) =>
+    if @valueStreams
+      @valueStreams.next RxObservable.of value
+    else
+      @value.next value
+
+    if updateDom
+      @$$textarea.value = value
+
+  setModifier: ({pattern}) =>
+    # TODO: figure out a way to have this not be in state (bunch of re-renders)
+    # problem is the valueStreams / switch
+    {value} = @state.getValue()
+
+    startPos = @$$textarea.selectionStart
+    endPos = @$$textarea.selectionEnd
+    selectedText = value.substring startPos, endPos
+    newSelectedText = pattern.replace '$0', selectedText
+    newOffset = pattern.indexOf '$0'
+    if newOffset is -1
+      newOffset = pattern.length
+    newValue = value.substring(0, startPos) + newSelectedText +
+               value.substring(endPos, value.length)
+    @setValue newValue, {updateDom: true}
+    @$$textarea.focus()
+    @$$textarea.setSelectionRange startPos + newOffset, endPos + newOffset
+
   render: (props) =>
-    {colors, hintText, type, isFloating, isDisabled,
+    {colors, hintText, type, isFloating, isDisabled, isFull,
       isDark, isCentered} = props
 
     {value, error, isFocused} = @state.getValue()
@@ -46,6 +81,7 @@ module.exports = class Textarea
         isFocused
         isDisabled
         isCentered
+        isFull
         isError: error?
       }
       style:
@@ -70,6 +106,10 @@ module.exports = class Textarea
           @isFocused.next true
         onblur: z.ev (e, $$el) =>
           @isFocused.next false
+
+        # onkeyup: @setValueFromEvent
+        # bug where cursor goes to end w/ just value
+        defaultValue: value or ''
       z '.underline-wrapper',
         z '.underline',
           style:

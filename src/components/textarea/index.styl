@@ -103,3 +103,25 @@
     > .underline-wrapper > .underline
       background: none
       border-bottom: 1px dashed getColor('$tertiary300')
+
+  &.is-full // for markdown-editor
+    font-body1()
+    background-color: transparent !important
+    width: 100%
+    height: 100%
+
+    &.is-focused
+      > .hint
+        color: getColor('$tertiary300') !important
+
+    > .hint
+      left: 16px
+
+    > .textarea
+      width: 100%
+      height: 100%
+      padding: 16px
+      box-sizing: border-box
+
+    > .underline-wrapper
+      display: none

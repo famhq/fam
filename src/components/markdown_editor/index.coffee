@@ -7,6 +7,7 @@ require 'rxjs/add/observable/of'
 Icon = require '../icon'
 UploadOverlay = require '../upload_overlay'
 ConversationImagePreview = require '../conversation_image_preview'
+Textarea = require '../textarea'
 config = require '../../config'
 colors = require '../../colors'
 
@@ -32,7 +33,7 @@ module.exports = class MarkdownEditor
         @attachmentsValueStreams.next RxObservable.of(attachments.concat [
           {type: 'image', src: smallUrl, smallSrc: smallUrl, largeSrc: largeUrl}
         ])
-        @setModifier {
+        @$textarea.setModifier {
           pattern: "![](<#{largeUrl} =#{width}x#{height}>)"
         }
     }
@@ -72,58 +73,18 @@ module.exports = class MarkdownEditor
       }
     ]
 
+    @$textarea = new Textarea {@valueStreams, @error}
+
     @state = z.state {
-      value: @valueStreams?.switch() or @value
-      attachments: @attachmentsValueStreams.switch()
-      error: @error
       overlay$: @overlay$
     }
 
-  afterMount: ($$el) =>
-    @$$textarea = $$el.querySelector('.textarea')
-
-  setValueFromEvent: (e) =>
-    e?.preventDefault()
-
-    @setValue e.target.value
-
-  setValue: (value, {updateDom} = {}) =>
-    if @valueStreams
-      @valueStreams.next RxObservable.of value
-    else
-      @value.next value
-
-    if updateDom
-      @$$textarea.value = value
-
-  setModifier: ({pattern}) =>
-    # TODO: figure out a way to have this not be in state (bunch of re-renders)
-    # problem is the valueStreams / switch
-    {value} = @state.getValue()
-
-    startPos = @$$textarea.selectionStart
-    endPos = @$$textarea.selectionEnd
-    selectedText = value.substring startPos, endPos
-    newSelectedText = pattern.replace '$0', selectedText
-    newOffset = pattern.indexOf '$0'
-    if newOffset is -1
-      newOffset = pattern.length
-    newValue = value.substring(0, startPos) + newSelectedText +
-               value.substring(endPos, value.length)
-    @setValue newValue, {updateDom: true}
-    @$$textarea.focus()
-    @$$textarea.setSelectionRange startPos + newOffset, endPos + newOffset
-
   render: ({hintText} = {}) =>
-    {value, error, overlay$} = @state.getValue()
+    {overlay$} = @state.getValue()
 
     z '.z-markdown-editor',
-      z 'textarea.textarea', {
-        placeholder: hintText or ''
-        onkeyup: @setValueFromEvent
-        # bug where cursor goes to end w/ just value
-        defaultValue: value or ''
-      }
+      z '.textarea',
+        z @$textarea, {hintText, isFull: true}
 
       z '.panel',
         _map @modifiers, (options) =>
@@ -138,7 +99,7 @@ module.exports = class MarkdownEditor
                 if onclick
                   onclick()
                 else
-                  @setModifier {pattern, onclick}
+                  @$textarea.setModifier {pattern, onclick}
             }
             if $uploadOverlay
               z '.upload-overlay',

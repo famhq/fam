@@ -43,6 +43,10 @@ module.exports = class Portal
       # throw new Error 'Portal called server-side'
       return console.log 'Portal called server-side'
 
+    # FIXME FIXME: rm. HACK to fix sharing on old APK
+    if args[0] is 'share.any'
+      args[1].path = args[1].path.replace '/g/fortnitees', ''
+
     @portal.call args...
     .catch ->
       # if we don't catch, zorium freaks out if a portal call is in state
@@ -122,11 +126,12 @@ module.exports = class Portal
       accessToken: user.id # Temporary
       userId: user.id
 
-  shareAny: ({text, imageUrl, path}) =>
+  shareAny: ({text, imageUrl, url}) =>
     ga? 'send', 'event', 'share_service', 'share_any'
 
-    url = "https://#{config.HOST}#{path}"
-    text = "#{text} #{url}"
+    if url
+      if text then text += ' '
+      text += url
     @call 'twitter.share', {text}
 
   getPlatform: ({gameKey} = {}) =>

@@ -53,13 +53,14 @@ module.exports = class GroupHomeFortniteStats
       # cached by cloudflare (facebook reqs images to load fast)
       img = new Image()
       img.src = shareImageSrc
+      path = "/g/#{group?.key}?referrer=#{encodeURIComponent(player.id)}" +
+      "&lang=#{language}"
 
       @model.portal.call 'share.any', {
         text: ''
         image: shareImageSrc
-        path:
-          "/g/#{group?.key}?referrer=#{encodeURIComponent(player.id)}" +
-          "&lang=#{language}"
+        path: path # legacy (< 1.5.06)
+        url: "https://#{config.HOST}#{path}"
       }
 
     z '.z-group-home-fortnite-stats',

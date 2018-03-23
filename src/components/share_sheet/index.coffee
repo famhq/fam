@@ -25,7 +25,7 @@ module.exports = class ShareSheet
       isVisible: @isVisible
       currentLoading: null
 
-  render: ({path, text}) =>
+  render: ({path, url, text}) =>
     {isVisible, currentLoading} = @state.getValue()
 
     url = "https://#{config.HOST}#{path}"
@@ -56,7 +56,7 @@ module.exports = class ShareSheet
       any:
         isVisible: Environment.isNativeApp config.GAME_KEY
         onclick: =>
-          @model.portal.call 'share.any', {text, path}
+          @model.portal.call 'share.any', {text, path, url}
         text: 'Other...'
         $icon: z @$shareAnyIcon,
           icon: 'share'

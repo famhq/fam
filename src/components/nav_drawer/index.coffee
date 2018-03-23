@@ -197,7 +197,7 @@ module.exports = class NavDrawer
             iconName: 'profile'
           }
           {
-            path: @router.get 'people', {groupId}
+            path: @router.get 'groupPeople', {groupId}
             title: @model.l.get 'people.title'
             $icon: new Icon()
             $ripple: new Ripple()

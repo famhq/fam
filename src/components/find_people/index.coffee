@@ -1,14 +1,17 @@
 z = require 'zorium'
 _isEmpty = require 'lodash/isEmpty'
+_map = require 'lodash/map'
+_defaults = require 'lodash/defaults'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
-require 'rxjs/add/operator/debounceTime'
+require 'rxjs/add/operator/switchMap'
 
-UserList = require '../user_list'
-TopFriends = require '../top_friends'
-SearchInput = require '../search_input'
+FormattedText = require '../formatted_text'
+SecondaryButton = require '../secondary_button'
+Message = require '../message'
 Icon = require '../icon'
+Avatar = require '../avatar'
 colors = require '../../colors'
 
 if window?
@@ -16,64 +19,88 @@ if window?
 
 SEARCH_DEBOUNCE = 300
 
-module.exports = class FindFriends
-  constructor: ({@model, @isFindFriendsVisible, selectedProfileDialogUser}) ->
-    @isFindFriendsVisible ?= new RxBehaviorSubject true
-    @searchValue = new RxBehaviorSubject ''
-
-    @$searchInput = new SearchInput({@model, @searchValue})
-
-    # TODO: add infinite scroll
-    # tried comblineLatest w/ debounce stream and onscrollbottom stream,
-    # couldn't get it working
-    users = @searchValue.debounceTime(SEARCH_DEBOUNCE).switchMap (query) =>
-      if query
-        @model.user.searchByUsername query
-      else
-        RxObservable.of []
-
-    @$icon = new Icon()
-    @$clear = new Icon()
-
-    @$userList = new UserList {
-      @model, users, selectedProfileDialogUser
-    }
-    @$topFriends = new TopFriends {@model, selectedProfileDialogUser}
+module.exports = class FindPeople
+  constructor: (options) ->
+    {@model, @router, group, @selectedProfileDialogUser, @overlay$} = options
 
     @state = z.state
-      searchValue: @searchValue
-      users: users
-      windowSize: @model.window.getSize()
+      group: group
+      loadingMessageId: null
+      loadingFollowId: null
+      followingIds: @model.userFollower.getAllFollowingIds()
+      lfgs: group.switchMap (group) =>
+        @model.lfg.getAllByGroupId group.id
+        .map (lfgs) =>
+          _map lfgs, (lfg) =>
+            $body = new FormattedText {
+              @model, @router, text: lfg.text, @selectedProfileDialogUser
+            }
+            $message = new Message {
+              message: lfg
+              $body
+              isMe: lfg.userId is me?.id # FIXME
+              @model
+              @overlay$
+              @selectedProfileDialogUser
+              @router
+              # @messageBatchesStreams
+            }
+            {
+              $message
+              lfg
+              $messageButton: new SecondaryButton()
+              $followButton: new SecondaryButton()
+            }
 
-  afterMount: (@$$el) =>
-    @$$el.querySelector('.input').focus()
+  openProfileDialog: (id, user, groupUser) =>
+    @selectedProfileDialogUser.next _defaults {
+      groupUser: groupUser
+      onDeleteMessage: =>
+        {group} = @state.getValue()
+        @model.lfg.deleteByGroupIdAndUserId group.id, user.id
+    }, user
 
-  clear: =>
-    @searchValue.next ''
-    @$$el.querySelector('.input').focus()
+  render: =>
+    {lfgs, loadingMessageId, loadingFollowId, followingIds} = @state.getValue()
 
-  render: ({onclick, onBack, showCurrentFriends} = {}) =>
-    showCurrentFriends ?= false
-    onBack ?= =>
-      @isFindFriendsVisible.next RxObservable.of false
+    z '.z-find-people',
+      z '.g-grid',
+        _map lfgs, ({$message, $messageButton, $followButton, lfg}) =>
+          isFollowing = followingIds and
+                          followingIds.indexOf(lfg.user?.id) isnt -1
+          [
+            z '.lfg',
+              z $message, {
+                openProfileDialogFn: @openProfileDialog
+              }
+              z '.actions',
+                z '.action',
+                  z $messageButton, {
+                    text: @model.l.get 'profileDialog.message'
+                    heightPx: 26
+                    onclick: =>
+                      @state.set loadingMessageId: lfg.id
+                      @model.conversation.create {
+                        userIds: [lfg.userId]
+                      }
+                      .then (conversation) =>
+                        @state.set loadingMessageId: null
+                        @router.go 'conversation', {id: conversation.id}
+                  }
+                z '.action',
+                  z $followButton, {
+                    text: if loadingFollowId is lfg.id \
+                    then @model.l.get 'general.loading'
+                    else if isFollowing
+                    then @model.l.get 'profileInfo.followButtonIsFollowingText'
+                    else @model.l.get 'profileInfo.followButtonText'
 
-    {searchValue, users, windowSize} = @state.getValue()
-
-    z '.z-find-friends', {
-      style:
-        height: "#{windowSize.height}px"
-    },
-      z '.search',
-        z @$searchInput, {
-          onBack: onBack
-          alwaysShowBack: true
-          placeholder: @model.l.get 'findFriends.searchPlaceholder'
-        }
-      z '.results',
-        z '.g-grid',
-          if _isEmpty users
-            z 'div',
-              z @$topFriends, {onclick}
-          else
-            z 'div',
-              z @$userList, {onclick}
+                    heightPx: 26
+                    onclick: =>
+                      if isFollowing
+                        @model.userFollower.unfollowByUserId lfg.user?.id
+                      else
+                        @model.userFollower.followByUserId lfg.user?.id
+                  }
+            z '.divider'
+          ]

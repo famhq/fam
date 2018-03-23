@@ -1,7 +1,7 @@
 z = require 'zorium'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
-FindFriends = require '../find_friends'
+UserSearch = require '../user_search'
 HeadsUp = require '../heads_up'
 
 if window?
@@ -13,7 +13,7 @@ module.exports = class GroupInvite
   constructor: ({@model, @router, group}) ->
     @headsUpNotification = new RxBehaviorSubject null
     @$invitedHeadsUp = new HeadsUp {notification: @headsUpNotification}
-    @$findFriends = new FindFriends {@model}
+    @$userSearch = new UserSearch {@model}
 
     @state = z.state {group}
 
@@ -21,7 +21,7 @@ module.exports = class GroupInvite
     {group} = @state.getValue()
 
     z '.z-group-invite',
-      z @$findFriends, {
+      z @$userSearch, {
         showCurrentFriends: true
         alwaysShowBack: true
         onBack: =>

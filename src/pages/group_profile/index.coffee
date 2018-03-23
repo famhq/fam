@@ -232,7 +232,11 @@ module.exports = class GroupProfilePage
         @$bottomBar
 
       if isShareSheetVisible
-        z @$shareSheet, {text, path}
+        z @$shareSheet, {
+          text
+          path
+          url: "https://#{config.HOST}#{path}"
+        }
 
       if overlay$
         overlay$

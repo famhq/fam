@@ -100,10 +100,12 @@ module.exports = class ProfileChests
         z @$shareButton,
           text: @model.l.get 'general.share'
           onclick: =>
+            path = if me?.username \
+                   then "/user/#{me.username}/chests"
+                   else "/user/id/#{me?.id}/chests"
             @model.portal.call 'share.any', {
               text: ''
               image: "#{config.PUBLIC_API_URL}/di/crChestCycle/#{me?.id}.png"
-              path: if me?.username \
-                    then "/user/#{me.username}/chests"
-                    else "/user/id/#{me?.id}/chests"
+              path: path
+              url: "https://#{config.HOST}#{path}"
             }

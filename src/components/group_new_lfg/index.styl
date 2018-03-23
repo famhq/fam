@@ -1,0 +1,43 @@
+@require '../../vars'
+
+.z-group-new-lfg
+  flex: 1
+  display: flex
+  flex-direction: column
+
+  > .g-grid
+    padding: 16px
+    box-sizing: border-box
+
+    > .hashtags
+      margin-bottom: 16px
+
+      > .tags
+        > .tag
+          font-title()
+          display: inline-block
+          padding: 4px
+          margin-right: 4px
+
+    > .title
+      font-subhead()
+      color: getColor('$primary500')
+      padding: 14px 0
+
+    > .input
+      margin-bottom: 8px
+
+      > .label
+        display: flex
+        margin-top: 16px
+
+        > .text
+          flex: 1
+
+    > .actions
+      display: flex
+      justify-content: flex-end
+      margin-top: 16px
+
+      > .save-button
+        margin-left: 8px
