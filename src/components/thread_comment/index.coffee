@@ -24,7 +24,7 @@ module.exports = class ThreadComment
   constructor: (options) ->
     {@threadComment, @depth, @isMe, @model, @overlay$,
       @selectedProfileDialogUser, @router, @commentStreams,
-      @groupId} = options
+      @group} = options
 
     @depth ?= 0
 
@@ -40,7 +40,7 @@ module.exports = class ThreadComment
         text: @threadComment.body, @model, @router, isFullWidth: true
       }
       messageBatchesStreams: @commentStreams
-      @groupId, @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
+      @group, @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
     }
 
     @$upvoteButton = new ThreadVoteButton {@model}
@@ -59,7 +59,7 @@ module.exports = class ThreadComment
         @overlay$
         @selectedProfileDialogUser
         @router
-        @groupId
+        @group
       }
 
     @state = z.state
@@ -70,7 +70,7 @@ module.exports = class ThreadComment
       isMe: @isMe
       isReplyVisible: false
       isPostLoading: @isPostLoading
-      groupId: @groupId
+      group: @group
       windowSize: @model.window.getSize()
 
   # for cached components
@@ -86,7 +86,7 @@ module.exports = class ThreadComment
           @overlay$
           @selectedProfileDialogUser
           @router
-          @groupId
+          @group
         }
         @$children[i].setThreadComment child
 
@@ -121,7 +121,7 @@ module.exports = class ThreadComment
         @isPostLoading.next false
 
   render: =>
-    {depth, isMe, threadComment, isReplyVisible, $body, groupId,
+    {depth, isMe, threadComment, isReplyVisible, $body, group,
       windowSize, $children} = @state.getValue()
 
     {creator, time, card, body, id, clientId} = threadComment
@@ -148,7 +148,9 @@ module.exports = class ThreadComment
           openProfileDialogFn: (id, user, groupUser) =>
             @selectedProfileDialogUser.next _defaults {
               onDeleteMessage: =>
-                @model.threadComment.deleteByThreadComment voteParent, {groupId}
+                @model.threadComment.deleteByThreadComment voteParent, {
+                  groupId: group?.id
+                }
                 .then =>
                   @commentStreams.take(1).toPromise()
               onDeleteMessagesLast7d: =>
@@ -178,7 +180,7 @@ module.exports = class ThreadComment
                     @overlay$
                     @isPostLoading
                     onPost: @postReply
-                    groupId: @groupId
+                    group: @group
                     onResize: -> null
                   }
                   @state.set isReplyVisible: true

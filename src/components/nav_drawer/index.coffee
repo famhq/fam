@@ -142,7 +142,7 @@ module.exports = class NavDrawer
           }
           if group.key in [
             'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
-            'brawlstarses', 'ninja'
+            'fortnite', 'brawlstarses', 'ninja'
           ]
             {
               path: @router.get 'groupForum', {groupId}
@@ -181,7 +181,7 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'video'
             }
-          if group.key isnt 'fortnitees'
+          if group.gameKey isnt 'fortnite'
             {
               path: @router.get 'groupLeaderboard', {groupId}
               title: @model.l.get 'groupLeaderboardPage.title'

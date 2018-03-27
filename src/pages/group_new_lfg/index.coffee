@@ -8,6 +8,7 @@ if window?
 
 module.exports = class GroupNewLfgPage
   isGroup: true
+  hideDrawer: true
 
   constructor: ({@model, requests, @router, serverData, group}) ->
     @$groupNewLfg = new GroupNewLfg {

@@ -12,6 +12,7 @@ request = require 'clay-request'
 cookieParser = require 'cookie-parser'
 fs = require 'fs'
 socketIO = require 'socket.io-client'
+HttpHash = require 'http-hash'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/operator/do'
 require 'rxjs/add/operator/take'
@@ -221,6 +222,17 @@ app.use (req, res, next) ->
     model: model
   }
   requests = new RxBehaviorSubject(req)
+
+  # redirect /game/gameKey to correct group
+  hash = new HttpHash()
+  hash.set '/game/:gameKey', (params) ->
+    model.group.getByGameKeyAndLanguage(params.gameKey, language)
+    .take(1).subscribe (group) ->
+      res.redirect 302, "/g/#{group?.key or group?.id or 'fortnitees'}"
+  redirectToGameRoute = hash.get req.path
+  if redirectToGameRoute?.handler
+    return redirectToGameRoute.handler redirectToGameRoute.params
+
 
   setCookies = (currentCookies) ->
     (cookies) ->

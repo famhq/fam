@@ -2,6 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _upperFirst = require 'lodash/upperFirst'
 _camelCase = require 'lodash/camelCase'
+_filter = require 'lodash/filter'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
@@ -12,13 +13,14 @@ if window?
   require './index.styl'
 
 module.exports = class FilterThreadsDialog
-  constructor: ({@model, @isVisible, @filter}) ->
+  constructor: ({@model, @isVisible, @filter, group}) ->
     @selectedSort = new RxBehaviorSubject 'popular'
     @selectedFilter = new RxBehaviorSubject 'all'
 
     @$dialog = new Dialog()
 
     @state = z.state
+      group: group
       selectedSort: @selectedSort
       selectedFilter: @selectedFilter
 
@@ -30,16 +32,17 @@ module.exports = class FilterThreadsDialog
     }
 
   render: =>
-    {selectedSort, selectedFilter} = @state.getValue()
+    {group, selectedSort, selectedFilter} = @state.getValue()
 
     sortOptions = [
       {key: 'popular'}
       {key: 'new'}
     ]
 
-    filterOptions = [
+    filterOptions = _filter [
       {key: 'all'}
-      {key: 'deckGuide'}
+      if group?.key and group?.key.indexOf('clashroyale') isnt -1
+        {key: 'deckGuide'}
       {key: 'news'}
     ]
 

@@ -26,7 +26,7 @@ if window?
 module.exports = class ConversationInput
   constructor: (options) ->
     {@model, @router, @message, @onPost, @onResize, toggleIScroll, meGroupUser,
-      @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$, groupId,
+      @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$, group,
       isPostLoading, conversation} = options
 
     allowedPanels ?= RxObservable.of [
@@ -103,7 +103,7 @@ module.exports = class ConversationInput
           @message
           @model
           @currentPanel
-          groupId
+          group
         }
       }
       addons: {
@@ -111,7 +111,7 @@ module.exports = class ConversationInput
         icon: 'ellipsis'
         name: 'addons'
         $el: new ConversationInputAddons {
-          groupId
+          group
           onPost: @post
           @message
           @model
@@ -168,6 +168,7 @@ module.exports = class ConversationInput
       me: me
       inputTranslateY: @inputTranslateY.switch()
       panelHeight: panelHeight
+      group: group
       panels: allowedPanels.map (allowedPanels) =>
         _pick @panels, allowedPanels
       meGroupUser: meGroupUser
@@ -202,9 +203,11 @@ module.exports = class ConversationInput
 
   render: =>
     {currentPanel, mePlayer, me, inputTranslateY, meGroupUser, conversation,
-      panels, panelHeight, cooldownSecondsLeft} = @state.getValue()
+      group, panels, panelHeight, cooldownSecondsLeft} = @state.getValue()
 
     isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV
+    groupRequiresVerification = group?.key and
+      group.key.indexOf('clashroyale') isnt -1
 
     baseHeight = 54
     panelHeight or= @defaultPanelHeight
@@ -237,7 +240,8 @@ module.exports = class ConversationInput
         style:
           transform: "translateY(#{inputTranslateY}px)"
       },
-        if @panels[currentPanel].requireVerified and not isVerified
+        if @panels[currentPanel].requireVerified and not isVerified and
+            groupRequiresVerification
           z '.require-verified',
               z '.title',
                 @model.l.get(

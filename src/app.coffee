@@ -130,10 +130,6 @@ module.exports = class App
       else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getByKey groupId
-      # else if host.indexOf('fortnitefam-es.com') isnt -1
-      #   if not isNativeApp
-      #     @model.cookie.set 'hideAdsUntil', Date.now() + 3600 * 24 * 1000 # TODO: rm
-      #   @model.group.getByKey 'fortnitees'
       else
         @model.group.getByGameKeyAndLanguage(
           config.DEFAULT_GAME_KEY, language

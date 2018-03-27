@@ -29,7 +29,7 @@ module.exports = class GroupForumPage
     @$addIcon = new Icon()
     @$filterIcon = new Icon()
     @$filterThreadsDialog = new FilterThreadsDialog {
-      @model, filter, isVisible: @isFilterThreadsDialogVisible
+      @model, filter, group, isVisible: @isFilterThreadsDialogVisible
     }
 
     @$threads = new Threads {@model, @router, filter, group}

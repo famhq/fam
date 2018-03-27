@@ -19,13 +19,13 @@ module.exports = class GroupHomePage
 
   constructor: (options) ->
     {@model, @requests, @router, serverData, @overlay$,
-      group, @$bottomBar} = options
+      @group, @$bottomBar} = options
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$settingsIcon = new Icon()
     @$groupHome = new GroupHome {
-      @model, @router, serverData, group, @overlay$
+      @model, @router, serverData, @group, @overlay$
     }
 
     @state = z.state
@@ -67,7 +67,7 @@ module.exports = class GroupHomePage
           color: colors.$header500Icon
           onclick: =>
             @overlay$.next new SetLanguageDialog {
-              @model, @router, @overlay$
+              @model, @router, @overlay$, @group
             }
       }
       @$groupHome

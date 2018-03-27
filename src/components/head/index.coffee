@@ -237,13 +237,6 @@ module.exports = class Head
             async: true
             src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
         ]
-      # if host.indexOf('fortnitefam-es.com') isnt -1 or group?.key is 'fortnitees'
-      #   z 'script',
-      #     innerHTML:
-      #       '(adsbygoogle = window.adsbygoogle || []).push({
-      #         google_ad_client: "ca-pub-8707592103881972",
-      #         enable_page_level_ads: true
-      #       });'
 
       z 'style.rubik', rubikCss
 

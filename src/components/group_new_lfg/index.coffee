@@ -53,7 +53,7 @@ module.exports = class GroupEditChannel
   render: =>
     {me, isSaving, group, text} = @state.getValue()
 
-    if group?.key is 'fortnitees'
+    if group?.gameKey is 'fortnite'
       tags = ['ps4', 'xb1', 'pc', 'mobile']
     else
       tags = ['2c2', 'clan', 'amigo']

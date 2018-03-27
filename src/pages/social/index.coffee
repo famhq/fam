@@ -40,7 +40,8 @@ module.exports = class SocialPage
       group
     }
     @$filterThreadsDialog = new FilterThreadsDialog {
-      @model, filter: threadsFilter, isVisible: @isFilterThreadsDialogVisible
+      @model, group, filter: threadsFilter
+      isVisible: @isFilterThreadsDialogVisible
     }
     @$filterIcon = new Icon()
 

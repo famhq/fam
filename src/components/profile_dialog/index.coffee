@@ -260,7 +260,7 @@ module.exports = class ProfileDialog
     ]
 
   getUserOptions: =>
-    {me, user, blockedUserIds, isFlagged} = @state.getValue()
+    {me, user, blockedUserIds, isFlagged, group} = @state.getValue()
 
     isBlocked = @model.userBlock.isBlocked blockedUserIds, user?.id
 
@@ -295,14 +295,15 @@ module.exports = class ProfileDialog
               @router.go 'conversation', {id: conversation.id}
               @selectedProfileDialogUser.next null
       }
-      {
-        icon: 'trade'
-        $icon: @$tradeIcon
-        text: @model.l.get 'tradePage.title'
-        isVisible: not isMe
-        onclick: =>
-          @router.go 'newTradeToId', {toId: user.id}
-      }
+      if not (group?.key in ['fortnitees', 'fortnite'])
+        {
+          icon: 'trade'
+          $icon: @$tradeIcon
+          text: @model.l.get 'tradePage.title'
+          isVisible: not isMe
+          onclick: =>
+            @router.go 'newTradeToId', {toId: user.id}
+        }
       unless user?.flags?.isModerator
         {
           icon: 'block'

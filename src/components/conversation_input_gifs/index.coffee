@@ -23,15 +23,15 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class ConversationInputGifs
-  constructor: ({@model, @message, @onPost, currentPanel, groupId}) ->
+  constructor: ({@model, @message, @onPost, currentPanel, group}) ->
     @searchValue = new RxBehaviorSubject null
     debouncedSearchValue = @searchValue.debounceTime(SEARCH_DEBOUNCE)
 
     @$searchInput = new SearchInput {@model, @searchValue}
     @$spinner = new Spinner()
 
-    group = groupId.switchMap (groupId) =>
-      @model.group.getById groupId
+    group = group.switchMap (group) =>
+      @model.group.getById group?.id
 
     currentPanelAndSearchValueAndGroup = RxObservable.combineLatest(
       currentPanel

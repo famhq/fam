@@ -129,7 +129,7 @@ module.exports = class Thread extends Base
       @overlay$
       @isPostLoading
       onPost: @postMessage
-      groupId: group.map (group) -> group?.id
+      group: group
       onResize: -> null
     }
 
@@ -165,7 +165,7 @@ module.exports = class Thread extends Base
           cacheId = "threadComment-#{threadComment.id}"
           $el = @getCached$ cacheId, ThreadComment, {
             @model, @router, @selectedProfileDialogUser, threadComment
-            @commentStreams, groupId: RxObservable.of thread.groupId
+            @commentStreams, group
           }
           # update cached version
           $el.setThreadComment threadComment

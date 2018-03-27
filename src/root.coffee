@@ -166,7 +166,8 @@ init = ->
       admobMediationSupported = SemverService.gte(appVersion, '1.2.4')
       appodealMediationSupported = false
       nativeAdsSupported = SemverService.gte(appVersion, '1.2.3')
-      isFortniteApp = Environment.isGroupApp 'fortnitees'
+      # TODO: implement by group key, not app info
+      isFortniteApp = Environment.isGroupApp 'fortnite'
       setTimeout ->
         if Environment.isiOS()
           adId = 'ca-app-pub-9043203456638369/9434224550'
