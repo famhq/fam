@@ -20,7 +20,6 @@ module.exports = class ConversationsPage
   getMeta: =>
     {
       title: @model.l.get 'drawer.menuItemConversations'
-      description: @model.l.get 'drawer.menuItemConversations'
     }
 
   render: =>

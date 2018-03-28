@@ -56,7 +56,6 @@ module.exports = class SocialPage
   getMeta: =>
     {
       title: @model.l.get 'general.social'
-      description: @model.l.get 'general.social'
     }
 
   render: =>

@@ -48,7 +48,6 @@ module.exports = class GroupHomePage
       else
         {
           title: @model.l.get 'general.home'
-          description: @model.l.get 'general.home'
         }
 
   render: =>

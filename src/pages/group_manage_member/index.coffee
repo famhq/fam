@@ -29,7 +29,6 @@ module.exports = class GroupManageMemberPage
   getMeta: =>
     {
       title: @model.l.get 'groupManageMemberPage.title'
-      description: @model.l.get 'groupManageMemberPage.title'
     }
 
   render: =>

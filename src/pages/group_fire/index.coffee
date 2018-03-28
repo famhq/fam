@@ -48,7 +48,6 @@ module.exports = class GroupFirePage
   getMeta: =>
     {
       title: @model.l.get 'earnFire.title'
-      description: @model.l.get 'earnFire.title'
     }
 
   render: =>

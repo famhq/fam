@@ -20,7 +20,6 @@ module.exports = class GroupsPage
   getMeta: =>
     {
       title: @model.l.get 'communityPage.menuText'
-      description: @model.l.get 'communityPage.menuText'
     }
 
   render: =>

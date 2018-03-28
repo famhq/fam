@@ -20,7 +20,6 @@ module.exports = class NewThreadPage
   getMeta: =>
     {
       title: @model.l.get 'newThreadPage.title'
-      description: @model.l.get 'newThreadPage.title'
     }
 
   render: =>

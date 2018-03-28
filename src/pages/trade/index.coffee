@@ -34,7 +34,6 @@ module.exports = class TradePage
   getMeta: =>
     meta:
       title: @model.l.get 'tradePage.title'
-      description: @model.l.get 'tradePage.title'
 
   render: =>
     z '.p-trade', {

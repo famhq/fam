@@ -20,7 +20,6 @@ module.exports = class PoliciesPage
   getMeta: =>
     {
       title: @model.l.get 'policiesPage.title'
-      description: @model.l.get 'policiesPage.title'
     }
 
   render: =>

@@ -32,7 +32,6 @@ module.exports = class GroupEditPagePage
   getMeta: =>
     {
       title: @model.l.get 'groupEditPagePage.title'
-      description: @model.l.get 'groupEditPagePage.title'
     }
 
   render: =>

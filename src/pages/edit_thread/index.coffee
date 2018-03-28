@@ -33,7 +33,6 @@ module.exports = class EditThreadPage
   getMeta: =>
     {
       title: @model.l.get 'editThreadPage.title'
-      description: @model.l.get 'editThreadPage.title'
     }
 
   render: =>

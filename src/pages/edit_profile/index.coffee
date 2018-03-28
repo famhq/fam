@@ -10,7 +10,6 @@ module.exports = class EditProfilePage
   getMeta: =>
     {
       title: @model.l.get 'editProfilePage.title'
-      description: @model.l.get 'editProfilePage.title'
     }
 
   render: =>

@@ -19,7 +19,6 @@ module.exports = class GroupInvitePage
   getMeta: =>
     {
       title: @model.l.get 'groupInvitePage.title'
-      description: @model.l.get 'groupInvitePage.title'
     }
 
   render: =>

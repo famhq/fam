@@ -31,7 +31,6 @@ module.exports = class GroupLeaderboardPage
   getMeta: =>
     {
       title: @model.l.get 'leaderboardPage.title'
-      description: @model.l.get 'leaderboardPage.title'
     }
 
   render: =>

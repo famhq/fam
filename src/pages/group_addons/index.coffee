@@ -29,7 +29,6 @@ module.exports = class GroupAddonsPage
   getMeta: =>
     {
       title: @model.l.get 'addonsPage.title'
-      description: @model.l.get 'addonsPage.title'
     }
 
   render: =>

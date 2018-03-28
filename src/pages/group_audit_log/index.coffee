@@ -26,7 +26,6 @@ module.exports = class GroupAuditLogPage
   getMeta: =>
     {
       title: @model.l.get 'groupAuditLogPage.title'
-      description: @model.l.get 'groupAuditLogPage.title'
     }
 
   render: =>

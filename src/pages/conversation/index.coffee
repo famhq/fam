@@ -41,7 +41,6 @@ module.exports = class ConversationPage
   getMeta: =>
     {
       title: @model.l.get 'general.chat'
-      description: @model.l.get 'general.chat'
     }
 
   render: =>

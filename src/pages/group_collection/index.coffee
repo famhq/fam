@@ -52,7 +52,6 @@ module.exports = class GroupCollectionPage
   getMeta: =>
     {
       title: @model.l.get 'collectionPage.title'
-      description: @model.l.get 'collectionPage.title'
     }
 
   afterMount: =>

@@ -25,7 +25,6 @@ module.exports = class GroupSettingsPage
   getMeta: =>
     {
       title: @model.l.get 'groupSettingsPage.title'
-      description: @model.l.get 'groupSettingsPage.title'
     }
 
   render: =>

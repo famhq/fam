@@ -22,7 +22,6 @@ module.exports = class UserOfWeekPage
   getMeta: =>
     {
       title: @model.l.get 'userOfWeekPage.title'
-      description: @model.l.get 'userOfWeekPage.title'
     }
 
   render: =>

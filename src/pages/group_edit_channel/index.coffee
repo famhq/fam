@@ -36,7 +36,6 @@ module.exports = class GroupEditChannelPage
   getMeta: =>
     {
       title: @model.l.get 'groupEditChannelPage.title'
-      description: @model.l.get 'groupEditChannelPage.title'
     }
 
   render: =>

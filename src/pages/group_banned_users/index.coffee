@@ -51,7 +51,6 @@ module.exports = class GroupBannedUsersPage
   getMeta: =>
     {
       title: @model.l.get 'groupBannedUsersPage.title'
-      description: @model.l.get 'groupBannedUsersPage.title'
     }
 
   render: =>

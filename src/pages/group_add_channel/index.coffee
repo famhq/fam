@@ -26,7 +26,6 @@ module.exports = class GroupAddChannelPage
   getMeta: =>
     {
       title: @model.l.get 'groupAddChannelPage.title'
-      description: @model.l.get 'groupAddChannelPage.title'
     }
 
   render: =>

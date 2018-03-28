@@ -26,7 +26,6 @@ module.exports = class Recruiting
   getMeta: =>
     meta:
       title: @model.l.get 'newTradePage.title'
-      description: @model.l.get 'newTradePage.title'
 
   render: =>
     {windowSize, group} = @state.getValue()
