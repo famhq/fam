@@ -60,6 +60,10 @@ module.exports = class Group
   getDisplayName: (group) ->
     group?.name or 'Nameless'
 
+  hasGameKey: (group, gameKey) ->
+    (group?.gameKeys and group?.gameKeys?.indexOf(gameKey) isnt -1) or
+    group?.gameKey is gameKey
+
   # TODO: rm completely. atm only used for 'admin' permission
   hasPermission: (group, user, {level} = {}) ->
     userId = user?.id

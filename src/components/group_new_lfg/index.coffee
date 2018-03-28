@@ -15,7 +15,7 @@ colors = require '../../colors'
 if window?
   require './index.styl'
 
-module.exports = class GroupEditChannel
+module.exports = class GroupNewLfg
   constructor: ({@model, @router, group}) ->
     me = @model.user.getMe()
 

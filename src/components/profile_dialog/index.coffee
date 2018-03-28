@@ -295,7 +295,7 @@ module.exports = class ProfileDialog
               @router.go 'conversation', {id: conversation.id}
               @selectedProfileDialogUser.next null
       }
-      if not (group?.key in ['fortnitees', 'fortnite'])
+      if not @model.group.hasGameKey group, 'fortnite'
         {
           icon: 'trade'
           $icon: @$tradeIcon

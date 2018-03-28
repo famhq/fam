@@ -6,8 +6,8 @@ module.exports = class DynamicImage
   getByGroupIdAndMe: (groupId) =>
     @auth.stream "#{@namespace}.getByGroupIdAndMe", {groupId}
 
-  getAllByGroupId: (groupId) =>
-    @auth.stream "#{@namespace}.getAllByGroupId", {groupId}
+  getAllByGroupIdAndHashtag: (groupId, hashtag) =>
+    @auth.stream "#{@namespace}.getAllByGroupIdAndHashtag", {groupId, hashtag}
 
   deleteByGroupIdAndUserId: (groupId, userId) =>
     @auth.call "#{@namespace}.deleteByGroupIdAndUserId", {groupId, userId}, {

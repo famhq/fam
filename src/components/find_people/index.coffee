@@ -5,11 +5,13 @@ _defaults = require 'lodash/defaults'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
+require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/switchMap'
 
 FormattedText = require '../formatted_text'
 SecondaryButton = require '../secondary_button'
 Message = require '../message'
+UiCard = require '../ui_card'
 Icon = require '../icon'
 Avatar = require '../avatar'
 colors = require '../../colors'
@@ -23,13 +25,23 @@ module.exports = class FindPeople
   constructor: (options) ->
     {@model, @router, group, @selectedProfileDialogUser, @overlay$} = options
 
+    @selectedTag = new RxBehaviorSubject ''
+
+    groupAndSelectedTag = RxObservable.combineLatest(
+      group, @selectedTag, (vals...) -> vals
+    )
+
+    @$infoCard = new UiCard()
+
     @state = z.state
       group: group
       loadingMessageId: null
       loadingFollowId: null
       followingIds: @model.userFollower.getAllFollowingIds()
-      lfgs: group.switchMap (group) =>
-        @model.lfg.getAllByGroupId group.id
+      isInfoCardVisible: not @model.cookie.get 'hidePeopleInfo'
+      selectedTag: @selectedTag
+      lfgs: groupAndSelectedTag.switchMap ([group, selectedTag]) =>
+        @model.lfg.getAllByGroupIdAndHashtag group.id, selectedTag
         .map (lfgs) =>
           _map lfgs, (lfg) =>
             $body = new FormattedText {
@@ -61,10 +73,39 @@ module.exports = class FindPeople
     }, user
 
   render: =>
-    {lfgs, loadingMessageId, loadingFollowId, followingIds} = @state.getValue()
+    {lfgs, loadingMessageId, loadingFollowId, followingIds,
+      isInfoCardVisible, group, selectedTag} = @state.getValue()
+
+    if group?.gameKey is 'fortnite'
+      tags = ['ps4', 'xb1', 'pc', 'mobile']
+    else
+      tags = ['2c2', 'clan', 'amigo']
 
     z '.z-find-people',
       z '.g-grid',
+        if isInfoCardVisible
+          z '.info-card',
+            z @$infoCard,
+              $content: @model.l.get 'people.infoCardText'
+              submit:
+                text: @model.l.get 'installOverlay.closeButtonText'
+                onclick: =>
+                  @state.set isInfoCardVisible: false
+                  @model.cookie.set 'hidePeopleInfo', '1'
+        z '.filters',
+          @model.l.get 'findPeople.filters'
+          ': '
+          _map tags, (tag) =>
+            isSelected = tag is selectedTag
+            z '.tag', {
+              className: z.classKebab {isSelected}
+              onclick: =>
+                if isSelected
+                  @selectedTag.next ''
+                else
+                  @selectedTag.next tag
+            },
+              "\##{tag}",
         _map lfgs, ({$message, $messageButton, $followButton, lfg}) =>
           isFollowing = followingIds and
                           followingIds.indexOf(lfg.user?.id) isnt -1

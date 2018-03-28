@@ -4,6 +4,23 @@
   width: 100%
 
   > .g-grid
+    > .info-card
+      margin: 16px
+
+    > .filters
+      padding: 16px 16px 8px 16px
+
+      > .tag
+        font-body2()
+        color: getColor('$tertiary300')
+        display: inline-block
+        padding: 4px
+        margin-right: 4px
+        cursor: pointer
+
+        &.is-selected
+          font-title()
+
     > .lfg
       padding: 16px
       cursor: pointer

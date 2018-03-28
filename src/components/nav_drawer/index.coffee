@@ -142,7 +142,7 @@ module.exports = class NavDrawer
           }
           if group.key in [
             'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
-            'fortnite', 'brawlstarses', 'ninja'
+            'fortnite', 'fortnitejp', 'brawlstarses', 'ninja'
           ]
             {
               path: @router.get 'groupForum', {groupId}
@@ -151,6 +151,13 @@ module.exports = class NavDrawer
               $ripple: new Ripple()
               iconName: 'rss'
             }
+          {
+            path: @router.get 'groupPeople', {groupId}
+            title: @model.l.get 'people.title'
+            $icon: new Icon()
+            $ripple: new Ripple()
+            iconName: 'friends'
+          }
           if isClashRoyaleGroup or group.key in [
             'nickatnyte', 'teamqueso', 'ninja'
           ]
@@ -195,13 +202,6 @@ module.exports = class NavDrawer
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'profile'
-          }
-          {
-            path: @router.get 'groupPeople', {groupId}
-            title: @model.l.get 'people.title'
-            $icon: new Icon()
-            $ripple: new Ripple()
-            iconName: 'friends'
           }
           {
             path: @router.get 'groupTools', {groupId}

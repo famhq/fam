@@ -69,6 +69,10 @@ module.exports = class GroupHome
     @$groupHomeChat = new GroupHomeChat {
       @model, @router, group, player, @overlay$
     }
+    # FIXME
+    # @$groupHomeFindPlayers = new GroupHomeFindPlayers {
+    #   @model, @router, group, player, @overlay$
+    # }
     @$groupHomeVideos = new GroupHomeVideos {
       @model, @router, group, player, @overlay$
     }
@@ -91,14 +95,15 @@ module.exports = class GroupHome
 
     userAgent = @serverData?.req?.headers?['user-agent'] or
                   navigator?.userAgent or ''
+    isFortnite = @model.group.hasGameKey group, 'fortnite'
 
     z '.z-group-home',
       z '.g-grid',
-        if group?.key in ['fortnitees', 'fortnite', 'nickatnyte', 'ninja']
+        if isFortnite or group?.key in ['nickatnyte', 'ninja']
           z '.card',
             z @$groupHomeFortniteStats
 
-        if not (group?.key in ['fortnitees', 'fortnite', 'brawlstarses', 'ninja'])
+        if not isFortnite and not (group?.key in ['brawlstarses', 'ninja'])
           z '.card',
             z @$groupHomeClashRoyaleChestCycle
 
@@ -110,7 +115,7 @@ module.exports = class GroupHome
             $elements: _filter [
               if group.key in [
                 'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
-                'fortnite', 'brawlstarses'
+                'fortnite', 'fortnitejp', 'brawlstarses'
               ]
                 z @$groupHomeThreads
 
@@ -132,8 +137,8 @@ module.exports = class GroupHome
               ]
                 z @$groupHomeVideos
 
-              if player?.id and
-                  not (group.key in ['fortnitees', 'fortnite', 'brawlstarses', 'ninja'])
+              if player?.id and not isFortnite and
+                  not (group.key in ['brawlstarses', 'ninja'])
                 z @$groupHomeClashRoyaleDecks
 
               z @$groupHomeAddons
