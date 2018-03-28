@@ -1,12 +1,21 @@
-The ultimate Fortnite companion app for news, chat, stats, memes and more
+O aplicativo vocabulário final para notícias, bate-papo, estatísticas, memes e muito mais
 
-Features:
-• Track your in-game stats: wins, kills, K/D, ratio, etc...
-• Chat with other Fortnite players
-• Find new friends for your squad
-• Read and comment on news and memes in the forum
-• View chest locations
-• Learn each weapon's stats
-• See current shop items
+Características:
+• Acompanhe as suas estatísticas sem jogo: ganha, mata, K / D, relação, etc...
+• Bate-papo com outros jogadores do Fortnite
+• Encontre novos amigos para o seu plantel
+• Leia e comente sobre notícias e memes no fórum
+• Exibir locais no peito
+• Aprenda as estatísticas de cada arma
+• Veja os itens da loja atual... e muito, muito mais! Fortnite Fam está em constante evolução com base no feedback da comunidade
 
-...and much, much more! Fortnite Fam is constantly evolving based on community feedback!
+Características:
+Acompanhe as suas estatísticas no jogo: ganha, mata, K / D, relação, etc...
+• Bate-papo com outros jogadores Fortnite
+• Encontre novos amigos para o seu plantel
+• Leia e comente sobre notícias e memes no fórum
+• Exibir locais no peito
+• Aprenda as estatísticas de cada arma
+• Veja os itens da loja atual
+
+... e muito, muito mais! Fortnite Fam está em constante evolução com base no feedback da comunidade!
