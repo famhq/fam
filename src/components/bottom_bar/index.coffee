@@ -51,7 +51,7 @@ module.exports = class BottomBar
     # per-group menu:
     # profile, tools, home, forum, chat
     @menuItems = _filter [
-      if group?.gameKey is 'fortnite'
+      if @model.group.hasGameKey group, 'fortnite'
         {
           $icon: new Icon()
           icon: 'friends'

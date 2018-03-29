@@ -55,7 +55,7 @@ module.exports = class GroupHome
       @model, @router, group, player, @overlay$
     }
     @$groupHomeFortniteStats = new GroupHomeFortniteStats {
-      @model, @router, group, player, @overlay$
+      @model, @router, group, player, @overlay$, isMe: true
     }
     @$groupHomeClashRoyaleChestCycle = new GroupHomeClashRoyaleChestCycle {
       @model, @router, group, player, @overlay$

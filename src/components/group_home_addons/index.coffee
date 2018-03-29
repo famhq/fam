@@ -1,6 +1,7 @@
 z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
+_take = require 'lodash/take'
 
 Base = require '../base'
 Spinner = require '../spinner'
@@ -28,9 +29,9 @@ module.exports = class GroupHomeAddons extends Base
           addon.key in [
             'chestSimulator', 'clanManager', 'deckBandit', 'stormShieldOne'
             'brawlStats', 'brawlStarsEvents', 'fortniteChestMap'
-            'fortniteShopItems'
+            'fortniteShopItems', 'fortniteWikiJp'
           ]
-        _map addons, (addon) =>
+        _map _take(addons, 3), (addon) =>
           new AddonListItem {@model, @router, addon}
     }
 

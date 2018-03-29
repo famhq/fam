@@ -85,7 +85,7 @@ TIME_UNTIL_ADD_TO_HOME_PROMPT_MS = 90000 # 1.5 min
 
 module.exports = class App
   constructor: (options) ->
-    {requests, @serverData, @model, @router, isOffline} = options
+    {requests, @serverData, @model, @router, isOffline, @isCrawler} = options
     @$cachedPages = []
     routes = @model.window.getBreakpoint().map @getRoutes
             .publishReplay(1).refCount()
@@ -130,12 +130,23 @@ module.exports = class App
       else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getByKey groupId
+      # FIXME: rm after 4/30/2018
+      else if route.params.username is 'fresh-potato'
+        @model.cookie.set 'lastGroupId', 'fortnitejp'
+        @model.group.getByGameKeyAndLanguage(
+          'fortnite', 'ja'
+        )
       else
         @model.group.getByGameKeyAndLanguage(
           config.DEFAULT_GAME_KEY, language
         )
       )
     .publishReplay(1).refCount()
+
+    if @isCrawler
+      @group.take(1).subscribe (group) =>
+        if group.language
+          @model.l.setLanguage group.language
 
     # used if state / requests fails to work
     $backupPage = if @serverData?

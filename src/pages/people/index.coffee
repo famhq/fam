@@ -61,7 +61,8 @@ module.exports = class PeoplePage
 
   getMeta: =>
     {
-      title: @model.l.get 'people.title'
+      title: @model.l.get 'groupPeoplePage.title'
+      description: @model.l.get 'groupPeoplePage.description'
     }
 
   render: =>

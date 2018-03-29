@@ -42,10 +42,12 @@ module.exports = class GroupNewLfg
 
     @state.set isSaving: true
 
-    @model.lfg.upsert {
-      text
-      groupId: group.id
-    }
+    @model.signInDialog.openIfGuest me
+    .then =>
+      @model.lfg.upsert {
+        text
+        groupId: group.id
+      }
     .then =>
       @state.set isSaving: false
       @router.go 'groupPeople', {groupId: group.key or group.id}
@@ -53,7 +55,7 @@ module.exports = class GroupNewLfg
   render: =>
     {me, isSaving, group, text} = @state.getValue()
 
-    if group?.gameKey is 'fortnite'
+    if @model.group.hasGameKey group, 'fortnite'
       tags = ['ps4', 'xb1', 'pc', 'mobile']
     else
       tags = ['2c2', 'clan', 'amigo']

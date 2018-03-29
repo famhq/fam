@@ -76,7 +76,7 @@ module.exports = class FindPeople
     {lfgs, loadingMessageId, loadingFollowId, followingIds,
       isInfoCardVisible, group, selectedTag} = @state.getValue()
 
-    if group?.gameKey is 'fortnite'
+    if @model.group.hasGameKey group, 'fortnite'
       tags = ['ps4', 'xb1', 'pc', 'mobile']
     else
       tags = ['2c2', 'clan', 'amigo']

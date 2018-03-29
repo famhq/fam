@@ -1,6 +1,7 @@
 z = require 'zorium'
 Environment = require '../../services/environment'
 RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
 _merge = require 'lodash/merge'
 _map = require 'lodash/map'
 _mapValues = require 'lodash/mapValues'
@@ -15,7 +16,10 @@ DEFAULT_IMAGE = 'https://cdn.wtf/d/images/fam/web_icon_256.png'
 module.exports = class Head
   constructor: ({@model, meta, requests, serverData, group}) ->
     route = requests.map ({route}) -> route
-    meta = requests.switchMap ({$page}) ->
+    requestsAndLanguage = RxObservable.combineLatest(
+      requests, @model.l.getLanguage(), (vals...) -> vals
+    )
+    meta = requestsAndLanguage.switchMap ([{$page}, language]) ->
       meta = $page?.getMeta?()
       if meta?.map
         meta
@@ -84,7 +88,7 @@ module.exports = class Head
       title: @model.l.get 'meta.defaultTitle'
       description: @model.l.get 'meta.defaultDescription', {
         replacements:
-          groupName: group?.name
+          groupName: group?.name or ''
       }
       icon256: 'http://cdn.wtf/d/images/fam/web_icon_256.png'
       twitter:
@@ -113,7 +117,7 @@ module.exports = class Head
       manifestUrl: '/manifest.json'
     }, meta
 
-    meta.title = "#{group?.name} #{meta.title} | Fam"
+    meta.title = "#{group?.name or ''} #{meta.title} | Fam"
 
     meta = _merge {
       # twitter:

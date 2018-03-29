@@ -261,9 +261,10 @@ app.use (req, res, next) ->
   isFacebookCrawler = userAgent?.indexOf('facebookexternalhit') isnt -1 or
       userAgent?.indexOf('Facebot') isnt -1
   isOtherBot = userAgent?.indexOf('bot') isnt -1
+  isCrawler = isFacebookCrawler or isOtherBot
   start = Date.now()
-  z.renderToString new App({requests, model, serverData, router}), {
-    timeout: if isFacebookCrawler or isOtherBot \
+  z.renderToString new App({requests, model, serverData, router, isCrawler}), {
+    timeout: if isCrawler \
              then BOT_RENDER_TO_STRING_TIMEOUT_MS
              else RENDER_TO_STRING_TIMEOUT_MS
   }

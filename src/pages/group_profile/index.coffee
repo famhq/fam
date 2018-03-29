@@ -14,7 +14,7 @@ ClashRoyaleGetPlayerTagForm =
 FortniteGetPlayerTagForm =
   require '../../components/fortnite_get_player_tag_form'
 GroupHomeFortniteStats = require '../../components/group_home_fortnite_stats'
-ShareSheet = require '../../components/share_sheet'
+# ShareSheet = require '../../components/share_sheet'
 Spinner = require '../../components/spinner'
 Icon = require '../../components/icon'
 config = require '../../config'
@@ -72,7 +72,7 @@ module.exports = class GroupProfilePage
     @hideDrawer = usernameAndId.map ([username, id]) ->
       username or id
 
-    @isShareSheetVisible = new RxBehaviorSubject false
+    # @isShareSheetVisible = new RxBehaviorSubject false
     @overlay$ = new RxBehaviorSubject null
 
     @$appBar = new AppBar {@model}
@@ -90,9 +90,9 @@ module.exports = class GroupProfilePage
       @model, @router
     }
     @$fortniteGetPlayerTagForm = new FortniteGetPlayerTagForm {@model, @router}
-    @$shareSheet = new ShareSheet {
-      @router, @model, isVisible: @isShareSheetVisible
-    }
+    # @$shareSheet = new ShareSheet {
+    #   @router, @model, isVisible: @isShareSheetVisible
+    # }
     @$settingsIcon = new Icon()
     @$shareIcon = new Icon()
     @$spinner = new Spinner()
@@ -104,10 +104,11 @@ module.exports = class GroupProfilePage
       routeId: id
       routePlayerId: routePlayerId
       group: group
-      isShareSheetVisible: @isShareSheetVisible
+      # isShareSheetVisible: @isShareSheetVisible
       me: me
       player: @player
       requests: requests
+      language: @model.l.getLanguage()
       overlay$: @overlay$
 
   afterMount: (@$$el) =>
@@ -118,7 +119,7 @@ module.exports = class GroupProfilePage
     @player.map (player) ->
       playerName = player?.data?.name
       {
-        title: if player?.id \
+        title: if playerName \
                then "#{playerName}'s Clash Royale stats"
                else undefined # use default
 
@@ -148,7 +149,7 @@ module.exports = class GroupProfilePage
 
   render: =>
     {windowSize, player, me, routeUsername, routeId, routePlayerId, user,
-      isShareSheetVisible, overlay$, group} = @state.getValue()
+      isShareSheetVisible, overlay$, group, language} = @state.getValue()
 
     isTagSet = player?.id
     isOtherProfile = routeId or routeUsername or routePlayerId
@@ -165,7 +166,15 @@ module.exports = class GroupProfilePage
       username = user?.username
       id = user?.id
 
-    path = if username then "/user/#{username}" else "/user/id/#{id}"
+    isFortnite = @model.group.hasGameKey group, 'fortnite'
+
+    sharePath = if isFortnite \
+      then "/g/#{group?.key}?referrer=#{encodeURIComponent(player?.id)}" +
+      "&lang=#{language}"
+      else if username
+      then "/user/#{username}"
+      else "/user/id/#{id}"
+    shareUrl = "https://#{config.HOST}#{sharePath}"
 
     $button = if isOtherProfile then @$buttonBack else @$buttonMenu
 
@@ -190,7 +199,12 @@ module.exports = class GroupProfilePage
               icon: 'share'
               color: colors.$header500Icon
               onclick: =>
-                @isShareSheetVisible.next true
+                @model.portal.call 'share.any', {
+                  path: sharePath
+                  url: shareUrl
+                  text: ''
+                }
+                # @isShareSheetVisible.next true
           if isMe and isTagSet
             z @$settingsIcon, {
               icon: 'settings'
@@ -231,12 +245,12 @@ module.exports = class GroupProfilePage
       unless isOtherProfile
         @$bottomBar
 
-      if isShareSheetVisible
-        z @$shareSheet, {
-          text
-          path
-          url: "https://#{config.HOST}#{path}"
-        }
+      # if isShareSheetVisible
+      #   z @$shareSheet, {
+      #     text
+      #     path: sharePath
+      #     url: shareUrl
+      #   }
 
       if overlay$
         overlay$

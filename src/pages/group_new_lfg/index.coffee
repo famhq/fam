@@ -24,7 +24,6 @@ module.exports = class GroupNewLfgPage
   getMeta: =>
     {
       title: @model.l.get 'groupNewLfgPage.title'
-      description: @model.l.get 'groupNewLfgPage.title'
     }
 
   render: =>

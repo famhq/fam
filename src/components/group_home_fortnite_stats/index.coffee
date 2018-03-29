@@ -15,7 +15,7 @@ if window?
   require './index.styl'
 
 module.exports = class GroupHomeFortniteStats
-  constructor: ({@model, @router, group, @overlay$, player}) ->
+  constructor: ({@model, @router, group, @overlay$, player, @isMe}) ->
     me = @model.user.getMe()
 
     player ?= me.switchMap ({id}) =>
@@ -112,7 +112,7 @@ module.exports = class GroupHomeFortniteStats
                     username: player.data?.info?.username
                 }
             }
-      if player?.id and isShareDialogVisible
+      if player?.id and isShareDialogVisible and @isMe
         z @$shareDialog,
           isVanilla: true
           isWide: true
