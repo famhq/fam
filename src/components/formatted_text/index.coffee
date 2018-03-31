@@ -128,6 +128,7 @@ module.exports = class FormattedText
           isMention = props.title and props.title.indexOf('user:') isnt -1
           isAddon = props.title and props.title.indexOf('addon:') isnt -1
           youtubeId = props.href?.match(config.YOUTUBE_ID_REGEX)?[1]
+          imgurId = props.href?.match(config.IMGUR_ID_REGEX)?[1]
 
           if isAddon
             addonKey = props.title.replace('addon:', '')
@@ -141,7 +142,18 @@ module.exports = class FormattedText
           else if youtubeId and @embedVideos
             $embeddedVideo = new EmbeddedVideo {
               model
-              src: "https://www.youtube.com/embed/#{youtubeId}"
+              videoAttachment:
+                src: "https://www.youtube.com/embed/#{youtubeId}"
+            }
+            z $embeddedVideo
+          else if imgurId and @embedVideos and props.href?.match /\.(gif|mp4|webm)/i
+            $embeddedVideo = new EmbeddedVideo {
+              model
+              videoAttachment:
+                src: "https://i.imgur.com/#{imgurId}.mp4"
+                previewSrc: "https://i.imgur.com/#{imgurId}h.jpg"
+                mp4Src: "https://i.imgur.com/#{imgurId}.mp4"
+                webmSrc: "https://i.imgur.com/#{imgurId}.webm"
             }
             z $embeddedVideo
           else

@@ -10,21 +10,40 @@ MAX_WIDTH_PX = 700
 PADDING_PX = 16
 
 module.exports = class EmbeddedVideo
-  constructor: ({@model, src}) ->
-    unless src.map
-      @src = src
+  constructor: ({@model, videoAttachment}) ->
+    unless videoAttachment.map
+      @videoAttachment = videoAttachment
     @state = z.state
       windowSize: @model.window.getSize()
-      src: @src
+      videoAttachment: @videoAttachment
 
-  render: =>
-    {windowSize, src} = @state.getValue()
-    width = Math.min MAX_WIDTH_PX, windowSize.width - PADDING_PX * 2
-    height = width * (9 / 16)
+  render: ({width} = {}) =>
+    {windowSize, videoAttachment} = @state.getValue()
+
+    width ?= Math.min MAX_WIDTH_PX, windowSize.width - 16 * 2
+    heightAspect = if videoAttachment?.aspectRatio \
+                   then 1 / videoAttachment.aspectRatio
+                   else 9 / 16
+    height = width * heightAspect
+
     isNativeApp = Environment.isNativeApp config.GAME_KEY
 
     z '.z-embedded-video',
-      if isNativeApp
+      if videoAttachment.mp4Src
+        z 'video.video', {
+          width: width
+          attributes:
+            loop: true
+            controls: true
+            autoplay: true
+        },
+          z 'source',
+            type: 'video/mp4'
+            src: videoAttachment.mp4Src
+          z 'source',
+            type: 'video/mp4'
+            src: videoAttachment.webmSrc
+      else if isNativeApp
         z '.thumbnail', {
           onclick: =>
             @model.portal.call 'browser.openWindow', {

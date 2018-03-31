@@ -56,6 +56,7 @@
   "groupNewThreadWithCategory": "/{groupId}/new-thread/{category}",
   "groupNewThreadWithCategoryAndId": "/{groupId}/new-thread/{category}/{id}",
   "groupThreadEdit": "/{groupId}/thread/{id}/edit",
+  "groupWeeklyRaffle": "/{groupId}/weekly-raffle",
 
   "trades": "/trades",
   "trade": "/trade/{id}",

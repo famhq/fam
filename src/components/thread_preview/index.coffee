@@ -16,7 +16,7 @@ module.exports = class ThreadPreview
     if videoAttachment
       @$embeddedVideo = new EmbeddedVideo {
         @model
-        src: videoAttachment.src
+        videoAttachment
       }
 
     @state = z.state
@@ -30,30 +30,10 @@ module.exports = class ThreadPreview
       return
 
     imageAttachment = _find thread.data.attachments, {type: 'image'}
-    videoAttachment = _find thread.data.attachments, {type: 'video'}
-    width ?= windowSize.width - PADDING * 2
-    heightAspect = if videoAttachment?.aspectRatio \
-                   then 1 / videoAttachment.aspectRatio
-                   else 9 / 16
-    height = width * heightAspect
 
     z '.z-thread-preview',
-      if videoAttachment and videoAttachment.mp4Src
-        z 'video.video', {
-          width: width
-          attributes:
-            loop: true
-            controls: true
-            autoplay: true
-        },
-          z 'source',
-            type: 'video/mp4'
-            src: videoAttachment.mp4Src
-          z 'source',
-            type: 'video/mp4'
-            src: videoAttachment.webmSrc
-      else if videoAttachment
-        @$embeddedVideo
+      if @$embeddedVideo
+        z @$embeddedVideo, {width}
       else if imageAttachment
         mediaSrc = imageAttachment.largeSrc or imageAttachment.src
         z 'img.image', {

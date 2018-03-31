@@ -242,6 +242,7 @@ isomorphic =
   IMAGE_REGEX: new RegExp IMAGE_REGEX_STR, 'gi'
   MENTION_REGEX: new RegExp MENTION_REGEX_STR, 'gi'
   YOUTUBE_ID_REGEX: new RegExp YOUTUBE_ID_REGEX_STR, 'i'
+  IMGUR_ID_REGEX: /https?:\/\/(?:i\.)?imgur\.com(?:\/a)?\/(.*?)(?:[\.#\/].*|$)/i
 
   EVENT_DURATIONS:
     "#{ONE_HOUR_SECONDS}": '1 hour'

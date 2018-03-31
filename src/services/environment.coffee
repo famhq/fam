@@ -40,6 +40,11 @@ class Environment
       _includes(userAgent?.toLowerCase(), " #{gameKey}/") or
         _includes(userAgent?.toLowerCase(), ' starfire/') # legacy
 
+  isMainApp: (gameKey, {userAgent} = {}) ->
+    userAgent ?= navigator?.userAgent
+    Boolean gameKey and
+      _includes(userAgent?.toLowerCase(), " #{gameKey}/#{gameKey}")
+
   isGroupApp: (groupAppKey, {userAgent} = {}) ->
     userAgent ?= navigator?.userAgent
     Boolean groupAppKey and

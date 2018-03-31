@@ -151,6 +151,7 @@ module.exports = class GroupProfilePage
     {windowSize, player, me, routeUsername, routeId, routePlayerId, user,
       isShareSheetVisible, overlay$, group, language} = @state.getValue()
 
+
     isTagSet = player?.id
     isOtherProfile = routeId or routeUsername or routePlayerId
     isMe = me?.id is user?.id or not user
@@ -241,6 +242,8 @@ module.exports = class GroupProfilePage
               z @$clashRoyaleGetPlayerTagForm
         else if not player
           @$spinner
+        else
+          @model.l.get '404Page.text'
 
       unless isOtherProfile
         @$bottomBar

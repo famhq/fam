@@ -5,7 +5,6 @@ _map = require 'lodash/map'
 _values = require 'lodash/values'
 _flatten = require 'lodash/flatten'
 _defaults = require 'lodash/defaults'
-Environment = require './services/environment'
 isUuid = require 'isuuid'
 RxObservable = require('rxjs/Observable').Observable
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
@@ -28,6 +27,7 @@ PushNotificationsSheet = require './components/push_notifications_sheet'
 ConversationImageView = require './components/conversation_image_view'
 OfflineOverlay = require './components/offline_overlay'
 Nps = require './components/nps'
+Environment = require './services/environment'
 config = require './config'
 colors = require './colors'
 
@@ -75,7 +75,7 @@ Pages =
   # TODO: rename groups
   # SocialPage: require './pages/social'
   TosPage: require './pages/tos'
-  UserOfWeekPage: require './pages/user_of_week'
+  WeeklyRafflePage: require './pages/weekly_raffle'
   PoliciesPage: require './pages/policies'
   PrivacyPage: require './pages/privacy'
   EditProfilePage: require './pages/edit_profile'
@@ -92,7 +92,9 @@ module.exports = class App
 
     userAgent = navigator?.userAgent or
                   requests.getValue().headers?['user-agent']
-    isNativeApp = Environment.isNativeApp config.GAME_KEY, {userAgent}
+    # FIXME FIXME: store groupId for appInstallAction, and only do if main app
+    # or matching group app
+    isNativeApp = Environment.isMainApp config.GAME_KEY, {userAgent}
     if isNativeApp and not @model.cookie.get('lastPath')
       appActionPath = @model.appInstallAction.get().map (appAction) ->
         appAction?.path
@@ -300,7 +302,7 @@ module.exports = class App
       'newTradeCounter', 'newTrade'
     ], 'NewTradePage'
     route 'termsOfService', 'TosPage'
-    route 'userOfWeek', 'UserOfWeekPage'
+    route 'groupWeeklyRaffle', 'WeeklyRafflePage'
     route 'privacy', 'PrivacyPage'
     route [
       'profile', 'clashRoyalePlayer', 'playerEmbed', 'user', 'userById'

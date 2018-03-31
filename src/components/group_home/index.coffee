@@ -69,10 +69,6 @@ module.exports = class GroupHome
     @$groupHomeChat = new GroupHomeChat {
       @model, @router, group, player, @overlay$
     }
-    # FIXME
-    # @$groupHomeFindPlayers = new GroupHomeFindPlayers {
-    #   @model, @router, group, player, @overlay$
-    # }
     @$groupHomeVideos = new GroupHomeVideos {
       @model, @router, group, player, @overlay$
     }
@@ -99,11 +95,18 @@ module.exports = class GroupHome
 
     z '.z-group-home',
       z '.g-grid',
-        if isFortnite or group?.key in ['nickatnyte', 'ninja']
-          z '.card',
-            z @$groupHomeFortniteStats
+        if isFortnite and language is 'es'
+          z '.weekly-raffle', {
+            onclick: =>
+              @router.go 'groupWeeklyRaffle', {
+                groupId: group?.key or group?.id
+              }
+          },
+            z '.title', @model.l.get 'groupHome.raffle'
+            z '.learn-more',
+              @model.l.get 'groupHome.raffleLearnMore'
 
-        if not isFortnite and not (group?.key in ['brawlstarses', 'ninja'])
+        if @model.group.hasGameKey group, 'clash-royale'
           z '.card',
             z @$groupHomeClashRoyaleChestCycle
 
@@ -113,6 +116,15 @@ module.exports = class GroupHome
               mobile: 1
               desktop: 2
             $elements: _filter [
+              if group.key in [
+                'playhard', 'eclihpse', 'nickatnyte', 'ferg',
+                'teamqueso', 'ninja'
+              ]
+                z @$groupHomeVideos
+
+              if isFortnite or group?.key in ['nickatnyte', 'ninja']
+                z @$groupHomeFortniteStats
+
               if group.key in [
                 'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
                 'fortnite', 'fortnitejp', 'brawlstarses'
@@ -131,11 +143,6 @@ module.exports = class GroupHome
               ]
                 z @$groupHomeOffers
 
-              if group.key in [
-                'playhard', 'eclihpse', 'nickatnyte', 'ferg',
-                'teamqueso', 'ninja'
-              ]
-                z @$groupHomeVideos
 
               if player?.id and not isFortnite and
                   not (group.key in ['brawlstarses', 'ninja'])

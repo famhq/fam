@@ -53,6 +53,7 @@ module.exports = class Textarea
       newOffset = pattern.length
     newValue = value.substring(0, startPos) + newSelectedText +
                value.substring(endPos, value.length)
+    console.log 'set mod', pattern
     @setValue newValue, {updateDom: true}
     @$$textarea.focus()
     @$$textarea.setSelectionRange startPos + newOffset, endPos + newOffset

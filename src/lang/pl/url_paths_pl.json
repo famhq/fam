@@ -49,7 +49,7 @@
   "groupManageRoles": "/g/{groupId}/zarzadzaj-rolami",
   "groupAuditLog": "/g/{groupId}/dziennik-kontroli",
   "groupNewThread": "/g/{groupId}/nowy-watek",
-  "groupNewLfg": "/{groupId}/new-lfg",
+  "groupNewLfg": "/{groupId}/nowe-lfg",
   "groupThread": "/g/{groupId}/watek/{id}",
   "groupThreadWithTitle": "/g/{groupId}/watek/{id}/v/{title}",
   "groupNewThreadWithCategory": "/g/{groupId}/nowy-watek/{category}",

@@ -56,6 +56,7 @@
   "groupNewThreadWithCategory": "/g/:groupId/new-thread/:category",
   "groupNewThreadWithCategoryAndId": "/g/:groupId/new-thread/:category/:id",
   "groupThreadEdit": "/g/:groupId/thread/:id/edit",
+  "groupWeeklyRaffle": "/g/:groupId/weekly-raffle",
 
   "trades": "/trades",
   "trade": "/trade/:id",
@@ -74,7 +75,6 @@
   "policies": "/policies",
   "privacy": "/privacy",
   "termsOfService": "/tos",
-  "userOfWeek": "/user-of-week",
   "user": "/user/:username",
   "userById": "/user/id/:id",
   "home": "",
