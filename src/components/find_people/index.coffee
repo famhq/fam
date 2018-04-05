@@ -9,6 +9,7 @@ require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/switchMap'
 
 FormattedText = require '../formatted_text'
+PrimaryButton = require '../primary_button'
 SecondaryButton = require '../secondary_button'
 Message = require '../message'
 UiCard = require '../ui_card'
@@ -32,6 +33,7 @@ module.exports = class FindPeople
     )
 
     @$infoCard = new UiCard()
+    @$newLfgButton = new PrimaryButton()
 
     @state = z.state
       group: group
@@ -92,6 +94,14 @@ module.exports = class FindPeople
                 onclick: =>
                   @state.set isInfoCardVisible: false
                   @model.cookie.set 'hidePeopleInfo', '1'
+
+        if @model.experiment.get('lfgNewButton') is 'big'
+          z '.new-lfg',
+            z @$newLfgButton,
+              text: @model.l.get 'findPeople.makePost'
+              onclick: =>
+                @router.go 'groupNewLfg', {groupId: group?.key or group?.id}
+
         z '.filters',
           @model.l.get 'findPeople.filters'
           ': '
@@ -125,6 +135,7 @@ module.exports = class FindPeople
                         userIds: [lfg.userId]
                       }
                       .then (conversation) =>
+                        ga? 'send', 'event', 'lfg', 'message'
                         @state.set loadingMessageId: null
                         @router.go 'conversation', {id: conversation.id}
                   }
@@ -138,6 +149,7 @@ module.exports = class FindPeople
 
                     heightPx: 26
                     onclick: =>
+                      ga? 'send', 'event', 'lfg', 'follow'
                       if isFollowing
                         @model.userFollower.unfollowByUserId lfg.user?.id
                       else

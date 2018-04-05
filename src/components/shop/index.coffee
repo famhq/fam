@@ -155,7 +155,7 @@ module.exports = class Shop
                             isTouchTarget: false
               z '.g-col.g-xs-6.g-md-2.earn-more', {
                 onclick: =>
-                  @router.go 'groupFire', {groupId: group?.id}
+                  @goToEarnFn?()
               },
                 z '.more',
                   z @$moreIcon,

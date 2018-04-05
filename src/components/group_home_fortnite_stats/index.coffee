@@ -15,10 +15,10 @@ if window?
   require './index.styl'
 
 module.exports = class GroupHomeFortniteStats
-  constructor: ({@model, @router, group, @overlay$, @isMe}) ->
+  constructor: ({@model, @router, group, @overlay$, @isMe, player}) ->
     me = @model.user.getMe()
 
-    player = me.switchMap ({id}) =>
+    player ?= me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameKey id, 'fortnite'
       .map (player) ->
         return player or {}

@@ -6,6 +6,8 @@ config = require '../../config'
 if window?
   require './index.styl'
 
+LAST_WINNER = 'Espokety'
+
 module.exports = class WeeklyRaffle
   constructor: ({@model, @router, group}) ->
     me = @model.user.getMe()
@@ -56,3 +58,6 @@ module.exports = class WeeklyRaffle
             text: @model.l.get 'general.share'
             isFullWidth: true
             onclick: @share
+        z 'p',
+          @model.l.get 'weeklyRaffle.lastWinner'
+          LAST_WINNER

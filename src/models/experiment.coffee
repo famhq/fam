@@ -1,18 +1,16 @@
 module.exports = class Experiment
   constructor: ({@cookie}) ->
-    expCustomColors = @cookie.get 'exp:customColors'
-    unless expCustomColors
+    expLfgNewButton = @cookie.get 'exp:lfgNewButton'
+    unless expLfgNewButton
       rand = Math.random()
-      expCustomColors = if rand > 0.666 \
-                         then 'light'
-                         else if rand > 0.333 \
-                         then 'dark'
+      expLfgNewButton = if rand > 0.5 \
+                         then 'big'
                          else 'control'
-      @cookie.set 'exp:customColors', expCustomColors
-    ga? 'send', 'event', 'exp', 'customColors', expCustomColors
+      @cookie.set 'exp:lfgNewButton', expLfgNewButton
+    ga? 'send', 'event', 'exp', 'lfgNewButton', expLfgNewButton
 
     @experiments =
-      customColors: expCustomColors
+      lfgNewButton: expLfgNewButton
 
   get: (key) =>
     @experiments[key]

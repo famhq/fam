@@ -71,10 +71,15 @@ module.exports = class Head
     {meta, serverData, route, routeKey, group,
       modelSerialization, cssVariables} = @state.getValue()
 
-    gaId = switch group?.key
-      when 'fortnitees'
-      then 'UA-27992080-33'
-      else 'UA-27992080-30'
+    if group?.key is 'fortnitees'
+      gaId = 'UA-27992080-33'
+      gaSampleRate = 100
+    else if group?.key is 'fortnite'
+      gaId = 'UA-27992080-34'
+      gaSampleRate = 100
+    else
+      gaId = 'UA-27992080-30'
+      gaSampleRate = 10
 
     paths = _mapValues @model.l.getAllPathsByRouteKey(routeKey), (path) ->
       pathVars = path.match /:([a-zA-Z0-9-]+)/g
@@ -223,7 +228,7 @@ module.exports = class Head
           window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};
           ga.l=+new Date;
           ga('create', '#{gaId}', 'auto', {
-            sampleRate: 10
+            sampleRate: #{gaSampleRate}
           });
           window.addEventListener('error', function(e) {
             ga(

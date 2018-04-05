@@ -55,7 +55,7 @@ module.exports = class GroupHome
       @model, @router, group, player, @overlay$
     }
     @$groupHomeFortniteStats = new GroupHomeFortniteStats {
-      @model, @router, group, player, @overlay$, isMe: true
+      @model, @router, group, @overlay$, isMe: true
     }
     @$groupHomeClashRoyaleChestCycle = new GroupHomeClashRoyaleChestCycle {
       @model, @router, group, player, @overlay$
@@ -91,11 +91,11 @@ module.exports = class GroupHome
 
     userAgent = @serverData?.req?.headers?['user-agent'] or
                   navigator?.userAgent or ''
-    isFortnite = @model.group.hasGameKey group, 'fortnite'
+    isFortnite = group?.key and group?.key.indexOf('fortnite') isnt -1
 
     z '.z-group-home',
       z '.g-grid',
-        if isFortnite and language is 'es'
+        if isFortnite and player?.id
           z '.weekly-raffle', {
             onclick: =>
               @router.go 'groupWeeklyRaffle', {

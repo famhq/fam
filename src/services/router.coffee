@@ -54,7 +54,7 @@ class RouterService
     route
 
   openLink: (url) =>
-    isAbsoluteUrl = url?.match /^(?:[a-z]+:)?\/\//i
+    isAbsoluteUrl = url?.match /^(?:[a-z-]+:)?\/\//i
     famRegex = new RegExp "https?://(#{config.HOST}|starfire.games|starfi\.re)", 'i'
     isFam = url?.match famRegex
     if not isAbsoluteUrl or isFam
@@ -63,6 +63,7 @@ class RouterService
              else url
       @goPath path
     else
+      console.log 'open', url
       @model.portal.call 'browser.openWindow', {
         url: url
         target: '_system'

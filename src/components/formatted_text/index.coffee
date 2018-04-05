@@ -19,7 +19,8 @@ if window?
 module.exports = class FormattedText
   constructor: (options) ->
     {text, @imageWidth, model, @router, @skipImages, @mentionedUsers,
-      @selectedProfileDialogUser, @isFullWidth, @embedVideos} = options
+      @selectedProfileDialogUser, @isFullWidth, @embedVideos,
+      @useThumbnails} = options
 
     if text?.map
       $el = text.map((text) => @get$ {text, model})
@@ -40,6 +41,9 @@ module.exports = class FormattedText
     }
 
   get$: ({text, model, state}) =>
+    # HACK / FIXME: rm. get remark to support more protocols than https and http
+    text = text?.replace /clashroyale:\/\//g, 'https://clashroyale://'
+
     isSticker = text?.match /^:[a-z_\^0-9]+:$/
 
     stickers = _uniq text?.match /:[a-z_\^0-9]+:/g
@@ -107,7 +111,7 @@ module.exports = class FormattedText
               src: imageSrc
               width: imageWidth
             }
-          else
+          else if @useThumbnails
             z '.image-wrapper',
               z 'img', {
                 src: imageSrc
@@ -123,12 +127,19 @@ module.exports = class FormattedText
                     aspectRatio: imageAspectRatio
                   }
               }
+          else
+            z 'img', {
+              src: imageSrc
+            }
 
         a: (tagName, props, children) =>
           isMention = props.title and props.title.indexOf('user:') isnt -1
           isAddon = props.title and props.title.indexOf('addon:') isnt -1
           youtubeId = props.href?.match(config.YOUTUBE_ID_REGEX)?[1]
           imgurId = props.href?.match(config.IMGUR_ID_REGEX)?[1]
+
+          # HACK / FIXME: rm. get remark to support more protocols than https and http
+          props.href = props.href?.replace 'https://clashroyale://', 'clashroyale://'
 
           if isAddon
             addonKey = props.title.replace('addon:', '')

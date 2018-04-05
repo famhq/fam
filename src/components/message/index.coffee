@@ -74,7 +74,10 @@ module.exports = class Message
 
     isVerified = user and user.gameStat?.isVerified
     isModerator = groupUser?.roleNames and
-                  groupUser.roleNames.indexOf('mods') isnt -1
+                  (
+                    groupUser.roleNames.indexOf('mod') isnt -1 or
+                    groupUser.roleNames.indexOf('mods') isnt -1
+                  )
 
     z '.z-message', {
       # re-use elements in v-dom. doesn't seem to work with prepending more

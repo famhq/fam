@@ -51,6 +51,12 @@ module.exports = class ProfileDialog
       (vals...) -> vals
     )
 
+    groupAndUser = RxObservable.combineLatest(
+      group or RxObservable.of null
+      @selectedProfileDialogUser
+      (vals...) -> vals
+    )
+
     @state = z.state
       me: me
       meGroupUser: groupAndMe.switchMap ([group, me]) =>
@@ -62,6 +68,11 @@ module.exports = class ProfileDialog
       clashRoyaleData: @selectedProfileDialogUser.switchMap (user) =>
         if user
           @model.player.getByUserIdAndGameKey user.id, 'clash-royale'
+        else
+          RxObservable.of null
+      isBanned: groupAndUser.switchMap ([group, user]) =>
+        if group and user
+          @model.ban.getByGroupIdAndUserId group.id, user.id
         else
           RxObservable.of null
       group: group
@@ -92,7 +103,8 @@ module.exports = class ProfileDialog
     @state.set loadingItems: loadingItems
 
   getModOptions: =>
-    {me, user, meGroupUser, group, clashRoyaleData} = @state.getValue()
+    {me, user, meGroupUser, group,
+      clashRoyaleData, isBanned} = @state.getValue()
 
     isMe = user?.id is me?.id
 
@@ -127,13 +139,13 @@ module.exports = class ProfileDialog
                 icon: 'warning'
                 $icon: @$tempBanIcon
                 text:
-                  if user?.isChatBanned
+                  if isBanned
                     @model.l.get 'profileDialog.unban'
                   else
                     @model.l.get 'profileDialog.tempBan'
                 isVisible: not isMe
                 onclick: =>
-                  if user?.isChatBanned
+                  if isBanned
                     @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
                   else
                     @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
@@ -146,13 +158,13 @@ module.exports = class ProfileDialog
                 icon: 'perma-ban'
                 $icon: @$permaBanIcon
                 text:
-                  if user?.isChatBanned
+                  if isBanned
                     @model.l.get 'profileDialog.unban'
                   else
                     @model.l.get 'profileDialog.permaBan'
                 isVisible: not isMe
                 onclick: =>
-                  if user?.isChatBanned
+                  if isBanned
                     @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
                   else
                     @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
@@ -165,13 +177,13 @@ module.exports = class ProfileDialog
                 icon: 'ip-ban'
                 $icon: @$ipBanIcon
                 text:
-                  if user?.isChatBanned
+                  if isBanned
                     @model.l.get 'profileDialog.unban'
                   else
                     @model.l.get 'profileDialog.ipBan'
                 isVisible: not isMe
                 onclick: =>
-                  if user?.isChatBanned
+                  if isBanned
                     @model.ban.unbanByGroupIdAndUserId group?.id, user?.id
                   else
                     @model.ban.banByGroupIdAndUserId group?.id, user?.id, {
@@ -295,7 +307,7 @@ module.exports = class ProfileDialog
               @router.go 'conversation', {id: conversation.id}
               @selectedProfileDialogUser.next null
       }
-      if not @model.group.hasGameKey group, 'fortnite'
+      if not group?.key or group?.key.indexOf('fortnite') is -1
         {
           icon: 'trade'
           $icon: @$tradeIcon

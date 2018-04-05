@@ -37,7 +37,10 @@ module.exports = class ThreadComment
         id: @threadComment.id
       }
       $body: new FormattedText {
-        text: @threadComment.body, @model, @router, isFullWidth: true
+        text: @threadComment.body
+        isFullWidth: true
+        useThumbnails: true
+        @model, @router
       }
       messageBatchesStreams: @commentStreams
       @group, @isMe, @model, @overlay$, @selectedProfileDialogUser, @router
@@ -93,7 +96,9 @@ module.exports = class ThreadComment
     if threadComment.body isnt @threadComment.body
       @threadComment = threadComment
       @state.set
-        $body: new FormattedText {text: threadComment.body, @model, @router}
+        $body: new FormattedText {
+          text: threadComment.body, useThumbnails: true, @model, @router
+        }
 
 
   postReply: =>

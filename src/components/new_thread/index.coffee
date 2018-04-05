@@ -161,9 +161,13 @@ module.exports = class NewThread
               @model.thread.upsert newThread)
             .then (newThread) =>
               @resetValueStreams()
-              @router.goPath(
-                @model.thread.getPath(
-                  _defaults(newThread, thread), group, @router
+              # FIXME FIXME: rm HACK. for some reason thread is empty initially?
+              # still unsure why
+              setTimeout =>
+                @router.goPath(
+                  @model.thread.getPath(
+                    _defaults(newThread, thread), group, @router
+                  )
+                  {reset: true}
                 )
-                {reset: true}
-              )
+              , 1000

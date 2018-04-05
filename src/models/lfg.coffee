@@ -15,6 +15,8 @@ module.exports = class DynamicImage
     }
 
   upsert: (lfg, diff) =>
+    ga? 'send', 'event', 'lfg', 'upsert'
+
     @auth.call "#{@namespace}.upsert", lfg, {
       invalidateAll: true
     }

@@ -118,6 +118,7 @@ redirects =
   '/:lang/clash-royale/*': '/g/clashroyale/*'
   '/clash-royale/*': '/g/clashroyale/*'
   '/:lang/clash-royale': '/g/clashroyale'
+  '/nickatnyte': '/g/nickatnyte'
 
   # '/addons': '/clash-royale/mods'
   # '/addon': '/clash-royale/mod'

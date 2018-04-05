@@ -118,7 +118,7 @@ module.exports = class PeoplePage
       if selectedProfileDialogUser
         z @$profileDialog, {user: selectedProfileDialogUser}
 
-      if selectedIndex is 0
+      if selectedIndex is 0 and @model.experiment.get('lfgNewButton') is 'control'
         z '.fab',
           z @$fab,
             colors:
