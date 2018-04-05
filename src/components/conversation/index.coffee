@@ -315,9 +315,9 @@ module.exports = class Conversation extends Base
     scrollHeight = @$$messages.scrollHeight
     offsetHeight = @$$messages.offsetHeight
     fromBottom = scrollHeight - offsetHeight - scrollTop
-    isPotentiallyBouncing = Environment.isiOS() and fromBottom < 50
-    notNearTop = scrollTop > 50
     isiOS = Environment.isiOS()
+    isPotentiallyBouncing = isiOS and fromBottom < 50
+    notNearTop = scrollTop > 50
 
     @isScrolling = true
     clearTimeout @scrollEndTimeout

@@ -123,9 +123,10 @@ module.exports = class GroupChatPage
       shouldShowBottomBar: @hasBottomBarObs
 
   afterMount: (@$$el) =>
+    @isMounted = true
     @$$content = @$$el?.querySelector '.content'
     @isBottomBarVisible = true
-    setTimeout @hideBottomBar, BOTTOM_BAR_HIDE_DELAY_MS
+    @hideTimeout = setTimeout @hideBottomBar, BOTTOM_BAR_HIDE_DELAY_MS
     @mountDisposable = @hasBottomBarObs.subscribe (hasBottomBar) =>
       if not hasBottomBar and @isBottomBarVisible
         @hideBottomBar()
@@ -134,20 +135,22 @@ module.exports = class GroupChatPage
 
   showBottomBar: =>
     {shouldShowBottomBar} = @state.getValue()
-    if shouldShowBottomBar and not @isBottomBarVisible
+    if shouldShowBottomBar and not @isBottomBarVisible and @isMounted
       @isBottomBarVisible = true
       @$bottomBar.show()
       @$$content.style.transform = 'translateY(0)'
 
   hideBottomBar: =>
     {shouldShowBottomBar} = @state.getValue()
-    if shouldShowBottomBar and @isBottomBarVisible
+    if shouldShowBottomBar and @isBottomBarVisible and @isMounted
       @isBottomBarVisible = false
       @$bottomBar.hide()
       @$$content.style.transform = 'translateY(64px)'
 
   beforeUnmount: =>
     @showBottomBar()
+    clearTimeout @hideTimeout
+    @isMounted = false
     @mountDisposable?.unsubscribe()
 
   getMeta: =>
