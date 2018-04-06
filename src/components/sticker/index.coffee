@@ -22,6 +22,9 @@ module.exports = class Sticker
       sizePx: sizePx
       useRawCount: useRawCount
 
+  update: ({isLocked, itemInfo}) =>
+    @state.set {isLocked, itemInfo}
+
   render: ({sizePx, onclick, hasRarityBar, countOverlay}) =>
     sizePxProp = sizePx
     {me, isLocked, itemInfo, meUserItems,

@@ -136,6 +136,8 @@ module.exports = class Trade
               onclick: =>
                 @selectedItemInfo.next RxObservable.of itemInfo
             }
+            z '.name',
+              item.name
             # z '.count',
             #   z $ownedCount, {count: ownedCount, isLastItem}
 
@@ -154,6 +156,8 @@ module.exports = class Trade
               onclick: =>
                 @selectedItemInfo.next RxObservable.of itemInfo
             }
+            z '.name',
+              item.name
             # z '.count',
             #   z $ownedCount, {count: ownedCount, isLastItem}
 

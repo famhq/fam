@@ -14,29 +14,46 @@ PADDING_PX = 0#4
 
 module.exports = class ItemBlock
   constructor: (options) ->
-    {@model, isLocked, itemInfo, hasCount, sizePx,
-      hideActions,  group} = options
+    {@model, isLocked, itemInfo, hasCount, sizePx, hasName
+      hideActions, group} = options
 
     isLocked ?= null
 
     @$item = new Item {
       @model, isLocked, itemInfo
-      sizePx: if sizePx then sizePx - PADDING_PX * 2 else sizePx
+      sizePx: sizePx
     }
 
     @state = z.state
       me: @model.user.getMe()
       itemInfo: itemInfo
       hasCount: hasCount
+      hasName: hasName
       group: group
       hideActions: hideActions
       sizePx: sizePx
 
-  render: ({sizePx, onclick}) =>
-    sizePxProp = sizePx
-    {me, itemInfo, hasCount, sizePx, hideActions, group} = @state.getValue()
+  update: ({isLocked, itemInfo}) =>
+    @$item.update {isLocked, itemInfo}
+    @state.set {isLocked, itemInfo}
 
-    sizePx ?= sizePxProp
+
+  getHeight: ->
+    {sizePx, hasCount, hasName} = @state.getValue()
+
+    unless sizePx
+      return 0
+
+    height = sizePx
+    if hasCount
+      height += 22
+    if hasName
+      height += 22
+    height
+
+  render: ({onclick}) =>
+    {me, itemInfo, hasCount, hasName, sizePx,
+      hideActions, group} = @state.getValue()
 
     hasCount ?= true
     itemInfo ?= {}
@@ -47,7 +64,7 @@ module.exports = class ItemBlock
     isConsumable = item.type in ['consumable', 'chest']
     canConsume = isConsumable and count > 0 and not hideActions
     isOwned = count > 0
-    height = if hasCount then sizePx + 22 else sizePx
+    height = @getHeight()
 
     z '.z-item-block', {
       className: z.classKebab {
@@ -69,6 +86,10 @@ module.exports = class ItemBlock
         if canConsume and not hideActions
           z '.use',
             @model.l.get 'collection.use'
+
+        if hasName
+          z '.name',
+            item.name
 
       if hasCount
         z '.count', {

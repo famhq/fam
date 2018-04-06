@@ -72,6 +72,7 @@ module.exports = class TradePickItems
       @groupIdFilter
       items
       userItems: toUserItems
+      showName: true
       useRawCount: true
       hideActions: true
     }

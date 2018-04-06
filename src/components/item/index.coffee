@@ -21,6 +21,9 @@ module.exports = class Item
       itemInfo: itemInfo
       sizePx: sizePx
 
+  update: ({isLocked, itemInfo}) =>
+    @state.set {isLocked, itemInfo}
+
   render: ({sizePx, onclick, countOverlay}) =>
     sizePxProp = sizePx
     {me, isLocked, itemInfo, meUserItems, sizePx} = @state.getValue()

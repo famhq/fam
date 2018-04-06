@@ -45,6 +45,17 @@
           display: inline-block
           vertical-align: top
           margin-right: 8px
+          max-width: 100px
+
+          > .name
+            font-caption1(false)
+            margin-top: 4px
+            left: 0
+            top: 0
+            white-space: nowrap
+            overflow: hidden
+            text-overflow: ellipsis
+
 
   > .bottom
     flex: 1
@@ -71,6 +82,7 @@
         > .other-buttons
           flex: 1
           display: flex
+          align-items: center
 
           > .button
             flex: 1

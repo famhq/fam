@@ -14,28 +14,43 @@ PADDING_PX = 0#4
 
 module.exports = class StickerBlock
   constructor: (options) ->
-    {@model, isLocked, itemInfo, hasCount, sizePx,
+    {@model, isLocked, itemInfo, hasCount, hasName, sizePx, @initialItemSize
       hideActions, useRawCount} = options
 
     isLocked ?= null
 
     @$sticker = new Sticker {
       @model, isLocked, itemInfo, useRawCount
-      sizePx: if sizePx then sizePx - PADDING_PX * 2 else sizePx
+      sizePx: sizePx
     }
 
     @state = z.state
       me: @model.user.getMe()
       itemInfo: itemInfo
       hasCount: hasCount
+      hasName: hasName
       hideActions: hideActions
       sizePx: sizePx
 
-  render: ({sizePx, onclick}) =>
-    sizePxProp = sizePx
-    {me, itemInfo, hasCount, hideActions, sizePx} = @state.getValue()
+  update: ({isLocked, itemInfo,}) =>
+    @$sticker.update {isLocked, itemInfo}
+    @state.set {isLocked, itemInfo}
 
-    sizePx ?= sizePxProp
+  getHeight: =>
+    {sizePx, hasCount, hasName} = @state.getValue()
+
+    unless sizePx
+      return 0
+
+    height = sizePx or @initialItemSize
+    if hasCount
+      height += 22
+    if hasName
+      height += 22
+    height
+
+  render: ({onclick}) =>
+    {me, itemInfo, hasCount, hasName, hideActions, sizePx} = @state.getValue()
 
     hasCount ?= true
     itemInfo ?= {}
@@ -49,8 +64,7 @@ module.exports = class StickerBlock
     percent = Math.min(100, Math.round(100 * (count / nextLevelCount)))
     # canUpgrade = count >= nextLevelCount and not hideActions
     isOwned = count > 0
-
-    height = if hasCount then sizePx + 22 else sizePx
+    height = @getHeight()
 
     z '.z-sticker-block', {
       className: z.classKebab {
@@ -74,6 +88,11 @@ module.exports = class StickerBlock
           onclick
         }
         z '.rarity-bar'
+
+        if hasName
+          z '.name',
+            item.name
+
 
       if hasCount
         z '.count', {

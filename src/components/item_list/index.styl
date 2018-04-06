@@ -3,6 +3,10 @@
 .z-item-list
   flex: 1
   padding: 8px
+  opacity: 0
+
+  &.is-ready
+    opacity: 1
 
   &.is-inactive
     overflow: hidden
@@ -26,6 +30,8 @@
       margin-bottom: 8px
 
     > .row
+      overflow: hidden
+
       &.is-visible
         > .item
           display: inline-block

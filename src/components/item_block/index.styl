@@ -25,7 +25,7 @@ $zIndexSoldOut = 3
       font-button()
       shadow-1()
       position: absolute
-      bottom: 8px
+      bottom: 16px
       left: 8px
       right: 8px
       text-align: center
@@ -33,6 +33,14 @@ $zIndexSoldOut = 3
       color: getColor('$primary500Text')
       border-radius: 2px
       padding: 4px 0
+
+    > .name
+      font-caption1(false)
+      text-align: center
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+
 
   // > .sold-out
   //   position: absolute
@@ -45,6 +53,7 @@ $zIndexSoldOut = 3
   //   background-repeat: no-repeat
   //   background-position: top right
   //   background-size: 55%
+
 
   > .count
     font-caption1(false)

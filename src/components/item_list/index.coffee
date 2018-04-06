@@ -21,6 +21,7 @@ StickerBlock = require '../sticker_block'
 ItemBlock = require '../item_block'
 Icon = require '../icon'
 Spinner = require '../spinner'
+Base = require '../base'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -42,6 +43,7 @@ getItemSizeInfo = ({$$el, windowSize, breakpoint}) ->
   else
     info = {itemsPerRow: 3, itemMargin: 6}
   offsetWidth = $$el?.offsetWidth or windowSize.contentWidth
+
   info.itemSize = (
     offsetWidth -
      X_PADDING_PX * 2 -
@@ -49,13 +51,15 @@ getItemSizeInfo = ({$$el, windowSize, breakpoint}) ->
    ) / info.itemsPerRow
   info
 
-module.exports = class ItemList
+module.exports = class ItemList extends Base
   constructor: (options) ->
     {@model, @router, items, userItems, searchValue, groupKeyFilter, sortFn,
-        isGrouped, group, @hideActions, @useRawCount} = options
+        isGrouped, group, @hideActions, @useRawCount, @showName,
+        @showCounts} = options
 
     me = @model.user.getMe()
     isGrouped ?= true
+    @showCounts ?= true
     searchValue ?= new RxBehaviorSubject ''
     groupKeyFilter ?= new RxBehaviorSubject null
     items ?= new RxBehaviorSubject null
@@ -64,10 +68,11 @@ module.exports = class ItemList
       ownedAmount = if info.count then 0 else 10
       ownedAmount + config.RARITIES.indexOf(info.item.rarity)
 
-    @itemSizeInfo = new RxBehaviorSubject getItemSizeInfo {
+    @initialItemSizeInfo = getItemSizeInfo {
       windowSize: @model.window.getSizeVal()
       breakpoint: @model.window.getBreakpointVal()
     }
+    @itemSizeInfo = new RxBehaviorSubject @initialItemSizeInfo
 
     listData = RxObservable.combineLatest(
       items
@@ -94,6 +99,7 @@ module.exports = class ItemList
     @$spinner = new Spinner()
 
     @state = z.state
+      isReady: false
       itemSizeInfo: @itemSizeInfo
       itemGroups: itemGroups
       isDrawerOpen: @model.drawer.isOpen()
@@ -108,7 +114,6 @@ module.exports = class ItemList
     tries = 0
     maxTries = 5
     retryTimeMs = 200
-    $$row = @$$el.querySelector '.row'
     setSize = =>
       width = @$$el?.offsetWidth
       if width
@@ -117,13 +122,20 @@ module.exports = class ItemList
           windowSize: @model.window.getSizeVal()
           breakpoint: @model.window.getBreakpointVal()
         }
+        setTimeout =>
+          @state.set isReady: true
+        , 0
       else if tries < maxTries
         tries += 1
         setTimeout setSize, retryTimeMs
+      else
+        @state.set isReady: true
     setSize()
 
   beforeUnmount: =>
     window.removeEventListener 'resize', @onResize
+    @state.set isReady: false
+    super()
 
   onResize: =>
     @itemSizeInfo.next getItemSizeInfo {
@@ -161,17 +173,23 @@ module.exports = class ItemList
       ItemClass = if item.type is 'sticker' \
                   then StickerBlock
                   else ItemBlock
-      $el = new ItemClass {
+      isLocked = not @model.userItem.isOwnedByUserItemsAndItemKey(
+        userItems, item.key
+      )
+      sizePx = @itemSizeInfo.map ({itemSize}) -> itemSize
+      $el = @getCached$ "item-#{item.key}", ItemClass, {
         @model
         @router
         group
         @hideActions
         @useRawCount
-        isLocked: not @model.userItem.isOwnedByUserItemsAndItemKey(
-          userItems, item.key
-        )
+        hasCount: @showCounts
+        hasName: @showName
+        isLocked: isLocked
         itemInfo: itemInfo
+        sizePx: sizePx
       }
+      $el.update {itemInfo, isLocked}
 
       return {
         info: itemInfo
@@ -182,19 +200,16 @@ module.exports = class ItemList
     rows = _chunk items, itemsPerRow
     _toArray rows
 
-  render: ({onclick, isInactive, scrollTop, showCounts}) =>
-    {me, itemGroups, itemSizeInfo, isDrawerOpen, drawerWidth,
+  render: ({onclick, isInactive, scrollTop, showName}) =>
+    {me, itemGroups, itemSizeInfo, isDrawerOpen, drawerWidth, isReady,
       windowSize} = @state.getValue()
 
     {itemsPerRow, itemMargin, itemSize} = itemSizeInfo
-    showCounts ?= true
-
-    containerHeight = itemSize + COUNT_HEIGHT + itemMargin * 2
 
     groupScrollTop = SEARCH_BAR_HEIGHT
 
     z '.z-item-list', {
-      className: z.classKebab {isInactive}
+      className: z.classKebab {isInactive, isReady}
     },
       if itemGroups?.length is 0 or
           itemGroups?[0]?.length is 0
@@ -206,6 +221,12 @@ module.exports = class ItemList
           z '.group',
             z '.title', itemGroup.type
             _map itemGroup.items, (items, rowIndex) ->
+              itemBlockHeight = items?[0]?.$el?.getHeight()
+              if itemBlockHeight
+                containerHeight = itemBlockHeight + itemMargin * 2
+              else
+                containerHeight = 0
+
               # 2 * is for extra buffer room. also the
               # calculation seems to get
               # less accurate the futher page is scrolled
@@ -230,8 +251,8 @@ module.exports = class ItemList
                       marginBottom: "#{itemMargin * 2}px"
                   },
                     z $el, {
-                      sizePx: if info?.item then itemSize else null
-                      defaultLocked: showCounts is false
+                      defaultLocked: @showCounts is false
+                      showName: showName
                       onclick: ->
                         onclick info
                       isHidden: isInactive
