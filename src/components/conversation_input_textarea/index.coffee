@@ -59,7 +59,8 @@ module.exports = class ConversationInputTextarea
       $$textarea?.value = ''
       @onPost?()
       .then (response) =>
-        if response?.xpGained
+        console.log 'res', response
+        if response?.rewards
           if e?.clientX
             x = e?.clientX
             y = e?.clientY
@@ -67,7 +68,8 @@ module.exports = class ConversationInputTextarea
             boundingRect = @$$el?.getBoundingClientRect?()
             x = boundingRect?.left
             y = boundingRect?.top
-          @model.xpGain.show {xp: response?.xpGained, x, y}
+          console.log 'show'
+          @model.earnAlert.show {rewards: response?.rewards, x, y}
 
   resizeTextarea: (e) =>
     {textareaHeight} = @state.getValue()

@@ -40,8 +40,9 @@ module.exports = class Item
 
     filenameParts = ['large']
 
+    itemDir = item.key?.split('_')[0]
     itemSrc = config.CDN_URL + '/items/' +
-                "#{item.key}_#{filenameParts.join('_')}.png?2"
+                "#{itemDir}/#{item.key}_#{filenameParts.join('_')}.png?2"
 
 
     imageProps = {

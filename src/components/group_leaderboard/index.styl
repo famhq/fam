@@ -7,6 +7,31 @@
   -webkit-overflow-scrolling: touch
 
   > .g-grid
+    > .level
+      font-title()
+      margin-bottom: 4px
+      padding: 2px 0
+
+    > .bar
+      background: getColor('$tertiary400')
+      height: 12px
+      position: relative
+      margin: 16px
+
+      > .fill
+        background: getColor('$primary500')
+        height: 100%
+
+      > .progress
+        font-caption1(false)
+        color: getColor('$primary500Text')
+        font-size: 13px
+        line-height: 14px
+        position: absolute
+        left: 0
+        top: 0
+        padding: 0 8px
+
 
     > .leaderboard
       padding: 0 16px

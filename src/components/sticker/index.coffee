@@ -49,8 +49,9 @@ module.exports = class Sticker
     else
       filenameParts.push 'large'
 
+    stickerDir = item.key?.split('_')[0]
     stickerSrc = config.CDN_URL + '/stickers/' +
-                "#{item.key}_#{filenameParts.join('_')}.png?2"
+                "#{stickerDir}/#{item.key}_#{filenameParts.join('_')}.png?2"
 
 
     imageProps = {

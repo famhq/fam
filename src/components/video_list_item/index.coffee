@@ -32,8 +32,8 @@ module.exports = class VideoListItem
         y = e?.clientY
         @model.video.logViewById video.id
         .then (response) =>
-          if response?.xpGained
-            @model.xpGain.show {xp: response.xpGained, x, y}
+          if response?.earnAlerted
+            @model.earnAlert.show {xp: response.earnAlerted, x, y}
         @model.portal.call 'browser.openWindow', {
           url: "https://www.youtube.com/watch?v=#{video.sourceId}"
           target: '_system'

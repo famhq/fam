@@ -2,9 +2,7 @@ z = require 'zorium'
 isUuid = require 'isuuid'
 
 AppBar = require '../../components/app_bar'
-Tabs = require '../../components/tabs'
 GroupLeaderboard = require '../../components/group_leaderboard'
-GroupEarnXp = require '../../components/group_earn_xp'
 ButtonMenu = require '../../components/button_menu'
 colors = require '../../colors'
 
@@ -17,11 +15,7 @@ module.exports = class GroupLeaderboardPage
   constructor: ({@model, requests, @router, serverData, group}) ->
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
-    @$tabs = new Tabs {@model}
     @$groupLeaderboard = new GroupLeaderboard {
-      @model, @router, serverData, group
-    }
-    @$earnXp = new GroupEarnXp {
       @model, @router, serverData, group
     }
 
@@ -47,16 +41,4 @@ module.exports = class GroupLeaderboardPage
           color: colors.$header500Icon
         }
       }
-      z @$tabs,
-        isBarFixed: false
-        hasAppBar: true
-        tabs: [
-          {
-            $menuText: @model.l.get 'groupLeaderboardPage.earnXp'
-            $el: z @$earnXp
-          }
-          {
-            $menuText: @model.l.get 'groupLeaderboardPage.topAllTime'
-            $el: z @$groupLeaderboard
-          }
-        ]
+      z @$groupLeaderboard

@@ -18,7 +18,7 @@ require 'rxjs/add/operator/publishReplay'
 Head = require './components/head'
 NavDrawer = require './components/nav_drawer'
 BottomBar = require './components/bottom_bar'
-XpGain = require './components/xp_gain'
+EarnAlert = require './components/earn_alert'
 SignInDialog = require './components/sign_in_dialog'
 InstallOverlay = require './components/install_overlay'
 GetAppDialog = require './components/get_app_dialog'
@@ -41,6 +41,7 @@ Pages =
   GroupsPage: require './pages/groups'
   GroupChatPage: require './pages/group_chat'
   GroupCollectionPage: require './pages/group_collection'
+  GroupEarnCurrencyPage: require './pages/group_earn_currency'
   GroupForumPage: require './pages/group_forum'
   GroupHomePage: require './pages/group_home'
   GroupSettingsPage: require './pages/group_settings'
@@ -168,7 +169,7 @@ module.exports = class App
 
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
     @$navDrawer = new NavDrawer {@model, @router, @group, @overlay$}
-    @$xpGain = new XpGain {@model}
+    @$earnAlert = new EarnAlert {@model}
     @$signInDialog = new SignInDialog {@model, @router}
     @$getAppDialog = new GetAppDialog {@model, @router, @group}
     @$installOverlay = new InstallOverlay {@model, @router}
@@ -273,6 +274,7 @@ module.exports = class App
     route 'groupManageChannels', 'GroupManageChannelsPage'
     route 'groupNewChannel', 'GroupAddChannelPage'
     route 'groupEditChannel', 'GroupEditChannelPage'
+    route 'groupEarnCurrency', 'GroupEarnCurrencyPage'
     route 'groupManagePages', 'GroupManagePagesPage'
     route 'groupNewPage', 'GroupNewPagePage'
     route 'groupEditPage', 'GroupEditPagePage'
@@ -388,7 +390,7 @@ module.exports = class App
 
               },
                 @model.l.get 'app.stillLoading'
-            z @$xpGain
+            z @$earnAlert
             # used in color.coffee to detect support
             z '#css-variable-test',
               style:

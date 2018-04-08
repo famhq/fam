@@ -34,10 +34,12 @@ module.exports = class GroupCollectionPage
       @router
       overlay$
       group: group
-      goToEarnFn: =>
+      goToEarnFireFn: =>
         {group} = @state.getValue()
-        console.log 'click', group
         @router.go 'groupFire', {groupId: group.key or group.id}
+      goToEarnCurrencyFn: =>
+        {group} = @state.getValue()
+        @router.go 'groupEarnCurrency', {groupId: group.key or group.id}
       products: group.switchMap (group) =>
         if group
           @model.product.getAllByGroupId group.id

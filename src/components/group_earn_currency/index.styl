@@ -1,6 +1,6 @@
 @require '../../vars'
 
-.z-group-earn-xp
+.z-group-earn-currency
   flex: 1
   width: 100%
   overflow: auto
@@ -9,31 +9,6 @@
   box-sizing: border-box
 
   > .g-grid
-    > .level
-      font-title()
-      margin-bottom: 4px
-      padding: 2px 0
-
-    > .bar
-      background: getColor('$tertiary400')
-      height: 12px
-      margin-bottom: 16px
-      position: relative
-
-      > .fill
-        background: getColor('$primary500')
-        height: 100%
-
-      > .progress
-        font-caption1(false)
-        color: getColor('$primary500Text')
-        font-size: 13px
-        line-height: 14px
-        position: absolute
-        left: 0
-        top: 0
-        padding: 0 8px
-
     > .g-cols > .g-col
       > .action
         display: flex

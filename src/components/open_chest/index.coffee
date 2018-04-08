@@ -86,10 +86,11 @@ module.exports = class OpenChest
       {item} = itemInfo
       images = []
       filenameParts = ['large']
-      images.push config.CDN_URL + '/items/chests/' +
+      itemDir = item.key.split('_')[0]
+      images.push config.CDN_URL + "/items/#{itemDir}/chests/" +
                       "#{item.key}_#{filenameParts.join('_')}.png"
       filenameParts = ['open', 'large']
-      images.push config.CDN_URL + '/items/chests/' +
+      images.push config.CDN_URL + '/items/#{itemDir}/chests/' +
                       "#{item.key}_#{filenameParts.join('_')}.png"
 
       _map images, (imageSrc) ->
@@ -148,10 +149,11 @@ module.exports = class OpenChest
 
     if item
       filenameParts = ['large']
-      chestImageUrl = config.CDN_URL + '/items/chests/' +
+      itemDir = item.key.split('_')[0]
+      chestImageUrl = config.CDN_URL + "/items/#{itemDir}/chests/" +
                       "#{item.key}_#{filenameParts.join('_')}.png"
       filenameParts = ['open', 'large']
-      openedChestImageUrl = config.CDN_URL + '/items/chests/' +
+      openedChestImageUrl = config.CDN_URL + "/items/#{itemDir}/chests/" +
                       "#{item.key}_#{filenameParts.join('_')}.png"
 
 

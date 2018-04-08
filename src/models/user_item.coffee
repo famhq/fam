@@ -12,6 +12,9 @@ module.exports = class UserItem
   getAllByUserId: (userId) =>
     @auth.stream "#{@namespace}.getAllByUserId", {userId}
 
+  getByItemKey: (itemKey) =>
+    @auth.stream "#{@namespace}.getByItemKey", {itemKey}
+
   # upgradeByItemKey: (itemKey) =>
   #   @auth.call "#{@namespace}.upgradeByItemKey", {itemKey}, {
   #     invalidateAll: true

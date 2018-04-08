@@ -129,7 +129,7 @@ module.exports = class FormattedText
               }
           else
             z 'img', {
-              src: imageSrc
+              src: largeImageSrc
             }
 
         a: (tagName, props, children) =>

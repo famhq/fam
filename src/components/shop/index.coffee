@@ -10,6 +10,7 @@ require 'rxjs/add/observable/of'
 
 Spinner = require '../spinner'
 Icon = require '../icon'
+CurrencyIcon = require '../currency_icon'
 PrimaryButton = require '../primary_button'
 BuyGiftCardDialog = require '../buy_gift_card_dialog'
 OpenPack = require '../open_pack'
@@ -26,7 +27,9 @@ if window?
   require './index.styl'
 
 module.exports = class Shop
-  constructor: ({@model, @router, products, @overlay$, @goToEarnFn, group}) ->
+  constructor: (options) ->
+    {@model, @router, products, @overlay$, @goToEarnFireFn
+      @goToEarnCurrencyFn, group} = options
     @$spinner = new Spinner()
 
     me = @model.user.getMe()
@@ -34,18 +37,26 @@ module.exports = class Shop
     @purchaseLoadingKey = new RxBehaviorSubject null
 
     @$infoCard = new UiCard()
-    @$moreIcon = new Icon()
+    @$moreFireIcon = new Icon()
+    @$moreFireAddIcon = new Icon()
+    @$moreCurrencyAddIcon = new Icon()
+    @$moreCurrencyIcon = new CurrencyIcon {
+      itemKey: group.map (group) ->
+        group?.currency?.itemKey
+    }
 
     @state = z.state
       me: @model.user.getMe()
       purchaseLoadingKey: @purchaseLoadingKey
       isInfoCardVisible: window? and not localStorage?['hideShopInfo']
+      group: group
       products: products.map (products) =>
         products = _orderBy products, 'cost', 'asc'
         _map products, (product) =>
           {
             $buyButton: new PrimaryButton()
             $fireIcon: new Icon()
+            $currencyIcon: new CurrencyIcon {itemKey: product.currency}
             product: product
             onPurchase: (items) =>
               # buying anything removes ads for day
@@ -87,7 +98,8 @@ module.exports = class Shop
           }
 
   render: =>
-    {me, products, purchaseLoadingKey, isInfoCardVisible} = @state.getValue()
+    {me, products, purchaseLoadingKey,
+      isInfoCardVisible, group} = @state.getValue()
 
     z '.z-shop',
       z '.g-grid',
@@ -107,7 +119,7 @@ module.exports = class Shop
           z '.g-cols.no-padding',
             [
               _map products, (options) =>
-                {product, $buyButton, $fireIcon,
+                {product, $buyButton, $fireIcon, $currencyIcon,
                   onPurchase, onBeforePurchase} = options
 
                 isDisabled = product.isLocked or
@@ -120,7 +132,7 @@ module.exports = class Shop
                   onclick: =>
                     ga? 'send', 'event', 'product', 'buy', product.key
                     if isDisabled
-                      @goToEarnFn?()
+                      @goToEarnFireFn?()
                     else
                       (onBeforePurchase?() or Promise.resolve())
                       .then (data) =>
@@ -146,25 +158,57 @@ module.exports = class Shop
                           then @model.l.get 'general.free'
                           else FormatService.number product.cost
                         z '.icon',
-                          z $fireIcon,
-                            icon: if product.isLocked \
-                                  then 'lock-outline'
-                                  else 'fire'
-                            size: '16px'
-                            color: colors.$quaternary500
-                            isTouchTarget: false
+                          if product.currency is 'fire'
+                            z $fireIcon,
+                              icon: if product.isLocked \
+                                    then 'lock-outline'
+                                    else 'fire'
+                              size: '16px'
+                              color: colors.$quaternary500
+                              isTouchTarget: false
+                          else
+                            z $currencyIcon, {size: '16px'}
               z '.g-col.g-xs-6.g-md-2.earn-more', {
                 onclick: =>
-                  @goToEarnFn?()
+                  @goToEarnFireFn?()
               },
                 z '.more',
-                  z @$moreIcon,
-                    icon: 'add'
-                    isTouchTarget: false
-                    color: colors.$tertiary900Text
-                    size: '96px'
+                  z '.icon',
+                    z @$moreFireAddIcon,
+                      icon: 'add'
+                      isTouchTarget: false
+                      color: colors.$tertiary900Text
+                      size: '96px'
+                  z '.icon',
+                    z @$moreFireIcon,
+                      icon: 'fire'
+                      isTouchTarget: false
+                      color: colors.$quaternary500
+                      size: '96px'
                 z '.info',
-                  z '.name', @model.l.get 'shop.earnMore'
+                  z '.name', @model.l.get 'shop.earnMoreFire'
+
+              if group?.currency
+                z '.g-col.g-xs-6.g-md-2.earn-more', {
+                  onclick: =>
+                    @goToEarnCurrencyFn?()
+                },
+                  z '.more',
+                    z '.icon',
+                      z @$moreCurrencyAddIcon,
+                        icon: 'add'
+                        isTouchTarget: false
+                        color: colors.$tertiary900Text
+                        size: '96px'
+                    z '.icon',
+                      z @$moreCurrencyIcon,
+                        size: '96px'
+                  z '.info',
+                    z '.name',
+                    @model.l.get 'shop.earnMore', {
+                      replacements:
+                        currency: group.currency.name
+                    }
             ]
         else
           @$spinner
