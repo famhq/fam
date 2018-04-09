@@ -34,7 +34,6 @@ if window?
 MAX_POST_MESSAGE_LOAD_MS = 5000 # 5s
 MAX_CHARACTERS = 500
 MAX_LINES = 20
-RESIZE_THROTTLE_MS = 150
 SCROLL_MAX_WAIT_MS = 100
 FIVE_MINUTES_MS = 60 * 5 * 1000
 SCROLL_MESSAGE_LOAD_COUNT = 20
@@ -86,27 +85,8 @@ module.exports = class Conversation extends Base
       @messageBatchesStreams.switch()
       .map (messageBatches) =>
         isLoading.next false
-        {isScrolledBottom, isLoaded} = @state.getValue()
-        if isScrolledBottom and isLoaded
-          setTimeout =>
-            @scrollToBottom {isSmooth: true}
-          , 0
-        else if not isLoaded
-          maxTries = 5 # 1s
-          scrollBottomIfScroll = (attempt = 0) =>
-            scrolled = @scrollToBottom {
-              isSmooth: false
-            }
-            if not scrolled and attempt < maxTries
-              setTimeout ->
-                scrollBottomIfScroll attempt + 1
-              , 200
-            else
-              @$$loadingSpinner?.style.display = 'none'
-              @state.set isLoaded: true
-
-          scrollBottomIfScroll()
-
+        @$$loadingSpinner?.style.display = 'none'
+        @state.set isLoaded: true
         messageBatches
       .catch (err) ->
         console.log err
@@ -140,7 +120,6 @@ module.exports = class Conversation extends Base
       group: group
       meGroupUser: @groupUser
       onPost: @postMessage
-      onResize: @onResize
       allowedPanels: groupUserAndConversation.map ([groupUser, conversation]) =>
         if conversation?.groupId
           panels = ['text', 'stickers']
@@ -165,9 +144,6 @@ module.exports = class Conversation extends Base
           ['text', 'stickers', 'image', 'gifs', 'addons']
     }
 
-    @debouncedOnResize = _debounce @onResize
-    , RESIZE_THROTTLE_MS
-
     messageBatchesAndMeAndBlockedUserIds = RxObservable.combineLatest(
       messageBatches
       me
@@ -189,7 +165,6 @@ module.exports = class Conversation extends Base
       groupUser: @groupUser
       isJoinLoading: false
       isLoaded: false
-      isScrolledBottom: true
 
       messageBatches: messageBatchesAndMeAndBlockedUserIds
       .map ([messageBatches, me, blockedUserIds]) =>
@@ -247,9 +222,6 @@ module.exports = class Conversation extends Base
 
       prevConversation = newConversation
 
-    @scrollToBottom()
-    window?.addEventListener 'resize', @debouncedOnResize
-
   beforeUnmount: =>
     super()
 
@@ -289,8 +261,6 @@ module.exports = class Conversation extends Base
     # causes new messages to not post FIXME FIXME
     # @model.chatMessage.resetClientChangesStream conversation?.id
 
-    window?.removeEventListener 'resize', @debouncedOnResize
-
   getMessagesStream: (maxTimeUuid) =>
     @conversation.switchMap (conversation) =>
       if conversation
@@ -310,11 +280,16 @@ module.exports = class Conversation extends Base
     @onScrollEnd?()
 
   scrollListener: =>
-    {isScrolledBottom} = @state.getValue()
     scrollTop = @$$messages.scrollTop
     scrollHeight = @$$messages.scrollHeight
     offsetHeight = @$$messages.offsetHeight
     fromBottom = scrollHeight - offsetHeight - scrollTop
+    if Environment.isiOS()
+      scrollTopTmp = scrollTop
+      scrollTop = fromBottom
+      fromBottom = scrollTopTmp
+    # FIXME FIXME: backward on ios
+    console.log scrollHeight, offsetHeight, scrollTop
     isiOS = Environment.isiOS()
     isPotentiallyBouncing = isiOS and fromBottom < 50
     notNearTop = scrollTop > 50
@@ -335,13 +310,6 @@ module.exports = class Conversation extends Base
         @onScrollEnd = @onScrollDown
       else
         @onScrollDown?()
-
-    if fromBottom < 10
-      unless isScrolledBottom
-        @state.set isScrolledBottom: true
-    else
-      if isScrolledBottom
-        @state.set isScrolledBottom: false
 
     # a little slow on iOS with the bounce animation, but if <=, it flickers
     if @canLoadMore and scrollTop is 0
@@ -393,31 +361,8 @@ module.exports = class Conversation extends Base
         messageBatches
     )
 
-  scrollToBottom: ({isSmooth} = {}) =>
-    $messageArr = @$$el?.querySelectorAll('.z-conversation-message')
-    $$lastMessage = _last $messageArr
-    isMobile = Environment.isMobile()
-    # the 'instant' isn't as instant as old-school method
-    if not @scrollYOnly and $$lastMessage?.scrollIntoView and
-        not isMobile and isSmooth
-      try
-        $$lastMessage.scrollIntoView {
-          behavior: if isSmooth then 'smooth' else 'instant'
-        }
-        scrolled = true
-    else if @$$messages
-      scrollHeight = @$$messages.scrollHeight
-      offsetHeight = @$$messages.offsetHeight
-      scrolled = scrollHeight > offsetHeight
-      @$$messages.scrollTop = scrollHeight - offsetHeight
-      @lastScrollTop = null
-    return scrolled
-
-  onResize: =>
-    {isScrolledBottom} = @state.getValue()
-    if isScrolledBottom
-      setImmediate =>
-        @scrollToBottom {isSmooth: true}
+  scrollToBottom: =>
+    @$$messages.scrollTop = 0
 
   postMessage: =>
     {me, conversation, isPostLoading} = @state.getValue()
@@ -473,24 +418,24 @@ module.exports = class Conversation extends Base
 
   render: =>
     {me, isLoading, message, isTextareaFocused, isLoaded,
-      messageBatches, conversation, group, isScrolledBottom, inputTranslateY,
+      messageBatches, conversation, group, inputTranslateY,
       groupUser, isJoinLoading, hasBottomBar} = @state.getValue()
 
     z '.z-conversation', {
       className: z.classKebab {hasBottomBar}
     },
+      # toggled with vanilla js (non-vdom for perf)
+      z '.loading', {
+        key: 'conversation-messages-loading-spinner'
+      },
+        @$loadingSpinner
       # hide messages until loaded to prevent showing the scrolling
       z '.messages', {
         key: 'conversation-messages'
         style:
           transform: "translateY(#{inputTranslateY}px)"
       },
-        [
-          # toggled with vanilla js (non-vdom for perf)
-          z '.loading', {
-            key: 'conversation-messages-loading-spinner'
-          },
-            @$loadingSpinner
+        z '.messages-inner',
           if messageBatches and not isLoading
             _map messageBatches, (messageBatch) ->
               z '.message-batch', {
@@ -503,7 +448,6 @@ module.exports = class Conversation extends Base
                         z '.divider'
                       z $el, {isTextareaFocused}
                   ]
-        ]
 
       if conversation?.groupId and groupUser and not groupUser.userId
         z '.bottom.is-gate',

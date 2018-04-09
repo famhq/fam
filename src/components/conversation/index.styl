@@ -2,19 +2,29 @@
 
 $zIndexTextarea = 2
 
+// overflow:auto; display:flex; flex-direction:column-reverse;
+
 .z-conversation
   display: flex
   flex: 1
   min-height: 0 // fix for older chrome (otherwise doesn't keep height 100)
   flex-direction: column
   width: 100%
+  position: relative
+
+  > .loading
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    height: 30px
 
   &.has-bottom-bar
     > .messages
       padding-top: 30px + 64px
 
-      > .loading
-        top: 64px
+    > .loading
+      top: 64px
 
   > .messages
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)
@@ -23,6 +33,12 @@ $zIndexTextarea = 2
     overflow-y: auto
     overflow-x: hidden
     -webkit-overflow-scrolling: touch
+
+    // https://stackoverflow.com/questions/18614301/keep-overflow-div-scrolled-to-bottom-unless-user-scrolls-up?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+    // reverse scrolling so we always stay at the bottom
+    display: flex
+    flex-direction: column-reverse
+
     // use gpu
     transform: translateZ(0)
     // https://stackoverflow.com/questions/39261456/reducing-scroll-jank-when-using-overflow-y-scroll/39368219
@@ -35,26 +51,20 @@ $zIndexTextarea = 2
     padding-top: 30px // for loading more indicator
     margin-bottom: 100px // for bottom input bar
     // padding-bottom: 90px
-    position: relative
 
-    > .loading
-      position: absolute
-      top: 0
-      left: 0
-      right: 0
-      height: 30px
+    > .messages-inner
 
-    > .message-batch
-      opacity: 0
+      > .message-batch
+        opacity: 0
 
-      &.is-loaded
-        opacity: 1
+        &.is-loaded
+          opacity: 1
 
-      > .divider
-        width: 100%
-        height: 1px
-        background: getColor('$tertiary900Text12')
-        margin: 0
+        > .divider
+          width: 100%
+          height: 1px
+          background: getColor('$tertiary900Text12')
+          margin: 0
 
   > .bottom
     padding: 0 8px 8px 8px
