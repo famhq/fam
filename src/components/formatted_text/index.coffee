@@ -53,9 +53,11 @@ module.exports = class FormattedText
       sticker = parts[0]
       level = parts[1] or 1
       findRegex = new RegExp find.replace('^', '\\^'), 'g'
+      stickerDir = sticker?.split('_')[0]
       newText.replace(
         findRegex
-        "![sticker](#{config.CDN_URL}/stickers/#{sticker}_#{level}_tiny.png)"
+        "![sticker](#{config.CDN_URL}/stickers/#{stickerDir}/" +
+          "#{sticker}_#{level}_tiny.png)"
       )
     , text
 

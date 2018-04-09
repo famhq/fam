@@ -24,8 +24,6 @@ module.exports = class GroupManagePages
   render: =>
     {me, group, pages} = @state.getValue()
 
-    console.log 'p', pages
-
     z '.z-group-manage-pages',
       z '.pages',
         _map pages, (page) =>

@@ -6,8 +6,8 @@ module.exports = class EarnAction
   getAllByGroupId: (groupId) =>
     @auth.stream "#{@namespace}.getAllByGroupId", {groupId}
 
-  incrementByGroupIdAndKey: (groupId, key, options = {}) =>
+  incrementByGroupIdAndAction: (groupId, action, options = {}) =>
     {timestamp, successKey} = options
-    @auth.call "#{@namespace}.incrementByGroupIdAndKey", {
-      groupId, key, timestamp, successKey
+    @auth.call "#{@namespace}.incrementByGroupIdAndAction", {
+      groupId, action, timestamp, successKey
     }, {invalidateAll: true}

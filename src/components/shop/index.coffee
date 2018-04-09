@@ -38,8 +38,6 @@ module.exports = class Shop
 
     @$infoCard = new UiCard()
     @$moreFireIcon = new Icon()
-    @$moreFireAddIcon = new Icon()
-    @$moreCurrencyAddIcon = new Icon()
     @$moreCurrencyIcon = new CurrencyIcon {
       itemKey: group.map (group) ->
         group?.currency?.itemKey
@@ -122,8 +120,7 @@ module.exports = class Shop
                 {product, $buyButton, $fireIcon, $currencyIcon,
                   onPurchase, onBeforePurchase} = options
 
-                isDisabled = product.isLocked or
-                              not me?.fire? or me?.fire < product.cost
+                isDisabled = product.isLocked
                 isFree = product.cost is 0
                 z '.g-col.g-xs-6.g-md-2', {
                   style:
@@ -131,9 +128,7 @@ module.exports = class Shop
                     backgroundColor: product.data?.backgroundColor
                   onclick: =>
                     ga? 'send', 'event', 'product', 'buy', product.key
-                    if isDisabled
-                      @goToEarnFireFn?()
-                    else
+                    unless isDisabled
                       (onBeforePurchase?() or Promise.resolve())
                       .then (data) =>
                         @purchaseLoadingKey.next product.key
@@ -174,12 +169,6 @@ module.exports = class Shop
               },
                 z '.more',
                   z '.icon',
-                    z @$moreFireAddIcon,
-                      icon: 'add'
-                      isTouchTarget: false
-                      color: colors.$tertiary900Text
-                      size: '96px'
-                  z '.icon',
                     z @$moreFireIcon,
                       icon: 'fire'
                       isTouchTarget: false
@@ -194,12 +183,6 @@ module.exports = class Shop
                     @goToEarnCurrencyFn?()
                 },
                   z '.more',
-                    z '.icon',
-                      z @$moreCurrencyAddIcon,
-                        icon: 'add'
-                        isTouchTarget: false
-                        color: colors.$tertiary900Text
-                        size: '96px'
                     z '.icon',
                       z @$moreCurrencyIcon,
                         size: '96px'

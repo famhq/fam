@@ -169,6 +169,17 @@ module.exports = class NavDrawer
               iconName: 'cards'
             }
           if isClashRoyaleGroup or group.key in [
+            'clashroyalees', 'clashroyalept', 'clashroyalepl',
+            'playhard', 'teamqueso', 'nickatnyte'
+          ]
+            {
+              path: @router.get 'groupEarn', {groupId}
+              title: @model.l.get 'general.earn'
+              $icon: new Icon()
+              $ripple: new Ripple()
+              iconName: 'fire'
+            }
+          if isClashRoyaleGroup or group.key in [
             'nickatnyte', 'teamqueso', 'ninja'
           ]
             {

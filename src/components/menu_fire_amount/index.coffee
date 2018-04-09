@@ -1,4 +1,6 @@
 z = require 'zorium'
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/of'
 
 FormatService = require '../../services/format'
 colors = require '../../colors'
@@ -23,7 +25,10 @@ module.exports = class MenuFireAmount
       me: @model.user.getMe()
       group: group
       currencyItem: itemKey.switchMap (itemKey) =>
-        @model.userItem.getByItemKey itemKey
+        if itemKey
+          @model.userItem.getByItemKey itemKey
+        else
+          RxObservable.of null
 
   render: =>
     {me, group, currencyItem} = @state.getValue()
@@ -31,7 +36,10 @@ module.exports = class MenuFireAmount
 
     z '.z-menu-fire-amount', {
       onclick: =>
-        @router.go 'groupFire', {groupId: group?.id}
+        @router.go 'groupEarnWithType', {
+          groupId: group?.key or group?.id
+          type: 'fire'
+        }
     },
       z '.fire',
         FormatService.number me?.fire

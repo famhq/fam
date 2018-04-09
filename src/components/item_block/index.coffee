@@ -85,7 +85,7 @@ module.exports = class ItemBlock
 
         if canConsume and not hideActions
           z '.use',
-            @model.l.get 'collection.use'
+            @model.l.get 'collection.open'
 
         if hasName
           z '.name',

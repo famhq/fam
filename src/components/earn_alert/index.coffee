@@ -24,7 +24,6 @@ module.exports = class EarnAlert
       $$alert = document.createElement 'div'
       $$alert.className = 'reward'
       @mountDisposable = @model.earnAlert.getReward().subscribe ({rewards, x, y} = {}) =>
-        console.log 'alert', rewards
         rewardStrs = _map rewards, (reward) ->
           if reward.currencyType is 'xp'
             "+#{reward.currencyAmount}xp"
@@ -37,7 +36,9 @@ module.exports = class EarnAlert
         $$alert.innerHTML = rewardStrs.join '  '
         if x <= window.innerWidth / 2
           $$alert.style.left = x + 'px'
+          $$alert.style.right = 'auto'
         else
+          $$alert.style.left = 'auto'
           $$alert.style.right = window.innerWidth - x + 'px'
         $$alert.style.top = y + 'px'
         @$$el.appendChild $$alert

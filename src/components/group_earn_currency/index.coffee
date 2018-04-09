@@ -30,124 +30,13 @@ module.exports = class GroupEarnCurrency
       @model.earnAction.getAllByGroupId group.id
       .map (actions) =>
         _map actions, (action) =>
+          currencyReward = _find action.data.rewards, {currencyType: 'item'}
+          currencyItemKey = currencyReward?.currencyItemKey
           {
-            action: action.name
-            actionKey: action.key
-            route:
-              key: 'groupChat'
-              replacements: {groupId: group.key or group.id}
-            currency: action.currencyAmount
+            action: action
             $claimButton: new PrimaryButton()
-            $claimButtonText: @model.l.get 'earnXp.dailyChatMessageButton'
-            $currencyIcon: new CurrencyIcon {itemKey: action.currencyItemKey}
-            isClaimed: Boolean action.transaction
+            $currencyIcon: new CurrencyIcon {itemKey: currencyItemKey}
           }
-        # videoTransaction = _find transactions, {actionKey: 'rewardedVideos'}
-        # videosLeft = 3 - (videoTransaction?.count or 0)
-        # _filter [
-        #   if Environment.isNativeApp(config.GAME_KEY)
-        #     {
-        #       action: @model.l.get 'earnXp.watchAd'
-        #       actionKey: 'rewardedVideos'
-        #       currency: 1
-        #       $claimButton: new PrimaryButton()
-        #       $currencyIcon: new CurrencyIcon {itemKey: action?.currencyItemKey}
-        #       $claimButtonText: @model.l.get 'earnXp.watchAdButton', {
-        #           replacements: {videosLeft}
-        #       }
-        #       isClaimed: not videosLeft
-        #       onclick: =>
-        #         {loadingActionKey} = @state.getValue()
-        #         unless loadingActionKey is 'rewardedVideos'
-        #           @state.set loadingActionKey: 'rewardedVideos'
-        #           @model.portal.call 'admob.prepareRewardedVideo', {
-        #             adId: if Environment.isiOS() \
-        #                   then 'ca-app-pub-9043203456638369/5979905134'
-        #                   else 'ca-app-pub-9043203456638369/8896044215'
-        #           }
-        #           .then =>
-        #             timestamp = Date.now()
-        #             @model.portal.call 'admob.showRewardedVideo', {timestamp}
-        #             .then (successKey) =>
-        #               @state.set loadingActionKey: null
-        #               @model.earnAction.incrementByGroupIdAndKey(
-        #                 group.id, 'rewardedVideos', {timestamp, successKey}
-        #               )
-        #           .catch =>
-        #             @state.set loadingActionKey: null
-        #     }
-        #   {
-        #     action: @model.l.get 'earnXp.dailyVisit'
-        #     actionKey: 'dailyVisit'
-        #     currency: 5
-        #     $claimButton: new PrimaryButton()
-        #     $claimButtonText: @model.l.get 'earnXp.claim'
-        #     isClaimed: _find transactions, {actionKey: 'dailyVisit'}
-        #     onclick: (e) =>
-        #       @state.set loadingActionKey: 'dailyVisit'
-        #       @model.rewardTransaction.incrementByGroupIdAndActionKey(
-        #         group.id, 'dailyVisit'
-        #       )
-        #       .catch -> null
-        #       .then =>
-        #         $$button = e?.target
-        #         if $$button
-        #           boundingRect = $$button.getBoundingClientRect?()
-        #           x = boundingRect?.left + boundingRect?.width / 2
-        #           y = boundingRect?.top
-        #         else
-        #           x = e?.clientX
-        #           y = e?.clientY
-        #         @model.currencyGain.show {currency: 5, x, y}
-        #         @state.set loadingActionKey: null
-        #   }
-          # {
-          #   action: @model.l.get 'earnXp.dailyChatMessage'
-          #   actionKey: 'dailyChatMessage'
-          #   route:
-          #     key: 'groupChat'
-          #     replacements: {groupId: group.key or group.id}
-          #   currency: 5
-          #   $claimButton: new PrimaryButton()
-          #   $claimButtonText: @model.l.get 'earnXp.dailyChatMessageButton'
-          #   isClaimed: _find transactions, {actionKey: 'dailyChatMessage'}
-          # }
-          # {
-          #   action: @model.l.get 'earnXp.dailyForumComment'
-          #   actionKey: 'dailyForumComment'
-          #   route:
-          #     key: 'groupForum'
-          #     replacements: {groupId: group.key or group.id}
-          #   currency: 5
-          #   $claimButton: new PrimaryButton()
-          #   $claimButtonText: @model.l.get 'earnXp.dailyForumCommentButton'
-          #   isClaimed: _find transactions, {actionKey: 'dailyForumComment'}
-          # }
-          # {
-          #   action: @model.l.get 'earnXp.openStickerPacks'
-          #   actionKey: 'openStickerPacks'
-          #   route:
-          #     key: 'groupCollectionWithTab'
-          #     replacements: {groupId: group.key or group.id, tab: 'shop'}
-          #   currency: '∞'
-          #   $claimButton: new PrimaryButton()
-          #   $claimButtonText: @model.l.get 'earnXp.openStickerPacksButton'
-          #   isClaimed: false
-          # }
-          # if group.id is 'ad25e866-c187-44fc-bdb5-df9fcc4c6a42'
-          #   {
-          #     action: @model.l.get 'earnXp.dailyVideoView'
-          #     actionKey: 'dailyVideoView'
-          #     route:
-          #       key: 'groupVideos'
-          #       replacements: {groupId: group.key or group.id}
-          #     currency: 5
-          #     $claimButton: new PrimaryButton()
-          #     $claimButtonText: @model.l.get 'earnXp.dailyVideoViewButton'
-          #     isClaimed: _find transactions, {actionKey: 'dailyVideoView'}
-          #   }
-        # ]
-
     me = @model.user.getMe()
 
     groupAndMe = RxObservable.combineLatest(
@@ -158,29 +47,80 @@ module.exports = class GroupEarnCurrency
 
     @state = z.state
       me: me
+      group: group
       meGroupUser: groupAndMe.switchMap ([group, me]) =>
         @model.groupUser.getByGroupIdAndUserId group.id, me.id
       currencyActions: currencyActions
-      loadingActionKey: null
+      loadingAction: null
+
+  visit: (e) =>
+    {group} = @state.getValue()
+    @state.set loadingAction: 'visit'
+    @model.earnAction.incrementByGroupIdAndAction(
+      group.id, 'visit'
+    )
+    .catch -> null
+    .then (rewards) =>
+      $$button = e?.target
+      if $$button
+        boundingRect = $$button.getBoundingClientRect?()
+        x = boundingRect?.left + boundingRect?.width / 2
+        y = boundingRect?.top
+      else
+        x = e?.clientX
+        y = e?.clientY
+      @model.earnAlert.show {rewards, x, y}
+      @state.set loadingAction: null
+
+  playAd: =>
+    {loadingAction, group} = @state.getValue()
+    unless loadingAction is 'watchAd'
+      @state.set loadingAction: 'watchAd'
+      @model.portal.call 'admob.prepareRewardedVideo', {
+        adId: if Environment.isiOS() \
+              then 'ca-app-pub-9043203456638369/5979905134'
+              else 'ca-app-pub-9043203456638369/8896044215'
+      }
+      .then =>
+        timestamp = Date.now()
+        @model.portal.call 'admob.showRewardedVideo', {timestamp}
+        .then (successKey) =>
+          @state.set loadingAction: null
+          @model.earnAction.incrementByGroupIdAndAction(
+            group.id, 'watchAd', {timestamp, successKey}
+          )
+      .catch =>
+        @state.set loadingAction: null
 
   render: =>
-    {me, currencyActions, loadingActionKey, meGroupUser} = @state.getValue()
+    {me, currencyActions, loadingAction, meGroupUser} = @state.getValue()
 
     z '.z-group-earn-currency',
       z '.g-grid',
         z '.g-cols',
-        _map currencyActions, (item) =>
-          {action, route, currency, onclick, isClaimed, actionKey,
-            $claimButton, $claimButtonText, $currencyIcon} = item
-          isLoading = loadingActionKey is actionKey
+        _map currencyActions, ({action, $claimButton, $currencyIcon}) =>
+          isLoading = loadingAction is action.action
+          countLeft = action.maxCount - (action.transaction?.count or 0)
+          isClaimed = not countLeft
+
           z '.g-col.g-xs-12.g-md-6',
             z '.action',
-              z '.title', action
-              z '.amount',
-                z 'span',
-                  innerHTML: '&nbsp;&middot;&nbsp;'
-                currency
-                z $currencyIcon, {size: '16px'}
+              z '.rewards',
+                _map action.data.rewards, (reward) ->
+                  z '.reward',
+                    z '.text', reward.currencyAmount
+                    z '.icon',
+                      if reward.currencyType is 'xp'
+                        'xp'
+                      else
+                        z $currencyIcon, {size: '16px'}
+              z '.title',
+                if action.data.nameKey
+                  @model.l.get action.data.nameKey
+                else
+                  action.name
+                if countLeft > 1
+                  " (#{countLeft})"
               z '.button',
                 if isClaimed
                   'Claimed'
@@ -188,8 +128,14 @@ module.exports = class GroupEarnCurrency
                   z $claimButton,
                     text: if isLoading \
                           then @model.l.get 'general.loading'
-                          else $claimButtonText
+                          else if action.data.button.textKey
+                          then @model.l.get action.data.button.textKey
+                          else action.data.button.text
                     onclick: (e) =>
-                      onclick? e
-                      if route
+                      route = action.data.button.route
+                      if action.action is 'watchAd'
+                        @playAd()
+                      else if action.action is 'visit'
+                        @visit e
+                      else if route
                         @router.go route.key, route.replacements
