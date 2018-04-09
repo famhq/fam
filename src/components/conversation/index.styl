@@ -14,6 +14,7 @@ $zIndexTextarea = 2
 
   > .loading
     position: absolute
+    z-index: 999
     top: 0
     left: 0
     right: 0
@@ -32,7 +33,7 @@ $zIndexTextarea = 2
     min-height: 0 // fix for older chrome (otherwise doesn't keep height 100)
     overflow-y: auto
     overflow-x: hidden
-    -webkit-overflow-scrolling: touch
+    // -webkit-overflow-scrolling: touch
 
     // https://stackoverflow.com/questions/18614301/keep-overflow-div-scrolled-to-bottom-unless-user-scrolls-up?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
     // reverse scrolling so we always stay at the bottom
@@ -53,7 +54,6 @@ $zIndexTextarea = 2
     // padding-bottom: 90px
 
     > .messages-inner
-
       > .message-batch
         opacity: 0
 

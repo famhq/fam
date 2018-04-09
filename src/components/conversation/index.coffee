@@ -14,6 +14,7 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/of'
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/observable/merge'
+require 'rxjs/add/observable/never'
 require 'rxjs/add/operator/share'
 require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
@@ -27,6 +28,7 @@ ConversationMessage = require '../conversation_message'
 config = require '../../config'
 
 if window?
+  IScroll = require 'iscroll/build/iscroll-lite-snap.js'
   require './index.styl'
 
 # we don't give immediate feedback for post (waits for cache invalidation and
@@ -55,6 +57,8 @@ module.exports = class Conversation extends Base
     @conversation ?= new RxBehaviorSubject null
     @error = new RxBehaviorSubject null
 
+    @isPaused = new RxBehaviorSubject false
+
     conversationAndMe = RxObservable.combineLatest(
       @conversation
       me
@@ -67,8 +71,6 @@ module.exports = class Conversation extends Base
 
     lastConversationId = null
     @canLoadMore = true
-    @isScrolling = false
-    @onScrollEnd = null
 
     loadedMessages = conversationAndMe.switchMap (resp) =>
       [conversation, me] = resp
@@ -87,6 +89,7 @@ module.exports = class Conversation extends Base
         isLoading.next false
         @$$loadingSpinner?.style.display = 'none'
         @state.set isLoaded: true
+        @iScrollContainer?.refresh()
         messageBatches
       .catch (err) ->
         console.log err
@@ -205,11 +208,22 @@ module.exports = class Conversation extends Base
   afterMount: (@$$el) =>
     @$$loadingSpinner = @$$el?.querySelector('.loading')
     @$$messages = @$$el?.querySelector('.messages')
-    @debouncedScrollListener = _debounce @scrollListener, 20, {
-      maxWait: SCROLL_MAX_WAIT_MS
-      trailing: true
-    }
-    @$$messages?.addEventListener 'scroll', @debouncedScrollListener
+    # use iscroll on ios...
+    if Environment.isiOS {userAgent: navigator.userAgent}
+      checkIsReady = =>
+        @$$messages = @$$el?.querySelector('.messages')
+        if @$$messages and @$$messages.clientWidth
+          @initIScroll @$$messages
+        else
+          setTimeout checkIsReady, 1000
+
+      checkIsReady()
+    else
+      @debouncedScrollListener = _debounce @scrollListener, 20, {
+        maxWait: SCROLL_MAX_WAIT_MS
+        trailing: true
+      }
+      @$$messages?.addEventListener 'scroll', @debouncedScrollListener
 
     prevConversation = null
     @disposable = @conversation.subscribe (newConversation) =>
@@ -230,6 +244,9 @@ module.exports = class Conversation extends Base
       @model.chatMessage.unsubscribeByConversationId conversation?.id
 
     @disposable.unsubscribe()
+    
+    @isPaused.next false
+    @iScrollContainer?.destroy()
 
     @$$messages?.removeEventListener 'scroll', @debouncedScrollListener
     @$$loadingSpinner?.style.display = 'block'
@@ -261,9 +278,44 @@ module.exports = class Conversation extends Base
     # causes new messages to not post FIXME FIXME
     # @model.chatMessage.resetClientChangesStream conversation?.id
 
+  initIScroll: =>
+    @iScrollContainer = new IScroll @$$messages, {
+      scrollX: false
+      scrollY: true
+      # eventPassthrough: true
+      click: true
+      bounce: false
+      deceleration: 0.0006
+      useTransition: false
+      isReversed: true
+    }
+
+    # the scroll listener in IScroll (iscroll-probe.js) is really slow
+    isScrolling = false
+    @iScrollContainer.on 'scrollStart', =>
+      isScrolling = true
+      update = =>
+        @iScrollListener()
+        if isScrolling
+          window.requestAnimationFrame update
+      update()
+
+    @iScrollContainer.on 'scrollEnd', =>
+      isScrolling = false
+
   getMessagesStream: (maxTimeUuid) =>
-    @conversation.switchMap (conversation) =>
-      if conversation
+    conversationAndIsPaused = RxObservable.combineLatest(
+      @conversation
+      @isPaused
+      (vals...) -> vals
+    )
+    # TODO: might be better to have the isPaused somewhere else.
+    # have 1 obs with all messages, and 1 that's paused, and get the diff
+    # in count to show how many new messages
+    conversationAndIsPaused.switchMap ([conversation, isPaused]) =>
+      if isPaused and not maxTimeUuid
+        RxObservable.never()
+      else if conversation
         @model.chatMessage.getAllByConversationId conversation.id, {
           maxTimeUuid
           isStreamed: not maxTimeUuid # don't stream old message batches
@@ -271,51 +323,47 @@ module.exports = class Conversation extends Base
       else
         RxObservable.of null
 
-  touchStartListener: =>
-    @isScrolling = true
+  iScrollListener: =>
+    isBottom = @iScrollContainer.y is 0
+    isTop = @iScrollContainer.y is @iScrollContainer.maxScrollY
 
-  scrollEndListener: =>
-    @isScrolling = false
-    @canLoadMore = true
-    @onScrollEnd?()
+    if isBottom and @isPaused.getValue()
+      @isPaused.next false
+    else if isTop and @isPaused.getValue()
+      @isPaused.next false
+    else if not @isPaused.getValue()
+      @isPaused.next true
+
+    scrollY = @iScrollContainer.maxScrollY - @iScrollContainer.y
+    @handleScroll Math.abs(scrollY), @iScrollContainer.directionY
 
   scrollListener: =>
     scrollTop = @$$messages.scrollTop
     scrollHeight = @$$messages.scrollHeight
     offsetHeight = @$$messages.offsetHeight
     fromBottom = scrollHeight - offsetHeight - scrollTop
-    if Environment.isiOS()
-      scrollTopTmp = scrollTop
-      scrollTop = fromBottom
-      fromBottom = scrollTopTmp
-    # FIXME FIXME: backward on ios
-    console.log scrollHeight, offsetHeight, scrollTop
-    isiOS = Environment.isiOS()
-    isPotentiallyBouncing = isiOS and fromBottom < 50
-    notNearTop = scrollTop > 50
 
-    @isScrolling = true
-    clearTimeout @scrollEndTimeout
-    @scrollEndTimeout = setTimeout =>
-      @scrollEndListener()
-    , SCROLL_MAX_WAIT_MS + 100
+    direction = if scrollTop < @lastScrollY \
+                then 1
+                else if scrollTop > @lastScrollY
+                then -1
+                else 0
 
-    if notNearTop and scrollTop < @lastScrollTop and not isPotentiallyBouncing
-      if @isScrolling and isiOS
-        @onScrollEnd = @onScrollUp
-      else
-        @onScrollUp?()
-    else if notNearTop and scrollTop > @lastScrollTop
-      if @isScrolling and isiOS
-        @onScrollEnd = @onScrollDown
-      else
-        @onScrollDown?()
+    @handleScroll scrollTop, direction
+
+  handleScroll: (scrollY, direction) =>
+    notNearTop = scrollY > 50
+
+    if notNearTop and direction is 1
+      @onScrollUp?()
+    else if notNearTop and direction is -1
+      @onScrollDown?()
 
     # a little slow on iOS with the bounce animation, but if <=, it flickers
-    if @canLoadMore and scrollTop is 0
+    if @canLoadMore and scrollY is 0
       @loadMore()
 
-    @lastScrollTop = scrollTop
+    @lastScrollY = scrollY
 
   loadMore: =>
     @canLoadMore = false
@@ -338,18 +386,19 @@ module.exports = class Conversation extends Base
 
       @$$loadingSpinner.style.display = 'none'
 
+      # doesn't work well with iscroll (ios)
       if $$firstMessageBatch?.scrollIntoView and not Environment.isiOS()
         $$firstMessageBatch?.scrollIntoView?() # works on android
         setTimeout =>  # works on ios, but has flash
           $$firstMessageBatch?.scrollIntoView?()
-          @lastScrollTop = null
+          @lastScrollY = null
         , 0
-      else
+      else if not Environment.isiOS()
         # setTimeout 0 flickers top -> scroll on iOS
         window.requestAnimationFrame =>
           @$$messages.scrollTop =
             @$$messages.scrollHeight - previousScrollHeight
-          @lastScrollTop = null
+          @lastScrollY = null
 
 
   prependMessagesStream: (messagesStream) =>
