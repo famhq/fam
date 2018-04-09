@@ -244,7 +244,7 @@ module.exports = class Conversation extends Base
       @model.chatMessage.unsubscribeByConversationId conversation?.id
 
     @disposable.unsubscribe()
-    
+
     @isPaused.next false
     @iScrollContainer?.destroy()
 
@@ -334,7 +334,8 @@ module.exports = class Conversation extends Base
     else if not @isPaused.getValue()
       @isPaused.next true
 
-    scrollY = @iScrollContainer.maxScrollY - @iScrollContainer.y
+    maxScrollY = @iScrollContainer.maxScrollY or @$$messages.offsetHeight
+    scrollY = maxScrollY - @iScrollContainer.y
     @handleScroll Math.abs(scrollY), @iScrollContainer.directionY
 
   scrollListener: =>
@@ -342,6 +343,15 @@ module.exports = class Conversation extends Base
     scrollHeight = @$$messages.scrollHeight
     offsetHeight = @$$messages.offsetHeight
     fromBottom = scrollHeight - offsetHeight - scrollTop
+
+
+    # safari treats these different with flex-direction: column-reverse
+    isSafari = navigator.userAgent?.match /^((?!chrome|android).)*safari/i
+    if isSafari
+      # scrollTopTmp = scrollTop
+      # scrollTop = fromBottom
+      fromBottom = Math.abs scrollTop
+      scrollTop = scrollTop + (scrollHeight - offsetHeight)
 
     direction = if scrollTop < @lastScrollY \
                 then 1
@@ -385,20 +395,6 @@ module.exports = class Conversation extends Base
       setTimeout (=> @canLoadMore = true), DELAY_BETWEEN_LOAD_MORE_MS
 
       @$$loadingSpinner.style.display = 'none'
-
-      # doesn't work well with iscroll (ios)
-      if $$firstMessageBatch?.scrollIntoView and not Environment.isiOS()
-        $$firstMessageBatch?.scrollIntoView?() # works on android
-        setTimeout =>  # works on ios, but has flash
-          $$firstMessageBatch?.scrollIntoView?()
-          @lastScrollY = null
-        , 0
-      else if not Environment.isiOS()
-        # setTimeout 0 flickers top -> scroll on iOS
-        window.requestAnimationFrame =>
-          @$$messages.scrollTop =
-            @$$messages.scrollHeight - previousScrollHeight
-          @lastScrollY = null
 
 
   prependMessagesStream: (messagesStream) =>

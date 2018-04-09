@@ -41,7 +41,7 @@ $zIndexTextarea = 2
     flex-direction: column-reverse
 
     // use gpu
-    transform: translateZ(0)
+    // transform: translateZ(0)
     // https://stackoverflow.com/questions/39261456/reducing-scroll-jank-when-using-overflow-y-scroll/39368219
     will-change: transform
     // margin-bottom: 64px
@@ -56,6 +56,9 @@ $zIndexTextarea = 2
     > .messages-inner
       > .message-batch
         opacity: 0
+        // chrome has painting glitch without this. when scrolling, some
+        // messages will flicker, or get clipped out
+        will-change: transform
 
         &.is-loaded
           opacity: 1
