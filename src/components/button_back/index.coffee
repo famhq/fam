@@ -13,9 +13,11 @@ module.exports = class ButtonBack
         isAlignedLeft: true
         icon: 'back'
         color: color or colors.$header500Icon
+        hasRipple: true
         onclick: (e) =>
           e.preventDefault()
-          if onclick
-            onclick()
-          else
-            @router.back {fallbackPath}
+          setImmediate =>
+            if onclick
+              onclick()
+            else
+              @router.back {fallbackPath}

@@ -169,6 +169,7 @@ border()
   to
     transform: scale(20)
     opacity: 0
+
 ripple(color)
   position: relative
   outline: none
@@ -189,10 +190,16 @@ ripple(color)
     opacity: 0
     pointer-events: none
 
-  // focus doesn't start until a couple hundred milliseconds after the
-  // touch event, so we trick the eye by having the animation be shorter,
-  // start faster, and start a larger than 5px (35px)
-  &:focus:not(:active)::after {
-    opacity: 0
+  // hover seems to be the fastest way to get the animation to start in android.
+  // :focus has a couple hundred ms delay, i think active might too.
+  // ios and desktop look bad on hover
+  .is-android &:hover::after {
+    will-change: transform
     animation: z-ripple-animation-css-only 0.3s ease-out
+    opacity: 0
+  }
+  &:focus:not(:active)::after {
+    will-change: transform
+    animation: z-ripple-animation-css-only 0.3s ease-out
+    opacity: 0
   }

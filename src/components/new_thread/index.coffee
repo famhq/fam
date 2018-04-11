@@ -170,4 +170,4 @@ module.exports = class NewThread
                   )
                   {reset: true}
                 )
-              , 1000
+              , 200

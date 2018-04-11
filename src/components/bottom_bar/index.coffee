@@ -128,7 +128,11 @@ module.exports = class BottomBar
           href: route
           onclick: (e) =>
             e?.preventDefault()
-            @router.goPath route
+            # without delay, browser will wait until the next render is complete
+            # before showing ripple. seems better to start ripple animation
+            # first
+            setImmediate =>
+              @router.goPath route
           # ontouchstart: (e) =>
           #   e?.stopPropagation()
           #   @router.goPath route

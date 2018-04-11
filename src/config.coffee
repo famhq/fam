@@ -62,6 +62,7 @@ isomorphic =
     {level: 1, countRequired: 0}
   ]
   # also in radioactive TODO: shared config file
+  BASE_NAME_COLORS: ['#2196F3', '#8BC34A', '#FFC107', '#f44336']#, '#673AB7']
   # keep reversed for fast lookup
   XP_LEVEL_REQUIREMENTS: [
     {level: 12, xpRequired: 60000}

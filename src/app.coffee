@@ -324,7 +324,8 @@ module.exports = class App
 
     userAgent = request?.req?.headers?['user-agent'] or
       navigator?.userAgent or ''
-    isIos = /iPad|iPhone|iPod/.test userAgent
+    isIos = Environment.isiOS {userAgent}
+    isAndroid = Environment.isAndroid {userAgent}
     isNative = Environment.isNativeApp(config.GAME_KEY)
     isPageAvailable = (me?.isMember or not request?.$page?.isPrivate)
     defaultInstallMessage = @model.l.get 'app.defaultInstallMessage'
@@ -335,7 +336,7 @@ module.exports = class App
       z @$head, {meta: $page?.getMeta?()}
       z 'body',
         z '#zorium-root', {
-          className: z.classKebab {isIos}
+          className: z.classKebab {isIos, isAndroid}
         },
           # z '.warning', {
           #   style:

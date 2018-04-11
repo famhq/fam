@@ -33,6 +33,7 @@ module.exports = class Head
       serverData: serverData
       route: route
       group: group
+      additionalCss: @model.additionalScript.getCss()
       routeKey: route.map (route) =>
         if route?.src
           routeKey = @model.l.getRouteKeyByValue route.src
@@ -68,7 +69,7 @@ module.exports = class Head
         cssVariables
 
   render: =>
-    {meta, serverData, route, routeKey, group,
+    {meta, serverData, route, routeKey, group, additionalCss,
       modelSerialization, cssVariables} = @state.getValue()
 
     if group?.key is 'fortnitees'
@@ -267,6 +268,11 @@ module.exports = class Head
         #   href: serverData?.bundleCssPath
       else
         null
+
+      _map additionalCss, (href) ->
+        z 'link',
+          rel: 'stylesheet'
+          href: href
 
       # scripts
       z 'script.bundle',

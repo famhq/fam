@@ -20,8 +20,8 @@ module.exports = class UserItem
   #     invalidateAll: true
   #   }
 
-  consumeByItemKey: (itemKey, {groupId}) =>
-    @auth.call "#{@namespace}.consumeByItemKey", {itemKey, groupId}, {
+  consumeByItemKey: (itemKey, {groupId, data}) =>
+    @auth.call "#{@namespace}.consumeByItemKey", {itemKey, groupId, data}, {
       invalidateAll: true
     }
 

@@ -60,6 +60,9 @@ module.exports = class Message
 
     groupUpgrades = _filter user?.upgrades, {groupId: groupUser?.groupId}
     hasBadge = _find groupUpgrades, {upgradeType: 'fireBadge'}
+    nameColor = _find(groupUpgrades, ({upgradeType}) ->
+      upgradeType in ['nameColorBase', 'nameColorPremium']
+    )?.data?.color
 
     avatarSize = if windowSize.width > 840 \
                  then '40px'
@@ -108,30 +111,34 @@ module.exports = class Message
               z '.icon',
                 z @$starIcon,
                   icon: 'star-tag'
-                  color: colors.$tertiary900Text
+                  color: nameColor or colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'
             if user?.flags?.isDev
               z '.icon',
                 z @$statusIcon,
                   icon: 'dev'
-                  color: colors.$tertiary900Text
+                  color: nameColor or colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'
             else if user?.flags?.isModerator or isModerator
               z '.icon',
                 z @$statusIcon,
                   icon: 'mod'
-                  color: colors.$tertiary900Text
+                  color: nameColor or colors.$tertiary900Text
                   isTouchTarget: false
                   size: '22px'
-            z '.name', @model.user.getDisplayName user
+            z '.name', {
+              style:
+                color: nameColor
+            },
+              @model.user.getDisplayName user
             z '.icons',
               if isVerified
                 z '.icon',
                   z @$verifiedIcon,
                     icon: 'verified'
-                    color: colors.$tertiary900Text
+                    color: nameColor or colors.$tertiary900Text
                     isTouchTarget: false
                     size: '14px'
               if hasBadge

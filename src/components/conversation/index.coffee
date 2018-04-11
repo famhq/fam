@@ -468,6 +468,9 @@ module.exports = class Conversation extends Base
 
     z '.z-conversation', {
       className: z.classKebab {hasBottomBar}
+      onclick: =>
+        if isTextareaFocused and Environment.isiOS()
+          document.activeElement.blur()
     },
       # toggled with vanilla js (non-vdom for perf)
       z '.loading', {

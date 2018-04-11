@@ -16,6 +16,7 @@ module.exports = class ButtonMenu
         isAlignedLeft: true
         icon: 'menu'
         color: color or colors.$header500Icon
+        hasRipple: true
         onclick: (e) =>
           e.preventDefault()
           if onclick

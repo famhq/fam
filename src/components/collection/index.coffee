@@ -9,6 +9,7 @@ ItemList = require '../item_list'
 StickerInfo = require '../sticker_info'
 OpenChest = require '../open_chest'
 UiCard = require '../ui_card'
+ColorPickerWidget = require '../color_picker_widget'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -55,11 +56,24 @@ module.exports = class Collection
       @overlay$
     }
     @$infoCard = new UiCard()
+    @$colorPicker = new ColorPickerWidget {@model}
 
     @state = z.state
       me: @model.user.getMe()
       group: group
       isInfoCardVisible: not @model.cookie.get 'isCollectionInfoCardVisible'
+
+  _getExtraData: (upgradeType) =>
+    if upgradeType.indexOf('nameColor') isnt -1
+      @overlay$.next z @$colorPicker, {
+        isBase: upgradeType.indexOf('Base') isnt -1
+      }
+      new Promise (resolve) =>
+        @$colorPicker.onSubmit (color) =>
+          @overlay$.next null
+          resolve {color}
+    else
+      Promise.resolve {}
 
   render: =>
     {me, group, isInfoCardVisible} = @state.getValue()
@@ -88,7 +102,9 @@ module.exports = class Collection
             else if itemInfo.item.type is 'sticker'
               @overlay$.next @$stickerInfo
             else if itemInfo.item.type is 'consumable' and itemInfo.count > 0
-              @model.userItem.consumeByItemKey itemInfo.item.key, {
-                groupId: group.id
-              }
+              @_getExtraData itemInfo.item.data.upgradeType
+              .then (data) =>
+                @model.userItem.consumeByItemKey itemInfo.item.key, {
+                  groupId: group.id, data
+                }
         }

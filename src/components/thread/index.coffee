@@ -295,6 +295,7 @@ module.exports = class Thread extends Base
               z @$shareIcon,
                 icon: 'share'
                 color: colors.$header500Icon
+                hasRipple: true
                 onclick: =>
                   path = @model.thread.getPath thread, group, @router
                   @model.portal.call 'share.any', {
@@ -306,6 +307,7 @@ module.exports = class Thread extends Base
                 z @$editIcon,
                   icon: 'edit'
                   color: colors.$header500Icon
+                  hasRipple: true
                   onclick: =>
                     @router.go 'groupThreadEdit', {
                       groupId: group.key or group.id
@@ -315,6 +317,7 @@ module.exports = class Thread extends Base
                 z @$pinIcon,
                   icon: if thread?.data?.isPinned then 'pin-off' else 'pin'
                   color: colors.$header500Icon
+                  hasRipple: true
                   onclick: =>
                     if thread?.data?.isPinned
                       @model.thread.unpinById thread.id
@@ -324,6 +327,7 @@ module.exports = class Thread extends Base
                 z @$deleteIcon,
                   icon: 'delete'
                   color: colors.$header500Icon
+                  hasRipple: true
                   onclick: =>
                     if confirm 'Confirm?'
                       @model.thread.deleteById thread.id

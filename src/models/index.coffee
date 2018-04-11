@@ -11,6 +11,7 @@ require 'rxjs/add/operator/take'
 Auth = require './auth'
 Player = require './player'
 Ad = require './ad'
+AdditionalScript = require './additional_script'
 Addon = require './addon'
 AppInstallAction = require './app_install_action'
 Ban = require './ban'
@@ -141,6 +142,7 @@ module.exports = class Model
     @player = new Player {@auth}
     @ad = new Ad {@portal, @cookie, userAgent}
     @addon = new Addon {@auth, @l}
+    @additionalScript = new AdditionalScript()
     @appInstallAction = new AppInstallAction {@auth}
     @ban = new Ban {@auth}
     @clan = new Clan {@auth}
