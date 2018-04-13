@@ -1,6 +1,7 @@
 require './polyfill'
 
 _map = require 'lodash/map'
+_mapValues = require 'lodash/mapValues'
 z = require 'zorium'
 log = require 'loga'
 cookie = require 'cookie'
@@ -76,8 +77,7 @@ catch err
 portal = new Portal()
 
 init = ->
-  currentCookies = cookie.parse(document.cookie)
-  cookieSubject = new RxBehaviorSubject currentCookies
+  initialCookies = cookie.parse(document.cookie)
 
   isOffline = new RxBehaviorSubject false
   isBackendUnavailable = new RxBehaviorSubject false
@@ -98,29 +98,20 @@ init = ->
     transports: ['websocket']
   }
   fullLanguage = window.navigator.languages?[0] or window.navigator.language
-  language = currentCookies?['language'] or fullLanguage?.substr(0, 2)
+  language = initialCookies?['language'] or fullLanguage?.substr(0, 2)
   unless language in config.LANGUAGES
     language = 'en'
-  model = new Model({cookieSubject, io, portal, language})
+  model = new Model {
+    io, portal, language, initialCookies
+    setCookie: (key, value, options) ->
+      document.cookie = cookie.serialize \
+        key, value, options
+  }
   model.portal.listen()
 
-  setCookies = (currentCookies) ->
-    host = window.location.host
-    (cookies) ->
-      _map cookies, (value, key) ->
-        unless currentCookies[key] is value
-          document.cookie = cookie.serialize \
-            key, value, model.cookie.getCookieOpts(host, key)
-      currentCookies = cookies
-  cookieSubject.do(setCookies(currentCookies)).subscribe()
-
-  setTimeout ->
-    # HACK / FIXME: model.cookie.set can't be called simultaneously twice or
-    # it will revert the first cookie. we also set in language model.
-    model.cookie.set(
-      'resolution', "#{window.innerWidth}x#{window.innerHeight}"
-    )
-  , 0
+  model.cookie.set(
+    'resolution', "#{window.innerWidth}x#{window.innerHeight}"
+  )
 
   onOnline = ->
     isOffline.next false
@@ -131,7 +122,6 @@ init = ->
 
   router = new RouterService {
     model: model
-    cookieSubject: cookieSubject
     router: new LocationRouter()
   }
 
@@ -288,7 +278,7 @@ init = ->
     Promise.resolve null)
   .then ->
     model.portal.call 'app.onResume', ->
-      console.log 'resume invalidate'
+      # console.log 'resume invalidate'
       model.exoid.invalidateAll()
       model.window.resume()
       if Environment.isiOS() and Environment.isNativeApp config.GAME_KEY

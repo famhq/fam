@@ -12,6 +12,7 @@
   "event": "/event/:id",
   "events": "/events",
   "eventEdit": "/event/:id/edit",
+  "connectionLanding": "/connectionLanding/:site",
 
   "groups": "/groups",
   "group": "/g/:groupId",

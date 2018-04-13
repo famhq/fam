@@ -13,6 +13,8 @@ config = require '../../config'
 if window?
   require './index.styl'
 
+ONE_DAY_MS = 3600 * 24 * 1000
+
 module.exports = class GroupHomePage
   isGroup: true
   @hasBottomBar: true
@@ -27,6 +29,14 @@ module.exports = class GroupHomePage
     @$groupHome = new GroupHome {
       @model, @router, serverData, @group, @overlay$
     }
+
+    @group.take(1).subscribe (group) =>
+      cookieKey = "group_#{group.id}_connectionsChecked"
+      hasChecked = @model.cookie.get cookieKey
+      unless hasChecked
+        @model.connection.giveUpgradesByGroupId group.id
+        .then =>
+          @model.cookie.set cookieKey, '1', {ttlMs: ONE_DAY_MS}
 
     @state = z.state
       windowSize: @model.window.getSize()

@@ -6,7 +6,7 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-LAST_WINNER = 'Espokety'
+LAST_WINNER = 'xFearZy_'
 
 module.exports = class WeeklyRaffle
   constructor: ({@model, @router, group}) ->

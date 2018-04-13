@@ -1,8 +1,8 @@
 _map = require 'lodash/map'
-Environment = require '../services/environment'
 Fingerprint = require 'fingerprintjs'
 getUuidByString = require 'uuid-by-string'
 
+Environment = require '../services/environment'
 PushService = require '../services/push'
 config = require '../config'
 
@@ -77,6 +77,11 @@ module.exports = class Portal
     # fallbacks
     @portal.on 'app.onResume', @appOnResume
 
+    # simulate app
+    @portal.on 'deepLink.onRoute', @deepLinkOnRoute
+
+    @portal.on 'twitch.connect', @twitchConnect
+
     @portal.on 'top.onData', -> null
     @portal.on 'top.getData', -> null
     @portal.on 'push.register', @pushRegister
@@ -85,6 +90,9 @@ module.exports = class Portal
 
     @portal.on 'networkInformation.onOffline', @networkInformationOnOffline
     @portal.on 'networkInformation.onOnline', @networkInformationOnOnline
+
+    @portal.on 'networkInformation.onOnline', @networkInformationOnOnline
+
 
     # SDK
     @portal.on 'clashRoyale.player.getMe', @clashRoyalePlayerGetMe
@@ -105,6 +113,10 @@ module.exports = class Portal
       @clashRoyaleClanRecordGetAllByTag
     )
     @portal.on 'forum.share', @forumShare
+    # end SDK
+
+
+
 
     @portal.on 'browser.openWindow', ({url, target, options}) ->
       window.open url, target, options
@@ -203,6 +215,57 @@ module.exports = class Portal
       url: "https://twitter.com/intent/tweet?text=#{encodeURIComponent text}"
       target: '_system'
     }
+
+  deepLinkOnRoute: (fn) =>
+    window.onRoute = (path) ->
+      fn {path: path.replace('browser://', '/')}
+
+  twitchConnect: =>
+    responseType = 'token'
+    clientId = config.TWITCH_CLIENT_ID
+    scope = ['user_subscriptions', 'user_read'].join '+'
+    appKey = Environment.getAppKey()
+    redirectUri = encodeURIComponent(
+      "https://#{config.HOST}/connectionLanding/twitch"
+    )
+    url = 'https://id.twitch.tv/oauth2/authorize' +
+          "?client_id=#{clientId}" +
+          "&redirect_uri=#{redirectUri}" +
+          "&response_type=#{responseType}" +
+          "&state=#{JSON.stringify({appKey})}" +
+          "&scope=#{scope}"
+    setTimeout =>
+      @call 'browser.openWindow', {url, target: '_system'}
+    , 100 # time for onRoute to set
+
+    new Promise (resolve) =>
+      @call 'deepLink.onRoute', ({path}) ->
+        pathParts = path.split('/')
+        if pathParts[1] is '_connectionLanding'
+          data =
+            try
+              JSON.parse decodeURIComponent pathParts[3]
+            catch err
+              {}
+          resolve data
+
+
+  # facebookLogin: =>
+  #   new Promise (resolve) =>
+  #     FB.getLoginStatus (response) =>
+  #       if response.status is 'connected'
+  #         resolve {
+  #           status: response.status
+  #           facebookAccessToken: response.authResponse.accessToken
+  #           id: response.authResponse.userID
+  #         }
+  #       else
+  #         FB.login (response) ->
+  #           resolve {
+  #             status: response.status
+  #             facebookAccessToken: response.authResponse.accessToken
+  #             id: response.authResponse.userID
+  #           }
 
   facebookShare: ({url}) ->
     FB.ui {

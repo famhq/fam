@@ -50,6 +50,11 @@ class Environment
     Boolean groupAppKey and
       _includes(userAgent?.toLowerCase(), " openfam/#{groupAppKey}/")
 
+  getAppKey: ({userAgent} = {}) ->
+    userAgent ?= navigator?.userAgent
+    matches = userAgent.match /openfam\/([a-zA-Z0-9-]+)/
+    matches?[1] or 'browser'
+
   isGameChromeApp: (gameKey, {userAgent}) ->
     userAgent ?= navigator?.userAgent
     Boolean gameKey and

@@ -23,6 +23,7 @@ ClashRoyalePlayerDeck = require './clash_royale_player_deck'
 ClashRoyaleCard = require './clash_royale_card'
 ClashRoyaleMatch = require './clash_royale_match'
 ChatMessage = require './chat_message'
+Connection = require './connection'
 Conversation = require './conversation'
 Cookie = require './cookie'
 DynamicImage = require './dynamic_image'
@@ -76,7 +77,9 @@ SERIALIZATION_KEY = 'MODEL'
 SERIALIZATION_EXPIRE_TIME_MS = 1000 * 10 # 10 seconds
 
 module.exports = class Model
-  constructor: ({cookieSubject, serverHeaders, io, @portal, language}) ->
+  constructor: (options) ->
+    {serverHeaders, io, @portal, language,
+      initialCookies, setCookie, host} = options
     serverHeaders ?= {}
 
     cache = window?[SERIALIZATION_KEY] or {}
@@ -93,15 +96,11 @@ module.exports = class Model
     # cache = if isExpired then {} else serialization
     @isFromCache = not _isEmpty cache
 
-    accessToken = cookieSubject.map (cookies) ->
-      cookies[config.AUTH_COOKIE]
-
     userAgent = serverHeaders['user-agent'] or navigator?.userAgent
 
-    ioEmit = (event, opts) ->
-      accessToken.take(1).toPromise()
-      .then (accessToken) ->
-        io.emit event, _defaults {accessToken, userAgent}, opts
+    ioEmit = (event, opts) =>
+      accessToken = @cookie.get 'accessToken'
+      io.emit event, _defaults {accessToken, userAgent}, opts
 
     proxy = (url, opts) ->
       accessToken.take(1).toPromise()
@@ -131,10 +130,10 @@ module.exports = class Model
 
     pushToken = new RxBehaviorSubject null
 
-    @cookie = new Cookie {cookieSubject}
+    @cookie = new Cookie {initialCookies, setCookie, host}
     @l = new Language {language, @cookie}
 
-    @auth = new Auth {@exoid, cookieSubject, pushToken, @l, userAgent, @portal}
+    @auth = new Auth {@exoid, @cookie, pushToken, @l, userAgent, @portal}
     @user = new User {@auth, proxy, @exoid, @cookie, @l}
     @userBlock = new UserBlock {@auth}
     @userFollower = new UserFollower {@auth}
@@ -148,6 +147,7 @@ module.exports = class Model
     @clan = new Clan {@auth}
     @dynamicImage = new DynamicImage {@auth}
     @chatMessage = new ChatMessage {@auth, proxy, @exoid}
+    @connection = new Connection {@auth}
     @conversation = new Conversation {@auth}
     @clanRecordType = new ClanRecordType {@auth}
     @clashRoyaleAPI = new ClashRoyaleAPI {@auth}

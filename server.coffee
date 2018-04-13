@@ -2,6 +2,7 @@ express = require 'express'
 _every = require 'lodash/every'
 _values = require 'lodash/values'
 _defaults = require 'lodash/defaults'
+_mapValues = require 'lodash/mapValues'
 _map = require 'lodash/map'
 compress = require 'compression'
 log = require 'loga'
@@ -202,8 +203,6 @@ app.use (req, res, next) ->
 
   hasSent = false
 
-  cookieSubject = new RxBehaviorSubject req.cookies
-
   io = socketIO config.API_HOST, {
     path: (config.API_PATH or '') + '/socket.io'
     timeout: 5000
@@ -216,7 +215,11 @@ app.use (req, res, next) ->
   unless language in config.LANGUAGES
     language = 'en'
   model = new Model {
-    cookieSubject, io, serverHeaders: req.headers, language
+    io, language, host
+    initialCookies: req.cookies
+    serverHeaders: req.headers
+    setCookie: (key, value, options) ->
+      res.cookie key, value, options
   }
   router = new RouterService {
     router: null
@@ -233,15 +236,6 @@ app.use (req, res, next) ->
   redirectToGameRoute = hash.get req.path
   if redirectToGameRoute?.handler
     return redirectToGameRoute.handler redirectToGameRoute.params
-
-
-  setCookies = (currentCookies) ->
-    (cookies) ->
-      _map cookies, (value, key) ->
-        if currentCookies[key] isnt value and not hasSent
-          res.cookie(key, value, model.cookie.getCookieOpts(host, key))
-      currentCookies = cookies
-  disposable = cookieSubject.do(setCookies(req.cookies)).subscribe()
 
   # for client to access
   model.cookie.set(
@@ -272,7 +266,6 @@ app.use (req, res, next) ->
   .then (html) ->
     io.disconnect()
     model.dispose()
-    disposable.unsubscribe()
     disposable = null
     hasSent = true
     # TODO: not sure why, but some paths (eg /g/clashroyale/somerandompage)

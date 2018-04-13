@@ -6,6 +6,8 @@ require 'firebase/messaging'
 SemverService = require '../services/semver'
 config = require '../config'
 
+ONE_DAY_MS = 3600 * 24 * 1000
+
 class PushService
   constructor: ->
     if window? and not Environment.isNativeApp config.GAME_KEY
@@ -55,7 +57,7 @@ class PushService
                         else 'ios'
           language = model.l.getLanguageStr()
           model.pushToken.create {token, sourceType, language, deviceId}
-          model.cookie.set 'isPushTokenStored', 1
+          model.cookie.set 'isPushTokenStored', 1, {ttlMs: ONE_DAY_MS}
 
         model.pushToken.setCurrentPushToken token
     .catch (err) ->

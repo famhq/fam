@@ -6,6 +6,7 @@ require 'rxjs/add/operator/map'
 require 'rxjs/add/operator/switchMap'
 _map = require 'lodash/map'
 _startCase = require 'lodash/startCase'
+_find = require 'lodash/find'
 
 Avatar = require '../avatar'
 Icon = require '../icon'
@@ -50,6 +51,7 @@ module.exports = class EditProfile
       avatarDataUrl: null
       avatarUploadError: null
       group: group
+      connections: @model.connection.getAll()
       players: @model.player.getAllByMe().map (players) ->
         _map players, (player) ->
           {player, $removeIcon: new Icon()}
@@ -88,8 +90,10 @@ module.exports = class EditProfile
       @state.set avatarUploadError: err?.detail or JSON.stringify err
 
   render: =>
-    {me, avatarUploadError, avatarDataUrl,
+    {me, avatarUploadError, avatarDataUrl, connections,
       players, isSaving} = @state.getValue()
+
+    isTwitchConnected = _find connections, {site: 'twitch'}
 
     z '.z-edit-profile',
       z @$actionBar, {
@@ -122,6 +126,25 @@ module.exports = class EditProfile
                   @model.player.unlinkByMeAndGameKey {
                     gameKey: player?.gameKey
                   }
+
+      z '.section',
+        z '.title', 'Twitch'
+        z '.connect-twitch', {
+          onclick: =>
+            @model.portal.call 'twitch.connect'
+            .then (data) =>
+              if data?.token
+                @model.connection.upsert {
+                  site: 'twitch'
+                  token: data.token
+                }
+        },
+          if isTwitchConnected
+            @model.l.get 'general.connected'
+          else
+            @model.l.get 'general.connect'
+
+
 
       if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
         z '.ad',

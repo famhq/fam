@@ -281,6 +281,36 @@ colors = _defaults {
     '--tertiary-800': '#2C2C2C'
     '--tertiary-900': '#1E1E1E'
 
+  thevillage:
+    '--header-100': '#FFF7E0' # t300
+    '--header-500': '#FFBB00' #t700
+    '--header-500-text': materialColors.$black
+    '--header-500-text-54': materialColors.$black54
+    '--header-500-icon': materialColors.$black
+
+    '--primary-50': '#FFF7E0'
+    '--primary-100': '#FFF7E0'
+    '--primary-200': '#FFEBB3'
+    '--primary-300': '#FFDD80'
+    '--primary-400': '#FFC526'
+    '--primary-500': '#FFBB00'
+    '--primary-600': '#FFB500'
+    '--primary-700': '#FFAC00'
+    '--primary-800': '#FFA400'
+    '--primary-900': '#FF9600'
+    '--primary-500-text': materialColors.$black
+
+    '--tertiary-50': '#E8E8E8'
+    '--tertiary-100': '#C7C7C7'
+    '--tertiary-200': '#A1A1A1'
+    '--tertiary-300': '#7B7B7B'
+    '--tertiary-400': '#5F5F5F'
+    '--tertiary-500': '#434343'
+    '--tertiary-600': '#3D3D3D'
+    '--tertiary-700': '#343434'
+    '--tertiary-800': '#2C2C2C'
+    '--tertiary-900': '#1E1E1E'
+
   clashroyale:
     '--header-100': '#80A4C3' # t300
     '--header-500': '#003973' #t700

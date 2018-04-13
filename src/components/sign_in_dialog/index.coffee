@@ -95,11 +95,11 @@ module.exports = class SignInDialog
         JSON.parse err.message
       catch
         {}
-      errorSubject = switch err.info.field
+      errorSubject = switch err.info?.field
         when 'password' then @passwordError
         else @usernameError
 
-      errorSubject.next @model.l.get err.info.langKey
+      errorSubject.next @model.l.get err.info?.langKey
       @state.set isLoading: false
 
   cancel: =>
@@ -150,7 +150,7 @@ module.exports = class SignInDialog
                   z @$emailInput, {
                     hintText: @model.l.get 'general.email'
                   }
-              z '.input',
+              z '.input', {key: 'password-input'},
                 z @$passwordInput, {
                   type: 'password'
                   hintText: @model.l.get 'general.password'

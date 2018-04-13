@@ -206,13 +206,12 @@ module.exports = class GroupProfilePage
                   text: ''
                 }
                 # @isShareSheetVisible.next true
-          if isMe and isTagSet
-            z @$settingsIcon, {
-              icon: 'settings'
-              color: colors.$header500Icon
-              onclick: =>
-                @router.go 'editProfile', {groupId: group.key or group.id}
-              }
+          z @$settingsIcon, {
+            icon: 'settings'
+            color: colors.$header500Icon
+            onclick: =>
+              @router.go 'editProfile', {groupId: group.key or group.id}
+            }
         isFlat: true
       }
       z '.content',
