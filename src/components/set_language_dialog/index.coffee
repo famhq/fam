@@ -28,6 +28,7 @@ module.exports = class SetLanguageDialog
     {group, currentLanguage, languages} = @state.getValue()
 
     gameKey = group?.gameKey or group?.gameKeys?[0]
+    isGameGroup = group?.gameKey
 
     z '.z-set-language-dialog',
       z @$dialog,
@@ -63,7 +64,7 @@ module.exports = class SetLanguageDialog
             @overlay$.next null
             # we use a separate bundle.js per language, so need to load that in
             # also need to switch to correct group
-            if gameKey
+            if gameKey and isGameGroup
               @model.cookie.set 'lastPath', ''
               @model.cookie.set 'lastGroupId', ''
               window.location.href = "/game/#{gameKey}"

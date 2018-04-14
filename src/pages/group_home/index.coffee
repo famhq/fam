@@ -30,14 +30,6 @@ module.exports = class GroupHomePage
       @model, @router, serverData, @group, @overlay$
     }
 
-    @group.take(1).subscribe (group) =>
-      cookieKey = "group_#{group.id}_connectionsChecked"
-      hasChecked = @model.cookie.get cookieKey
-      unless hasChecked
-        @model.connection.giveUpgradesByGroupId group.id
-        .then =>
-          @model.cookie.set cookieKey, '1', {ttlMs: ONE_DAY_MS}
-
     @state = z.state
       windowSize: @model.window.getSize()
 
@@ -59,6 +51,16 @@ module.exports = class GroupHomePage
         {
           title: @model.l.get 'general.home'
         }
+
+  afterMount: =>
+    @group.take(1).subscribe (group) =>
+      cookieKey = "group_#{group.id}_connectionsChecked"
+      hasChecked = @model.cookie.get cookieKey
+      unless hasChecked
+        @model.connection.giveUpgradesByGroupId group.id
+        .then =>
+          @model.cookie.set cookieKey, '1', {ttlMs: ONE_DAY_MS}
+
 
   render: =>
     {windowSize} = @state.getValue()

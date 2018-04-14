@@ -232,12 +232,8 @@ module.exports = class Portal
           "?client_id=#{clientId}" +
           "&redirect_uri=#{redirectUri}" +
           "&response_type=#{responseType}" +
-          "&state=#{JSON.stringify({appKey})}" +
+          "&state=#{encodeURIComponent JSON.stringify({appKey})}" +
           "&scope=#{scope}"
-    setTimeout =>
-      @call 'browser.openWindow', {url, target: '_system'}
-    , 100 # time for onRoute to set
-
     new Promise (resolve) =>
       @call 'deepLink.onRoute', ({path}) ->
         pathParts = path.split('/')
@@ -248,6 +244,7 @@ module.exports = class Portal
             catch err
               {}
           resolve data
+      @call 'browser.openWindow', {url, target: '_system'}
 
 
   # facebookLogin: =>

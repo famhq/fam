@@ -8,8 +8,8 @@ module.exports = class Connection
   getAll: ->
     @auth.stream "#{@namespace}.getAll", {}
 
-  upsert: ({site, token}) ->
-    @auth.call "#{@namespace}.upsert", {site, token}, {invalidateAll: true}
+  upsert: ({site, token, groupId}) ->
+    @auth.call "#{@namespace}.upsert", {site, token, groupId}, {invalidateAll: true}
 
   giveUpgradesByGroupId: (groupId) ->
     @auth.call "#{@namespace}.giveUpgradesByGroupId", {groupId}, {invalidateAll: true}

@@ -102,25 +102,24 @@ module.exports = class Model
       accessToken = @cookie.get 'accessToken'
       io.emit event, _defaults {accessToken, userAgent}, opts
 
-    proxy = (url, opts) ->
-      accessToken.take(1).toPromise()
-      .then (accessToken) ->
-        proxyHeaders =  _pick serverHeaders, [
-          'cookie'
-          'user-agent'
-          'accept-language'
-          'x-forwarded-for'
-        ]
-        request url, _merge {
-          qs: if accessToken? then {accessToken} else {}
-          headers: if _isPlainObject opts?.body
-            _merge {
-              # Avoid CORS preflight
-              'Content-Type': 'text/plain'
-            }, proxyHeaders
-          else
-            proxyHeaders
-        }, opts
+    proxy = (url, opts) =>
+      accessToken = @cookie.get 'accessToken'
+      proxyHeaders =  _pick serverHeaders, [
+        'cookie'
+        'user-agent'
+        'accept-language'
+        'x-forwarded-for'
+      ]
+      request url, _merge {
+        qs: if accessToken? then {accessToken} else {}
+        headers: if _isPlainObject opts?.body
+          _merge {
+            # Avoid CORS preflight
+            'Content-Type': 'text/plain'
+          }, proxyHeaders
+        else
+          proxyHeaders
+      }, opts
 
     @exoid = new Exoid
       ioEmit: ioEmit

@@ -90,7 +90,7 @@ module.exports = class EditProfile
       @state.set avatarUploadError: err?.detail or JSON.stringify err
 
   render: =>
-    {me, avatarUploadError, avatarDataUrl, connections,
+    {me, avatarUploadError, avatarDataUrl, connections, group
       players, isSaving} = @state.getValue()
 
     isTwitchConnected = _find connections, {site: 'twitch'}
@@ -137,6 +137,7 @@ module.exports = class EditProfile
                 @model.connection.upsert {
                   site: 'twitch'
                   token: data.token
+                  groupId: group?.id
                 }
         },
           if isTwitchConnected

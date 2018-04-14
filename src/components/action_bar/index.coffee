@@ -3,6 +3,7 @@ _defaults = require 'lodash/defaults'
 
 AppBar = require '../app_bar'
 Icon = require '../icon'
+Environment = require '../../services/environment'
 colors = require '../../colors'
 
 if window?
@@ -27,7 +28,11 @@ module.exports = class ActionBar
     }
 
 
-    z '.z-action-bar',
+    z '.z-action-bar', {
+      onclick: ->
+        if Environment.isiOS()
+          document.activeElement.blur()
+    },
       z @$appBar, {
         title: title
         style: 'primary'
@@ -35,11 +40,17 @@ module.exports = class ActionBar
           z @$cancelIcon,
             icon: cancel.icon
             color: colors.$header500Icon
-            onclick: cancel.onclick
+            hasRipple: true
+            onclick: (e) ->
+              e?.stopPropagation()
+              cancel.onclick e
         $topRightButton:
           z @$saveIcon,
             icon: if isSaving then 'ellipsis' else save.icon
             color: colors.$header500Icon
-            onclick: save.onclick
+            hasRipple: true
+            onclick: (e) ->
+              e?.stopPropagation()
+              save.onclick e
         isFlat: true
       }

@@ -60,6 +60,8 @@ module.exports = class Message
 
     groupUpgrades = _filter user?.upgrades, {groupId: groupUser?.groupId}
     hasBadge = _find groupUpgrades, {upgradeType: 'fireBadge'}
+    subBadgeImage = _find(groupUpgrades, {upgradeType: 'twitchSubBadge'})
+                    ?.data?.image
     nameColor = _find(groupUpgrades, ({upgradeType}) ->
       upgradeType in ['nameColorBase', 'nameColorPremium']
     )?.data?.color
@@ -148,6 +150,12 @@ module.exports = class Message
                     color: colors.$quaternary500
                     isTouchTarget: false
                     size: '14px'
+              else if subBadgeImage
+                z '.icon',
+                  z 'img.badge',
+                    src: subBadgeImage
+                    width: 22
+                    height: 22
             z '.time', {
               className: z.classKebab {isAlignedLeft: isTimeAlignedLeft}
             },

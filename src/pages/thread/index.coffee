@@ -35,7 +35,7 @@ module.exports = class ThreadPage
 
   getMeta: =>
     @groupAndThread.map ([group, thread]) ->
-      imageAttachment = _find thread?.data.attachments, {type: 'image'}
+      imageAttachment = _find thread?.data?.attachments, {type: 'image'}
       mediaSrc = imageAttachment?.largeSrc or imageAttachment?.src
       {
         title: thread?.data.title
