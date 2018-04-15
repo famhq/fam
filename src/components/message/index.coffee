@@ -62,8 +62,8 @@ module.exports = class Message
     hasBadge = _find groupUpgrades, {upgradeType: 'fireBadge'}
     subBadgeImage = _find(groupUpgrades, {upgradeType: 'twitchSubBadge'})
                     ?.data?.image
-    nameColor = _find(groupUpgrades, ({upgradeType}) ->
-      upgradeType in ['nameColorBase', 'nameColorPremium']
+    nameColor = (_find(groupUpgrades, {upgradeType: 'nameColorPremium'}) or
+      _find(groupUpgrades, {upgradeType: 'nameColorBase'})
     )?.data?.color
 
     avatarSize = if windowSize.width > 840 \

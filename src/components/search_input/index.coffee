@@ -71,8 +71,8 @@ module.exports = class SearchInput
                     then 'search'
                     else 'close'
               color: if isSearchIconRight and not searchValue \
-                     then colors.$primary500Text54
-                     else colors.$primary500Text
+                     then colors.$tertiary900Text54
+                     else colors.$tertiary900Text
               touchHeight: height
               onclick: @clear
       z 'form.form', {

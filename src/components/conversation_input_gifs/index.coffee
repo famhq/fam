@@ -23,18 +23,15 @@ if window?
 SEARCH_DEBOUNCE = 300
 
 module.exports = class ConversationInputGifs
-  constructor: ({@model, @message, @onPost, currentPanel, group}) ->
+  constructor: ({@model, @message, @onPost, @currentPanel, group}) ->
     @searchValue = new RxBehaviorSubject null
     debouncedSearchValue = @searchValue.debounceTime(SEARCH_DEBOUNCE)
 
     @$searchInput = new SearchInput {@model, @searchValue}
     @$spinner = new Spinner()
 
-    group = group.switchMap (group) =>
-      @model.group.getById group?.id
-
     currentPanelAndSearchValueAndGroup = RxObservable.combineLatest(
-      currentPanel
+      @currentPanel
       debouncedSearchValue
       group
       (vals...) -> vals
@@ -91,6 +88,8 @@ module.exports = class ConversationInputGifs
                 @message.next "![](<#{gif.images.fixed_height.url} " +
                               "=#{width}x#{height}>)"
                 @onPost()
+                .then =>
+                  @currentPanel.next 'text'
               src: if supportsWebP \
                    then gif.images.fixed_height.webp
                    else gif.images.fixed_height.url

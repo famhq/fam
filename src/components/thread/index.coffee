@@ -74,7 +74,7 @@ module.exports = class Thread extends Base
     }
     @filterAndThread = RxObservable.combineLatest(
       filter, thread, (vals...) -> vals
-    ).share()
+    ).publishReplay(1).refCount()
     @$filterCommentsDialog = new FilterCommentsDialog {
       @model, filter, @overlay$
     }
@@ -463,13 +463,15 @@ module.exports = class Thread extends Base
               z '.no-comments', @model.l.get 'thread.noComments'
             else if threadComments
               z '.comments',
-                _map threadComments, ($threadComment) ->
-                  [
-                    z $threadComment
-                    z '.divider'
-                  ]
-                if isLoading
-                  z '.loading', @$spinner
+                [
+                  _map threadComments, ($threadComment) ->
+                    [
+                      z $threadComment
+                      z '.divider'
+                    ]
+                  if isLoading
+                    z '.loading', @$spinner
+                ]
 
       if selectedProfileDialogUser
         z @$profileDialog

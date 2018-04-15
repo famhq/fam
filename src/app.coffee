@@ -133,12 +133,6 @@ module.exports = class App
       else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getByKey groupId
-      # FIXME: rm after 4/30/2018
-      else if route.params.username is 'fresh-potato'
-        @model.cookie.set 'lastGroupId', 'fortnitejp'
-        @model.group.getByGameKeyAndLanguage(
-          'fortnite', 'ja'
-        )
       else
         @model.group.getByGameKeyAndLanguage(
           config.DEFAULT_GAME_KEY, language

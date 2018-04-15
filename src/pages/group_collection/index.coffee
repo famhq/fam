@@ -4,6 +4,7 @@ RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 AppBar = require '../../components/app_bar'
 Collection = require '../../components/collection'
+CurrencyShop = require '../../components/currency_shop'
 Shop = require '../../components/shop'
 Tabs = require '../../components/tabs'
 ButtonMenu = require '../../components/button_menu'
@@ -28,6 +29,11 @@ module.exports = class GroupCollectionPage
       group
       overlay$
       @selectedIndex
+    }
+    @$currencyShop = new CurrencyShop {
+      @model
+      products: new RxBehaviorSubject []
+      selectedProduct: new RxBehaviorSubject null
     }
     @$shop = new Shop {
       @model
@@ -98,6 +104,10 @@ module.exports = class GroupCollectionPage
             $menuText: @model.l.get 'general.shop'
             $el: @$shop
           }
+          # {
+          #   $menuText: @model.l.get 'general.shop'
+          #   $el: @$currencyShop
+          # }
         ]
 
       @$bottomBar

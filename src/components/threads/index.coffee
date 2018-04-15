@@ -126,9 +126,8 @@ module.exports = class Threads extends Base
     {me, chunkedThreads, language, filter,
       expandedId, isLoading} = @state.getValue()
 
-    # isLite = @model.experiment.get('threads') is 'lite' and
-    #           filter.filter isnt 'clan'
-    # isControl = not isLite or filter.filter is 'clan'
+    # isLite = @model.experiment.get('threads') is 'lite'
+    # isControl = not isLite
     isLite = true
 
     z '.z-threads', {
@@ -139,17 +138,6 @@ module.exports = class Threads extends Base
           'No threads found'
       else if chunkedThreads
         z '.g-grid',
-          # if language is 'es'
-          #   z '.user-of-week', {
-          #     onclick: =>
-          #       @router.go 'userOfWeek'
-          #   },
-          #     z 'span.title', @model.l.get 'threads.userOfWeek'
-          #     z 'div',
-          #       ' vegetaariel '
-          #       "(#{@model.l.get 'threads.winner'})"
-          #     z '.description',
-          #       @model.l.get 'threads.learnMore'
           z '.columns',
             _map chunkedThreads, (threads) ->
               z '.column',
