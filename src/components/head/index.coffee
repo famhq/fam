@@ -80,7 +80,7 @@ module.exports = class Head
       gaSampleRate = 100
     else
       gaId = 'UA-27992080-30'
-      gaSampleRate = 10
+      gaSampleRate = 100
 
     paths = _mapValues @model.l.getAllPathsByRouteKey(routeKey), (path) ->
       pathVars = path.match /:([a-zA-Z0-9-]+)/g
