@@ -42,6 +42,7 @@ if window?
 
 SCROLL_THRESHOLD = 250
 SCROLL_COMMENT_LOAD_COUNT = 30
+TIME_UNTIL_WIGGLE_MS = 2000
 
 module.exports = class Thread extends Base
   constructor: ({@model, @router, @overlay$, thread, @isInline, group}) ->
@@ -176,10 +177,16 @@ module.exports = class Thread extends Base
     @$$content?.addEventListener 'scroll', @scrollListener
     @$$content?.addEventListener 'resize', @scrollListener
 
+    if @model.experiment.get('shareWiggle') is 'new'
+      @wiggleTimeout = setTimeout =>
+        @$$el.querySelector('.share')?.classList.toggle('wiggle')
+      , TIME_UNTIL_WIGGLE_MS
+
   beforeUnmount: =>
     super()
     @$$content?.removeEventListener 'scroll', @scrollListener
     @$$content?.removeEventListener 'resize', @scrollListener
+    clearTimeout @wiggleTimeout
 
   scrollListener: =>
     {isLoading, hasLoadedAll} = @state.getValue()
@@ -292,17 +299,19 @@ module.exports = class Thread extends Base
         $topRightButton:
           z '.z-thread_top-right',
             [
-              z @$shareIcon,
-                icon: 'share'
-                color: colors.$header500Icon
-                hasRipple: true
-                onclick: =>
-                  path = @model.thread.getPath thread, group, @router
-                  @model.portal.call 'share.any', {
-                    text: thread.data.title
-                    path: path
-                    url: "https://#{config.HOST}#{path}"
-                  }
+              z '.share', {key: 'share'},
+                z @$shareIcon,
+                  icon: 'share'
+                  color: colors.$header500Icon
+                  hasRipple: true
+                  onclick: =>
+                    ga? 'send', 'event', 'thread', 'share'
+                    path = @model.thread.getPath thread, group, @router
+                    @model.portal.call 'share.any', {
+                      text: thread.data.title
+                      path: path
+                      url: "https://#{config.HOST}#{path}"
+                    }
               if hasAdminPermission or me?.username is 'austin'
                 z @$editIcon,
                   icon: 'edit'

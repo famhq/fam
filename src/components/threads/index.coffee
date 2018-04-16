@@ -18,6 +18,7 @@ require 'rxjs/add/operator/map'
 
 Base = require '../base'
 ThreadListItem = require '../thread_list_item'
+ThreadListItemNew = require '../thread_list_item_new'
 Spinner = require '../spinner'
 colors = require '../../colors'
 config = require '../../config'
@@ -56,7 +57,11 @@ module.exports = class Threads extends Base
           cols = 1
 
         threads = _map threads, (thread) =>
-          $threadListItem = @getCached$ thread.id, ThreadListItem, {
+          if @model.experiment.get('lfgNewThread') is 'new'
+            Class = ThreadListItemNew
+          else
+            Class = ThreadListItem
+          $threadListItem = @getCached$ thread.id, Class, {
             @model, @router, thread, group
           }
           {

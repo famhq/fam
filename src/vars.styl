@@ -62,6 +62,17 @@ font-h1(scale = yes)
     @media (min-width: $breakPointLarge)
       font-size: 24px
 
+font-h2(scale = yes)
+  font-family: Rubik
+  color: getColor('$tertiary900Text')
+  font-weight: 500
+  font-size: 18px
+  letter-spacing: 1px
+
+  if scale is yes
+    @media (min-width: $breakPointLarge)
+      font-size: 20px
+
 font-title(scale = yes)
   font-family: Rubik
   color: getColor('$tertiary900Text')
