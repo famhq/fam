@@ -335,6 +335,7 @@
   "newTradeConfirm.youWant": "You want",
   "newTradeConfirm.youreOffering": "You're offering",
   "newTradeConfirm.tradingWith": "Trading with",
+  "notificationsOverlay.empty": "You're all caught up!",
   "nps.appStore1": "We'd love it if you could rate Fam in the app store :)",
   "nps.appStore2": "Having more ratings helps us a lot!",
   "nps.askRating": "How would you rate Fam?",
@@ -620,6 +621,7 @@
   "error.passwordSet": "Password is already set",
 
 
+  "permissions.admin": "Admin permissions",
   "permissions.readMessage": "Read messages",
   "permissions.readAuditLog": "Read audit log",
   "permissions.manageChannel": "Manage channel",

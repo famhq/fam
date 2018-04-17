@@ -1,5 +1,7 @@
 z = require 'zorium'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+RxObservable = require('rxjs/Observable').Observable
+require 'rxjs/add/observable/combineLatest'
 
 Icon = require '../icon'
 Fab = require '../fab'
@@ -17,25 +19,37 @@ module.exports = class GroupManageRoles
     @$fab = new Fab()
     @$addIcon = new Icon()
 
-    permissionTypes = [
-      'manageInfo'
-      'readAuditLog'
-      'manageChannel'
-      'managePage'
-      'manageRole'
-      'permaBanUser'
-      'tempBanUser'
-      'unbanUser'
-      'deleteMessage'
-      'sendMessage'
-      'sendLink'
-      'bypassSlowMode'
-      'sendImage'
-      'sendAddon'
-      'deleteForumThread'
-      'pinForumThread'
-      'deleteForumComment'
-    ]
+
+    groupAndMe = RxObservable.combineLatest(
+      group
+      @model.user.getMe()
+      (vals...) -> vals
+    )
+    permissionTypes = groupAndMe.map ([group, me]) =>
+      permissions = [
+        'manageInfo'
+        'readAuditLog'
+        'manageChannel'
+        'managePage'
+        'manageRole'
+        'permaBanUser'
+        'tempBanUser'
+        'unbanUser'
+        'deleteMessage'
+        'sendMessage'
+        'sendLink'
+        'bypassSlowMode'
+        'sendImage'
+        'sendAddon'
+        'deleteForumThread'
+        'pinForumThread'
+        'deleteForumComment'
+      ]
+      if @model.groupUser.hasPermission {
+        meGroupUser: group.meGroupUser, me, permissions: ['admin']
+      }
+        permissions.unshift 'admin'
+      permissions
 
     @$groupRolePermissions = new GroupRolePermissions {
       @model, @router, group, permissionTypes, onSave: @save

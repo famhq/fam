@@ -6,6 +6,7 @@ GroupHome = require '../../components/group_home'
 AppBar = require '../../components/app_bar'
 ButtonMenu = require '../../components/button_menu'
 SetLanguageDialog = require '../../components/set_language_dialog'
+NotificationsOverlay = require '../../components/notifications_overlay'
 Icon = require '../../components/icon'
 colors = require '../../colors'
 config = require '../../config'
@@ -25,9 +26,13 @@ module.exports = class GroupHomePage
 
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
+    @$notificationsIcon = new Icon()
     @$settingsIcon = new Icon()
     @$groupHome = new GroupHome {
       @model, @router, serverData, @group, @overlay$
+    }
+    @$notificationsOverlay = new NotificationsOverlay {
+      @model, @router, @group, @overlay$
     }
 
     @state = z.state
@@ -73,13 +78,20 @@ module.exports = class GroupHomePage
         title: @model.l.get 'general.home'
         style: 'primary'
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
-        $topRightButton: z @$settingsIcon,
-          icon: 'settings'
-          color: colors.$header500Icon
-          onclick: =>
-            @overlay$.next new SetLanguageDialog {
-              @model, @router, @overlay$, @group
-            }
+        $topRightButton:
+          z '.p-group-home_top-right',
+            z @$notificationsIcon,
+              icon: 'notifications'
+              color: colors.$header500Icon
+              onclick: =>
+                @overlay$.next @$notificationsOverlay
+            z @$settingsIcon,
+              icon: 'settings'
+              color: colors.$header500Icon
+              onclick: =>
+                @overlay$.next new SetLanguageDialog {
+                  @model, @router, @overlay$, @group
+                }
       }
       @$groupHome
       @$bottomBar

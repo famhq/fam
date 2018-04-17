@@ -41,13 +41,11 @@ FIVE_MINUTES_MS = 60 * 5 * 1000
 SCROLL_MESSAGE_LOAD_COUNT = 20
 DELAY_BETWEEN_LOAD_MORE_MS = 500
 
-# TODO: move all the scrolling stuff into a separate component
-
 module.exports = class Conversation extends Base
   constructor: (options) ->
     {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
       selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading, @onScrollUp,
-      @onScrollDown, hasBottomBar, group} = options
+      @onScrollDown, @minTimeUuid, hasBottomBar, group} = options
 
     isLoading ?= new RxBehaviorSubject false
     @isPostLoading = new RxBehaviorSubject false
@@ -304,21 +302,25 @@ module.exports = class Conversation extends Base
       isScrolling = false
 
   getMessagesStream: (maxTimeUuid) =>
-    conversationAndIsPaused = RxObservable.combineLatest(
+    conversationAndIsPausedAndMinTimeUuid = RxObservable.combineLatest(
       @conversation
       @isPaused
+      @minTimeUuid or RxObservable.of null
       (vals...) -> vals
     )
     # TODO: might be better to have the isPaused somewhere else.
     # have 1 obs with all messages, and 1 that's paused, and get the diff
     # in count to show how many new messages
-    conversationAndIsPaused.switchMap ([conversation, isPaused]) =>
+    conversationAndIsPausedAndMinTimeUuid.switchMap (result) =>
+      [conversation, isPaused, minTimeUuid] = result
       if isPaused and not maxTimeUuid
         RxObservable.never()
       else if conversation
         @model.chatMessage.getAllByConversationId conversation.id, {
+          minTimeUuid
           maxTimeUuid
-          isStreamed: not maxTimeUuid # don't stream old message batches
+          # don't stream old message batches
+          isStreamed: not maxTimeUuid and not minTimeUuid
         }
       else
         RxObservable.of null

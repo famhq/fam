@@ -4,6 +4,7 @@ RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/switchMap'
 _map = require 'lodash/map'
+_filter = require 'lodash/filter'
 
 Dropdown = require '../dropdown'
 PrimaryButton = require '../primary_button'
@@ -18,8 +19,23 @@ module.exports = class GroupManageMember
   constructor: ({@model, @router, group, user}) ->
     @$userHeader = new UserHeader()
 
-    roles = group.switchMap (group) =>
+    groupAndMe = RxObservable.combineLatest(
+      group
+      @model.user.getMe()
+      (vals...) -> vals
+    )
+
+    roles = groupAndMe.switchMap ([group, me]) =>
       @model.groupRole.getAllByGroupId group.id
+      .map (roles) =>
+        meHasAdminPermission = @model.groupUser.hasPermission {
+          meGroupUser: group.meGroupUser, me, permissions: ['admin']
+        }
+        _filter roles, (role) =>
+          roleHasAdminPermission = @model.groupUser.hasPermission {
+            roles: [role], permissions: ['admin']
+          }
+          not roleHasAdminPermission or meHasAdminPermission
 
     @roleValueStreams = new RxReplaySubject 1
     @roleValueStreams.next roles.map (roles) ->

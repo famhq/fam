@@ -31,6 +31,9 @@ module.exports = class GroupChatPage
     conversationId = requests.map ({route}) ->
       route.params.conversationId
 
+    minTimeUuid = requests.map ({req}) ->
+      req.query.minTimeUuid
+
     @isChannelDrawerOpen = new RxBehaviorSubject false
     selectedProfileDialogUser = new RxBehaviorSubject null
     isLoading = new RxBehaviorSubject false
@@ -82,6 +85,7 @@ module.exports = class GroupChatPage
       @group
       isLoading: isLoading
       conversation: conversation
+      minTimeUuid: minTimeUuid
       onScrollUp: @showBottomBar
       onScrollDown: @hideBottomBar
       hasBottomBar: @hasBottomBarObs

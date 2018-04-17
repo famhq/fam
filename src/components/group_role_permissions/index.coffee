@@ -35,11 +35,14 @@ module.exports = class GroupRolePermissions
     @roleValueStreams.next @roles.map (roles) ->
       roles?[0]?.roleId
 
-    groupAndRolesAndRoleIdAndConversation = RxObservable.combineLatest(
+    permissionTypesData = RxObservable.combineLatest(
       group
       @roles
       @roleValueStreams.switch()
       conversation or RxObservable.of null
+      if permissionTypes.subscribe \
+      then permissionTypes
+      else RxObservable.of permissionTypes
       (vals...) -> vals
     )
 
@@ -55,8 +58,9 @@ module.exports = class GroupRolePermissions
       group: group
       roles: @roles
       roleId: @roleValueStreams.switch()
-      permissionTypes: groupAndRolesAndRoleIdAndConversation.map (response) =>
-        [group, roles, roleId, conversation] = response
+      permissionTypes: permissionTypesData.map (response) =>
+        [group, roles, roleId, conversation, permissionTypes] = response
+
         role = _find roles, {roleId}
 
         _map permissionTypes, (key) =>
