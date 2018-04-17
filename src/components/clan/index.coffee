@@ -8,7 +8,6 @@ ClanInfo = require '../clan_info'
 ClanMembers = require '../clan_members'
 ClanGraphs = require '../clan_graphs'
 ClaimClanDialog = require '../claim_clan_dialog'
-JoinGroupDialog = require '../join_group_dialog'
 ProfileDialog = require '../profile_dialog'
 colors = require '../../colors'
 
