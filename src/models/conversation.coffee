@@ -14,6 +14,14 @@ module.exports = class Conversation
       id, name, description, isSlowMode, slowModeCooldown, groupId
     }, {invalidateAll: true}
 
+  markReadByIdAndGroupId: (id, groupId) =>
+    @auth.call "#{@namespace}.markReadById", {id, groupId}, {
+      invalidateSingle:
+        body:
+          groupId: groupId
+        path: "#{@namespace}.getAllByGroupId"
+  }
+
   getAll: =>
     @auth.stream "#{@namespace}.getAll", {}
 

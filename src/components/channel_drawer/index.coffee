@@ -19,6 +19,7 @@ module.exports = class ChannelDrawer
     @$channelList = new ChannelList {
       @model
       @router
+      selectedConversationId: conversation.map ({id}) -> id
       conversations: group.switchMap (group) =>
         @model.conversation.getAllByGroupId group.id
     }
@@ -53,7 +54,6 @@ module.exports = class ChannelDrawer
             z '.title', @model.l.get 'channelDrawer.title'
 
             z @$channelList, {
-              selectedConversationId: conversation?.id
               onclick: (e, {id}) =>
                 @router.go 'groupChatConversation', {
                   groupId: group?.key or group?.id, conversationId: id

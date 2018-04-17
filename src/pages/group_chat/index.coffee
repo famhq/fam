@@ -86,6 +86,7 @@ module.exports = class GroupChatPage
       onScrollDown: @hideBottomBar
       hasBottomBar: @hasBottomBarObs
     }
+
     @$profileDialog = new ProfileDialog {
       @model
       @router

@@ -82,5 +82,5 @@ module.exports = class Auth
         @exoid.invalidateAll()
       else if invalidateSingle
         console.log 'Invalidating single', invalidateSingle
-        @exoid.invalidate invalidateSingle
+        @exoid.invalidate invalidateSingle.path, invalidateSingle.body
       response

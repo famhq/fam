@@ -1,4 +1,5 @@
 z = require 'zorium'
+_defaults = require 'lodash/defaults'
 
 Conversation = require '../conversation'
 
@@ -7,14 +8,14 @@ if window?
 
 module.exports = class GroupChat
   constructor: (options) ->
-    {@model, @router, conversation, overlay$, group, isLoading, onScrollUp
+    {@model, @router, @conversation, overlay$, group, isLoading, onScrollUp
       onScrollDown, hasBottomBar, selectedProfileDialogUser} = options
 
     @$conversation = new Conversation {
       @model
       @router
       selectedProfileDialogUser
-      conversation
+      @conversation
       group
       overlay$
       onScrollUp
@@ -26,7 +27,7 @@ module.exports = class GroupChat
 
     @state = z.state {
       group
-      conversation
+      @conversation
     }
 
   render: =>
