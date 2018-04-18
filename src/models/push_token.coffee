@@ -5,11 +5,8 @@ module.exports = class PushToken
 
   constructor: ({@auth, @pushToken}) -> null
 
-  create: ({token, sourceType, language, deviceId} = {}) =>
-    @auth.call "#{@namespace}.create", {token, sourceType, language, deviceId}
-
-  claimToken: (token) =>
-    @auth.call "#{@namespace}.updateByToken", {token}
+  upsert: ({token, sourceType, language, deviceId} = {}) =>
+    @auth.call "#{@namespace}.upsert", {token, sourceType, language, deviceId}
 
   setCurrentPushToken: (pushToken) =>
     @pushToken.next pushToken

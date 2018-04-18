@@ -129,13 +129,13 @@ module.exports = class App
       groupId = route.params.groupId or @model.cookie.get 'lastGroupId'
       (if isUuid groupId
         @model.cookie.set 'lastGroupId', groupId
-        @model.group.getById groupId
+        @model.group.getById groupId, {autoJoin: true}
       else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
         @model.cookie.set 'lastGroupId', groupId
-        @model.group.getByKey groupId
+        @model.group.getByKey groupId, {autoJoin: true}
       else
         @model.group.getByGameKeyAndLanguage(
-          config.DEFAULT_GAME_KEY, language
+          config.DEFAULT_GAME_KEY, language, {autoJoin: true}
         )
       )
     .publishReplay(1).refCount()

@@ -22,14 +22,16 @@ module.exports = class Group
     embed ?= ['meGroupUser', 'conversations', 'star', 'userCount']
     @auth.stream "#{@namespace}.getAllByUserId", {userId, embed}
 
-  getById: (id) =>
-    @auth.stream "#{@namespace}.getById", {id}
+  getById: (id, {autoJoin} = {}) =>
+    @auth.stream "#{@namespace}.getById", {id, autoJoin}
 
-  getByKey: (key) =>
-    @auth.stream "#{@namespace}.getByKey", {key}
+  getByKey: (key, {autoJoin} = {}) =>
+    @auth.stream "#{@namespace}.getByKey", {key, autoJoin}
 
-  getByGameKeyAndLanguage: (gameKey, language) =>
-    @auth.stream "#{@namespace}.getByGameKeyAndLanguage", {gameKey, language}
+  getByGameKeyAndLanguage: (gameKey, language, {autoJoin} = {}) =>
+    @auth.stream "#{@namespace}.getByGameKeyAndLanguage", {
+      gameKey, language, autoJoin
+    }
 
   getAllChannelsById: (id) =>
     @auth.stream "#{@namespace}.getAllChannelsById", {id}

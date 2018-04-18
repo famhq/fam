@@ -72,6 +72,7 @@
   "general.viewAll": "View all",
   "general.yes": "Yes",
   "general.upgrade": "Upgrade",
+  "general.add": "Add",
   "general.days": "days",
   "general.confirm": "Are you sure?",
   "addDeck.nameHintText": "Enter a name...",
@@ -287,6 +288,7 @@
   "groupPeoplePage.description": "Find new friends to play Fortnite with. Fill your squad or duo easily!",
   "groupManageRoles.addRole": "Add role",
   "groupManageMember.addRole": "Add role",
+  "groupManageMember.addXp": "Add XP",
   "groupNewLfg.hashtagsDescription": "Posts are searchable by hashtags. Tap below to add popular ones to your post, or come up with your own.",
   "groupRolePermissions.selectRole": "Select a role",
   "groupRolePermissions.deleteRole": "Delete role",
@@ -640,6 +642,7 @@
   "permissions.deleteForumThread": "Delete forum thread",
   "permissions.deleteForumComment": "Delete forum comment",
   "permissions.pinForumThread": "Pin thread",
+  "permissions.addXp": "Add XP",
 
   "meta.defaultTitle": "chat, memes, news, stats and more",
   "meta.defaultDescription": "Chat with other {groupName} players, track your stats, and keep up to date on the latest and greatest news.",

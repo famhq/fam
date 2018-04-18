@@ -52,11 +52,12 @@ module.exports = class Auth
     @setAccessToken accessToken
     @exoid.invalidateAll()
     pushToken = @pushToken.getValue()
+    pushToken ?= 'none'
     if pushToken
       @portal.call 'app.getDeviceId'
       .catch -> null
       .then (deviceId) =>
-        @call 'pushTokens.updateByToken', {token: pushToken, deviceId}
+        @call 'pushTokens.upsert', {token: pushToken, deviceId}
       .catch -> null
 
   login: ({username, password} = {}) =>

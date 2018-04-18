@@ -56,7 +56,7 @@ class PushService
                         then 'ios-fcm'
                         else 'ios'
           language = model.l.getLanguageStr()
-          model.pushToken.create {token, sourceType, language, deviceId}
+          model.pushToken.upsert {token, sourceType, language, deviceId}
           model.cookie.set 'isPushTokenStored', 1, {ttlMs: ONE_DAY_MS}
 
         model.pushToken.setCurrentPushToken token

@@ -21,6 +21,9 @@
   flex-direction: column
 
   &.is-chest-opening
+    > .content > .g-grid > .info, > .content > .g-grid > .action
+      pointer-events: none
+
     > .content > .g-grid > .chest-wrapper > .chest > .chest-image
       animation: z-open-chest_chest 0.5s
 
@@ -45,6 +48,7 @@
       > .g-grid
         > .action
           opacity: 1
+          pointer-events: all
 
   > .content
     flex: 1

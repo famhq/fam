@@ -1,5 +1,6 @@
 z = require 'zorium'
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
 require 'rxjs/add/operator/switchMap'
@@ -7,6 +8,7 @@ _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 
 Dropdown = require '../dropdown'
+PrimaryInput = require '../primary_input'
 PrimaryButton = require '../primary_button'
 UserHeader = require '../user_header'
 DateService = require '../../services/date'
@@ -44,6 +46,15 @@ module.exports = class GroupManageMember
     @$roleDropdown = new Dropdown {valueStreams: @roleValueStreams}
     @$addRoleButton = new PrimaryButton()
 
+
+    @addXpValue = new RxBehaviorSubject ''
+    @addXpError = new RxBehaviorSubject null
+    @$addXpInput = new PrimaryInput {
+      value: @addXpValue
+      error: @addXpError
+    }
+    @$addXpButton = new PrimaryButton()
+
     groupAndUser = RxObservable.combineLatest(group, user, (vals...) -> vals)
 
     @state = z.state
@@ -53,6 +64,7 @@ module.exports = class GroupManageMember
       group: group
       user: user
       roles: roles
+      me: @model.user.getMe()
       windowSize: @model.window.getSize()
       appBarHeight: @model.window.getAppBarHeight()
 
@@ -61,8 +73,12 @@ module.exports = class GroupManageMember
     @model.groupUser.addRoleByGroupIdAndUserId group.id, user.id, roleId
 
   render: =>
-    {groupUser, group, user, windowSize,
+    {groupUser, group, user, me, windowSize,
       appBarHeight, roles, roleId} = @state.getValue()
+
+    hasAddXpPermission = @model.groupUser.hasPermission {
+      meGroupUser: group?.meGroupUser, me, permissions: ['addXp']
+    }
 
     z '.z-group-manage-member', {
       style:
@@ -101,3 +117,20 @@ module.exports = class GroupManageMember
               z @$addRoleButton,
                 text: @model.l.get 'groupManageMember.addRole'
                 onclick: @addRole
+
+          if hasAddXpPermission
+            z '.xp',
+              z '.current-xp', "#{groupUser?.xp}xp"
+              z '.add-xp',
+                z @$addXpInput, {
+                  type: 'number'
+                  hintText: @model.l.get 'groupManageMember.addXp'
+                }
+                z @$addXpButton, {
+                  text: @model.l.get 'groupManageMember.addXp'
+                  onclick: =>
+                    xp = @addXpValue.getValue()
+                    @model.groupUser.addXpByGroupIdAndUserId(
+                      group.id, user.id, xp
+                    )
+                }
