@@ -19,20 +19,9 @@ module.exports = class Experiment
       @cookie.set 'exp:lfgNewThread', expLfgNewThread
     ga? 'send', 'event', 'exp', 'lfgNewThread', expLfgNewThread
 
-
-    expShareWiggle = @cookie.get 'exp:shareWiggle'
-    unless expShareWiggle
-      rand = Math.random()
-      expShareWiggle = if rand > 0.5 \
-                         then 'new'
-                         else 'control'
-      @cookie.set 'exp:shareWiggle', expShareWiggle
-    ga? 'send', 'event', 'exp', 'shareWiggle', expShareWiggle
-
     @experiments =
       lfgNewButton: expLfgNewButton
       lfgNewThread: expLfgNewThread
-      shareWiggle: expShareWiggle
 
   get: (key) =>
     @experiments[key]

@@ -241,21 +241,6 @@ module.exports = class Head
         async: true
         src: 'https://www.google-analytics.com/analytics.js'
 
-      unless isNative
-        [
-          z 'script',
-            async: true
-            src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-          z 'script',
-            # async: true
-            src: 'https://js.stripe.com/v2/'
-          z 'script',
-            # async: true
-            innerHTML: "
-              Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
-            "
-        ]
-
       z 'style.rubik', rubikCss
 
       # styles
@@ -289,7 +274,7 @@ module.exports = class Head
              else "#{webpackDevUrl}/bundle.js"
 
        # TODO: have these update with the router, not just on pageload
-       # maybe route should do a head re-render, so it doesn'th ave to do it for
+       # maybe route should do a head re-render, so it doesn't ave to do it for
        # every render
        _map paths, (path, lang) ->
          z 'link', {
@@ -297,3 +282,18 @@ module.exports = class Head
            href: "https://#{config.HOST}#{path}"
            hreflang: lang
          }
+
+      unless isNative
+        [
+          z 'script',
+            async: true
+            src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+          z 'script',
+            # async: true
+            src: 'https://js.stripe.com/v2/'
+          z 'script',
+            # async: true
+            innerHTML: "
+              Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
+            "
+        ]

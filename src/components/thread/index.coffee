@@ -177,10 +177,10 @@ module.exports = class Thread extends Base
     @$$content?.addEventListener 'scroll', @scrollListener
     @$$content?.addEventListener 'resize', @scrollListener
 
-    if @model.experiment.get('shareWiggle') is 'new'
-      @wiggleTimeout = setTimeout =>
-        @$$el.querySelector('.share')?.classList.toggle('wiggle')
-      , TIME_UNTIL_WIGGLE_MS
+    # share wiggle leads to 3.1% more shares vs no wiggle
+    @wiggleTimeout = setTimeout =>
+      @$$el.querySelector('.share')?.classList.toggle('wiggle')
+    , TIME_UNTIL_WIGGLE_MS
 
   beforeUnmount: =>
     super()
