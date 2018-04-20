@@ -3,11 +3,13 @@ _map = require 'lodash/map'
 _clone = require 'lodash/clone'
 RxObservable = require('rxjs/Observable').Observable
 RxReplaySubject = require('rxjs/ReplaySubject').ReplaySubject
+RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 require 'rxjs/add/observable/of'
 
 Icon = require '../icon'
 Spinner = require '../spinner'
 PrimaryButton = require '../primary_button'
+StripeDialog = require '../stripe_dialog'
 FormatService = require '../../services/format'
 Environment = require '../../services/environment'
 colors = require '../../colors'
@@ -17,141 +19,134 @@ if window?
   require './index.styl'
 
 module.exports = class CurrencyShop
-  constructor: ({@model, products, @selectedProduct}) ->
+  constructor: ({@model, group, @overlay$}) ->
     @$spinner = new Spinner()
     @$newIcon = new Icon()
 
     @isImpressionSent = false
+    @selectedIap = new RxBehaviorSubject null
 
-    @baseProducts = products.map (products) =>
-      products = _map products, (product, i) =>
-        unless @isImpressionSent
-          position = i + 1
-          ga 'ec:addImpression', {
-            'id': product.productId
-            'name': product.name
-            'category': 'IAP'
-            'list': 'shopv1'
-            'position': position
-          }
-          ga 'send', 'event', 'shop', product.productId, 'impression'
+    if window?
+      userAgent = navigator?.userAgent
+      platform = Environment.getPlatform {userAgent}
 
-        return {
-          $buyButton: new PrimaryButton()
-          $currencyIcon: new Icon()
-          isLoading: false
-          productInfo: product
-        }
-      @isImpressionSent = true
-      return products
+      iaps = @model.iap.getAllByPlatform platform
+    else
+      iaps = RxObservable.of []
 
-    @productsStream = new RxReplaySubject 1
-    @productsStream.next @baseProducts
+    @$stripeDialog = new StripeDialog {
+      @model, group, iap: @selectedIap, @overlay$
+    }
 
     @state = z.state
       me: @model.user.getMe()
-      products: @productsStream.switch()
+      group: group
+      loadingIapKey: null
+      iaps: iaps.map (iaps) =>
+        iaps = _map iaps, (iap, i) =>
+          unless @isImpressionSent
+            position = i + 1
+            ga 'ec:addImpression', {
+              'id': iap.key
+              'name': iap.name
+              'category': 'IAP'
+              'list': 'shopv1'
+              'position': position
+            }
+            ga 'send', 'event', 'shop', iap.key, 'impression'
+
+          return {
+            $buyButton: new PrimaryButton()
+            $currencyIcon: new Icon()
+            iapInfo: iap
+          }
       platform: Environment.getPlatform {gameKey: config.GAME_KEY}
 
   beforeUnmount: =>
     @isImpressionSent = false
 
-  buyProduct: (product, i) =>
-    {platform, products} = @state.getValue()
+  buy: (iap, i) =>
+    {platform, iaps, group} = @state.getValue()
 
     ga 'ec:addProduct', {
-      'id': product.productId
-      'name': product.name
+      'id': iap.key
+      'name': iap.name
       'category': 'iap'
     }
     ga 'ec:setAction', 'detail'
-    ga 'send', 'event', 'shop', product.productId, 'click'
+    ga 'send', 'event', 'shop', iap.key, 'click'
 
-    if not Environment.isGameApp(config.GAME_KEY)
-      @selectedProduct.next product
+    if not Environment.isNativeApp(config.GAME_KEY)
+      @selectedIap.next iap
+      @overlay$.next @$stripeDialog
     else
-      newProducts = _clone products
-      newProducts[i].isLoading = true
-      @productsStream.next RxObservable.of newProducts
-
-      @model.portal.call 'payments.makePurchase', {
-        productId: product.productId
-      }
-      .then ({platform, receipt, productId, packageName}) =>
+      @state.set loadingIapKey: iap.key
+      productId = "#{group.googlePlayAppId}.#{iap.key}"
+      @model.portal.call 'payments.makePurchase', {productId}
+      .then ({platform, receipt, key, packageName}) =>
         @model.payment.verify {
           platform: platform
+          groupId: group.id
           receipt: receipt
           productId: productId
           packageName: packageName
-          currency: product.currency
-          price: product.price?.replace '$', ''
-          priceMicros: product.priceMicros
+          currency: iap.currency
+          price: iap.price?.replace '$', ''
+          priceMicros: iap.priceMicros
         }
       .then (response) =>
-        @productsStream.next @baseProducts
-
+        @state.set loadingIapKey: null
         # if above req fails, we finish it up in root.coffee
-        @model.portal.call 'payments.consumePurchase', {
-          productIds: [product.productId]
+        @model.portal.call 'payments.finishPurchase', {
+          productIds: [productId]
         }
         response
       .then ({transactionId, revenueUsd}) =>
-        ga 'ec:addProduct', {
-          'id': product.productId
-          'name': product.name
+        ga? 'ec:addProduct', {
+          'id': iap.key
+          'name': iap.name
           'category': 'iap'
         }
-        ga 'ec:setAction', 'purchase', {
+        ga? 'ec:setAction', 'purchase', {
           id: transactionId
           revenue: revenueUsd
         }
-        @model.portal.call 'ga.callMethod', {
-          methodName: 'addTransaction'
-          args: [
-            product.productId, 'app'
-            revenueUsd
-            0
-            0
-            'USD'
-          ]
-        }
 
   render: =>
-    {me, products} = @state.getValue()
+    {me, iaps, loadingIapKey} = @state.getValue()
 
     z '.z-currency-shop',
-      if not products
+      if not iaps
         @$spinner
       else
         z '.g-grid',
           z '.g-cols',
-            _map products, (product, i) =>
-              {$buyButton, $currencyIcon, isLoading, productInfo} = product
+            _map iaps, (iap, i) =>
+              {$buyButton, $currencyIcon, iapInfo} = iap
 
-              amount = productInfo.fire
+              isLoading = iapInfo.key is loadingIapKey
 
-              productInfo.name = "#{amount}" # FIXME
+              amount = iapInfo.data.fireAmount
+              priceUsd = iapInfo.priceCents / 100
+
+              iapInfo.name = "#{amount}"
 
               z '.g-col.g-xs-12.g-md-6',
-                z '.product',
-                  z '.coin'
-                  z '.right',
-                    z '.info',
-                      z '.amount',
-                        FormatService.number amount
-                        z '.icon',
-                          z $currencyIcon,
-                            icon: 'fire'
-                            color: colors.$tertiary900
-                            isTouchTarget: false
-                            size: '14px'
-                      z '.description',
-                        @model.l.get 'currencyShop.productDescription'
-                    z '.button',
-                      z $buyButton,
-                        text:
-                          if isLoading then '...'
-                          else productInfo.price
-                        onclick: =>
-                          if not isLoading
-                            @buyProduct productInfo, i
+                z '.iap',
+                  z '.info',
+                    z '.amount',
+                      FormatService.number amount
+                      z '.icon',
+                        z $currencyIcon,
+                          icon: 'fire'
+                          color: colors.$quaternary500
+                          isTouchTarget: false
+                          size: '16px'
+                  z '.button',
+                    z $buyButton,
+                      text:
+                        if isLoading then '...'
+                        else "$#{priceUsd}"
+                      onclick: =>
+                        if not isLoading
+                          @buy iapInfo, i

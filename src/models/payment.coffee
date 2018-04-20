@@ -4,11 +4,12 @@ module.exports = class Payment
   constructor: ({@auth}) -> null
 
   verify: (options) =>
-    {platform, receipt, productId, packageName, price,
+    {platform, groupId, receipt, productId, packageName, price,
         priceMicros, currency, isFromPending} = options
 
     @auth.call 'payments.verify',
       platform: platform
+      groupId: groupId
       receipt: receipt
       productId: productId
       packageName: packageName
@@ -17,8 +18,10 @@ module.exports = class Payment
       priceMicros: priceMicros
       currency: currency
 
-  purchase: ({product, stripeToken, transactionId}) =>
+  purchase: ({iapKey, platform, groupId, stripeToken, transactionId}) =>
     @auth.call 'payments.purchase',
-      product: product
+      iapKey: iapKey
+      platform: platform
+      groupId: groupId
       stripeToken: stripeToken
       transactionId: transactionId

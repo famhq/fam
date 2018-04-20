@@ -62,11 +62,13 @@ module.exports = class ConversationImagePreview
             color: colors.$primary500Text
           }
           onclick: =>
-            unless isUploading
+            if not isUploading and not @isUploading
+              @isUploading = true # instant, w/o we sometimes get 2 uploads
               @state.set isUploading: true
               @model.chatMessage.uploadImage imageData.file
               .then ({smallUrl, largeUrl, key}) =>
                 @onUpload arguments[0]
                 @state.set isUploading: false
+                @isUploading = false
                 @imageData.next null
                 @overlay$.next null

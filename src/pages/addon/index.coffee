@@ -42,7 +42,7 @@ module.exports = class AddonPage
 
   getMeta: =>
     @addon.map (addon) =>
-      if addon
+      if addon?.key
         {
           title: @model.l.get "#{addon.key}.title", {file: 'addons'}
           description: addon.metaDescription or
@@ -93,6 +93,7 @@ module.exports = class AddonPage
                   @model.signInDialog.openIfGuest me
                   .then =>
                     @model.addon.voteById addon.id, {vote: 'down'}
-        title: @model.l.get "#{addon?.key}.title", {file: 'addons'}
+        title: if addon?.key
+          @model.l.get "#{addon.key}.title", {file: 'addons'}
       }
       @$addon

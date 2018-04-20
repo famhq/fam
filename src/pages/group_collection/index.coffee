@@ -1,6 +1,7 @@
 z = require 'zorium'
 isUuid = require 'isuuid'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+_filter = require 'lodash/filter'
 
 AppBar = require '../../components/app_bar'
 Collection = require '../../components/collection'
@@ -9,6 +10,7 @@ Shop = require '../../components/shop'
 Tabs = require '../../components/tabs'
 ButtonMenu = require '../../components/button_menu'
 MenuFireAmount = require '../../components/menu_fire_amount'
+Environment = require '../../services/environment'
 colors = require '../../colors'
 
 if window?
@@ -32,8 +34,8 @@ module.exports = class GroupCollectionPage
     }
     @$currencyShop = new CurrencyShop {
       @model
-      products: new RxBehaviorSubject []
-      selectedProduct: new RxBehaviorSubject null
+      group
+      overlay$
     }
     @$shop = new Shop {
       @model
@@ -63,6 +65,7 @@ module.exports = class GroupCollectionPage
     @state = z.state
       group: group
       windowSize: @model.window.getSize()
+      me: @model.user.getMe()
 
   getMeta: =>
     {
@@ -77,7 +80,7 @@ module.exports = class GroupCollectionPage
         @selectedIndex.next 0
 
   render: =>
-    {windowSize} = @state.getValue()
+    {windowSize, me, group} = @state.getValue()
 
     z '.p-group-collection', {
       style:
@@ -95,7 +98,7 @@ module.exports = class GroupCollectionPage
       z @$tabs,
         isBarFixed: false
         hasAppBar: true
-        tabs: [
+        tabs: _filter [
           {
             $menuText: @model.l.get 'collectionPage.title'
             $el: @$collection
@@ -104,10 +107,11 @@ module.exports = class GroupCollectionPage
             $menuText: @model.l.get 'general.shop'
             $el: @$shop
           }
-          # {
-          #   $menuText: @model.l.get 'general.shop'
-          #   $el: @$currencyShop
-          # }
+          if group?.key is 'nickatnyte'
+            {
+              $menuText: @model.l.get 'collection.buyFire'
+              $el: @$currencyShop
+            }
         ]
 
       @$bottomBar

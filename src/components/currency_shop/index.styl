@@ -11,57 +11,28 @@
   > .g-grid
     > .g-cols
       > .g-col
-        > .product
+        > .iap
           font-title()
           width: 100%
           display: flex
-          align-items: top
-          padding: 12px 0 0 16px
+          padding: 16px
           box-sizing: border-box
+          align-items: center
 
-          > .coin
-            width: 40px
-            height: 40px
-            background-size: 100%
-            margin-right: 16px
-            display: flex
-            position: relative
-
-            > .new-icon
-              position: absolute
-              top: 0
-              right: 0
-
-          > .right
-            display: flex
+          > .info
             flex: 1
-            border-bottom: 1px solid getColor('$black12')
-            padding-bottom: 16px
-            padding-right: 16px
 
-            > .info
-              flex: 1
+            > .amount
+              font-title()
+              color: getColor('$tertiary900Text')
+              font-weight: 500
+              display: flex
+              align-items: center
+              margin-bottom: 8px
 
-              > .amount
-                font-subhead()
-                color: getColor('$tertiary900')
-                font-weight: 500
-                display: flex
-                align-items: center
-                margin-bottom: 8px
+              > .icon
+                margin-left: 4px
+                position: relative
 
-                > .icon
-                  margin-left: 4px
-                  position: relative
-
-              > .description
-                font-caption()
-                color: getColor('$tertiary500')
-                padding-right: 8px
-
-            > .button
-              margin-left: auto
-
-              > .zp-button
-                > .button
-                  min-width: 64px
+          > .button
+            margin-left: auto

@@ -1,5 +1,7 @@
 _includes = require 'lodash/includes'
 
+config = require '../config'
+
 class Environment
   isMobile: ({userAgent} = {}) ->
     userAgent ?= navigator?.userAgent
@@ -55,32 +57,21 @@ class Environment
     matches = userAgent.match /openfam\/([a-zA-Z0-9-]+)/
     matches?[1] or 'browser'
 
-  isGameChromeApp: (gameKey, {userAgent}) ->
-    userAgent ?= navigator?.userAgent
-    Boolean gameKey and
-      _includes userAgent?.toLowerCase(), "chrome/#{gameKey}/"
-
   getAppVersion: (gameKey, {userAgent} = {}) ->
     userAgent ?= navigator?.userAgent
     regex = new RegExp("(#{gameKey}|starfire)\/(?:[a-zA-Z0-9]+/)?([0-9\.]+)")
     matches = userAgent.match(regex)
     matches?[2]
 
-  isClayApp: ({userAgent} = {}) ->
-    userAgent ?= navigator?.userAgent
-    _includes userAgent?.toLowerCase(), 'clay/'
-
-  isKikEnabled: ->
-    Boolean window?.kik?.enabled
-
   getPlatform: ({gameKey, userAgent} = {}) =>
+    gameKey ?= config.GAME_KEY
     userAgent ?= navigator?.userAgent
+
+    isApp = @isNativeApp gameKey, {userAgent}
 
     if @isFacebook() then 'facebook'
-    else if @isKikEnabled() then 'kik'
-    else if @isGameChromeApp(gameKey, {userAgent}) then 'game_chrome_app'
-    else if @isNativeApp(gameKey, {userAgent}) then 'game_app'
-    else if @isClayApp({userAgent}) then 'clay_app'
+    else if isApp and @isiOS(gameKey, {userAgent}) then 'ios'
+    else if isApp and @isAndroid({userAgent}) then 'android'
     else 'web'
 
 module.exports = new Environment()

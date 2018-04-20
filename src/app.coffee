@@ -28,6 +28,7 @@ ConversationImageView = require './components/conversation_image_view'
 OfflineOverlay = require './components/offline_overlay'
 Nps = require './components/nps'
 Environment = require './services/environment'
+PaymentService = require './services/payment'
 config = require './config'
 colors = require './colors'
 
@@ -140,15 +141,25 @@ module.exports = class App
       )
     .publishReplay(1).refCount()
 
+    # if window?
+    #   PaymentService.init @model, @group
+    userAgent = @serverData?.req.headers?['user-agent']
+    isNativeApp = Environment.isNativeApp config.GAME_KEY, {userAgent}
+
     if @isCrawler
       @group.take(1).subscribe (group) =>
         if group.language
           @model.l.setLanguage group.language
+    else if window? and isNativeApp
+      # HACK: not sure why the settimeout fixes it,
+      # but without it, @$bottomBar is null in app 
+      setTimeout =>
+        @group.take(1).subscribe (group) =>
+          PaymentService.init @model, group
 
     # used if state / requests fails to work
     $backupPage = if @serverData?
-      userAgent = @serverData.req.headers?['user-agent']
-      if Environment.isNativeApp config.GAME_KEY, {userAgent}
+      if isNativeApp
         serverPath = @model.cookie.get('lastPath') or @serverData.req.path
       else
         serverPath = @serverData.req.path

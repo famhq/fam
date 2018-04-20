@@ -246,6 +246,14 @@ module.exports = class Head
           z 'script',
             async: true
             src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+          z 'script',
+            # async: true
+            src: 'https://js.stripe.com/v2/'
+          z 'script',
+            # async: true
+            innerHTML: "
+              Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');
+            "
         ]
 
       z 'style.rubik', rubikCss

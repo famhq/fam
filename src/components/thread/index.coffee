@@ -291,10 +291,9 @@ module.exports = class Thread extends Base
         $topLeftButton: if not @isInline \
                         then z @$buttonBack, {
                           color: colors.$header500Icon
-                          onclick: =>
-                            @router.go 'groupForum', {
-                              groupId: group.key or group.id
-                            }
+                          fallbackPath: @router.get 'groupForum', {
+                            groupId: group?.key or group?.id
+                          }
                         }
         $topRightButton:
           z '.z-thread_top-right',
