@@ -4,7 +4,6 @@ _map = require 'lodash/map'
 Base = require '../base'
 Spinner = require '../spinner'
 ThreadListItem = require '../thread_list_item'
-ThreadListItemNew = require '../thread_list_item_new'
 UiCard = require '../ui_card'
 config = require '../../config'
 
@@ -32,11 +31,7 @@ module.exports = class GroupHomeThreads extends Base
         }
       .map (threads) =>
         _map threads, (thread) =>
-          if @model.experiment.get('lfgNewThread') is 'new'
-            Class = ThreadListItemNew
-          else
-            Class = ThreadListItem
-          @getCached$ "thread-#{thread.id}", Class, {
+          @getCached$ "thread-#{thread.id}", ThreadListItem, {
             @model, @router, thread, group
           }
     }
