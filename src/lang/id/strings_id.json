@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Penampilan obrolan",
   "chatSettings.linkedClans": "Klan yang terhubung",
   "claimClanDialog.title": "Klan Klaim",
-  "claimClanDialog.groupNameHintText": "Nama grup",
+  "groupSettings.groupName": "Nama grup",
   "claimClanDialog.setPasswordDescription": "Buat kata sandi yang Anda berikan kepada anggota klan Anda sehingga mereka dapat memverifikasi akun mereka",
   "claimClanDialog.text1": "Tambahkan kode ini ke deskripsi klan Anda dalam permainan untuk memverifikasi kepemilikan",
   "claimClanDialog.text2": "Mengklaim kepemilikan akan membuka",

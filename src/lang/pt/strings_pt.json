@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Aparência do chat",
   "chatSettings.linkedClans": "Clãs vinculados",
   "claimClanDialog.title": "Reivindicar clã",
-  "claimClanDialog.groupNameHintText": "Nome do grupo",
+  "groupSettings.groupName": "Nome do grupo",
   "claimClanDialog.setPasswordDescription": "Crie uma senha/passe que deverá dar aos membros do seu clã para que eles possam verificar suas contas",
   "claimClanDialog.text1": "Adiciona este código à descrição do teu clã no jogo para verificar a sua liderança",
   "claimClanDialog.text2": "Reivindicar a liderança irá desbloquear",

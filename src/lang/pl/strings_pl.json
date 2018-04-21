@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Wygląd czatu",
   "chatSettings.linkedClans": "Połączone klany",
   "claimClanDialog.title": "Załóż klan",
-  "claimClanDialog.groupNameHintText": "Nazwa grupy",
+  "groupSettings.groupName": "Nazwa grupy",
   "claimClanDialog.setPasswordDescription": "Ustaw hasło, które dasz swoim klanowiczom, dzięki któremu zweryfikują swoje konta",
   "claimClanDialog.text1": "Dodaj ten kod do opisu klanu w grze, aby zweryfikować prawo własności",
   "claimClanDialog.text2": "Posiadanie go odblokuje",

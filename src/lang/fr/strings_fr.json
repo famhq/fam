@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Apparence de chat",
   "chatSettings.linkedClans": "Clans liés",
   "claimClanDialog.title": "Réclamer votre clan",
-  "claimClanDialog.groupNameHintText": "Nom du groupe",
+  "groupSettings.groupName": "Nom du groupe",
   "claimClanDialog.setPasswordDescription": "Créer un mot de passe que vous communiquerez aux membres de votre clan pour qu'ils vérifient leur compte",
   "claimClanDialog.text1": "Ajouter ce code à la description de votre clan dans le jeu pour vérifier votre propriété",
   "claimClanDialog.text2": "Revendiquer le clan débloquera la fonction",

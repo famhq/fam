@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Aspetto della chat",
   "chatSettings.linkedClans": "Clan correlati",
   "claimClanDialog.title": "Richiesta clan",
-  "claimClanDialog.groupNameHintText": "Nome del gruppo",
+  "groupSettings.groupName": "Nome del gruppo",
   "claimClanDialog.setPasswordDescription": "Crea una password da dare ai membri del tuo clan per verificare i loro account",
   "claimClanDialog.text1": "Aggiungi questo codice nella descrizione del tuo clan per verificarne la tua proprietà",
   "claimClanDialog.text2": "La richiesta di proprietà verrà sbloccata",

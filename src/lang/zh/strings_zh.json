@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "聊天界面",
   "chatSettings.linkedClans": "相关部落",
   "claimClanDialog.title": "部落公告",
-  "claimClanDialog.groupNameHintText": "群组名",
+  "groupSettings.groupName": "群组名",
   "claimClanDialog.setPasswordDescription": "创建一个密码，以便提供给你的部落成员他们来验证他们的账户",
   "claimClanDialog.text1": "添加此代码到游戏中的部落描述中以验证你的身份",
   "claimClanDialog.text2": "身份声明即将解锁",

@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "채팅 나타남",
   "chatSettings.linkedClans": "링크된 클랜",
   "claimClanDialog.title": "클랜 요청",
-  "claimClanDialog.groupNameHintText": "그룹 이름",
+  "groupSettings.groupName": "그룹 이름",
   "claimClanDialog.setPasswordDescription": "클랜멤버가 계정을 인증할 수 있도록 비밀번호를 생성하세요.",
   "claimClanDialog.text1": "본인의 계정을 확인하기 위해 게임상에서 본인의 클랜 소개에 코드를 입력하세요",
   "claimClanDialog.text2": "소유권이 있는 사람에게 잠금해제",

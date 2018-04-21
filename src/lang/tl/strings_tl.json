@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Anyo ng paguusap",
   "chatSettings.linkedClans": "Linked ng mga angkan",
   "claimClanDialog.title": "Kuhain ang angkan",
-  "claimClanDialog.groupNameHintText": "Pangalan ng grupo",
+  "groupSettings.groupName": "Pangalan ng grupo",
   "claimClanDialog.setPasswordDescription": "Gumawa ng password na ibinigay mo sa mga miyember ng angkan mo para mapatunayan nilan ang mga accounts nila",
   "claimClanDialog.text1": "Idagdag ang kwod na ito sa mga pagkakakilanlan ng iyong angkan sa laro para sa pagkakakilanlan ng yung pagmamay-ari",
   "claimClanDialog.text2": "Ang kahilingan sa pagmamay-ari ay ina-unlock na",

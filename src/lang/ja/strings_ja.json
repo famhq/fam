@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "チャット表示",
   "chatSettings.linkedClans": "クランと連結",
   "claimClanDialog.title": "クランへの要望",
-  "claimClanDialog.groupNameHintText": "グループ名",
+  "groupSettings.groupName": "グループ名",
   "claimClanDialog.setPasswordDescription": "自分のアカウントをクランのメンバーに見せるためのパスワードを作成",
   "claimClanDialog.text1": "あなたの所有権を認証するためにこのコードをゲーム内のあなたのクランの詳細欄に追加してください。",
   "claimClanDialog.text2": "所有権の解放を要求する。",

@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Sohbet görünümü",
   "chatSettings.linkedClans": "Bağlı klanlar",
   "claimClanDialog.title": "Klan talep et",
-  "claimClanDialog.groupNameHintText": "Grup adı",
+  "groupSettings.groupName": "Grup adı",
   "claimClanDialog.setPasswordDescription": "Klan üyelerine hesaplarını doğrulayacak bir şifre olusturun",
   "claimClanDialog.text1": "Sahipliğinizi doğrulamak için oyundaki klan açıklamasına bu kodu ekleyin",
   "claimClanDialog.text2": "Sahiplik talep etmek kilidi açacaktır",

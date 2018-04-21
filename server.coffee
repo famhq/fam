@@ -123,8 +123,6 @@ redirects =
 
   # '/addons': '/clash-royale/mods'
   # '/addon': '/clash-royale/mod'
-  # '/social': '/clash-royale/chat'
-  # '/social/:tab': '/clash-royale/chat'
   # '/clan': '/clash-royale/clan'
   # '/profile': '/clash-royale/profile'
   # '/recruiting': '/clash-royale/recruit'

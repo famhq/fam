@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Оформление чата",
   "chatSettings.linkedClans": "Связанные кланы",
   "claimClanDialog.title": "Подать заявку на клан",
-  "claimClanDialog.groupNameHintText": "Название группы",
+  "groupSettings.groupName": "Название группы",
   "claimClanDialog.setPasswordDescription": "Создайте пароль, который вы дадите своим членам клана, чтобы они могли подтверждать свои учетные записи",
   "claimClanDialog.text1": "Добавьте этот код в свое описание клана в игре, чтобы подтвердить что вы владеете им",
   "claimClanDialog.text2": "Заявка на владение будет разблокирована",

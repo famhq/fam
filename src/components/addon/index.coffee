@@ -10,7 +10,6 @@ Top2v2Decks = require '../top_2v2_decks'
 FortniteWeapons = require '../fortnite_weapons'
 NewCards = require '../new_cards'
 ChestSimulatorPick = require '../simulator_pick'
-ForumSignature = require '../forum_signature'
 Clan = require '../clan'
 Players = require '../clash_royale_players'
 Recruiting = require '../clash_royale_recruiting'
@@ -35,7 +34,6 @@ module.exports = class Addon
     @$top2v2Decks = new Top2v2Decks {@model, @router}
     @$topDraftCards = new TopDraftCards {@model, @router}
     @$newCards = new NewCards {@model, @router}
-    @$forumSignature = new ForumSignature {@model, @router}
     @$clan = new Clan {@model, @router, player}
     @$players = new Players {@model, @router}
     @$recruiting = new Recruiting {@model, @router, group}
@@ -73,8 +71,6 @@ module.exports = class Addon
         z @$newCards
       else if addon?.id is '8787842f-bc03-4070-a541-39062be97fdc'
         z @$chestSimulatorPick
-      else if addon?.id is 'db0593b5-114f-43db-9d98-0b0a88ce3d12'
-        z @$forumSignature
       else if addon?.id is 'a8370ac8-d07e-454a-824d-bee1b5266ea4'
         z @$topChallengeDecks
       else if addon?.id is '7da4d705-6180-4ceb-869e-cb6f0f8e004d'

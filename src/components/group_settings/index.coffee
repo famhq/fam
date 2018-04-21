@@ -96,7 +96,7 @@ module.exports = class GroupSettings
           [
             z '.input',
               z @$nameInput,
-                hintText: @model.l.get 'claimClanDialog.groupNameHintText'
+                hintText: @model.l.get 'groupSettings.groupName'
 
             z '.input',
               z @$descriptionTextarea,

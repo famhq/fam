@@ -87,7 +87,7 @@
   "chatSettings.chatAppearance": "Chat Aussehen",
   "chatSettings.linkedClans": "Verknüpfte Clans",
   "claimClanDialog.title": "Clan beanspruchen",
-  "claimClanDialog.groupNameHintText": "Gruppenname",
+  "groupSettings.groupName": "Gruppenname",
   "claimClanDialog.setPasswordDescription": "Erstellen Sie ein Passwort, mit dem ihre Clanmitglieder ihre Accounts verifizieren können",
   "claimClanDialog.text1": "Füge diesen \"Code\" in die Clanbeschreibung im Spiel ein, um dich als Anführer zu bestätigen",
   "claimClanDialog.text2": "Freigeschaltet nach Bestätigung als Anführer",
