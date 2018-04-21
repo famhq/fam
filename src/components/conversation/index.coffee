@@ -57,9 +57,10 @@ module.exports = class Conversation extends Base
 
     @isPaused = new RxBehaviorSubject false
 
-    conversationAndMe = RxObservable.combineLatest(
+    conversationAndMeAndMinTimeUuid = RxObservable.combineLatest(
       @conversation
       me
+      @minTimeUuid or RxObservable.of null
       (vals...) -> vals
     )
 
@@ -70,8 +71,8 @@ module.exports = class Conversation extends Base
     lastConversationId = null
     @canLoadMore = true
 
-    loadedMessages = conversationAndMe.switchMap (resp) =>
-      [conversation, me] = resp
+    loadedMessages = conversationAndMeAndMinTimeUuid.switchMap (resp) =>
+      [conversation, me, minTimeUuid] = resp
 
       if lastConversationId isnt conversation?.id
         isLoading.next true
@@ -80,7 +81,7 @@ module.exports = class Conversation extends Base
 
       @messageBatchesStreams = new RxReplaySubject(1)
       @messageBatchesStreamCache = []
-      @prependMessagesStream @getMessagesStream()
+      @prependMessagesStream @getMessagesStream {minTimeUuid}
 
       @messageBatchesStreams.switch()
       .map (messageBatches) =>
@@ -301,18 +302,17 @@ module.exports = class Conversation extends Base
     @iScrollContainer.on 'scrollEnd', =>
       isScrolling = false
 
-  getMessagesStream: (maxTimeUuid) =>
-    conversationAndIsPausedAndMinTimeUuid = RxObservable.combineLatest(
+  getMessagesStream: ({minTimeUuid, maxTimeUuid} = {}) =>
+    conversationAndIsPaused = RxObservable.combineLatest(
       @conversation
       @isPaused
-      @minTimeUuid or RxObservable.of null
       (vals...) -> vals
     )
     # TODO: might be better to have the isPaused somewhere else.
     # have 1 obs with all messages, and 1 that's paused, and get the diff
     # in count to show how many new messages
-    conversationAndIsPausedAndMinTimeUuid.switchMap (result) =>
-      [conversation, isPaused, minTimeUuid] = result
+    conversationAndIsPaused.switchMap (result) =>
+      [conversation, isPaused] = result
       if isPaused and not maxTimeUuid
         RxObservable.never()
       else if conversation
@@ -338,7 +338,9 @@ module.exports = class Conversation extends Base
 
     maxScrollY = @iScrollContainer.maxScrollY or @$$messages.offsetHeight
     scrollY = maxScrollY - @iScrollContainer.y
-    @handleScroll Math.abs(scrollY), @iScrollContainer.directionY
+    @handleScroll(
+      Math.abs(scrollY), @iScrollContainer.y, @iScrollContainer.directionY
+    )
 
   scrollListener: =>
     scrollTop = @$$messages.scrollTop
@@ -355,27 +357,35 @@ module.exports = class Conversation extends Base
       fromBottom = Math.abs scrollTop
       scrollTop = scrollTop + (scrollHeight - offsetHeight)
 
-    direction = if scrollTop < @lastScrollY \
+    direction = if scrollTop < @lastFromTopPx \
                 then 1
-                else if scrollTop > @lastScrollY
+                else if scrollTop > @lastFromTopPx
                 then -1
                 else 0
 
-    @handleScroll scrollTop, direction
+    @handleScroll scrollTop, fromBottom, direction
 
-  handleScroll: (scrollY, direction) =>
-    notNearTop = scrollY > 50
+  handleScroll: (fromTopPx, fromBottomPx, direction) =>
+    notNearTop = fromTopPx > 50
+
+    console.log 'from bottom', fromBottomPx
 
     if notNearTop and direction is 1
       @onScrollUp?()
     else if notNearTop and direction is -1
       @onScrollDown?()
 
-    # a little slow on iOS with the bounce animation, but if <=, it flickers
-    if @canLoadMore and scrollY is 0
+    if @canLoadMore and fromTopPx is 0
       @loadMore()
+    else if @canLoadMore and fromBottomPx is 0
+      ###
+      determine if should load more from bottom.
+      FIXME: how to determine if we're caught up on messages???
+      once we do that, we can stop loading more from bottom here
+      ###
+      console.log 'load more bottom?'
 
-    @lastScrollY = scrollY
+    @lastFromTopPx = fromTopPx
 
   loadMore: =>
     @canLoadMore = false
@@ -386,7 +396,7 @@ module.exports = class Conversation extends Base
 
     {messageBatches} = @state.getValue()
     maxTimeUuid = messageBatches?[0]?[0]?.timeUuid
-    messagesStream = @getMessagesStream maxTimeUuid
+    messagesStream = @getMessagesStream {maxTimeUuid}
     @prependMessagesStream messagesStream
 
     $$firstMessageBatch = @$$el?.querySelector('.message-batch')
