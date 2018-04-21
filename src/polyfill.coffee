@@ -30,12 +30,6 @@ window.Promise = window.Promise or Promiz
 # Fetch polyfill - https://github.com/github/fetch
 require 'whatwg-fetch'
 
-# for smooth scrollIntoView (scroll to bottom)
-require('smoothscroll-polyfill').polyfill()
-
-# transitionend support
-require 'transition-event'
-
 require 'setimmediate'
 
 # iScroll does a translate transform, but it only does it for one transform

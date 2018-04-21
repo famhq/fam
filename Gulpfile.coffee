@@ -241,8 +241,8 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
         mangle:
           except: ['process']
       new ExtractTextPlugin 'bundle.css'
-      # new Visualizer()
-      # new BundleAnalyzerPlugin()
+      new Visualizer()
+      new BundleAnalyzerPlugin()
       # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
       # new webpack.ContextReplacementPlugin(
       #   /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
