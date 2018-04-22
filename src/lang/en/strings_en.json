@@ -126,6 +126,7 @@
   "conversationInputTextArea.hintText": "Type a message...",
   "conversations.noneFound": "No conversations found",
   "conversations.me": "Me: ",
+  "conversations.jumpNew": "You're viewing old messages. Jump to new messages.",
   "deckInfo.personalStats": "Personal stats",
   "deckInfo.communityStats": "Community stats",
   "deckInfo.winPercentage": "Win percentage",

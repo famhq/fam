@@ -142,7 +142,7 @@ module.exports = class NavDrawer
           }
           if group.key in [
             'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
-            'fortnite', 'fortnitejp', 'brawlstarses', 'ninja'
+            'fortnite', 'fortnitejp', 'brawlstarses', 'ninja', 'theviewage'
           ]
             {
               path: @router.get 'groupForum', {groupId}
@@ -159,7 +159,7 @@ module.exports = class NavDrawer
             iconName: 'friends'
           }
           if isClashRoyaleGroup or group.key in [
-            'nickatnyte', 'teamqueso', 'ninja'
+            'nickatnyte', 'teamqueso', 'ninja', 'theviewage'
           ]
             {
               path: @router.get 'groupCollection', {groupId}
@@ -180,7 +180,7 @@ module.exports = class NavDrawer
               iconName: 'fire'
             }
           if isClashRoyaleGroup or group.key in [
-            'nickatnyte', 'teamqueso', 'ninja'
+            'nickatnyte', 'teamqueso', 'ninja', 'theviewage'
           ]
             {
               path: @router.get 'trades', {groupId}
@@ -190,7 +190,8 @@ module.exports = class NavDrawer
               iconName: 'trade'
             }
           if group.key in [
-            'playhard', 'eclihpse', 'nickatnyte', 'teamqueso', 'ninja'
+            'playhard', 'eclihpse', 'nickatnyte', 'teamqueso'
+            'ninja', 'theviewage'
           ]
             {
               path: @router.get 'groupVideos', {groupId}

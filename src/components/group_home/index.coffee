@@ -118,11 +118,13 @@ module.exports = class GroupHome
             $elements: _filter [
               if group.key in [
                 'playhard', 'eclihpse', 'nickatnyte', 'ferg',
-                'teamqueso', 'ninja'
+                'teamqueso', 'ninja', 'theviewage'
               ]
                 z @$groupHomeVideos
 
-              if isFortnite or group?.key in ['nickatnyte', 'ninja']
+              if isFortnite or group?.key in [
+                'nickatnyte', 'ninja', 'theviewage'
+              ]
                 z @$groupHomeFortniteStats
 
               if group.key in [
@@ -145,7 +147,7 @@ module.exports = class GroupHome
 
 
               if player?.id and not isFortnite and
-                  not (group.key in ['brawlstarses', 'ninja'])
+                  not (group.key in ['brawlstarses', 'ninja', 'theviewage'])
                 z @$groupHomeClashRoyaleDecks
 
               z @$groupHomeAddons

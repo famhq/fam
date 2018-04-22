@@ -30,8 +30,11 @@ module.exports = class GroupPagePage
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@model, @router}
     @$groupPage = new GroupPage {@model, @router, @overlay$, groupPage, group}
+    @$deleteIcon = new Icon()
 
     @state = z.state
+      me: @model.user.getMe()
+      group: group
       windowSize: @model.window.getSize()
       groupPage: groupPage
 
@@ -46,7 +49,12 @@ module.exports = class GroupPagePage
   #   @groupPage.next {}
 
   render: =>
-    {windowSize, groupPage} = @state.getValue()
+    {windowSize, groupPage, me, group} = @state.getValue()
+
+    hasManagePagePermission = @model.groupUser.hasPermission {
+      group, meGroupUser: group?.meGroupUser, me
+      permissions: ['managePage']
+    }
 
     z '.p-groupPage', {
       style:
@@ -57,6 +65,16 @@ module.exports = class GroupPagePage
         $topLeftButton: z @$buttonMenu, {
           color: colors.$header500Icon
         }
+        $topRightButton:
+          if hasManagePagePermission
+            z @$deleteIcon,
+              icon: 'delete'
+              color: colors.$header500Icon
+              onclick: =>
+                if confirm 'Confirm?'
+                  @model.groupPage.deleteByGroupIdAndKey group.id, groupPage.key
+                  .then =>
+                    @router.go 'groupHome', {groupId: group?.key or group?.id}
         title: groupPage?.data.title
       }
       z @$groupPage

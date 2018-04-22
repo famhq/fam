@@ -281,7 +281,7 @@ colors = _defaults {
     '--tertiary-800': '#2C2C2C'
     '--tertiary-900': '#1E1E1E'
 
-  thevillage:
+  theviewage:
     '--header-100': '#FFF7E0' # t300
     '--header-500': '#FFBB00' #t700
     '--header-500-text': materialColors.$black
@@ -300,16 +300,9 @@ colors = _defaults {
     '--primary-900': '#FF9600'
     '--primary-500-text': materialColors.$black
 
-    '--tertiary-50': '#E8E8E8'
-    '--tertiary-100': '#C7C7C7'
-    '--tertiary-200': '#A1A1A1'
-    '--tertiary-300': '#7B7B7B'
-    '--tertiary-400': '#5F5F5F'
-    '--tertiary-500': '#434343'
-    '--tertiary-600': '#3D3D3D'
-    '--tertiary-700': '#343434'
-    '--tertiary-800': '#2C2C2C'
-    '--tertiary-900': '#1E1E1E'
+    '--tertiary-500': '#191b1c'
+    '--tertiary-700': '#111416'
+    '--tertiary-900': '#000000'
 
   clashroyale:
     '--header-100': '#80A4C3' # t300

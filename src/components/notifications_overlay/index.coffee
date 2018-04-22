@@ -51,11 +51,13 @@ module.exports = class NotificationsOverlay
             @model.l.get 'notificationsOverlay.empty'
         else
           _map notifications, (notification) =>
+            console.log 'not', notification
             z '.notification', {
               onclick: =>
                 @overlay$.next null
                 @router.go(
                   notification.data.path.key, notification.data.path.params
+                  {qs: notification.data.path.qs}
                 )
             },
               z '.content',

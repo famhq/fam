@@ -2,6 +2,7 @@ z = require 'zorium'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _last = require 'lodash/last'
+_first = require 'lodash/first'
 _isEmpty = require 'lodash/isEmpty'
 _debounce = require 'lodash/debounce'
 _flatten = require 'lodash/flatten'
@@ -39,7 +40,7 @@ MAX_LINES = 20
 SCROLL_MAX_WAIT_MS = 100
 FIVE_MINUTES_MS = 60 * 5 * 1000
 SCROLL_MESSAGE_LOAD_COUNT = 20
-DELAY_BETWEEN_LOAD_MORE_MS = 500
+DELAY_BETWEEN_LOAD_MORE_MS = 250
 
 module.exports = class Conversation extends Base
   constructor: (options) ->
@@ -70,9 +71,13 @@ module.exports = class Conversation extends Base
 
     lastConversationId = null
     @canLoadMore = true
+    @isFirstLoad = true
 
     loadedMessages = conversationAndMeAndMinTimeUuid.switchMap (resp) =>
       [conversation, me, minTimeUuid] = resp
+
+      if minTimeUuid
+        @state.set hasLoadedAllNewMessages: false
 
       if lastConversationId isnt conversation?.id
         isLoading.next true
@@ -89,6 +94,17 @@ module.exports = class Conversation extends Base
         @$$loadingSpinner?.style.display = 'none'
         @state.set isLoaded: true
         @iScrollContainer?.refresh()
+
+        if minTimeUuid and @isFirstLoad
+          @isFirstLoad = false
+          # scroll to top
+          setTimeout =>
+            if Environment.isiOS {userAgent: navigator.userAgent}
+              @messages.scrollTop = @$$messages.scrollHeight + @$$messages.offsetHeight - 1
+            else
+              @$$messages.scrollTop = 1 # if it's 0, it'll load more msgs
+          , 100
+
         messageBatches
       .catch (err) ->
         console.log err
@@ -160,6 +176,7 @@ module.exports = class Conversation extends Base
       isTextareaFocused: isTextareaFocused
       isPostLoading: @isPostLoading
       hasBottomBar: hasBottomBar
+      hasLoadedAllNewMessages: true
       error: null
       conversation: @conversation
       inputTranslateY: @inputTranslateY.switch()
@@ -242,6 +259,8 @@ module.exports = class Conversation extends Base
     if conversation
       @model.chatMessage.unsubscribeByConversationId conversation?.id
 
+    @isFirstLoad = true
+
     @disposable.unsubscribe()
 
     @isPaused.next false
@@ -262,7 +281,7 @@ module.exports = class Conversation extends Base
         @model.exoid.invalidateAll()
     @resetMessageBatches.next [[]]
     setTimeout =>
-      @state.set isLoaded: false
+      @state.set isLoaded: false, hasLoadedAllNewMessages: true
     , 0
 
     @model.portal.call 'push.setContextId', {
@@ -302,7 +321,8 @@ module.exports = class Conversation extends Base
     @iScrollContainer.on 'scrollEnd', =>
       isScrolling = false
 
-  getMessagesStream: ({minTimeUuid, maxTimeUuid} = {}) =>
+  getMessagesStream: ({minTimeUuid, maxTimeUuid, isStreamed} = {}) =>
+    isStreamed ?= not maxTimeUuid and not minTimeUuid
     conversationAndIsPaused = RxObservable.combineLatest(
       @conversation
       @isPaused
@@ -320,7 +340,7 @@ module.exports = class Conversation extends Base
           minTimeUuid
           maxTimeUuid
           # don't stream old message batches
-          isStreamed: not maxTimeUuid and not minTimeUuid
+          isStreamed
         }
       else
         RxObservable.of null
@@ -368,26 +388,21 @@ module.exports = class Conversation extends Base
   handleScroll: (fromTopPx, fromBottomPx, direction) =>
     notNearTop = fromTopPx > 50
 
-    console.log 'from bottom', fromBottomPx
-
     if notNearTop and direction is 1
       @onScrollUp?()
     else if notNearTop and direction is -1
       @onScrollDown?()
 
     if @canLoadMore and fromTopPx is 0
-      @loadMore()
+      @loadOlder()
     else if @canLoadMore and fromBottomPx is 0
-      ###
-      determine if should load more from bottom.
-      FIXME: how to determine if we're caught up on messages???
-      once we do that, we can stop loading more from bottom here
-      ###
-      console.log 'load more bottom?'
+      {hasLoadedAllNewMessages} = @state.getValue()
+      unless hasLoadedAllNewMessages
+        @loadNewer()
 
     @lastFromTopPx = fromTopPx
 
-  loadMore: =>
+  loadOlder: =>
     @canLoadMore = false
 
     # don't re-render or set state since it's slow with all of the conversation
@@ -399,12 +414,43 @@ module.exports = class Conversation extends Base
     messagesStream = @getMessagesStream {maxTimeUuid}
     @prependMessagesStream messagesStream
 
-    $$firstMessageBatch = @$$el?.querySelector('.message-batch')
-    previousScrollHeight = @$$messages.scrollHeight
-
     messagesStream.take(1).toPromise()
     .then =>
       setTimeout (=> @canLoadMore = true), DELAY_BETWEEN_LOAD_MORE_MS
+
+      @$$loadingSpinner.style.display = 'none'
+
+  loadNewer: (isStreamed) =>
+    @canLoadMore = false
+
+    # don't re-render or set state since it's slow with all of the conversation
+    # messages
+    @$$loadingSpinner.style.display = 'block'
+
+    {messageBatches, hasLoadedAllNewMessages} = @state.getValue()
+    minTimeUuid = _last(_last(messageBatches))?.timeUuid
+    messagesStream = @getMessagesStream {minTimeUuid, isStreamed}
+    @appendMessagesStream messagesStream
+
+    previousScrollHeight = @$$messages.scrollHeight
+
+    messagesStream.take(1).toPromise()
+    .then (messages) =>
+      setTimeout (=> @canLoadMore = true), DELAY_BETWEEN_LOAD_MORE_MS
+
+      # should be caught up now
+      if messages?.length < 10 and not hasLoadedAllNewMessages
+        @state.set {hasLoadedAllNewMessages: true}
+        # HACK. need to wait until messageBatches is updated so it can grab
+        # the new minTimeUuid
+        setTimeout =>
+          @loadNewer isStreamed = true
+        , 500
+
+      # scroll to previous point
+      window.requestAnimationFrame =>
+        @$$messages.scrollTop =
+            @$$messages.scrollHeight - (@$$messages.scrollHeight - previousScrollHeight)
 
       @$$loadingSpinner.style.display = 'none'
 
@@ -418,8 +464,23 @@ module.exports = class Conversation extends Base
         messageBatches
     )
 
-  scrollToBottom: =>
-    @$$messages.scrollTop = 0
+  appendMessagesStream: (messagesStream) =>
+    @messageBatchesStreamCache = @messageBatchesStreamCache.concat(
+      [messagesStream]
+    )
+    @messageBatchesStreams.next RxObservable.combineLatest(
+      @messageBatchesStreamCache, (messageBatches...) ->
+        messageBatches
+    )
+
+  jumpToNew: =>
+    messagesStream = @getMessagesStream()
+    @messageBatchesStreamCache = [messagesStream]
+    @messageBatchesStreams.next RxObservable.combineLatest(
+      @messageBatchesStreamCache, (messageBatches...) ->
+        messageBatches
+    )
+    @state.set hasLoadedAllNewMessages: true
 
   postMessage: =>
     {me, conversation, isPostLoading} = @state.getValue()
@@ -474,8 +535,8 @@ module.exports = class Conversation extends Base
       @state.set isJoinLoading: false
 
   render: =>
-    {me, isLoading, message, isTextareaFocused, isLoaded,
-      messageBatches, conversation, group, inputTranslateY,
+    {me, isLoading, message, isTextareaFocused, hasLoadedAllNewMessages,
+      isLoaded, messageBatches, conversation, group, inputTranslateY,
       groupUser, isJoinLoading, hasBottomBar} = @state.getValue()
 
     z '.z-conversation', {
@@ -523,4 +584,10 @@ module.exports = class Conversation extends Base
             onclick: @join
       else
         z '.bottom',
+          unless hasLoadedAllNewMessages
+            z '.jump-new', {
+              onclick: =>
+                @jumpToNew()
+            },
+              @model.l.get 'conversations.jumpNew'
           @$conversationInput
