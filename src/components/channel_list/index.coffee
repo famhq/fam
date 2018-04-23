@@ -30,7 +30,7 @@ module.exports = class ChannelList
         conversations, ({channel}) -> channel?.id is id
       )?.channel
       if conversation?.id isnt lastConversationId
-        lastConversationId = conversation.id
+        lastConversationId = conversation?.id
         if conversation?.notificationCount
           @model.conversation.markReadByIdAndGroupId(
             conversation.id, conversation.groupId
