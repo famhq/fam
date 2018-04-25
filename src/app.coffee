@@ -152,7 +152,7 @@ module.exports = class App
           @model.l.setLanguage group.language
     else if window? and isNativeApp
       # HACK: not sure why the settimeout fixes it,
-      # but without it, @$bottomBar is null in app 
+      # but without it, @$bottomBar is null in app
       setTimeout =>
         @group.take(1).subscribe (group) =>
           PaymentService.init @model, group
@@ -175,7 +175,7 @@ module.exports = class App
     @$offlineOverlay = new OfflineOverlay {@model, isOffline}
     @$navDrawer = new NavDrawer {@model, @router, @group, @overlay$}
     @$earnAlert = new EarnAlert {@model}
-    @$signInDialog = new SignInDialog {@model, @router}
+    @$signInDialog = new SignInDialog {@model, @router, @group}
     @$getAppDialog = new GetAppDialog {@model, @router, @group}
     @$installOverlay = new InstallOverlay {@model, @router}
     @$conversationImageView = new ConversationImageView {@model, @router}

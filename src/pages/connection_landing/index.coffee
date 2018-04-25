@@ -15,25 +15,21 @@ module.exports = class ConnectionLandingPage
 
     if window?
       requests.take(1).subscribe ({route, req}) =>
-        token = req.query.access_token
-        appKey = req.query.app_key
-        unless token
-          query = qs.parse window.location.hash?.replace('#', '')
-          token = query?.access_token
-          state = try
-            JSON.parse query?.state
-          catch err
-          appKey = state?.appKey
+        hashQuery = qs.parse window.location.hash?.replace('#', '')
         site = route.params.site
+        code = req.query.code or hashQuery?.code
+        idToken = req.query.id_token or hashQuery?.id_token
+        state = try
+          JSON.parse(query?.state or hashQuery?.state)
+        catch err
         appKey = state?.appKey or 'browser'
 
-        data = encodeURIComponent JSON.stringify {token}
+        data = encodeURIComponent JSON.stringify {code, idToken}
         path = "#{appKey}://_connectionLanding/#{site}/#{data}"
 
         if appKey isnt 'browser'
           window?.location.href = path
         else
-          console.log 'route', window.opener.onRoute
           window.opener.onRoute path
           setImmediate ->
             window.close()

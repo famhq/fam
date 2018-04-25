@@ -37,3 +37,6 @@ module.exports = class GroupBannedUsers
                 bgColor: colors.$grey200
             z '.right',
               z '.name', banInfo.user.username
+              z '.banned-by',
+                @model.l.get 'groupBannedUsers.bannedBy'
+                ': ' + banInfo.bannedByUser.username

@@ -17,8 +17,10 @@ require 'rxjs/add/operator/switch'
 require 'rxjs/add/operator/map'
 
 Base = require '../base'
+AdsenseAd = require '../adsense_ad'
 ThreadListItem = require '../thread_list_item'
 Spinner = require '../spinner'
+Environment = require '../../services/environment'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -41,6 +43,9 @@ module.exports = class Threads extends Base
     @threadStreams = new RxReplaySubject(1)
     @threadStreamCache = []
     @appendThreadStream @getTopStream()
+
+    @$adsenseAd = new AdsenseAd {@model}
+
 
     @state = z.state
       me: @model.user.getMe()
@@ -133,13 +138,23 @@ module.exports = class Threads extends Base
     z '.z-threads', {
       className: z.classKebab {isLite}#, isControl}
     }, [
+      if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
+        z '.ad',
+          z @$adsenseAd, {
+            slot: 'mobile320x50'
+          }
+      else if not Environment.isMobile()
+        z '.ad',
+          z @$adsenseAd, {
+            slot: 'desktop728x90'
+          }
       if chunkedThreads and _isEmpty chunkedThreads[0]
         z '.no-threads',
           'No threads found'
       else if chunkedThreads
         z '.g-grid',
           z '.columns',
-            _map chunkedThreads, (threads) ->
+            _map chunkedThreads, (threads, i) ->
               z '.column',
                 _map threads, ({$threadListItem}) ->
                   $threadListItem

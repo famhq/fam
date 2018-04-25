@@ -221,9 +221,9 @@ module.exports = class Portal
       fn {path: path.replace('browser://', '/')}
 
   twitchConnect: =>
-    responseType = 'token'
+    responseType = 'id_token+code'
     clientId = config.TWITCH_CLIENT_ID
-    scope = ['user_subscriptions', 'user_read'].join '+'
+    scope = ['openid', 'user_subscriptions', 'user_read'].join '+'
     appKey = Environment.getAppKey()
     redirectUri = encodeURIComponent(
       "https://#{config.HOST}/connectionLanding/twitch"

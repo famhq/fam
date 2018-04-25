@@ -3,7 +3,9 @@ RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
 
 Dialog = require '../dialog'
 PrimaryInput = require '../primary_input'
+PrimaryButton = require '../secondary_button'
 FlatButton = require '../flat_button'
+Icon = require '../icon'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -11,7 +13,7 @@ if window?
   require './index.styl'
 
 module.exports = class SignInDialog
-  constructor: ({@model, @router}) ->
+  constructor: ({@model, @router, group}) ->
 
     @usernameValue = new RxBehaviorSubject ''
     @usernameError = new RxBehaviorSubject null
@@ -34,11 +36,15 @@ module.exports = class SignInDialog
     @$submitButton = new FlatButton()
     @$cancelButton = new FlatButton()
 
+    @$twitchButton = new PrimaryButton()
+    @$twitchIcon = new Icon()
+
     @$dialog = new Dialog()
 
     @state = z.state
       mode: @model.signInDialog.getMode()
       isLoading: false
+      group: group
 
   join: (e) =>
     e?.preventDefault()
@@ -102,12 +108,27 @@ module.exports = class SignInDialog
       errorSubject.next @model.l.get err.info?.langKey
       @state.set isLoading: false
 
+  signInTwitch: =>
+    @model.portal.call 'twitch.connect'
+    .then (data) =>
+      if data?.code
+        @model.auth.loginTwitch {
+          code: data.code
+          idToken: data.idToken
+        }
+        .then =>
+          setTimeout =>
+            @model.user.getMe().take(1).subscribe =>
+              @model.signInDialog.loggedIn()
+              @model.signInDialog.close()
+          , 0
+
   cancel: =>
     @model.signInDialog.cancel()
     @model.signInDialog.close()
 
   render: ({mode}) =>
-    {isLoading} = @state.getValue()
+    {isLoading, group} = @state.getValue()
 
     z '.z-sign-in-dialog',
       z @$dialog,
@@ -129,18 +150,29 @@ module.exports = class SignInDialog
                 then @model.l.get 'general.signIn'
                 else @model.l.get 'general.signUp'
 
-
-            # z '.signup-facebook', {
-            #   onclick: =>
-            #     @state.set isFacebookSigninLoading: true
-            #     @model.auth.loginFacebook {
-            #       isLoginOnly: mode isnt 'join'
-            #     }
-            #     .then =>
-            #       @state.set isFacebookSigninLoading: false
-            #       @router.go redirectPath
-            # }, 'LFB'
             z 'form.content',
+              z '.social-logins',
+                if group?.key is 'nickatnyte'
+                  [
+                    z '.login-twitch',
+                      z @$twitchButton,
+                        text:
+                          z '.z-sign-in-dialog_button',
+                            z '.icon',
+                              z @$twitchIcon,
+                                icon: 'twitch'
+                                color: colors.$tertiary900Text
+                                isTouchTarget: false
+                            @model.l.get 'signIn.withPlatform', {
+                              replacements:
+                                platform: 'Twitch'
+                            }
+                        onclick: @signInTwitch
+
+                    z '.or', @model.l.get 'general.or'
+                  ]
+
+
               z '.input',
                 z @$usernameInput, {
                   hintText: @model.l.get 'general.username'
@@ -155,6 +187,7 @@ module.exports = class SignInDialog
                   type: 'password'
                   hintText: @model.l.get 'general.password'
                 }
+
               if mode is 'join'
                 z '.terms',
                   @model.l.get 'signIn.terms', {

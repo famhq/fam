@@ -12,8 +12,6 @@ config = require '../../config'
 if window?
   require './index.styl'
 
-GROUPS_IN_DRAWER = 2
-
 collectionGroupKeys = [
   'playhard', 'eclihpse', 'nickatnyte', 'ferg'
   'teamqueso', 'ninja', 'theviewage'

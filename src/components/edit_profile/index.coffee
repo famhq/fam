@@ -133,11 +133,11 @@ module.exports = class EditProfile
           onclick: =>
             @model.portal.call 'twitch.connect'
             .then (data) =>
-              if data?.token
-                @model.connection.upsert {
+              if data?.code
+                @model.connection.upsertByCode data.code, {
                   site: 'twitch'
-                  token: data.token
                   groupId: group?.id
+                  idToken: data.idToken
                 }
         },
           if isTwitchConnected
