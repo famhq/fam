@@ -80,8 +80,8 @@ module.exports = class Collection
 
     z '.z-collection',
       z '.g-grid',
-        if isInfoCardVisible
-          z '.info-card',
+        z '.info-card',
+          if isInfoCardVisible
             z @$infoCard,
               $content: @model.l.get 'collection.infoCard'
               cancel:

@@ -20,9 +20,11 @@ module.exports = class ConnectionLandingPage
         code = req.query.code or hashQuery?.code
         idToken = req.query.id_token or hashQuery?.id_token
         state = try
-          JSON.parse(query?.state or hashQuery?.state)
+          JSON.parse(query?.state or decodeURIComponent(hashQuery?.state))
         catch err
         appKey = state?.appKey or 'browser'
+
+        console.log hashQuery
 
         data = encodeURIComponent JSON.stringify {code, idToken}
         path = "#{appKey}://_connectionLanding/#{site}/#{data}"

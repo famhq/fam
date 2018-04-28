@@ -91,7 +91,7 @@ module.exports = class ItemList extends Base
       itemGroups = _sortBy itemGroups, 'type'
       return _map itemGroups, ({items, type}) =>
         sortedItems = @sort items, sortFn
-        bundledItems = @bundle sortedItems, {userItems, group}
+        bundledItems = @bundle sortedItems, {userItems, group, itemSizeInfo}
         {itemsPerRow} = itemSizeInfo
         groupedItems = @groupByRow bundledItems, {itemsPerRow}
         {type, items: groupedItems}
@@ -167,7 +167,7 @@ module.exports = class ItemList extends Base
   sort: (items, sortFn) ->
     _sortBy items, sortFn
 
-  bundle: (items, {userItems, group}) =>
+  bundle: (items, {userItems, group, itemSizeInfo}) =>
     _map items, (itemInfo) =>
       item = itemInfo.item
       ItemClass = if item.type is 'sticker' \
@@ -176,7 +176,6 @@ module.exports = class ItemList extends Base
       isLocked = not @model.userItem.isOwnedByUserItemsAndItemKey(
         userItems, item.key
       )
-      sizePx = @itemSizeInfo.map ({itemSize}) -> itemSize
       $el = @getCached$ "item-#{item.key}", ItemClass, {
         @model
         @router
@@ -187,7 +186,7 @@ module.exports = class ItemList extends Base
         hasName: @showName
         isLocked: isLocked
         itemInfo: itemInfo
-        sizePx: sizePx
+        sizePx: itemSizeInfo?.itemSize
       }
       $el.update {itemInfo, isLocked}
 

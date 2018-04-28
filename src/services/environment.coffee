@@ -28,6 +28,9 @@ class Environment
   isFacebook: ->
     window? and window.name.indexOf('canvas_fb') isnt -1
 
+  isTwitch: ->
+    window?.Twitch
+
   isAndroid: ({userAgent} = {}) ->
     userAgent ?= navigator?.userAgent
     _includes userAgent, 'Android'
@@ -70,6 +73,7 @@ class Environment
     isApp = @isNativeApp gameKey, {userAgent}
 
     if @isFacebook() then 'facebook'
+    else if @isTwitch() then 'twitch'
     else if isApp and @isiOS(gameKey, {userAgent}) then 'ios'
     else if isApp and @isAndroid({userAgent}) then 'android'
     else 'web'

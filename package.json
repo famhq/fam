@@ -23,6 +23,7 @@
     "cors": "^2.7.1",
     "css-loader": "^0.25.0",
     "del": "^2.0.2",
+    "dustjs-linkedin": "^2.7.5",
     "exoid-router": "^0.2.2",
     "extract-text-webpack-plugin": "^0.9.1",
     "flare-gun": "^0.6.5",
@@ -93,6 +94,7 @@
     "rxjs": "^5.4.3",
     "semver-compare": "^1.0.0",
     "setimmediate": "^1.0.5",
+    "simpleheat": "^0.4.0",
     "socket.io-client": "^2.0.4",
     "supports-webp": "^1.0.3",
     "transition-event": "^1.0.0",
@@ -113,5 +115,6 @@
   "bugs": {
     "url": "https://github.com/claydotio/zorium-seed/issues"
   },
-  "homepage": "https://github.com/claydotio/zorium-seed"
+  "homepage": "https://github.com/claydotio/zorium-seed",
+  "version": "0.0.1"
 }

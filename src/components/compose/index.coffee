@@ -48,7 +48,7 @@ module.exports = class Compose
   beforeUnmount: =>
     @attachmentsValueStreams.next new RxBehaviorSubject []
 
-  render: ({isReply, onDone, $head}) =>
+  render: ({isReply, imagesAllowed, onDone, $head}) =>
     {me, isLoading, titleValue} = @state.getValue()
 
     z '.z-compose',
@@ -84,6 +84,7 @@ module.exports = class Compose
               z '.divider'
             ]
           z @$markdownEditor,
+            imagesAllowed: imagesAllowed
             hintText: if isReply \
                       then @model.l.get 'compose.responseHintText'
                       else @model.l.get 'compose.postHintText'

@@ -1,5 +1,6 @@
 Environment = require '../services/environment'
 RxBehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject
+require 'rxjs/add/operator/map'
 uuid = require 'uuid'
 _forEach = require 'lodash/forEach'
 

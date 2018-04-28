@@ -60,6 +60,8 @@ module.exports = class NewThread
       category: category
       thread: @thread
       group: group
+      mePlayer: @model.user.getMe().switchMap ({id}) =>
+        @model.player.getByUserIdAndGameKey id, 'clash-royale'
       attachedContent: categoryAndId.switchMap ([category, id]) =>
         if category is 'deckGuide'
           [deckId, playerId] = decodeURIComponent(id).split ':'
@@ -102,7 +104,12 @@ module.exports = class NewThread
 
   render: =>
     {me, titleValue, bodyValue, attachmentsValue, attachedContent, clan,
-      category, thread, language, group} = @state.getValue()
+      mePlayer, category, thread, language, group} = @state.getValue()
+
+    isVerified = mePlayer?.isVerified or config.ENV is config.ENVS.DEV or
+      me?.flags?.isStar or me?.flags?.isMod
+    groupRequiresVerification = group?.key and
+      group.key.indexOf('clashroyale') isnt -1
 
     if clan
       data =
@@ -119,6 +126,7 @@ module.exports = class NewThread
 
     z '.z-new-thread',
       z @$compose,
+        imagesAllowed: Boolean(not groupRequiresVerification or isVerified)
         $head:
           if category is 'clan'
             z '.z-new-thread_head',

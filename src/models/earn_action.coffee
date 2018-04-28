@@ -3,8 +3,8 @@ module.exports = class EarnAction
 
   constructor: ({@auth}) -> null
 
-  getAllByGroupId: (groupId) =>
-    @auth.stream "#{@namespace}.getAllByGroupId", {groupId}
+  getAllByGroupId: (groupId, {platform} = {}) =>
+    @auth.stream "#{@namespace}.getAllByGroupId", {groupId, platform}
 
   incrementByGroupIdAndAction: (groupId, action, options = {}) =>
     {timestamp, successKey} = options

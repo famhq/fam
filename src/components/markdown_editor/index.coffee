@@ -69,6 +69,7 @@ module.exports = class MarkdownEditor
         $icon: new Icon()
         title: 'Image'
         pattern: '![]($1)'
+        isImage: true
         $uploadOverlay: new UploadOverlay {@model}
       }
     ]
@@ -79,7 +80,9 @@ module.exports = class MarkdownEditor
       overlay$: @overlay$
     }
 
-  render: ({hintText} = {}) =>
+  render: ({hintText, imagesAllowed} = {}) =>
+    imagesAllowed ?= true
+
     {overlay$} = @state.getValue()
 
     z '.z-markdown-editor',
@@ -88,7 +91,12 @@ module.exports = class MarkdownEditor
 
       z '.panel',
         _map @modifiers, (options) =>
-          {icon, $icon, title, pattern, onclick, $uploadOverlay} = options
+          {icon, $icon, title, pattern, isImage,
+            onclick, $uploadOverlay} = options
+
+          if isImage and not imagesAllowed
+            return
+
           z '.icon', {
             title: title
           },

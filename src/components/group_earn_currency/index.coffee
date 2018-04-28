@@ -1,5 +1,4 @@
 z = require 'zorium'
-Environment = require '../../services/environment'
 _map = require 'lodash/map'
 _filter = require 'lodash/filter'
 _find = require 'lodash/find'
@@ -14,6 +13,7 @@ Spinner = require '../spinner'
 CurrencyIcon = require '../currency_icon'
 PrimaryButton = require '../primary_button'
 FormatService = require '../../services/format'
+Environment = require '../../services/environment'
 colors = require '../../colors'
 config = require '../../config'
 
@@ -26,8 +26,10 @@ module.exports = class GroupEarnCurrency
   constructor: ({@model, @router, group}) ->
     @$spinner = new Spinner()
 
+    platform = Environment.getPlatform()
+
     currencyActions = group.switchMap (group) =>
-      @model.earnAction.getAllByGroupId group.id
+      @model.earnAction.getAllByGroupId group.id, {platform}
       .map (actions) =>
         _map actions, (action) =>
           currencyReward = _find action.data.rewards, {currencyType: 'item'}
@@ -53,11 +55,11 @@ module.exports = class GroupEarnCurrency
       currencyActions: currencyActions
       loadingAction: null
 
-  visit: (e) =>
+  visit: (e, action) =>
     {group} = @state.getValue()
-    @state.set loadingAction: 'visit'
+    @state.set loadingAction: action
     @model.earnAction.incrementByGroupIdAndAction(
-      group.id, 'visit'
+      group.id, action
     )
     .catch -> null
     .then (rewards) =>
@@ -132,10 +134,12 @@ module.exports = class GroupEarnCurrency
                           then @model.l.get action.data.button.textKey
                           else action.data.button.text
                     onclick: (e) =>
-                      route = action.data.button.route
-                      if action.action is 'watchAd'
-                        @playAd()
-                      else if action.action is 'visit'
-                        @visit e
-                      else if route
-                        @router.go route.key, route.replacements
+                      @model.signInDialog.openIfGuest me
+                      .then =>
+                        route = action.data.button.route
+                        if action.action is 'watchAd'
+                          @playAd()
+                        else if action.action in ['visit', 'streamVisit']
+                          @visit e, action.action
+                        else if route
+                          @router.go route.key, route.replacements

@@ -2,9 +2,11 @@ _defaults = require 'lodash/defaults'
 _pick = require 'lodash/pick'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/defer'
+require 'rxjs/add/operator/toPromise'
 require 'rxjs/add/observable/fromPromise'
 require 'rxjs/add/operator/switchMap'
 require 'rxjs/add/operator/take'
+require 'rxjs/add/operator/publishReplay'
 
 config = require '../config'
 
@@ -68,6 +70,10 @@ module.exports = class Auth
     @exoid.call 'auth.loginTwitch', {isLoginOnly, code, idToken}
     .then @afterLogin
 
+  loginTwitchExtension: ({token, isLoginOnly} = {}) =>
+    @exoid.call 'auth.loginTwitchExtension', {isLoginOnly, token}
+    .then @afterLogin
+
   stream: (path, body, options = {}) =>
     options = _pick options, [
       'isErrorable', 'clientChangesStream', 'ignoreCache', 'initialSortFn'
@@ -83,7 +89,7 @@ module.exports = class Auth
       @exoid.call path, body
     .then (response) =>
       if invalidateAll
-        console.log 'Invalidating all'
+        # console.log 'Invalidating all'
         @exoid.invalidateAll()
       else if invalidateSingle
         console.log 'Invalidating single', invalidateSingle

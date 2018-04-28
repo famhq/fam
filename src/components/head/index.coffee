@@ -78,6 +78,9 @@ module.exports = class Head
     else if group?.key is 'fortnite'
       gaId = 'UA-27992080-34'
       gaSampleRate = 100
+    else if group?.key is 'nickatnyte'
+      gaId = 'UA-27992080-35'
+      gaSampleRate = 100
     else
       gaId = 'UA-27992080-30'
       gaSampleRate = 100
