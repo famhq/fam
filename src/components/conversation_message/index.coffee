@@ -8,13 +8,13 @@ if window?
 
 module.exports = class ConversationMessage
   constructor: (options) ->
-    {@selectedProfileDialogUser, @messageBatchesStreams, @model} = options
+    {@selectedProfileDialogUser, @messageBatchesStreams, @model,
+      @isTextareaFocused} = options
     @$message = new Message options
 
-  render: ({isTextareaFocused}) =>
+  render:  =>
     z '.z-conversation-message',
       z @$message, {
-        isTextareaFocused
         openProfileDialogFn: (id, user, groupUser) =>
           @selectedProfileDialogUser.next _defaults {
             groupUser: groupUser

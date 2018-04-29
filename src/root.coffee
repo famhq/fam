@@ -166,7 +166,7 @@ init = ->
         else
           adId = 'ca-app-pub-9043203456638369/2454362164'
 
-        portalCall = if admobMediationSupported
+        portalCall = if admobMediationSupported \
                      then 'admob.showBanner'
                      else 'heyzap.showBanner'
 

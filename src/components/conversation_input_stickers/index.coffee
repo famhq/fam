@@ -19,7 +19,7 @@ DEFAULT_TEXTAREA_HEIGHT = 54
 module.exports = class ConversationInputStickers
   constructor: (options) ->
     {@model, @router, @onPost, @message, @currentPanel,
-      @selectionStart, @selectionEnd, conversation} = options
+      @selectionStart, @selectionEnd, conversation, getTextareaFn} = options
 
     @$getStickersButton = new PrimaryButton()
 
@@ -74,17 +74,9 @@ module.exports = class ConversationInputStickers
                   newMessage = message.substring(0, startPos) + stickerText +
                              message.substring(endPos, message.length)
                   @message.next newMessage
-                  # document.getElementById('textarea').value = message
+                  newCursorPos = startPos + stickerText.length
+                  @selectionStart.next newCursorPos
+                  @selectionEnd.next newCursorPos
                   @currentPanel.next 'text'
-                  # @onPost()
               }
-
-        # _map config.STICKERS, (sticker) =>
-        #   z '.sticker',
-        #     onclick: (e) =>
-        #       @message.next ":#{sticker}:"
-        #       # @onPost()
-        #     style:
-        #       backgroundImage:
-        #         "url(#{config.CDN_URL}/groups/emotes/#{sticker}.png)"
       ]

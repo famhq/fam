@@ -22,7 +22,7 @@ DESCRIPTION_LENGTH = 100
 
 module.exports = class Message
   constructor: (options) ->
-    {message, @$body, isGrouped, isMe, @model, @overlay$,
+    {message, @$body, isGrouped, isMe, @model, @overlay$, @isTextareaFocused
       @selectedProfileDialogUser, @router, @messageBatchesStreams} = options
 
     @$avatar = new Avatar()
@@ -53,7 +53,7 @@ module.exports = class Message
           username and username is me?.username
       windowSize: @model.window.getSize()
 
-  render: ({isTextareaFocused, openProfileDialogFn, isTimeAlignedLeft}) =>
+  render: ({openProfileDialogFn, isTimeAlignedLeft}) =>
     {isMe, message, isGrouped, isMeMentioned, windowSize} = @state.getValue()
 
     {user, groupUser, time, card, id, clientId} = message
@@ -70,8 +70,8 @@ module.exports = class Message
                  then '40px'
                  else '40px'
 
-    onclick = ->
-      unless isTextareaFocused
+    onclick = =>
+      unless @isTextareaFocused?.getValue()
         openProfileDialogFn id, user, groupUser
 
     oncontextmenu = ->

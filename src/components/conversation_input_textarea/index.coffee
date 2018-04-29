@@ -15,7 +15,7 @@ DEFAULT_TEXTAREA_HEIGHT = 54
 
 module.exports = class ConversationInputTextarea
   constructor: (options) ->
-    {@message, @onPost, @onResize, @isTextareaFocused, @toggleIScroll
+    {@message, @onPost, @onResize, @isTextareaFocused
       @hasText, @model, isPostLoading, @selectionStart, @selectionEnd} = options
 
     @$sendIcon = new Icon()
@@ -24,7 +24,6 @@ module.exports = class ConversationInputTextarea
     @textareaHeight = new RxBehaviorSubject DEFAULT_TEXTAREA_HEIGHT
 
     @state = z.state
-      isTextareaFocused: @isTextareaFocused
       isPostLoading: isPostLoading
       textareaHeight: @textareaHeight
       hasText: @hasText
@@ -32,6 +31,9 @@ module.exports = class ConversationInputTextarea
   afterMount: (@$$el) =>
     @$$textarea = @$$el.querySelector('#textarea')
     @$$textarea?.value = @message.getValue()
+    @$$textarea?.setSelectionRange(
+      @selectionStart.getValue(), @selectionEnd.getValue()
+    )
 
   beforeUnmount: =>
     @selectionStart.next @$$textarea?.selectionStart
@@ -67,7 +69,6 @@ module.exports = class ConversationInputTextarea
             boundingRect = @$$el?.getBoundingClientRect?()
             x = boundingRect?.left
             y = boundingRect?.top
-          console.log 'show'
           @model.earnAlert.show {rewards: response?.rewards, x, y}
 
   resizeTextarea: (e) =>
@@ -86,8 +87,7 @@ module.exports = class ConversationInputTextarea
       Math.min height, 150 # max height in css
 
   render: =>
-    {isTextareaFocused, hasText, textareaHeight,
-      isPostLoading} = @state.getValue()
+    {hasText, textareaHeight, isPostLoading} = @state.getValue()
 
     z '.z-conversation-input-textarea',
         z 'textarea.textarea',
@@ -112,10 +112,6 @@ module.exports = class ConversationInputTextarea
             @resizeTextarea e
             @setMessageFromEvent e
           ontouchstart: (e) =>
-            # isFocused = e.target is document.activeElement
-            # if isFocused
-            #   # so text can be selected
-            #   @toggleIScroll? 'disable'
             unless Environment.isNativeApp config.GAME_KEY
               @model.window.pauseResizing()
           ontouchend: (e) =>
@@ -123,28 +119,22 @@ module.exports = class ConversationInputTextarea
             # weird bug causes textarea to sometimes not focus
             unless isFocused
               e?.target.focus()
-            # @toggleIScroll? 'enable'
-          # onmousedown: (e) =>
-          #   isFocused = e.target is document.activeElement
-          #   if isFocused
-          #     @toggleIScroll? 'disable'
-          # onmouseup: =>
-          #   @toggleIScroll? 'enable'
           onfocus: =>
             unless Environment.isNativeApp config.GAME_KEY
               @model.window.pauseResizing()
             clearTimeout @blurTimeout
-            @isTextareaFocused.next true
+            setImmediate =>
+              @isTextareaFocused.next true
             @onResize?()
           onblur: (e) =>
-            # @toggleIScroll? 'enable'
             @blurTimeout = setTimeout =>
               isFocused = e.target is document.activeElement
               unless isFocused
                 unless Environment.isNativeApp config.GAME_KEY
                   @model.window.resumeResizing()
-                @isTextareaFocused.next false
-            , 350
+                setImmediate =>
+                  @isTextareaFocused.next false
+
 
         z '.right-icons',
           z '.send-icon', {

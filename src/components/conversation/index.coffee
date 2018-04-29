@@ -44,13 +44,12 @@ DELAY_BETWEEN_LOAD_MORE_MS = 250
 
 module.exports = class Conversation extends Base
   constructor: (options) ->
-    {@model, @router, @error, @conversation, isActive, @overlay$, toggleIScroll,
+    {@model, @router, @error, @conversation, isActive, @overlay$,
       selectedProfileDialogUser, @scrollYOnly, @isGroup, isLoading, @onScrollUp,
       @onScrollDown, @minTimeUuid, hasBottomBar, group} = options
 
     isLoading ?= new RxBehaviorSubject false
     @isPostLoading = new RxBehaviorSubject false
-    isTextareaFocused = new RxBehaviorSubject false
     isActive ?= new RxBehaviorSubject false
     me = @model.user.getMe()
     @conversation ?= new RxBehaviorSubject null
@@ -122,6 +121,7 @@ module.exports = class Conversation extends Base
     )
 
     @inputTranslateY = new RxReplaySubject 1
+    @isTextareaFocused = new RxBehaviorSubject false
 
     @$loadingSpinner = new Spinner()
     @$joinButton = new PrimaryButton()
@@ -129,8 +129,7 @@ module.exports = class Conversation extends Base
       @model
       @router
       @message
-      isTextareaFocused
-      toggleIScroll
+      @isTextareaFocused
       @isPostLoading
       @overlay$
       @inputTranslateY
@@ -173,7 +172,6 @@ module.exports = class Conversation extends Base
       me: me
       isLoading: isLoading
       isActive: isActive
-      isTextareaFocused: isTextareaFocused
       isPostLoading: @isPostLoading
       hasBottomBar: hasBottomBar
       hasLoadedAllNewMessages: true
@@ -214,7 +212,7 @@ module.exports = class Conversation extends Base
                 useThumbnails: true
               }
               $el = @getCached$ messageCacheKey, ConversationMessage, {
-                message, @model, @router, @overlay$, isMe,
+                message, @model, @router, @overlay$, isMe, @isTextareaFocused,
                 isGrouped, selectedProfileDialogUser, $body,
                 @messageBatchesStreams
               }
@@ -535,14 +533,15 @@ module.exports = class Conversation extends Base
       @state.set isJoinLoading: false
 
   render: =>
-    {me, isLoading, message, isTextareaFocused, hasLoadedAllNewMessages,
+    {me, isLoading, message, hasLoadedAllNewMessages,
       isLoaded, messageBatches, conversation, group, inputTranslateY,
       groupUser, isJoinLoading, hasBottomBar} = @state.getValue()
 
     z '.z-conversation', {
       className: z.classKebab {hasBottomBar}
-      onclick: =>
-        if isTextareaFocused and Environment.isiOS()
+      onclick: (e) =>
+        if @isTextareaFocused.getValue() and Environment.isiOS() and
+            e?.target isnt @$conversationInput.getTextarea$$()
           document.activeElement.blur()
     },
       # toggled with vanilla js (non-vdom for perf)
@@ -567,7 +566,7 @@ module.exports = class Conversation extends Base
                   [
                       if i and not isGrouped
                         z '.divider'
-                      z $el, {isTextareaFocused}
+                      z $el
                   ]
 
       if conversation?.groupId and groupUser and not groupUser.userId

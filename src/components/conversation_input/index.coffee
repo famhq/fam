@@ -25,7 +25,7 @@ if window?
 
 module.exports = class ConversationInput
   constructor: (options) ->
-    {@model, @router, @message, @onPost, @onResize, toggleIScroll, meGroupUser,
+    {@model, @router, @message, @onPost, @onResize, meGroupUser,
       @inputTranslateY, allowedPanels, @isTextareaFocused, @overlay$, group,
       isPostLoading, conversation} = options
 
@@ -63,7 +63,6 @@ module.exports = class ConversationInput
           selectionStart
           selectionEnd
           @isTextareaFocused
-          toggleIScroll
           isPostLoading
           @hasText
           @model
@@ -176,6 +175,9 @@ module.exports = class ConversationInput
       cooldownSecondsLeft: cooldownSecondsLeft
       mePlayer: me.switchMap ({id}) =>
         @model.player.getByUserIdAndGameKey id, 'clash-royale'
+
+  getTextarea$$: =>
+    @panels.text.$el.$$textarea
 
   post: =>
     {me} = @state.getValue()
