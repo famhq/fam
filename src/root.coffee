@@ -154,21 +154,19 @@ init = ->
     appVersion = Environment.getAppVersion config.GAME_KEY
     if appVersion
       admobMediationSupported = SemverService.gte(appVersion, '1.2.4')
-      appodealMediationSupported = false
       nativeAdsSupported = SemverService.gte(appVersion, '1.2.3')
       # TODO: implement by group key, not app info
       isFortniteApp = Environment.isGroupApp 'fortnite'
       setTimeout ->
         if Environment.isiOS()
-          adId = 'ca-app-pub-9043203456638369/9434224550'
+          # adId = 'ca-app-pub-9043203456638369/9434224550'
+          adId = 'ca-app-pub-9043203456638369/5699503414'
         else if isFortniteApp and Math.random() > 0.50
           adId = 'ca-app-pub-4313642096020551/3038303833'
         else
           adId = 'ca-app-pub-9043203456638369/2454362164'
 
-        portalCall = if appodealMediationSupported \
-                     then 'appodeal.showBanner'
-                     else if admobMediationSupported
+        portalCall = if admobMediationSupported
                      then 'admob.showBanner'
                      else 'heyzap.showBanner'
 

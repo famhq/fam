@@ -111,6 +111,8 @@ module.exports = class CurrencyShop
           id: transactionId
           revenue: revenueUsd
         }
+      .catch =>
+        @state.set loadingIapKey: null
 
   render: =>
     {me, iaps, loadingIapKey} = @state.getValue()
@@ -149,4 +151,6 @@ module.exports = class CurrencyShop
                         else "$#{priceUsd}"
                       onclick: =>
                         if not isLoading
-                          @buy iapInfo, i
+                          @model.signInDialog.openIfGuest me
+                          .then =>
+                            @buy iapInfo, i
