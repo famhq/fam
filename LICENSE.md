@@ -486,14 +486,14 @@ The Original Code is Starfire.
 The Original Developer is the Initial Developer.  The Initial Developer of the
 Original Code is Starfire Games Inc.
 
-All portions of the code written by Starfire are Copyright (c) 2016-2017
+All portions of the code written by Starfire are Copyright (c) 2016-2018
 Starfire Games Inc. All Rights Reserved.
 
 EXHIBIT B. Attribution Information
 
-Attribution Copyright Notice: Copyright (c) 2016-2017 Starfire Games Inc. All Rights Reserved.
+Attribution Copyright Notice: Copyright (c) 2016-2018 Fam All Rights Reserved.
 
-Attribution Phrase (not exceeding 10 words): Powered by Starfire
+Attribution Phrase (not exceeding 10 words): Powered by Fam
 
 Attribution URL: https://openfam.com
 

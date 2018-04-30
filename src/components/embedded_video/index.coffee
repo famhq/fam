@@ -47,7 +47,7 @@ module.exports = class EmbeddedVideo
         z '.thumbnail', {
           onclick: =>
             @model.portal.call 'browser.openWindow', {
-              url: src
+              url: videoAttachment.src
               target: '_system'
             }
         },
@@ -61,7 +61,7 @@ module.exports = class EmbeddedVideo
         z 'iframe',
           width: width
           height: height
-          src: @src or src
+          src: @src or videoAttachment.src
           frameborder: 0
           allow: 'autoplay; encrypted-media'
           allowfullscreen: true

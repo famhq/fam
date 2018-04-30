@@ -318,7 +318,9 @@ module.exports = class NavDrawer
 
     translateX = if isOpen then 0 else "-#{drawerWidth}px"
     # adblock plus blocks has-ad
-    hasA = not Environment.isMobile() and windowSize?.height > 880
+    hasA = @model.ad.isVisible({isWebOnly: true}) and
+      windowSize?.height > 880 and
+      not Environment.isMobile()
 
     isGroupApp = group.key and Environment.isGroupApp group.key
 
