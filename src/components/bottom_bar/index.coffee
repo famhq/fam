@@ -50,7 +50,14 @@ module.exports = class BottomBar
     # per-group menu:
     # profile, tools, home, forum, chat
     @menuItems = _filter [
-      if @model.group.hasGameKey group, 'fortnite'
+      if group?.key in ['ninja']
+        {
+          $icon: new Icon()
+          icon: 'rss'
+          route: @router.get 'groupForum', {groupId}
+          text: @model.l.get 'general.forum'
+        }
+      else if @model.group.hasGameKey group, 'fortnite'
         {
           $icon: new Icon()
           icon: 'friends'

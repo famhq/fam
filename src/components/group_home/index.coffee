@@ -18,6 +18,7 @@ GroupHomeClashRoyaleDecks = require '../group_home_clash_royale_decks'
 GroupHomeTranslate = require '../group_home_translate'
 MasonryGrid = require '../masonry_grid'
 UiCard = require '../ui_card'
+AerservAd = require '../aerserv_ad'
 FormatService = require '../../services/format'
 colors = require '../../colors'
 config = require '../../config'
@@ -45,6 +46,7 @@ module.exports = class GroupHome
                               not localStorage['hideTranslateCard']
 
 
+    @$aerservAd = new AerservAd {@model, group}
     @$groupHomeThreads = new GroupHomeThreads {
       @model, @router, group, player, @overlay$
     }
@@ -95,16 +97,16 @@ module.exports = class GroupHome
 
     z '.z-group-home',
       z '.g-grid',
-        if isFortnite and player?.id
-          z '.weekly-raffle', {
-            onclick: =>
-              @router.go 'groupWeeklyRaffle', {
-                groupId: group?.key or group?.id
-              }
-          },
-            z '.title', @model.l.get 'groupHome.raffle'
-            z '.learn-more',
-              @model.l.get 'groupHome.raffleLearnMore'
+        # if isFortnite and player?.id
+        #   z '.weekly-raffle', {
+        #     onclick: =>
+        #       @router.go 'groupWeeklyRaffle', {
+        #         groupId: group?.key or group?.id
+        #       }
+        #   },
+        #     z '.title', @model.l.get 'groupHome.raffle'
+        #     z '.learn-more',
+        #       @model.l.get 'groupHome.raffleLearnMore'
 
         if @model.group.hasGameKey group, 'clash-royale'
           z '.card',

@@ -22,6 +22,24 @@ slots =
       width: 300
       height: 250
 
+  nickatnyte:
+    desktop728x90:
+      slot: '3071291879'
+      width: 728
+      height: 90
+    mobile320x50:
+      slot: '4767516922'
+      width: 320
+      height: 50
+    desktop336x280:
+      slot: '4575945237'
+      width: 336
+      height: 280
+    mobile300x250:
+      slot: '1200517446'
+      width: 300
+      height: 250
+
   default:
     desktop728x90:
       slot: '3445650539'

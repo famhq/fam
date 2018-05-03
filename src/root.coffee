@@ -158,8 +158,11 @@ init = ->
       # TODO: implement by group key, not app info
       isFortniteApp = Environment.isGroupApp 'fortnite'
       setTimeout ->
-        if Environment.isiOS()
-          # adId = 'ca-app-pub-9043203456638369/9434224550'
+        if Environment.isiOS() and Environment.isGroupApp 'nickatnyte'
+          adId = 'ca-app-pub-9043203456638369/2146180874'
+        else if Environment.isGroupApp 'nickatnyte'
+          adId = 'ca-app-pub-9043203456638369/3407291659'
+        else if Environment.isiOS()
           adId = 'ca-app-pub-9043203456638369/5699503414'
         else if isFortniteApp and Math.random() > 0.50
           adId = 'ca-app-pub-4313642096020551/3038303833'

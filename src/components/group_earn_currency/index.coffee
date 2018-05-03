@@ -78,10 +78,16 @@ module.exports = class GroupEarnCurrency
     {loadingAction, group} = @state.getValue()
     unless loadingAction is 'watchAd'
       @state.set loadingAction: 'watchAd'
+      if Environment.isiOS() and Environment.isGroupApp 'nickatnyte'
+        adId = 'ca-app-pub-9043203456638369/1483588476'
+      else if Environment.isGroupApp 'nickatnyte'
+        adId = 'ca-app-pub-9043203456638369/4217563026'
+      else if Environment.isiOS()
+        adId = 'ca-app-pub-9043203456638369/5979905134'
+      else
+        adId = 'ca-app-pub-9043203456638369/8896044215'
       @model.portal.call 'admob.prepareRewardedVideo', {
-        adId: if Environment.isiOS() \
-              then 'ca-app-pub-9043203456638369/5979905134'
-              else 'ca-app-pub-9043203456638369/8896044215'
+        adId: adId
       }
       .then =>
         timestamp = Date.now()
