@@ -100,7 +100,7 @@ module.exports = class FindPeople
             z @$newLfgButton,
               text: @model.l.get 'findPeople.makePost'
               onclick: =>
-                @router.go 'groupNewLfg', {groupId: group?.key or group?.id}
+                @model.group.goPath group, 'groupNewLfg', {@router}
 
         z '.filters',
           @model.l.get 'findPeople.filters'

@@ -55,5 +55,5 @@ module.exports = class GroupHomeClashRoyaleChestCycle
             {
               text: @model.l.get 'groupHome.viewAllStats'
               onclick: =>
-                @router.go 'groupProfile', {groupId: group.key or group.id}
+                @model.group.goPath group, 'groupProfile', {@router}
             }

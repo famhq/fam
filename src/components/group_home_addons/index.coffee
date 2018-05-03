@@ -52,4 +52,4 @@ module.exports = class GroupHomeAddons extends Base
         submit:
           text: @model.l.get 'general.viewAll'
           onclick: =>
-            @router.go 'groupTools', {groupId: group.key or group.id}
+            @model.group.goPath group, 'groupTools', {@router}

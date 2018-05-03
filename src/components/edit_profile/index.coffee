@@ -77,7 +77,7 @@ module.exports = class EditProfile
         @upload avatarImage
     .then =>
       @state.set isSaving: false
-      @router.go 'groupProfile', {groupId: group.key or group.id}
+      @model.group.goPath group, 'groupProfile', {@router}
 
   upload: (file) =>
     @model.user.setAvatarImage file

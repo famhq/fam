@@ -50,7 +50,7 @@ module.exports = class GroupNewLfg
       }
     .then =>
       @state.set isSaving: false
-      @router.go 'groupPeople', {groupId: group.key or group.id}
+      @model.group.goPath group, 'groupPeople', {@router}
 
   render: =>
     {me, isSaving, group, text} = @state.getValue()

@@ -74,7 +74,7 @@ module.exports = class GroupPagePage
                 if confirm 'Confirm?'
                   @model.groupPage.deleteByGroupIdAndKey group.id, groupPage.key
                   .then =>
-                    @router.go 'groupHome', {groupId: group?.key or group?.id}
+                    @model.group.goPath group, 'groupHome', {@router}
         title: groupPage?.data.title
       }
       z @$groupPage

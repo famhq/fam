@@ -84,8 +84,8 @@ module.exports = class OpenPack
             #   text: @model.l.get 'openPack.goToCollection'
             #   onclick: =>
             #     @onClose()
-            #     @router.go 'groupCollection', {
-            #       groupId: group.key or group.id
+            #     @model.group.goPath group, 'groupCollection', {
+            #       @router
             #     }
             z @$doneButton,
               text: @model.l.get 'general.done'

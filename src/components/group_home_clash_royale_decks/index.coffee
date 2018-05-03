@@ -55,4 +55,4 @@ module.exports = class GroupHomeClashRoyaleDecks extends Base
         submit:
           text: @model.l.get 'general.viewAll'
           onclick: =>
-            @router.go 'groupProfile', {groupId: group.key or group.id}
+            @model.group.goPath group, 'groupProfile', {@router}

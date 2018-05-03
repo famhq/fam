@@ -123,6 +123,7 @@ init = ->
   router = new RouterService {
     model: model
     router: new LocationRouter()
+    host: window.location.host
   }
 
   root = document.createElement 'div'

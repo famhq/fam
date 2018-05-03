@@ -144,10 +144,11 @@ module.exports = class ProfileDecks
                     onclick: =>
                       {deckId} = currentDeck.playerDeck
                       id = "#{deckId}:#{player.id}"
-                      @router.go 'groupNewThreadWithCategoryAndId', {
-                        category: 'deckGuide'
-                        id: id
-                        groupId: group.key or group.id
+                      @model.group.goPath group, 'groupNewThreadWithCategoryAndId', {
+                        @router
+                        replacements:
+                          category: 'deckGuide'
+                          id: id
                       }
                 }
 

@@ -36,9 +36,7 @@ module.exports = class GroupList
             z '.g-cols',
               _map groups, ({group, $header}) =>
                 group.type ?= 'general'
-                route = @router.get 'groupHome', {
-                  groupId: group.key or group.id
-                }
+                route = @model.group.getPath group, 'groupHome', {@router}
                 z '.g-col.g-xs-12.g-md-6',
                   @router.link z 'a.group', {
                     href: route

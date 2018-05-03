@@ -91,7 +91,8 @@ module.exports = class GroupNewPage
           @model.groupPage.upsert newPage
           .then (newPage) =>
             @resetValueStreams()
-            @router.go 'groupPage', {
-              groupId: group.key or group.id
-              key: keyValue
+            @model.group.goPath group, 'groupPage', {
+              @router
+              replacements:
+                key: keyValue
             }

@@ -44,7 +44,6 @@ module.exports = class BottomBar
 
     currentPath = requests?.req.path
 
-    groupId = group?.key or group?.id or 'clashroyale'
     isLoaded = Boolean group
 
     # per-group menu:
@@ -54,35 +53,33 @@ module.exports = class BottomBar
         {
           $icon: new Icon()
           icon: 'rss'
-          route: @router.get 'groupForum', {groupId}
+          route: @model.group.getPath group, 'groupForum', {@router}
           text: @model.l.get 'general.forum'
         }
       else if @model.group.hasGameKey group, 'fortnite'
         {
           $icon: new Icon()
           icon: 'friends'
-          route: @router.get 'groupPeople', {groupId}
+          route: @model.group.getPath group, 'groupPeople', {@router}
           text: @model.l.get 'people.title'
         }
       else
         {
           $icon: new Icon()
           icon: 'profile'
-          route: @router.get 'groupProfile', {groupId}
+          route: @model.group.getPath group, 'groupProfile', {@router}
           text: @model.l.get 'general.profile'
         }
       {
         $icon: new Icon()
         icon: 'chat'
-        route: @router.get 'groupChat', {groupId}
+        route: @model.group.getPath group, 'groupChat', {@router}
         text: @model.l.get 'general.chat'
       }
       {
         $icon: new Icon()
         icon: 'home'
-        route: @router.get 'groupHome', {
-          groupId
-        }
+        route: @model.group.getPath group, 'groupHome', {@router}
         text: @model.l.get 'general.home'
         isDefault: true
       }
@@ -90,9 +87,12 @@ module.exports = class BottomBar
         {
           $icon: new Icon()
           icon: 'cards'
-          route: if hasShopNotification \
-              then @router.get 'groupCollectionWithTab', {groupId, tab: 'shop'}
-              else @router.get 'groupCollection', {groupId}
+          route: if hasShopNotification
+            @model.group.getPath group, 'groupCollectionWithTab', {
+              @router, replacements: {tab: 'shop'}
+            }
+          else
+            @model.group.getPath group, 'groupCollection', {@router}
           text: @model.l.get 'general.collection'
           hasNotification: hasShopNotification
         }
@@ -100,13 +100,13 @@ module.exports = class BottomBar
         {
           $icon: new Icon()
           icon: 'rss'
-          route: @router.get 'groupForum', {groupId}
+          route: @model.group.getPath group, 'groupForum', {@router}
           text: @model.l.get 'general.forum'
         }
       {
         $icon: new Icon()
         icon: 'tools'
-        route: @router.get 'groupTools', {groupId}
+        route: @model.group.getPath group, 'groupTools', {@router}
         text: @model.l.get 'general.tools'
       }
     ]
@@ -121,7 +121,7 @@ module.exports = class BottomBar
         if isDefault
           isSelected =  currentPath in [
             @router.get 'siteHome'
-            @router.get 'groupHome', {groupId}
+            @model.group.getPath group, 'groupHome', {@router}
             '/'
           ]
         else

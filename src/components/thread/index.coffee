@@ -291,9 +291,10 @@ module.exports = class Thread extends Base
         $topLeftButton: if not @isInline \
                         then z @$buttonBack, {
                           color: colors.$header500Icon
-                          fallbackPath: @router.get 'groupForum', {
-                            groupId: group?.key or group?.id
-                          }
+                          fallbackPath:
+                            @model.group.getPath group, 'groupForum', {
+                              @router
+                            }
                         }
         $topRightButton:
           z '.z-thread_top-right',
@@ -317,9 +318,10 @@ module.exports = class Thread extends Base
                   color: colors.$header500Icon
                   hasRipple: true
                   onclick: =>
-                    @router.go 'groupThreadEdit', {
-                      groupId: group.key or group.id
-                      id: thread.id
+                    @model.group.goPath group, 'groupThreadEdit', {
+                      @router
+                      replacements:
+                        id: thread.id
                     }
               if hasPinThreadPermission
                 z @$pinIcon,
@@ -340,9 +342,7 @@ module.exports = class Thread extends Base
                     if confirm 'Confirm?'
                       @model.thread.deleteById thread.id
                       .then =>
-                        @router.go 'groupForum', {
-                          groupId: group.key or group.id
-                        }
+                        @model.group.goPath group, 'groupForum', {@router}
             ]
       }
       z '.content',

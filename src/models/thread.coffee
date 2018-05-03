@@ -6,7 +6,7 @@ config = require '../config'
 module.exports = class Thread
   namespace: 'threads'
 
-  constructor: ({@auth, @l}) -> null
+  constructor: ({@auth, @l, @group}) -> null
 
   upsert: (options) =>
     ga? 'send', 'event', 'social_interaction', 'thread', options.thread.category
@@ -46,10 +46,11 @@ module.exports = class Thread
 
   getPath: (thread, group, router) ->
     formattedTitle = _kebabCase thread?.data?.title
-    router.get 'groupThreadWithTitle', {
-      id: thread?.id
-      groupId: group?.key or group?.id or thread.groupId
-      title: formattedTitle or 'thread'
+    @group.getPath group, 'groupThreadWithTitle', {
+      router
+      replacements:
+        id: thread?.id
+        title: formattedTitle or 'thread'
     }
 
   hasPermission: (thread, user, {level} = {}) ->

@@ -12,8 +12,8 @@
   "event": "/event/:id",
   "events": "/events",
   "eventEdit": "/event/:id/edit",
-
   "groups": "/groups",
+  
   "group": "/:groupId",
   "groupChat": "/:groupId/chat",
   "groupChatConversation": "/:groupId/chat/:conversationId",

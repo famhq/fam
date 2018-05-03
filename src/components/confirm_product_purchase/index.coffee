@@ -105,14 +105,16 @@ module.exports = class ConfirmProductPurchase
                 onclick: =>
                   @onCancel?()
                   if product.currency is 'fire'
-                    @router.go 'groupEarnWithType', {
-                      groupId: group.key or group.id
-                      type: 'fire'
+                    @model.group.goPath group, 'groupEarnWithType', {
+                      @router
+                      replacements:
+                        type: 'fire'
                     }
                   else
-                    @router.go 'groupEarnWithType', {
-                      groupId: group.key or group.id
-                      type: 'currency'
+                    @model.group.goPath group, 'groupEarnWithType', {
+                      @router
+                      replacements:
+                        type: 'currency'
                     }
           z '.description',
             z '.flex',

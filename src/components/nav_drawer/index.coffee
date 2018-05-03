@@ -105,7 +105,6 @@ module.exports = class NavDrawer
       breakpoint: @model.window.getBreakpoint()
 
       menuItems: menuItemsInfo.map ([me, group, groupPages, language]) =>
-        groupId = group.key or group.id
         meGroupUser = group.meGroupUser
         isClashRoyaleGroup = group.key?.indexOf('clashroyale') isnt -1
 
@@ -119,7 +118,7 @@ module.exports = class NavDrawer
 
         _filter([
           {
-            path: @router.get 'groupHome', {groupId}
+            path: @model.group.getPath group, 'groupHome', {@router}
             title: @model.l.get 'general.home'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -127,7 +126,7 @@ module.exports = class NavDrawer
             isDefault: true
           }
           {
-            path: @router.get 'groupChat', {groupId}
+            path: @model.group.getPath group, 'groupChat', {@router}
             title: @model.l.get 'general.chat'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -145,14 +144,14 @@ module.exports = class NavDrawer
             'fortnite', 'fortnitejp', 'brawlstarses', 'ninja', 'theviewage'
           ]
             {
-              path: @router.get 'groupForum', {groupId}
+              path: @model.group.getPath group, 'groupForum', {@router}
               title: @model.l.get 'general.forum'
               $icon: new Icon()
               $ripple: new Ripple()
               iconName: 'rss'
             }
           {
-            path: @router.get 'groupPeople', {groupId}
+            path: @model.group.getPath group, 'groupPeople', {@router}
             title: @model.l.get 'people.title'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -162,7 +161,7 @@ module.exports = class NavDrawer
             'nickatnyte', 'teamqueso', 'ninja', 'theviewage'
           ]
             {
-              path: @router.get 'groupCollection', {groupId}
+              path: @model.group.getPath group, 'groupCollection', {@router}
               title: @model.l.get 'collectionPage.title'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -173,7 +172,7 @@ module.exports = class NavDrawer
             'playhard', 'teamqueso', 'nickatnyte', 'ninja'
           ]
             {
-              path: @router.get 'groupEarn', {groupId}
+              path: @model.group.getPath group, 'groupEarn', {@router}
               title: @model.l.get 'general.earn'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -183,7 +182,7 @@ module.exports = class NavDrawer
             'nickatnyte', 'teamqueso', 'ninja', 'theviewage'
           ]
             {
-              path: @router.get 'trades', {groupId}
+              path: @model.group.getPath group, 'trades', {@router}
               title: @model.l.get 'tradesPage.title'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -194,7 +193,7 @@ module.exports = class NavDrawer
             'ninja', 'theviewage'
           ]
             {
-              path: @router.get 'groupVideos', {groupId}
+              path: @model.group.getPath group, 'groupVideos', {@router}
               title: @model.l.get 'videosPage.title'
               $icon: new Icon()
               $ripple: new Ripple()
@@ -202,21 +201,21 @@ module.exports = class NavDrawer
             }
           if group.gameKey isnt 'fortnite'
             {
-              path: @router.get 'groupLeaderboard', {groupId}
+              path: @model.group.getPath group, 'groupLeaderboard', {@router}
               title: @model.l.get 'groupLeaderboardPage.title'
               $icon: new Icon()
               $ripple: new Ripple()
               iconName: 'trophy'
             }
           {
-            path: @router.get 'groupProfile', {groupId}
+            path: @model.group.getPath group, 'groupProfile', {@router}
             title: @model.l.get 'drawer.menuItemProfile'
             $icon: new Icon()
             $ripple: new Ripple()
             iconName: 'profile'
           }
           {
-            path: @router.get 'groupTools', {groupId}
+            path: @model.group.getPath group, 'groupTools', {@router}
             title: @model.l.get 'general.tools'
             $icon: new Icon()
             $ripple: new Ripple()
@@ -225,7 +224,7 @@ module.exports = class NavDrawer
           unless _isEmpty groupPages
             {
               title: @model.l.get 'general.pages'
-              path: @router.get 'groupPage', {groupId, key: ''}
+              path: @model.group.getPath group, 'groupPage', {@router, key: ''}
               expandOnClick: true
               $icon: new Icon()
               $ripple: new Ripple()
@@ -233,7 +232,7 @@ module.exports = class NavDrawer
               $chevronIcon: new Icon()
               children: _map groupPages, ({data, key}) =>
                 {
-                  path: @router.get 'groupPage', {groupId, key}
+                  path: @model.group.getPath group, 'groupPage', {@router, key}
                   title: data?.title
                 }
             }
@@ -241,7 +240,7 @@ module.exports = class NavDrawer
             meGroupUser, me, permissions: ['manageRole']
           }
             {
-              # path: @router.get 'groupSettings', {groupId}
+              # path: @model.group.getPath group, 'groupSettings', {@router}
               expandOnClick: true
               title: @model.l.get 'groupSettingsPage.title'
               $icon: new Icon()
@@ -250,31 +249,43 @@ module.exports = class NavDrawer
               $chevronIcon: new Icon()
               children: _filter [
                 {
-                  path: @router.get 'groupManageChannels', {groupId}
+                  path: @model.group.getPath group, 'groupManageChannels', {
+                    @router
+                  }
                   title: @model.l.get 'groupManageChannelsPage.title'
                 }
                 {
-                  path: @router.get 'groupManagePages', {groupId}
+                  path: @model.group.getPath group, 'groupManagePages', {
+                    @router
+                  }
                   title: @model.l.get 'groupManagePagesPage.title'
                 }
                 {
-                  path: @router.get 'groupManageRoles', {groupId}
+                  path: @model.group.getPath group, 'groupManageRoles', {
+                    @router
+                  }
                   title: @model.l.get 'groupManageRolesPage.title'
                 }
                 if @model.groupUser.hasPermission {
                   meGroupUser, me, permissions: ['readAuditLog']
                 }
                   {
-                    path: @router.get 'groupAuditLog', {groupId}
+                    path: @model.group.getPath group, 'groupAuditLog', {
+                      @router
+                    }
                     title: @model.l.get 'groupAuditLogPage.title'
                   }
                 {
-                  path: @router.get 'groupBannedUsers', {groupId}
+                  path: @model.group.getPath group, 'groupBannedUsers', {
+                    @router
+                  }
                   title: @model.l.get 'groupBannedUsersPage.title'
                 }
                 if me?.username in ['austin', 'brunoph']
                   {
-                    path: @router.get 'groupSendNotification', {groupId}
+                    path: @model.group.getPath group, 'groupSendNotification', {
+                      @router
+                    }
                     title: @model.l.get 'groupSendNotificationPage.title'
                   }
               ]
@@ -314,7 +325,6 @@ module.exports = class NavDrawer
       language, windowSize, groupPages} = @state.getValue()
 
     group ?= {}
-    groupId = group.key or group.id
 
     translateX = if isOpen then 0 else "-#{drawerWidth}px"
     # adblock plus blocks has-ad
@@ -390,7 +400,6 @@ module.exports = class NavDrawer
                       iconName, isDivider, children, expandOnClick} = menuItem
 
                     hasChildren = not _isEmpty children
-                    groupId = group.key or group.id
 
                     if isDivider
                       return z 'li.divider'
@@ -398,7 +407,7 @@ module.exports = class NavDrawer
                     if menuItem.isDefault
                       isSelected = currentPath in [
                         @router.get 'siteHome'
-                        @router.get 'groupHome', {groupId}
+                        @model.group.getPath group, 'groupHome', {@router}
                         '/'
                       ]
                     else
@@ -468,17 +477,15 @@ module.exports = class NavDrawer
                     [
                       _map myGroups, (myGroup) =>
                         {$badge} = myGroup
-                        groupPath = @router.get 'groupHome', {
-                          groupId: myGroup.group.key or myGroup.group.id
-                        }
+                        groupPath = @model.group.getPath(
+                          myGroup.group, 'groupHome', {@router}
+                        )
                         z 'a.group-bubble', {
                           href: groupPath
                           onclick: (e) =>
                             e.preventDefault()
                             @model.drawer.close()
-                            @router.go 'groupHome', {
-                              groupId: myGroup.group.key or myGroup.group.id
-                            }
+                            @router.goPath groupPath
                         },
                           z $badge, {isRound: true}
 

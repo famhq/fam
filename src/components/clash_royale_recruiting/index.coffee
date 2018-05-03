@@ -38,25 +38,6 @@ module.exports = class Recruiting
         title: @model.l.get 'general.recruiting'
         $topLeftButton: z @$buttonMenu, {color: colors.$header500Icon}
       }
-      # FIXME: rm after 5/1/2018
-      z '.welcome',
-        z '.g-grid',
-          '¡Bienvenido! Asegúrese de visitar '
-          @router.link z 'a', {
-            href: @router.get 'groupForum', {groupId: group?.key or group?.id}
-          }, 'el foro'
-          ', '
-          @router.link z 'a', {
-            href: @router.get 'groupChat', {groupId: group?.key or group?.id}
-          }, 'chat'
-          ' e '
-          z 'a', {
-            href: ''
-            onclick: (e) =>
-              e?.preventDefault()
-              @model.portal.call 'app.install'
-            }, 'instalar la aplicación'
-          ' :)'
       @$threads
 
       z '.fab',
@@ -69,6 +50,6 @@ module.exports = class Recruiting
             color: colors.$primary500Text
           }
           onclick: =>
-            @router.go 'groupNewThreadWithCategory', {
-              groupId: group.key or group.id, category: 'clan'
+            @model.group.goPath group, 'groupNewThreadWithCategory', {
+              @router, replacements: {category: 'clan'}
             }

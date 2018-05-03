@@ -44,15 +44,17 @@ module.exports = class GroupCollectionPage
       group: group
       goToEarnFireFn: =>
         {group} = @state.getValue()
-        @router.go 'groupEarnWithType', {
-          groupId: group.key or group.id
-          type: 'fire'
+        @model.group.goPath group, 'groupEarnWithType', {
+          @router
+          replacements:
+            type: 'fire'
         }
       goToEarnCurrencyFn: =>
         {group} = @state.getValue()
-        @router.go 'groupEarnWithType', {
-          groupId: group.key or group.id
-          type: 'currency'
+        @model.group.goPath group, 'groupEarnWithType', {
+          @router
+          replacements:
+            type: 'currency'
         }
       products: group.switchMap (group) =>
         if group

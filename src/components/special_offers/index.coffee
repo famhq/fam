@@ -79,9 +79,10 @@ module.exports = class SpecialOffers
     unless Environment.isNativeApp config.GAME_KEY
       @group.take(1).subscribe (group) =>
         @model.appInstallAction.upsert {
-          path: @router.get 'groupEarnWithType', {
-            groupId: group.key or group.id
-            type: 'fire'
+          path: @model.group.getPath group, 'groupEarnWithType', {
+            @router
+            replacements:
+              type: 'fire'
           }
         }
     @mountDisposable = @model.window.onResume(

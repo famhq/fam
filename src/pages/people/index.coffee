@@ -129,4 +129,4 @@ module.exports = class PeoplePage
               color: colors.$primary500Text
             }
             onclick: =>
-              @router.go 'groupNewLfg', {groupId: group?.key or group?.id}
+              @model.group.goPath group, 'groupNewLfg', {@router}

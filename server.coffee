@@ -119,7 +119,7 @@ redirects =
   '/:lang/clash-royale/*': '/g/clashroyale/*'
   '/clash-royale/*': '/g/clashroyale/*'
   '/:lang/clash-royale': '/g/clashroyale'
-  '/nickatnyte': '/g/nickatnyte'
+  '/g/*': '/*'
 
   # '/addons': '/clash-royale/mods'
   # '/addon': '/clash-royale/mod'
@@ -222,6 +222,7 @@ app.use (req, res, next) ->
   router = new RouterService {
     router: null
     model: model
+    host: host
   }
   requests = new RxBehaviorSubject(req)
 

@@ -63,8 +63,8 @@ module.exports = class AddonPage
         style: 'primary'
         $topLeftButton: z @$buttonBack, {
           color: colors.$header500Icon
-          fallbackPath: @router.get 'groupTools', {
-            groupId: group?.key or group?.id
+          fallbackPath: @model.group.getPath group, 'groupTools', {
+            @router
           }
         }
         $topRightButton:

@@ -10,10 +10,6 @@ module.exports = class Group
       name, description, badgeId, background, mode
     }, {invalidateAll: true}
 
-  # TODO
-  getPath: (group, path, router) ->
-    null
-
   getAll: ({filter, language, embed} = {}) =>
     embed ?= ['conversations', 'star', 'userCount']
     @auth.stream "#{@namespace}.getAll", {filter, language, embed}
@@ -61,6 +57,31 @@ module.exports = class Group
 
   getDisplayName: (group) ->
     group?.name or 'Nameless'
+
+  getPath: (group, key, {replacements, router, language}) ->
+    unless router
+      return '/'
+    subdomain = router.getSubdomain()
+
+    replacements ?= {}
+    replacements.groupId = group?.key or group?.id
+
+    path = router.get key, replacements, {language}
+    if subdomain is group?.key
+      path = path.replace "/#{group?.key}", ''
+    path
+
+  goPath: (group, key, {replacements, router, language}) ->
+    subdomain = router.getSubdomain()
+
+    replacements ?= {}
+    replacements.groupId = group?.key or group?.id
+
+    path = router.get key, replacements, {language}
+    if subdomain is group?.key
+      path = path.replace "/#{group?.key}", ''
+    router.goPath path
+
 
   hasGameKey: (group, gameKey) ->
     (group?.gameKeys and group?.gameKeys?.indexOf(gameKey) isnt -1) or

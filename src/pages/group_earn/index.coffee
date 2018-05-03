@@ -82,6 +82,10 @@ module.exports = class GroupEarnPage
           isBarFixed: false
           hasAppBar: true
           tabs: _filter [
+            {
+              $menuText: group?.currency?.name or 'XP'
+              $el: z @$earnCurrency
+            }
             unless Environment.isiOS {userAgent}
               {
                 $menuText: @model.l.get 'general.fire'
@@ -90,10 +94,6 @@ module.exports = class GroupEarnPage
             {
               $menuText: @model.l.get 'shop.moreFire'
               $el: z @$earnFire
-            }
-            {
-              $menuText: group?.currency?.name or 'XP'
-              $el: z @$earnCurrency
             }
           ]
       z @$bottomBar

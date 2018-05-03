@@ -53,7 +53,7 @@ module.exports = class AutoRefreshDialog
                 text: @model.l.get 'general.forum'
                 onclick: =>
                   @overlay$.next null
-                  @router.go 'groupForum', {groupId: group.key or group.id}
+                  @model.group.goPath group, 'groupForum', {@router}
 
             z 'div', @model.l.get 'profileInfo.autoRefreshVisitForumDescription'
         cancelButton:

@@ -36,9 +36,10 @@ module.exports = class MenuFireAmount
 
     z '.z-menu-fire-amount', {
       onclick: =>
-        @router.go 'groupEarnWithType', {
-          groupId: group?.key or group?.id
-          type: 'fire'
+        @model.group.goPath group, 'groupEarnWithType', {
+          @router
+          replacements:
+            type: 'fire'
         }
     },
       z '.fire',

@@ -115,7 +115,16 @@ module.exports = class App
           req.path = path # doesn't work server-side
         else
           req = _defaults {path}, req
-      route = routes.get req.path
+
+      subdomain = @router.getSubdomain()
+
+      if subdomain # equiv to /groupId/route
+        route = routes.get "/#{subdomain}#{req.path}"
+        if route.handler?() instanceof Pages['FourOhFourPage']
+          route = routes.get req.path
+      else
+        route = routes.get req.path
+
       $page = route.handler?()
       isFirstRequest = false
       {req, route, $page: $page}
@@ -127,7 +136,14 @@ module.exports = class App
 
     @group = requestsAndLanguage.switchMap ([{route}, language]) =>
       host = @serverData?.req?.headers.host or window?.location?.host
-      groupId = route.params.groupId or @model.cookie.get 'lastGroupId'
+      groupId = route.params.groupId
+
+      subdomain = @router.getSubdomain()
+      if subdomain and not groupId
+        groupId = subdomain
+
+      groupId or= @model.cookie.get 'lastGroupId'
+
       (if isUuid groupId
         @model.cookie.set 'lastGroupId', groupId
         @model.group.getById groupId, {autoJoin: true}

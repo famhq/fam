@@ -79,7 +79,7 @@ module.exports = class GroupSettings
     @model.group.updateById group.id, {name, description, password, isPrivate}
     .then =>
       @state.set isSaving: false
-      @router.go 'groupChat', {groupId: group.id}
+      @model.group.goPath group, 'groupChat', {@router}
 
   render: =>
     {me, group, isSaving, isPrivate} = @state.getValue()

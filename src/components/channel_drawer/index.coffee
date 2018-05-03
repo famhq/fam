@@ -55,8 +55,8 @@ module.exports = class ChannelDrawer
 
             z @$channelList, {
               onclick: (e, {id}) =>
-                @router.go 'groupChatConversation', {
-                  groupId: group?.key or group?.id, conversationId: id
+                @model.group.goPath group, 'groupChatConversation', {
+                  @router, replacements: {conversationId: id}
                 }, {ignoreHistory: true}
                 @isOpen.next false
             }
@@ -66,8 +66,8 @@ module.exports = class ChannelDrawer
                 z '.divider'
                 z '.manage-channels', {
                   onclick: =>
-                    @router.go 'groupManageChannels', {
-                      groupId: group?.key or group?.id
+                    @model.group.goPath group, 'groupManageChannels', {
+                      @router
                     }
                 },
                   z '.icon',

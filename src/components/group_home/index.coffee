@@ -100,8 +100,8 @@ module.exports = class GroupHome
         # if isFortnite and player?.id
         #   z '.weekly-raffle', {
         #     onclick: =>
-        #       @router.go 'groupWeeklyRaffle', {
-        #         groupId: group?.key or group?.id
+        #       @model.group.goPath group, 'groupWeeklyRaffle', {
+        #         @router
         #       }
         #   },
         #     z '.title', @model.l.get 'groupHome.raffle'

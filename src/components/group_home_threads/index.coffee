@@ -54,5 +54,5 @@ module.exports = class GroupHomeThreads extends Base
         submit:
           text: @model.l.get 'general.viewAll'
           onclick: =>
-            @router.go 'groupForum', {groupId: group.key or group.id}
+            @model.group.goPath group, 'groupForum', {@router}
       }

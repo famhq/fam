@@ -22,7 +22,7 @@ isSimpleClick = (e) ->
   not (e.which > 1 or e.shiftKey or e.altKey or e.metaKey or e.ctrlKey)
 
 class RouterService
-  constructor: ({@router, @model}) ->
+  constructor: ({@router, @model, @host}) ->
     @history = []
     @onBackFn = null
 
@@ -154,6 +154,12 @@ class RouterService
 
   getStream: =>
     @router.getStream()
+
+  getSubdomain: =>
+    hostParts = @host.split '.'
+    isDev = config.ENV is config.ENVS.DEV
+    if hostParts.length is 3 or (isDev and hostParts.length is 7)
+      return hostParts[0]
 
   link: (node) =>
     node.properties.onclick = ev (e, $$el) =>

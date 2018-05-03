@@ -38,4 +38,4 @@ module.exports = class GroupHomeChat
         submit:
           text: @model.l.get 'earnXp.dailyChatMessageButton'
           onclick: =>
-            @router.go 'groupChat', {groupId: group.key or group.id}
+            @model.group.goPath group, 'groupChat', {@router}

@@ -82,8 +82,8 @@ module.exports = class GroupHomeOffers
     unless Environment.isNativeApp config.GAME_KEY
       @group.take(1).subscribe (group) =>
         @model.appInstallAction.upsert {
-          path: @router.get 'groupHome', {
-            groupId: group.key or group.id
+          path: @model.group.getPath group, 'groupHome', {
+            @router
           }
         }
     @mountDisposable = @model.window.onResume(
@@ -145,7 +145,8 @@ module.exports = class GroupHomeOffers
         submit:
           text: @model.l.get 'groupHome.goToShop'
           onclick: =>
-            @router.go 'groupEarnWithType', {
-              groupId: group.key or group.id
-              type: 'fire'
+            @model.group.goPath group, 'groupEarnWithType', {
+              @router
+              replacements:
+                type: 'fire'
             }

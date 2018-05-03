@@ -51,4 +51,4 @@ module.exports = class GroupHomeVideos extends Base
         submit:
           text: @model.l.get 'groupHome.viewAllVideos'
           onclick: =>
-            @router.go 'groupVideos', {groupId: group.key or group.id}
+            @model.group.goPath group, 'groupVideos', {@router}

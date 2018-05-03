@@ -28,9 +28,7 @@ module.exports = class GroupManagePages
       z '.pages',
         _map pages, (page) =>
           @router.link z 'a.page', {
-            href: @router.get 'groupEditPage', {
-              groupId: group.key or group.id, key: page.key
-            }
+            href: @model.group.getPath group, 'groupEditPage', {@router}
           },
             page.data.title
 
@@ -44,4 +42,4 @@ module.exports = class GroupManagePages
             color: colors.$primary500Text
           }
           onclick: =>
-            @router.go 'groupNewPage', {groupId: group.key or group.id}
+            @model.group.goPath group, 'groupNewPage', {@router}

@@ -155,7 +155,7 @@ module.exports = class ClanInfo
               z @$chatButton,
                 text: @model.l.get 'clanInfo.clanChat'
                 onclick: =>
-                  @router.go 'groupChat', {id: clan.groupId}
+                  @model.group.goPath group, 'groupChat', {@router}
       z '.content',
         if Environment.isMobile() and not Environment.isNativeApp(config.GAME_KEY)
           z '.ad',
