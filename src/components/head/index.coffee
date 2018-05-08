@@ -62,6 +62,7 @@ module.exports = class Head
             color: newStatusBarColor
           }
           @lastGroupId = group.id
+          @model.cookie.set 'lastGroupId', group.id
           @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
           if cssVariables
             @model.cookie.set 'cachedCssVariables', cssVariables
@@ -208,26 +209,26 @@ module.exports = class Head
 
       # iOS
       z 'meta', {name: 'apple-mobile-web-app-capable', content: 'yes'}
-      z 'link', {rel: 'apple-touch-icon', href: "#{ios.icon}"}
+      z 'link#apple-touch-icon', {rel: 'apple-touch-icon', href: "#{ios.icon}"}
 
       # misc
       if meta.canonical
-        z 'link', {rel: 'canonical', href: "#{meta.canonical}"}
+        z 'link#canonical', {rel: 'canonical', href: "#{meta.canonical}"}
       z 'meta', {name: 'theme-color', content: "#{meta.themeColor}"}
-      z 'link', {rel: 'icon', href: "#{meta.favicon}"}
+      z 'link#favicon', {rel: 'icon', href: "#{meta.favicon}"}
       z 'meta', {name: 'msapplication-tap-highlight', content: 'no'}
 
       # Android
-      z 'link', {rel: 'manifest', href: "#{meta.manifestUrl}"}
+      z 'link#manifest', {rel: 'manifest', href: "#{meta.manifestUrl}"}
 
       # serialization
-      z 'script.model',
+      z 'script#model.model',
         innerHTML: modelSerialization or ''
 
 
       # GA limits us to 10M hits per month, which we exceed by a lot...
       # so we'll sample it (10%)
-      z 'script',
+      z 'script#ga1',
         innerHTML: "
           window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};
           ga.l=+new Date;
@@ -240,22 +241,21 @@ module.exports = class Head
             );
           });
         "
-      z 'script',
+      z 'script#ga2',
         async: true
         src: 'https://www.google-analytics.com/analytics.js'
 
-      z 'style.rubik', rubikCss
+      z 'style#rubik', rubikCss
 
       # styles
-      z 'style',
-        key: 'css-variables'
+      z 'style#css-variables',
         innerHTML:
           ":root {#{cssVariables or @model.cookie.get 'cachedCssVariables'}}"
       if isInliningSource
         # we could use separate css file for styles, which would benefit from
         # cache... but we have a weird problem where chrome tries to
         # re-parse the css file resulting in a white flash. maybe a vdom issue?
-        z 'style',
+        z 'style#inline',
           type: 'text/css'
         , serverData?.styles
         # z 'link',
@@ -266,12 +266,12 @@ module.exports = class Head
         null
 
       _map additionalCss, (href) ->
-        z 'link',
+        z 'link#href',
           rel: 'stylesheet'
           href: href
 
       # scripts
-      z 'script.bundle',
+      z 'script#bundle',
         async: true
         src: if isInliningSource then serverData?.bundlePath \
              else "#{webpackDevUrl}/bundle.js"
@@ -280,7 +280,7 @@ module.exports = class Head
        # maybe route should do a head re-render, so it doesn't ave to do it for
        # every render
        _map paths, (path, lang) ->
-         z 'link', {
+         z "link#alternate-#{path}-#{lang}", {
            rel: 'alternate'
            href: "https://#{config.HOST}#{path}"
            hreflang: lang
@@ -288,13 +288,13 @@ module.exports = class Head
 
       unless isNative
         [
-          z 'script',
+          z 'script#adsense',
             async: true
             src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-          z 'script',
+          z 'script#stripe1',
             # async: true
             src: 'https://js.stripe.com/v2/'
-          z 'script',
+          z 'script#stripe2',
             # async: true
             innerHTML: "
               Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');

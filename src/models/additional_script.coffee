@@ -20,7 +20,6 @@ module.exports = class AdditionalScript
         $$script.type = 'text/javascript'
         $$script.onload = resolve
         $$script.src = script
-        console.log 'append'
         $$head.appendChild $$script
     else
       Promise.resolve null

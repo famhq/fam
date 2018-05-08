@@ -18,7 +18,7 @@ module.exports = class GroupHomeFortniteStats
   constructor: ({@model, @router, group, @overlay$, @isMe, player}) ->
     me = @model.user.getMe()
 
-    player ?= me.switchMap ({id}) =>
+    player = me.switchMap ({id}) =>
       @model.player.getByUserIdAndGameKey id, 'fortnite'
       .map (player) ->
         return player or {}
@@ -42,12 +42,15 @@ module.exports = class GroupHomeFortniteStats
           _find addons, {key: 'stormShieldOne'}
     }
 
-  render: =>
+  getHeight: -> 144
+
+  getCancelButton: =>
     {group, player, addon, language, isShareDialogVisible} = @state.getValue()
 
     apiUrl = config.PUBLIC_API_URL
     shareImageSrc =
       "#{apiUrl}/di/fortnite-stats/#{player?.id}/#{language}.png"
+
     share = =>
       # make request to backend to create image so it gets
       # cached by cloudflare (facebook reqs images to load fast)
@@ -63,73 +66,79 @@ module.exports = class GroupHomeFortniteStats
         url: "https://#{config.HOST}#{path}"
       }
 
+    if player?.id
+      {
+        text: @model.l.get 'general.share'
+        onclick: share
+      }
+
+  getSubmitButton: =>
+    {group, player, addon, language, isShareDialogVisible} = @state.getValue()
+
+    if player?.id
+      {
+        text: @model.l.get 'groupHome.viewAllStats'
+        onclick: =>
+          @router.openAddon addon, {
+            replacements:
+              username: player.data?.info?.username
+          }
+      }
+
+  render: =>
+    {group, player, addon, language, isShareDialogVisible} = @state.getValue()
+
+    apiUrl = config.PUBLIC_API_URL
+    shareImageSrc =
+      "#{apiUrl}/di/fortnite-stats/#{player?.id}/#{language}.png"
+
     z '.z-group-home-fortnite-stats',
-      z @$uiCard,
-        $title: @model.l.get 'groupHomeFortniteStats.title'
-        minHeightPx: 144
-        $content:
-          z '.z-group-home_ui-card',
-            if player?.id
-              [
-                z '.g-grid',
-                  z '.g-cols',
-                    z '.g-col.g-sm-4',
-                      z '.stat',
-                        z '.title', @model.l.get 'profileInfo.statWins'
-                        z '.amount',
-                          FormatService.number player.data?.lifetimeStats?.wins
-                    z '.g-col.g-sm-4',
-                      z '.stat',
-                        z '.title', @model.l.get 'profileInfo.statMatches'
-                        z '.amount',
-                          FormatService.number
-                            player.data?.lifetimeStats?.matches
-                    z '.g-col.g-sm-4',
-                      z '.stat',
-                        z '.title',  @model.l.get 'profileInfo.statKills'
-                        z '.amount',
-                          FormatService.number
-                            player.data?.lifetimeStats?.kills
-                @$profileRefreshBar
-              ]
-            else if player
-              z @$getPlayerTagForm
-            else
-              @$spinner
-        cancel:
-          if player?.id
-            {
-              text: @model.l.get 'general.share'
-              onclick: share
-            }
-        submit:
-          if player?.id
-            {
-              text: @model.l.get 'groupHome.viewAllStats'
-              onclick: =>
-                @router.openAddon addon, {
-                  replacements:
-                    username: player.data?.info?.username
-                }
-            }
-      if player?.id and isShareDialogVisible and @isMe
-        z @$shareDialog,
-          isVanilla: true
-          isWide: true
-          $title: @model.l.get 'general.share'
-          $content:
-            z '.group-home-fornite-stats_share-dialog',
-              z 'p', @model.l.get 'fortnitePlayerStats.share'
-              z 'img.preview',
-                src: shareImageSrc
-          cancelButton:
-            text: @model.l.get 'translateCard.cancelText'
-            onclick: =>
-              @model.cookie.set 'hasShownForniteShare', '1'
-              @state.set isShareDialogVisible: false
-          submitButton:
-            text: @model.l.get 'general.share'
-            onclick: =>
-              @model.cookie.set 'hasShownForniteShare', '1'
-              @state.set isShareDialogVisible: false
-              share()
+      if player?.id
+        [
+          z '.g-grid',
+            z '.g-cols',
+              z '.g-col.g-sm-4',
+                z '.stat',
+                  z '.title', @model.l.get 'profileInfo.statWins'
+                  z '.amount',
+                    FormatService.number player.data?.lifetimeStats?.wins
+              z '.g-col.g-sm-4',
+                z '.stat',
+                  z '.title', @model.l.get 'profileInfo.statMatches'
+                  z '.amount',
+                    FormatService.number
+                      player.data?.lifetimeStats?.matches
+              z '.g-col.g-sm-4',
+                z '.stat',
+                  z '.title',  @model.l.get 'profileInfo.statKills'
+                  z '.amount',
+                    FormatService.number
+                      player.data?.lifetimeStats?.kills
+          @$profileRefreshBar
+
+          if isShareDialogVisible and @isMe
+            z @$shareDialog,
+              isVanilla: true
+              isWide: true
+              $title: @model.l.get 'general.share'
+              $content:
+                z '.group-home-fornite-stats_share-dialog',
+                  z 'p', @model.l.get 'fortnitePlayerStats.share'
+                  z 'img.preview',
+                    src: shareImageSrc
+              cancelButton:
+                text: @model.l.get 'translateCard.cancelText'
+                onclick: =>
+                  @model.cookie.set 'hasShownForniteShare', '1'
+                  @state.set isShareDialogVisible: false
+              submitButton:
+                text: @model.l.get 'general.share'
+                onclick: =>
+                  @model.cookie.set 'hasShownForniteShare', '1'
+                  @state.set isShareDialogVisible: false
+                  share()
+        ]
+      else if player
+        z @$getPlayerTagForm
+      else
+        @$spinner

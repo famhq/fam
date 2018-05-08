@@ -13,7 +13,7 @@ GroupHomeAdminStats = require '../group_home_admin_stats'
 GroupHomeChat = require '../group_home_chat'
 GroupHomeOffers = require '../group_home_offers'
 GroupHomeFortniteStats = require '../group_home_fortnite_stats'
-GroupHomeClashRoyaleChestCycle = require '../group_home_clash_royale_chest_cycle'
+GroupHomeStats = require '../group_home_stats'
 GroupHomeClashRoyaleDecks = require '../group_home_clash_royale_decks'
 GroupHomeTranslate = require '../group_home_translate'
 MasonryGrid = require '../masonry_grid'
@@ -56,11 +56,8 @@ module.exports = class GroupHome
     @$groupHomeAdminStats = new GroupHomeAdminStats {
       @model, @router, group, player, @overlay$
     }
-    @$groupHomeFortniteStats = new GroupHomeFortniteStats {
+    @$groupHomeStats = new GroupHomeStats {
       @model, @router, group, @overlay$, isMe: true
-    }
-    @$groupHomeClashRoyaleChestCycle = new GroupHomeClashRoyaleChestCycle {
-      @model, @router, group, player, @overlay$
     }
     @$groupHomeClashRoyaleDecks = new GroupHomeClashRoyaleDecks {
       @model, @router, group, player, @overlay$
@@ -108,26 +105,19 @@ module.exports = class GroupHome
         #     z '.learn-more',
         #       @model.l.get 'groupHome.raffleLearnMore'
 
-        if @model.group.hasGameKey group, 'clash-royale'
-          z '.card',
-            z @$groupHomeClashRoyaleChestCycle
-
         if group?.id
           z @$masonryGrid,
             columnCounts:
               mobile: 1
               desktop: 2
             $elements: _filter [
+              z @$groupHomeStats
+
               if group.key in [
                 'playhard', 'eclihpse', 'nickatnyte', 'ferg',
                 'teamqueso', 'ninja', 'theviewage'
               ]
                 z @$groupHomeVideos
-
-              if isFortnite or group?.key in [
-                'nickatnyte', 'ninja', 'theviewage'
-              ]
-                z @$groupHomeFortniteStats
 
               if group.key in [
                 'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'

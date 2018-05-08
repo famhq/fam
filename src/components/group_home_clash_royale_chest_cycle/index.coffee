@@ -17,6 +17,11 @@ module.exports = class GroupHomeClashRoyaleChestCycle
   constructor: ({@model, @router, group, player, @overlay$}) ->
     me = @model.user.getMe()
 
+    player ?= me.switchMap ({id}) =>
+      @model.player.getByUserIdAndGameKey id, 'clash-royale'
+      .map (player) ->
+        return player or {}
+
     @$spinner = new Spinner()
     @$clashRoyaleChestCycle = new ClashRoyaleChestCycle {
       @model, @router, player
@@ -25,35 +30,37 @@ module.exports = class GroupHomeClashRoyaleChestCycle
       @model, @router, player, @overlay$, group, gameKey: 'clash-royale'
     }
     @$getPlayerTagForm = new GetPlayerTagForm {@model, @router}
-    @$uiCard = new UiCard()
 
     @state = z.state {
       group
       player
     }
 
+  getHeight: -> 192
+
+  getCancelButton: -> null
+
+  getSubmitButton: =>
+    {group, player} = @state.getValue()
+
+    if player?.id
+      {
+        text: @model.l.get 'groupHome.viewAllStats'
+        onclick: =>
+          @model.group.goPath group, 'groupProfile', {@router}
+      }
+
+
   render: =>
     {group, player} = @state.getValue()
 
     z '.z-group-home-clash-royale-chest-cycle',
-      z @$uiCard,
-        $title: @model.l.get 'profileChestsPage.title'
-        minHeightPx: 192
-        $content:
-          z '.z-group-home_ui-card',
-            if player?.id
-              [
-                z @$clashRoyaleChestCycle
-                z @$profileRefreshBar
-              ]
-            else if player
-              z @$getPlayerTagForm
-            else
-              @$spinner
-        submit:
-          if player?.id
-            {
-              text: @model.l.get 'groupHome.viewAllStats'
-              onclick: =>
-                @model.group.goPath group, 'groupProfile', {@router}
-            }
+      if player?.id
+        [
+          z @$clashRoyaleChestCycle
+          z @$profileRefreshBar
+        ]
+      else if player
+        z @$getPlayerTagForm
+      else
+        @$spinner

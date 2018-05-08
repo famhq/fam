@@ -160,17 +160,15 @@ module.exports = class App
     userAgent = @serverData?.req.headers?['user-agent']
     isNativeApp = Environment.isNativeApp config.GAME_KEY, {userAgent}
 
-    # HACK: not sure why the settimeout fixes it,
-    # but without it, @$bottomBar is null in app
-    setTimeout =>
+    if @isCrawler and group.language
       @group.take(1).subscribe (group) =>
-        if @isCrawler and group.language
-          @model.l.setLanguage group.language
-        else if window? and isNativeApp
+        @model.l.setLanguage group.language
+    else if window? and isNativeApp
+      # HACK: not sure why the settimeout fixes it,
+      # but without it, @$bottomBar is null in app
+      setTimeout =>
+        @group.take(1).subscribe (group) =>
           PaymentService.init @model, group
-
-        if group?.id and group.id isnt @model.cookie.get 'lastGroupId'
-          @model.cookie.set 'lastGroupId', group.id
 
     # used if state / requests fails to work
     $backupPage = if @serverData?

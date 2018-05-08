@@ -1,0 +1,22 @@
+@require '../../vars'
+
+.z-group-home-clash-royale-chest-cycle_ui-card
+  > .tabs
+    position: absolute
+    top: 0
+    right: 0
+    display: flex
+
+    > .tab
+      font-button-small()
+      padding: 2px 8px
+      background: getColor('$tertiary500')
+      color: getColor('$tertiary500Text')
+      margin-right: 4px
+      cursor: pointer
+
+      &.is-selected
+        background: getColor('$tertiary400')
+
+      &:last-child
+        margin-right: 0
