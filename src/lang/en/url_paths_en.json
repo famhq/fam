@@ -22,7 +22,7 @@
   "groupForum": "/{groupId}/forum",
   "groupHome": "/{groupId}/home",
   "groupMembers": "/{groupId}/members",
-  "groupEarnCurrency": "/g/{groupId}/earn-currency",
+  "groupEarnCurrency": "/{groupId}/earn-currency",
   "groupFire": "/{groupId}/fire",
   "groupFireWithTab": "/{groupId}/fire/{tab}",
   "groupInvite": "/{groupId}/invite",

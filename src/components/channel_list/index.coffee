@@ -24,7 +24,7 @@ module.exports = class ChannelList
 
   afterMount: =>
     lastConversationId = null
-    @disposable = @selectedConversationId.subscribe (id) =>
+    @disposable = @selectedConversationId?.subscribe (id) =>
       {conversations} = @state.getValue()
       conversation = _find(
         conversations, ({channel}) -> channel?.id is id

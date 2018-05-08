@@ -97,7 +97,7 @@ module.exports = class App
     # FIXME FIXME: store groupId for appInstallAction, and only do if main app
     # or matching group app
     isNativeApp = Environment.isMainApp config.GAME_KEY, {userAgent}
-    if isNativeApp and not @model.cookie.get('lastPath')
+    if isNativeApp and not @model.cookie.get('routerLastPath')
       appActionPath = @model.appInstallAction.get().map (appAction) ->
         appAction?.path
     else
@@ -110,7 +110,7 @@ module.exports = class App
     isFirstRequest = true
     @requests = requestsAndRoutes.map ([req, routes, appActionPath]) =>
       if isFirstRequest and isNativeApp
-        path = @model.cookie.get('lastPath') or appActionPath or req.path
+        path = @model.cookie.get('routerLastPath') or appActionPath or req.path
         if window?
           req.path = path # doesn't work server-side
         else
@@ -145,10 +145,8 @@ module.exports = class App
       groupId or= @model.cookie.get 'lastGroupId'
 
       (if isUuid groupId
-        @model.cookie.set 'lastGroupId', groupId
         @model.group.getById groupId, {autoJoin: true}
       else if groupId and groupId isnt 'undefined' and groupId isnt 'null'
-        @model.cookie.set 'lastGroupId', groupId
         @model.group.getByKey groupId, {autoJoin: true}
       else
         @model.group.getByGameKeyAndLanguage(
@@ -162,21 +160,22 @@ module.exports = class App
     userAgent = @serverData?.req.headers?['user-agent']
     isNativeApp = Environment.isNativeApp config.GAME_KEY, {userAgent}
 
-    if @isCrawler
+    # HACK: not sure why the settimeout fixes it,
+    # but without it, @$bottomBar is null in app
+    setTimeout =>
       @group.take(1).subscribe (group) =>
-        if group.language
+        if @isCrawler and group.language
           @model.l.setLanguage group.language
-    else if window? and isNativeApp
-      # HACK: not sure why the settimeout fixes it,
-      # but without it, @$bottomBar is null in app
-      setTimeout =>
-        @group.take(1).subscribe (group) =>
+        else if window? and isNativeApp
           PaymentService.init @model, group
+
+        if group?.id and group.id isnt @model.cookie.get 'lastGroupId'
+          @model.cookie.set 'lastGroupId', group.id
 
     # used if state / requests fails to work
     $backupPage = if @serverData?
       if isNativeApp
-        serverPath = @model.cookie.get('lastPath') or @serverData.req.path
+        serverPath = @model.cookie.get('routerLastPath') or @serverData.req.path
       else
         serverPath = @serverData.req.path
       @getRoutes().get(serverPath).handler?()

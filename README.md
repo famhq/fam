@@ -1,7 +1,7 @@
 # Fam
 
 ## Manifesto
-The goal with [Fam](https://openfam.com) is to build an **open** community for mobile gamers. Communities are built by a game's most passionate players, not some company, so my goal is to help developers get more people using their tools, and work toward whatever their goals may be (users, income, etc...).
+The goal with [Fam](https://fam.gg) is to build an **open** community for mobile gamers. Communities are built by a game's most passionate players, not some company, so my goal is to help developers get more people using their tools, and work toward whatever their goals may be (users, income, etc...).
 
 As an open community, Fam is open source. [fam](https://github.com/famhq/fam) contains the client-side code, [radioactive](https://github.com/famhq/radioactive) has the backend code, [fam-assets](https://github.com/famhq/fam-assets) has image assets and [fam-sdk](https://github.com/famhq/fam-sdk) has the SDK.
 
@@ -20,4 +20,4 @@ Fam is just me, [Austin](https://github.com/austinhallock), right now.
 The easiest thing you can do to help is build something cool for one of the games Fam supports and put it up on the developer platform. As for other contributions to the frontend and backend code for Fam, send me an email (austin@clay.io) if you need help getting everything setup (the documentation is severely lacking at this point).
 
 ### Developer platform
-There is a [developer platform](https://openfam.com/tools) where you can build your own tools on top of Fam's game data and userbase (millions of users) and keep 100% of your revenue. There isn't any sort of lock-in, you can develop your own website or app outside of Fam, etc... Adding to Fam just gets you extra users and hopefully an easier experience developing the tool.
+There is a [developer platform](https://fam.gg/tools) where you can build your own tools on top of Fam's game data and userbase (millions of users) and keep 100% of your revenue. There isn't any sort of lock-in, you can develop your own website or app outside of Fam, etc... Adding to Fam just gets you extra users and hopefully an easier experience developing the tool.

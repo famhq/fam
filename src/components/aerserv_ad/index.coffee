@@ -8,7 +8,6 @@ module.exports = class AerservAd
   constructor: ({@model, group}) ->
     @unique = Math.random()
 
-    console.log 'new'
     q =
       plc: '1038744' # sets width and height, in aerserv dash
       key: 3 # json
@@ -36,8 +35,8 @@ module.exports = class AerservAd
       # pchain: ''
       pl: 0 # 0 display right away, 1 just preload
       site_appstore_id: '1363619767'
-      site_url: 'https://openfam.com'
-      url: 'https://openfam.com' # FIXME
+      site_url: 'https://fam.gg'
+      url: 'https://fam.gg' # FIXME
     console.log qs.stringify q
     request 'https://ads.aerserv.com/as/',
       qs:
@@ -67,8 +66,8 @@ module.exports = class AerservAd
         # pchain: ''
         pl: 0 # 0 display right away, 1 just preload
         site_appstore_id: '1363619767'
-        site_url: 'https://openfam.com'
-        url: 'https://openfam.com' # FIXME
+        site_url: 'https://fam.gg'
+        url: 'https://fam.gg' # FIXME
     .then (response) ->
       console.log 'rrr', response
 

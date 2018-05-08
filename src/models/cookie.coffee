@@ -7,7 +7,10 @@ class Cookie
     @cookies = initialCookies or {}
 
   getCookieOpts: (key, ttlMs) ->
-    host = @host or config.HOST
+    host = @host
+    isSubdomain = host?.indexOf(config.HOST) isnt -1
+    if not host or isSubdomain
+      host = config.HOST
     ttlMs ?= COOKIE_DURATION_MS
     hostname = host.split(':')[0]
 

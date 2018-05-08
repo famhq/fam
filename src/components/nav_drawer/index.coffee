@@ -232,7 +232,9 @@ module.exports = class NavDrawer
               $chevronIcon: new Icon()
               children: _map groupPages, ({data, key}) =>
                 {
-                  path: @model.group.getPath group, 'groupPage', {@router, key}
+                  path: @model.group.getPath group, 'groupPage', {
+                    @router, replacements: {key}
+                  }
                   title: data?.title
                 }
             }

@@ -65,7 +65,7 @@ module.exports = class SetLanguageDialog
             # we use a separate bundle.js per language, so need to load that in
             # also need to switch to correct group
             if gameKey and isGameGroup
-              @model.cookie.set 'lastPath', ''
+              @model.cookie.set 'routerLastPath', ''
               @model.cookie.set 'lastGroupId', ''
               window.location.href = "/game/#{gameKey}"
             else

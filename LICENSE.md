@@ -495,7 +495,7 @@ Attribution Copyright Notice: Copyright (c) 2016-2018 Fam All Rights Reserved.
 
 Attribution Phrase (not exceeding 10 words): Powered by Fam
 
-Attribution URL: https://openfam.com
+Attribution URL: https://fam.gg
 
 Graphic Image as provided in the Covered Code:
 https://cdn.wtf/d/images/fam/powered_by.png

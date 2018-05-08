@@ -264,7 +264,9 @@ module.exports = class ProfileDialog
           text: @model.l.get 'general.manage'
           isVisible: true
           onclick: =>
-            @model.group.goPath group, 'groupManage', {@router}
+            @model.group.goPath group, 'groupManage', {
+              @router, replacements: {userId: user?.id}
+            }
             @selectedProfileDialogUser.next null
         }
     ]

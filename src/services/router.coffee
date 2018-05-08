@@ -36,7 +36,7 @@ class RouterService
     if path
       # store current page for app re-launch
       if Environment.isNativeApp(config.GAME_KEY) and @model.cookie
-        @model.cookie.set 'lastPath', path
+        @model.cookie.set 'routerLastPath', path
 
       @router.go path
 
@@ -55,7 +55,7 @@ class RouterService
 
   openLink: (url) =>
     isAbsoluteUrl = url?.match /^(?:[a-z-]+:)?\/\//i
-    famRegex = new RegExp "https?://(#{config.HOST}|starfire.games|starfi\.re)", 'i'
+    famRegex = new RegExp "https?://(.*?)\.?(#{config.HOST}|openfam\.com|starfire\.games|starfi\.re)", 'i'
     isFam = url?.match famRegex
     if not isAbsoluteUrl or isFam
       path = if isFam \
@@ -157,8 +157,9 @@ class RouterService
 
   getSubdomain: =>
     hostParts = @host.split '.'
-    isDev = config.ENV is config.ENVS.DEV
-    if hostParts.length is 3 or (isDev and hostParts.length is 7)
+    isStaging = hostParts[0] is 'fam-staging'
+    isDevSubdomain = config.ENV is config.ENVS.DEV and hostParts.length is 7
+    if (hostParts.length is 3 or isDevSubdomain) and not isStaging
       return hostParts[0]
 
   link: (node) =>
