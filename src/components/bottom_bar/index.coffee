@@ -49,12 +49,12 @@ module.exports = class BottomBar
     # per-group menu:
     # profile, tools, home, forum, chat
     @menuItems = _filter [
-      if group?.key in ['ninja']
+      if group?.key in ['nickatnyte']
         {
           $icon: new Icon()
-          icon: 'rss'
-          route: @model.group.getPath group, 'groupForum', {@router}
-          text: @model.l.get 'general.forum'
+          icon: 'trade'
+          route: @model.group.getPath group, 'trades', {@router}
+          text: @model.l.get 'tradesPage.title'
         }
       else if @model.group.hasGameKey group, 'fortnite'
         {

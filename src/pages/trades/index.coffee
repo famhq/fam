@@ -19,7 +19,9 @@ MAX_DONE_TRADES = 25
 MIN_MS_BETWEEN_REFRESH = 2000
 
 module.exports = class TradesPage
-  constructor: ({@model, @router, requests, serverData}) ->
+  @hasBottomBar: true
+
+  constructor: ({@model, @router, requests, serverData, @$bottomBar}) ->
     @$appBar = new AppBar {@model}
     @$buttonMenu = new ButtonMenu {@router, @model}
 
@@ -144,3 +146,5 @@ module.exports = class TradesPage
                 $emptyStateTitle: @model.l.get 'tradesPage.doneEmpty'
           }
         ]
+
+      @$bottomBar

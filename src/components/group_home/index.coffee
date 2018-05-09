@@ -12,7 +12,7 @@ GroupHomeAddons = require '../group_home_addons'
 GroupHomeAdminStats = require '../group_home_admin_stats'
 GroupHomeChat = require '../group_home_chat'
 GroupHomeOffers = require '../group_home_offers'
-GroupHomeFortniteStats = require '../group_home_fortnite_stats'
+GroupHomeCollecting = require '../group_home_collecting'
 GroupHomeStats = require '../group_home_stats'
 GroupHomeClashRoyaleDecks = require '../group_home_clash_royale_decks'
 GroupHomeTranslate = require '../group_home_translate'
@@ -63,6 +63,9 @@ module.exports = class GroupHome
       @model, @router, group, player, @overlay$
     }
     @$groupHomeOffers = new GroupHomeOffers {
+      @model, @router, group, player, @overlay$
+    }
+    @$groupHomeCollecting = new GroupHomeCollecting {
       @model, @router, group, player, @overlay$
     }
     @$groupHomeChat = new GroupHomeChat {
@@ -127,10 +130,13 @@ module.exports = class GroupHome
 
               z @$groupHomeChat
 
-              if me?.username is 'austin' or ( # FIXME
-                me?.username is 'brunoph' and group?.key is 'playhard'
-              )
-                z @$groupHomeAdminStats
+              if group.key in ['nickatnyte']
+                z @$groupHomeCollecting
+
+              # if me?.username is 'austin' or ( # FIXME
+              #   me?.username is 'brunoph' and group?.key is 'playhard'
+              # )
+              #   z @$groupHomeAdminStats
 
               if not Environment.isiOS({userAgent}) and group.key in [
                 'playhard', 'eclihpse', 'nickatnyte', 'ferg', 'teamqueso'

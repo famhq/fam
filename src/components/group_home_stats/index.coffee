@@ -41,13 +41,14 @@ module.exports = class GroupHomeStats
 
     if game is 'fortnite'
       $component = @$fortniteStats
+      title = @model.l.get 'groupHomeFortniteStats.title'
     else
       $component = @$clashRoyaleChestCycle
+      title = @model.l.get 'profileChestsPage.title'
 
     z '.z-group-home-clash-royale-chest-cycle',
       z @$uiCard,
-        # @model.l.get 'groupHomeFortniteStats.title'
-        $title: @model.l.get 'profileChestsPage.title'
+        $title: title
         minHeightPx: $component.getHeight()
         cancel: $component.getCancelButton()
         submit: $component.getSubmitButton()
