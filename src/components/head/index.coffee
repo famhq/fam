@@ -223,12 +223,14 @@ module.exports = class Head
 
       # serialization
       z 'script#model.model',
+        key: 'model'
         innerHTML: modelSerialization or ''
 
 
       # GA limits us to 10M hits per month, which we exceed by a lot...
       # so we'll sample it (10%)
       z 'script#ga1',
+        key: 'ga1'
         innerHTML: "
           window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};
           ga.l=+new Date;
@@ -242,13 +244,15 @@ module.exports = class Head
           });
         "
       z 'script#ga2',
+        key: 'ga2'
         async: true
         src: 'https://www.google-analytics.com/analytics.js'
 
-      z 'style#rubik', rubikCss
+      z 'style#rubik', {key: 'rubik'}, rubikCss
 
       # styles
       z 'style#css-variables',
+        key: 'css-variables'
         innerHTML:
           ":root {#{cssVariables or @model.cookie.get 'cachedCssVariables'}}"
       if isInliningSource
@@ -266,12 +270,14 @@ module.exports = class Head
         null
 
       _map additionalCss, (href) ->
-        z 'link#href',
+        z "link##{href}",
+          key: href
           rel: 'stylesheet'
           href: href
 
       # scripts
       z 'script#bundle',
+        key: 'bundle'
         async: true
         src: if isInliningSource then serverData?.bundlePath \
              else "#{webpackDevUrl}/bundle.js"
@@ -281,6 +287,7 @@ module.exports = class Head
        # every render
        _map paths, (path, lang) ->
          z "link#alternate-#{path}-#{lang}", {
+           key: "alternate-#{path}-#{lang}"
            rel: 'alternate'
            href: "https://#{config.HOST}#{path}"
            hreflang: lang
@@ -289,12 +296,15 @@ module.exports = class Head
       unless isNative
         [
           z 'script#adsense',
+            key: 'adsense'
             async: true
             src: '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
           z 'script#stripe1',
+            key: 'stripe1'
             # async: true
             src: 'https://js.stripe.com/v2/'
           z 'script#stripe2',
+            key: 'stripe2'
             # async: true
             innerHTML: "
               Stripe.setPublishableKey('#{config.STRIPE_PUBLISHABLE_KEY}');

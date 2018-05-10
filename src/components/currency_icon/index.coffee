@@ -21,5 +21,5 @@ module.exports = class CurrencyIcon
         height: size
         backgroundImage:
           if itemKey
-          then "url(#{config.CDN_URL}/items/#{dir}/currency/#{itemKey}.png?2)"
+          then "url(#{config.CDN_URL}/items/#{dir}/currency/#{itemKey}.png?4)"
           else 'none'

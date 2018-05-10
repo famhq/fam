@@ -130,7 +130,7 @@ module.exports = class GroupHome
 
               z @$groupHomeChat
 
-              if group.key in ['nickatnyte']
+              if group.key in ['nickatnyte', 'theviewage']
                 z @$groupHomeCollecting
 
               # if me?.username is 'austin' or ( # FIXME

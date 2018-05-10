@@ -160,9 +160,10 @@ module.exports = class App
     userAgent = @serverData?.req.headers?['user-agent']
     isNativeApp = Environment.isNativeApp config.GAME_KEY, {userAgent}
 
-    if @isCrawler and group.language
+    if @isCrawler
       @group.take(1).subscribe (group) =>
-        @model.l.setLanguage group.language
+        if group.language
+          @model.l.setLanguage group.language
     else if window? and isNativeApp
       # HACK: not sure why the settimeout fixes it,
       # but without it, @$bottomBar is null in app
