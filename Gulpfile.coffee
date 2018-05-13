@@ -8,17 +8,16 @@ log = require 'loga'
 gulp = require 'gulp'
 gutil = require 'gulp-util'
 webpack = require 'webpack'
-mocha = require 'gulp-mocha'
+autoprefixer = require 'autoprefixer'
 manifest = require 'gulp-manifest'
-KarmaServer = require('karma').Server
 spawn = require('child_process').spawn
 coffeelint = require 'gulp-coffeelint'
 webpackStream = require 'webpack-stream'
 gulpSequence = require 'gulp-sequence'
-# istanbul = require 'gulp-coffee-istanbul'
 WebpackDevServer = require 'webpack-dev-server'
-ExtractTextPlugin = require 'extract-text-webpack-plugin'
-# UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
+HandleCSSLoader = require 'webpack-handle-css-loader'
+UglifyJSPlugin = require 'uglifyjs-webpack-plugin'
+MiniCssExtractPlugin = require 'mini-css-extract-plugin'
 Visualizer = require('webpack-visualizer-plugin')
 BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 s3Upload = require 'gulp-s3-upload'
@@ -28,24 +27,13 @@ config = require './src/config'
 Language = require './src/lang'
 paths = require './gulp_paths'
 
-FUNCTIONAL_TEST_TIMEOUT_MS = 10 * 1000 # 10sec
-
-karmaConfig =
-  singleRun: true
-  frameworks: ['mocha']
-  files: [paths.build + '/bundle.js']
-  preprocessors:
-    '**/*.js': ['sourcemap']
-  browsers: ['Chrome', 'Firefox']
-
-cssLoader = 'css!autoprefixer!stylus?paths[]=node_modules'
-
 webpackBase =
+  mode: 'development'
   module:
     exprContextRegExp: /$^/
     exprContextCritical: false
   resolve:
-    extensions: ['.coffee', '.js', '.json', '']
+    extensions: ['.coffee', '.js', '.json']
   output:
     filename: 'bundle.js'
     publicPath: '/'
@@ -56,7 +44,6 @@ s3 = s3Upload {
 }
 
 gulp.task 'dev', ['dev:webpack-server', 'watch:dev:server']
-gulp.task 'test', ['lint', 'test:coverage', 'test:browser']
 # TODO: 'dist:manifest' - appcache
 gulp.task 'dist', gulpSequence(
   'dist:clean'
@@ -66,13 +53,8 @@ gulp.task 'dist', gulpSequence(
 )
 
 gulp.task 'watch', ->
-  gulp.watch paths.coffee, ['test:unit']
-gulp.task 'watch:phantom', ->
-  gulp.watch paths.coffee, ['test:browser:phantom']
-gulp.task 'watch:server', ->
-  gulp.watch paths.coffee, ['test:server']
-gulp.task 'watch:functional', ->
-  gulp.watch paths.coffee, ['test:functional']
+  gulp.watch paths.coffee, ['dev:server']
+
 gulp.task 'watch:dev:server', ['dev:server'], ->
   gulp.watch paths.coffee, ['dev:server']
 
@@ -80,39 +62,6 @@ gulp.task 'lint', ->
   gulp.src paths.coffee
     .pipe coffeelint()
     .pipe coffeelint.reporter()
-
-# gulp.task 'test:coverage', ->
-#   gulp.src paths.cover
-#     .pipe istanbul includeUntested: false
-#     .pipe istanbul.hookRequire()
-#     .on 'finish', ->
-#       gulp.src paths.unitTests.concat [paths.serverTests]
-#         .pipe mocha()
-#         .pipe istanbul.writeReports({
-#           reporters: ['html', 'text', 'text-summary']
-#         })
-
-gulp.task 'test:unit', ->
-  gulp.src paths.unitTests
-    .pipe mocha()
-
-gulp.task 'test:browser:phantom', ['build:scripts:test'], (cb) ->
-  new KarmaServer _defaults({
-    browsers: ['PhantomJS']
-  }, karmaConfig), cb
-  .start()
-
-gulp.task 'test:server', ->
-  gulp.src paths.serverTests
-    .pipe mocha()
-
-gulp.task 'test:browser', ['build:scripts:test'], (cb) ->
-  new KarmaServer karmaConfig, cb
-  .start()
-
-gulp.task 'test:functional', ->
-  gulp.src paths.functionalTests
-    .pipe mocha(timeout: FUNCTIONAL_TEST_TIMEOUT_MS)
 
 gulp.task 'dev:server', ['build:static:dev'], do ->
   devServer = null
@@ -131,6 +80,18 @@ gulp.task 'dev:webpack-server', ->
     paths.root
   ]
 
+  handleLoader = new HandleCSSLoader {
+    minimize: false,
+    extract: false,
+    sourceMap: false,
+    cssModules: false
+    postcss: [
+      autoprefixer {
+        browsers: ['> 3% in US', 'last 2 firefox versions']
+      }
+    ]
+  }
+
   compiler = webpack _defaultsDeep {
     devtool: 'inline-source-map'
     entry: entries
@@ -138,10 +99,10 @@ gulp.task 'dev:webpack-server', ->
       path: __dirname
       publicPath: "#{config.WEBPACK_DEV_URL}/"
     module:
-      loaders: [
-        {test: /\.coffee$/, loader: 'coffee'}
-        {test: /\.json$/, loader: 'json'}
-        {test: /\.styl$/, loader: 'style!' + cssLoader}
+      rules: [
+        {test: /\.coffee$/, loader: 'coffee-loader'}
+        handleLoader.css()
+        handleLoader.styl()
       ]
     plugins: [
       new webpack.HotModuleReplacementPlugin()
@@ -177,25 +138,8 @@ gulp.task 'build:static:dev', ->
   gulp.src paths.static
     .pipe gulp.dest paths.build
 
-gulp.task 'build:scripts:test', ->
-  gulp.src paths.unitTests
-  .pipe webpackStream _defaultsDeep {
-    devtool: 'inline-source-map'
-    module:
-      loaders: [
-        {test: /\.coffee$/, loader: 'coffee'}
-        {test: /\.json$/, loader: 'json'}
-        {test: /\.styl$/, loader: 'style!' + cssLoader}
-      ]
-    plugins: [
-      new webpack.DefinePlugin
-        'process.env': _mapValues process.env, (val) -> JSON.stringify val
-    ]
-  }, webpackBase
-  .pipe gulp.dest paths.build
-
 gulp.task 'dist:clean', (cb) ->
-  del paths.dist, cb
+  del paths.dist + '/*', cb
 
 gulp.task 'dist:static', ['dist:clean'], ->
   gulp.src paths.static
@@ -203,25 +147,42 @@ gulp.task 'dist:static', ['dist:clean'], ->
 
 gulp.task 'dist:sw', ->
   gulp.src paths.sw
-  .pipe webpackStream
+  .pipe webpackStream(_defaultsDeep({
+    mode: 'production'
+    optimization: {
+      minimizer: [
+        new UglifyJSPlugin {
+          sourceMap: false
+          uglifyOptions:
+            mangle:
+              reserved: ['process']
+        }
+      ]
+    }
     module:
-      loaders: [
-        {test: /\.coffee$/, loader: 'coffee'}
-        {test: /\.json$/, loader: 'json'}
+      rules: [
+        {test: /\.coffee$/, loader: 'coffee-loader'}
       ]
     output:
       filename: 'service_worker.js'
-    plugins: [
-      # new webpack.IgnorePlugin /^\/lang\/*$/
-      # new webpack.optimize.UglifyJsPlugin
-      #   mangle:
-      #     except: ['process']
-    ]
+    plugins: []
     resolve:
-      extensions: ['.coffee', '.js', '.json', '']
+      extensions: ['.coffee', '.js', '.json']
+  }, webpackBase), require('webpack'))
   .pipe gulp.dest paths.dist
 
 gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
+  handleLoader = new HandleCSSLoader {
+    minimize: true,
+    extract: true,
+    sourceMap: false,
+    cssModules: false
+    postcss: [
+      autoprefixer {
+        browsers: ['> 3% in US', 'last 2 firefox versions']
+      }
+    ]
+  }
   _map config.LANGUAGES, (language) ->
     fs.writeFileSync(
       "#{__dirname}/#{paths.dist}/lang_#{language}.json"
@@ -229,41 +190,36 @@ gulp.task 'dist:scripts', ['dist:clean', 'dist:sw'], ->
     )
 
   scriptsConfig = _defaultsDeep {
-    # devtool: 'source-map'
+    mode: 'production'
+    optimization: {
+      minimizer: [
+        new UglifyJSPlugin {
+          sourceMap: false
+          uglifyOptions:
+            mangle:
+              reserved: ['process']
+        }
+      ]
+    }
     plugins: [
       new webpack.IgnorePlugin /\.json$/, /lang/
-      # new webpack.IgnorePlugin /.*$/, /date-fns\/locale/
-      # new UglifyJSPlugin
-      #   uglifyOptions:
-      #     mangle:
-      #       reserved: ['process']
-      new webpack.optimize.UglifyJsPlugin
-        mangle:
-          except: ['process']
-      new ExtractTextPlugin 'bundle.css'
-      # new Visualizer()
-      # new BundleAnalyzerPlugin()
-      # new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
-      # new webpack.ContextReplacementPlugin(
-      #   /moment[\/\\]locale$/, /en|es|it|fr|zh|ja|ko|de|pt|pl/
-      # )
+      new MiniCssExtractPlugin {
+        filename: "bundle.css"
+      }
     ]
     output:
       # TODO: '[hash].bundle.js' if we have caching issues, or use appcache
       filename: 'bundle.js'
     module:
-      loaders: [
-        {test: /\.coffee$/, loader: 'coffee'}
-        {test: /\.json$/, loader: 'json'}
-        {
-          test: /\.styl$/
-          loader: ExtractTextPlugin.extract 'style', cssLoader
-        }
+      rules: [
+        {test: /\.coffee$/, loader: 'coffee-loader'}
+        handleLoader.css()
+        handleLoader.styl()
       ]
   }, webpackBase
 
   gulp.src paths.root
-  .pipe webpackStream scriptsConfig, null, (err, stats) ->
+  .pipe webpackStream scriptsConfig, require('webpack'), (err, stats) ->
     if err
       gutil.log err
       return
