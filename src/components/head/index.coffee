@@ -2,6 +2,7 @@ z = require 'zorium'
 Environment = require '../../services/environment'
 RxObservable = require('rxjs/Observable').Observable
 require 'rxjs/add/observable/combineLatest'
+require 'rxjs/add/operator/do'
 _merge = require 'lodash/merge'
 _map = require 'lodash/map'
 _mapValues = require 'lodash/mapValues'

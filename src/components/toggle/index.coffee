@@ -7,7 +7,7 @@ if window?
   require './index.styl'
 
 module.exports = class Toggle
-  constructor: ({@isSelected, @isSelectedStreams}) ->
+  constructor: ({@isSelected, @isSelectedStreams, @model}) ->
     unless @isSelectedStreams
       @isSelectedStreams = new RxReplaySubject 1
       @isSelected ?= RxObservable.of ''
@@ -16,11 +16,11 @@ module.exports = class Toggle
     @state = z.state
       isSelected: @isSelectedStreams.switch()
 
-  render: ({onToggle} = {}) =>
+  render: ({onToggle, withText} = {}) =>
     {isSelected} = @state.getValue()
 
     z '.z-toggle', {
-      className: z.classKebab {isSelected}
+      className: z.classKebab {isSelected, withText}
       onclick: =>
         if @isSelected
           @isSelected.next not isSelected
@@ -28,5 +28,10 @@ module.exports = class Toggle
           @isSelectedStreams.next RxObservable.of not isSelected
         onToggle? not isSelected
     },
-      z '.track'
+      z '.track',
+        if withText and isSelected
+          @model.l.get 'general.yes'
+        else if withText
+          @model.l.get 'general.no'
+
       z '.knob'

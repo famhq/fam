@@ -169,7 +169,7 @@ module.exports = class NavDrawer
             }
           if isClashRoyaleGroup or group.key in [
             'clashroyalees', 'clashroyalept', 'clashroyalepl',
-            'playhard', 'teamqueso', 'nickatnyte', 'ninja'
+            'playhard', 'teamqueso', 'nickatnyte', 'ninja', 'theviewage'
           ]
             {
               path: @model.group.getPath group, 'groupEarn', {@router}

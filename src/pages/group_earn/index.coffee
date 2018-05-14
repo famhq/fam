@@ -45,14 +45,8 @@ module.exports = class GroupEarnPage
       language: @model.l.getLanguage()
 
   afterMount: =>
-    userAgent = @serverData?.req?.headers?['user-agent'] or
-                  navigator?.userAgent or ''
-    isiOS = Environment.isiOS {userAgent}
     @requests.take(1).subscribe ({route}) =>
-      if route.params.type is 'currency' and isiOS
-        @selectedIndex.next 1
-      else if route.params.type is 'currency'
-        @selectedIndex.next 2
+      @selectedIndex.next 0
 
   getMeta: =>
     {

@@ -49,7 +49,7 @@ module.exports = class BottomBar
     # per-group menu:
     # profile, tools, home, forum, chat
     @menuItems = _filter [
-      if group?.key in ['nickatnyte']
+      if group?.key in ['nickatnyte', 'theviewage']
         {
           $icon: new Icon()
           icon: 'trade'

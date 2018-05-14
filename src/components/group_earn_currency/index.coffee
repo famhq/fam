@@ -107,6 +107,8 @@ module.exports = class GroupEarnCurrency
       z '.g-grid',
         z '.g-cols',
         _map currencyActions, ({action, $claimButton, $currencyIcon}) =>
+          unless action.data.button
+            return
           isLoading = loadingAction is action.action
           countLeft = action.maxCount - (action.transaction?.count or 0)
           isClaimed = not countLeft
