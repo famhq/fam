@@ -94,6 +94,7 @@ module.exports = class GroupHome
     userAgent = @serverData?.req?.headers?['user-agent'] or
                   navigator?.userAgent or ''
     isFortnite = group?.key and group?.key.indexOf('fortnite') isnt -1
+    isNative = Environment.isNativeApp(config.GAME_KEY, {userAgent})
 
     z '.z-group-home',
       z '.g-grid',
@@ -116,6 +117,9 @@ module.exports = class GroupHome
             $elements: _filter [
               z @$groupHomeStats
 
+              if window? and not isNative
+                @$aerservAd
+
               if group.key in [
                 'playhard', 'eclihpse', 'nickatnyte', 'ferg',
                 'teamqueso', 'ninja', 'theviewage'
@@ -129,6 +133,7 @@ module.exports = class GroupHome
                 z @$groupHomeThreads
 
               z @$groupHomeChat
+
 
               if group.key in ['nickatnyte', 'theviewage']
                 z @$groupHomeCollecting

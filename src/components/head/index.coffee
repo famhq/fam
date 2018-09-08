@@ -56,15 +56,15 @@ module.exports = class Head
           "#{key}:#{value}"
         ).join ';'
 
-        if @lastGroupId isnt group.id
+        if @lastGroupId isnt group?.id
           newStatusBarColor = cssColors['--status-bar-500'] or
                               cssColors['--primary-900']
           @model.portal?.call 'statusBar.setBackgroundColor', {
             color: newStatusBarColor
           }
-          @lastGroupId = group.id
-          @model.cookie.set 'lastGroupId', group.id
-          @model.cookie.set "group_#{group.id}_lastVisit", Date.now()
+          @lastGroupId = group?.id
+          @model.cookie.set 'lastGroupId', group?.id
+          @model.cookie.set "group_#{group?.id}_lastVisit", Date.now()
           if cssVariables
             @model.cookie.set 'cachedCssVariables', cssVariables
 

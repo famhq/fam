@@ -13,6 +13,7 @@ ChannelDrawer = require '../../components/channel_drawer'
 ProfileDialog = require '../../components/profile_dialog'
 GroupUserSettingsDialog = require '../../components/group_user_settings_dialog'
 Icon = require '../../components/icon'
+Environment = require '../../services/environment'
 colors = require '../../colors'
 
 if window?
@@ -131,6 +132,9 @@ module.exports = class GroupChatPage
     @isMounted = true
     @$$content = @$$el?.querySelector '.content'
     @isBottomBarVisible = true
+
+    @model.portal.call 'admob.hideBanner'
+
     @hideTimeout = setTimeout @hideBottomBar, BOTTOM_BAR_HIDE_DELAY_MS
     @mountDisposable = @hasBottomBarObs.subscribe (hasBottomBar) =>
       if not hasBottomBar and @isBottomBarVisible
@@ -157,6 +161,14 @@ module.exports = class GroupChatPage
     clearTimeout @hideTimeout
     @isMounted = false
     @mountDisposable?.unsubscribe()
+    adId = if Environment.isiOS() \
+           then 'ca-app-pub-9043203456638369/5699503414'
+           else 'ca-app-pub-9043203456638369/2454362164'
+    @model.portal.call 'admob.showBanner', {
+      position: 'bottom'
+      overlap: false
+      adId: adId
+    }
 
   getMeta: =>
     {

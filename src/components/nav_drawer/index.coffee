@@ -40,7 +40,7 @@ module.exports = class NavDrawer
 
     me = @model.user.getMe()
     groupPages = group.switchMap (group) =>
-      @model.groupPage.getAllByGroupId group.id
+      @model.groupPage.getAllByGroupId group?.id
     menuItemsInfo = RxObservable.combineLatest(
       me
       group
