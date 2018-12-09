@@ -39,6 +39,8 @@ module.exports = class Conversations
           otherUser = _find conversation.users, (user) ->
             user.id isnt me?.id
           isBlocked = @model.userBlock.isBlocked blockedUserIds, otherUser?.id
+          if otherUser?.username and otherUser.username.indexOf('comeculos') isnt -1
+            isBlocked = true
           unless isBlocked
             {conversation, otherUser, $avatar: new Avatar()}
 

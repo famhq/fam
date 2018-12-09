@@ -163,19 +163,19 @@ module.exports = class Shop
                               isTouchTarget: false
                           else
                             z $currencyIcon, {size: '16px'}
-              z '.g-col.g-xs-6.g-md-2.earn-more', {
-                onclick: =>
-                  @goToEarnFireFn?()
-              },
-                z '.more',
-                  z '.icon',
-                    z @$moreFireIcon,
-                      icon: 'fire'
-                      isTouchTarget: false
-                      color: colors.$quaternary500
-                      size: '96px'
-                z '.info',
-                  z '.name', @model.l.get 'shop.earnMoreFire'
+              # z '.g-col.g-xs-6.g-md-2.earn-more', {
+              #   onclick: =>
+              #     @goToEarnFireFn?()
+              # },
+              #   z '.more',
+              #     z '.icon',
+              #       z @$moreFireIcon,
+              #         icon: 'fire'
+              #         isTouchTarget: false
+              #         color: colors.$quaternary500
+              #         size: '96px'
+              #   z '.info',
+              #     z '.name', @model.l.get 'shop.earnMoreFire'
 
               if group?.currency
                 z '.g-col.g-xs-6.g-md-2.earn-more', {

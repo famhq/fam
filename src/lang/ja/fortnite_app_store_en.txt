@@ -1,10 +1,10 @@
-The ultimate Fortnite companion app for news, chat, stats, memes and more
+ニュース、チャット、統計、ミームの究極の Fortnite コンパニオン アプリケーション
 
-Features:
-• Track your in-game stats: wins, kills, K/D, ratio, etc...
-他のプレイヤーとチャットする
-• Find new friends for your squad
-• Read and comment on news and memes in the forum
+機能:
+• あなたのゲームの統計情報を追跡する: 勝ち数、キル/死 比等を殺す.
+• 他のプレイヤーとのチャット
+• あなたのチームのために新しい友達を探す
+ニュースとフォーラムでミームについて読んだりコメントしたりできます
 • View chest locations
 • Learn each weapon's stats
 • See current shop items

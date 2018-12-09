@@ -165,6 +165,18 @@ module.exports = class ProfileInfo
           )
         }
         {
+          name: @model.l.get 'profileInfo.statWarDayWins'
+          value: FormatService.number(
+            player?.data?.warDayWins
+          )
+        }
+        {
+          name: @model.l.get 'profileInfo.statClanCardsCollected'
+          value: FormatService.number(
+            player?.data?.clanCardsCollected
+          )
+        }
+        {
           name: @model.l.get 'profileInfo.statCardsFound'
           value: FormatService.number(
             player?.data?.cards?.length or

@@ -55,7 +55,7 @@ module.exports = class ChestSimulatorPick
     {$simulator, loadingChest} = @state.getValue()
 
     chests = [
-      'superMagical', 'legendary', 'magical', 'epic', 'giant'
+      'superMagical', 'legendary', 'magical', 'epic', 'giant', 'megaLightning'
       'gold', 'silver'
     ]
 

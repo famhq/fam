@@ -71,7 +71,7 @@ module.exports = class NavDrawer
           @model.cookie.get("group_#{group.id}_lastVisit") or 0
         , 'desc'
         groups = _filter groups, ({id}) ->
-          id isnt group.id
+          id isnt group?.id
         myGroups = _map groups, (group, i) =>
           {
             group

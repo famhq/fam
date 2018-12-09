@@ -32,7 +32,7 @@ module.exports = class GroupHome
     meAndGroup = RxObservable.combineLatest me, group, (vals...) -> vals
 
     player = meAndGroup.switchMap ([{id}, group]) =>
-      gameKey = group.gameKeys?[0] or 'clash-royale'
+      gameKey = group?.gameKeys?[0] or 'clash-royale'
       @model.player.getByUserIdAndGameKey id, gameKey
       .map (player) ->
         return player or {}
@@ -101,7 +101,7 @@ module.exports = class GroupHome
         # if isFortnite and player?.id
         #   z '.weekly-raffle', {
         #     onclick: =>
-        #       @model.group.goPath group, 'groupWeeklyRaffle', {
+        #       @model.group?.goPath group, 'groupWeeklyRaffle', {
         #         @router
         #       }
         #   },
@@ -120,13 +120,13 @@ module.exports = class GroupHome
               if window? and not isNative
                 @$aerservAd
 
-              if group.key in [
+              if group?.key in [
                 'playhard', 'eclihpse', 'nickatnyte', 'ferg',
                 'teamqueso', 'ninja', 'theviewage'
               ]
                 z @$groupHomeVideos
 
-              if group.key in [
+              if group?.key in [
                 'clashroyalees', 'clashroyalept', 'clashroyalepl', 'fortnitees'
                 'fortnite', 'fortnitejp', 'brawlstarses'
               ]
@@ -135,7 +135,7 @@ module.exports = class GroupHome
               z @$groupHomeChat
 
 
-              if group.key in ['nickatnyte', 'theviewage']
+              if group?.key in ['nickatnyte', 'theviewage']
                 z @$groupHomeCollecting
 
               # if me?.username is 'austin' or ( # FIXME
@@ -143,14 +143,14 @@ module.exports = class GroupHome
               # )
               #   z @$groupHomeAdminStats
 
-              if not Environment.isiOS({userAgent}) and group.key in [
+              if not Environment.isiOS({userAgent}) and group?.key in [
                 'playhard', 'eclihpse', 'nickatnyte', 'ferg', 'teamqueso'
               ]
                 z @$groupHomeOffers
 
 
               if player?.id and not isFortnite and
-                  not (group.key in ['brawlstarses', 'ninja', 'theviewage'])
+                  not (group?.key in ['brawlstarses', 'ninja', 'theviewage'])
                 z @$groupHomeClashRoyaleDecks
 
               z @$groupHomeAddons

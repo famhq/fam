@@ -1,12 +1,12 @@
 The ultimate Fortnite companion app for news, chat, stats, memes and more
 
-Features:
+특징: 
 • Track your in-game stats: wins, kills, K/D, ratio, etc...
 • Chat with other Fortnite players
 • Find new friends for your squad
 • Read and comment on news and memes in the forum
 • View chest locations
-• Learn each weapon's stats
+각각의 무기의 상태를 배워라
 • See current shop items
 
-...and much, much more! Fortnite Fam is constantly evolving based on community feedback!
+...and much, much more! Fortnite Fam은 지속적으로 사용자의 피드백을 기반으로 발전하고 있습니다.

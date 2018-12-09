@@ -1,12 +1,12 @@
-The ultimate Fortnite companion app for news, chat, stats, memes and more
+L'originale Fortnite companion app per notizie, chat, statistiche, memi e altro
 
-Features:
-• Track your in-game stats: wins, kills, K/D, ratio, etc...
-• Chat with other Fortnite players
-• Find new friends for your squad
-• Read and comment on news and memes in the forum
-• View chest locations
-• Learn each weapon's stats
-• See current shop items
+Caratteristiche:
+• Monitorare le statistiche di gioco: Vittorie, Uccisioni, K/D, ratio, ecc...
+• Chat con altri giocatori di Fortnite
+• Trovare nuovi amici per la tua squadra
+• Leggere e commentare notizie e memes nel forum
+• visualizza la posizione delle ceste
+• Imparare statistiche di ogni arma
+• Vedere gli articoli del negozio
 
-...and much, much more! Fortnite Fam is constantly evolving based on community feedback!
+...e molto, molto altro! Starfire è in costante evoluzione perchè si basa sui feedback della comunità!

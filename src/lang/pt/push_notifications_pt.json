@@ -10,12 +10,12 @@
   "newFollower.text": "{name} está seguindo você",
   "newVideo.title": "Novo vídeo",
   "newVideo.text": "Novo vídeo Postado em {groupName}",
-  "newTrade.title": "Novo comércio",
-  "newTrade.text": "{name} Você enviou um comércio",
-  "rejectedTrade.title": "Comércio rejeitado",
-  "rejectedTrade.text": "{name} rejeitou o seu comércio",
-  "acceptedTrade.text": "{name} aceitou seu comércio",
-  "acceptedTrade.title": "Aceitou comércio",
+  "newTrade.title": "Nova troca",
+  "newTrade.text": "{name} lhe enviou uma oferta de troca",
+  "rejectedTrade.title": "Troca rejeitada",
+  "rejectedTrade.text": "{name} rejeitou a sua troca",
+  "acceptedTrade.text": "{name} aceitou sua troca",
+  "acceptedTrade.title": "Aceitou a troca",
   "packUnlocked.title": "Pacote desbloqueado",
   "packUnlocked.text": "{packName} está disponível"
 }

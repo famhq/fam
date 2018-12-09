@@ -72,22 +72,23 @@ module.exports = class GroupEarnPage
         $topRightButton: @$menuFireAmount
       }
       if group
-        z @$tabs,
-          isBarFixed: false
-          hasAppBar: true
-          tabs: _filter [
-            {
-              $menuText: group?.currency?.name or 'XP'
-              $el: z @$earnCurrency
-            }
-            unless Environment.isiOS {userAgent}
-              {
-                $menuText: @model.l.get 'general.fire'
-                $el: z @$specialOffers
-              }
-            {
-              $menuText: @model.l.get 'shop.moreFire'
-              $el: z @$earnFire
-            }
-          ]
+        z @$earnCurrency
+        # z @$tabs,
+        #   isBarFixed: false
+        #   hasAppBar: true
+        #   tabs: _filter [
+        #     {
+        #       $menuText: group?.currency?.name or 'XP'
+        #       $el: z @$earnCurrency
+        #     }
+        #     unless Environment.isiOS {userAgent}
+        #       {
+        #         $menuText: @model.l.get 'general.fire'
+        #         $el: z @$specialOffers
+        #       }
+        #     {
+        #       $menuText: @model.l.get 'shop.moreFire'
+        #       $el: z @$earnFire
+        #     }
+        #   ]
       z @$bottomBar

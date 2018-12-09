@@ -9,13 +9,13 @@
   "newFollower.title": "新しいフォロワー",
   "newFollower.text": "{name} は、あなたをフォローしました",
   "newVideo.title": "新しい動画",
-  "newVideo.text": "New video posted in {groupName}",
+  "newVideo.text": "{groupName} に新しい動画が投稿されました",
   "newTrade.title": "新しい交換",
   "newTrade.text": "{name}が交換を送ってきた",
-  "rejectedTrade.title": "Rejected trade",
-  "rejectedTrade.text": "{name} rejected your trade",
-  "acceptedTrade.text": "{name} accepted your trade",
-  "acceptedTrade.title": "Accepted trade",
-  "packUnlocked.title": "Pack unlocked",
-  "packUnlocked.text": "{packName} is available"
+  "rejectedTrade.title": "トレードは拒否されました",
+  "rejectedTrade.text": "{name} にトレードを拒否されました",
+  "acceptedTrade.text": "{name} がトレードに応じました",
+  "acceptedTrade.title": "トレードが成立しました",
+  "packUnlocked.title": "パックが解放されました",
+  "packUnlocked.text": "{packName} を入手しました"
 }

@@ -34,7 +34,7 @@ module.exports = class ProfileChests
     isNative = Environment.isNativeApp config.GAME_KEY
     isVerified = player?.isVerified
 
-    goodChests = ['giant', 'epic', 'magical', 'superMagical', 'legendary']
+    goodChests = ['giant', 'epic', 'magical', 'superMagical', 'legendary', 'megaLightning']
 
     z '.z-profile-chests',
       z '.g-grid',
